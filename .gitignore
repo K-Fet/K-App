@@ -236,3 +236,4 @@ fabric.properties
 ### NotepadPP template
 # Notepad++ backups #
 .idea/inspectionProfiles/
+.idea/dbnavigator.xml

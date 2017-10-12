@@ -22,7 +22,8 @@
     "express": "^4.13.4",
     "morgan": "^1.1.1",
     "passport": "^0.3.2",
-    "passport-local": "^0.1.6"
+    "passport-local": "^0.1.6",
+    "winston": "^3.0.0-rc0"
   },
   "engines": {
     "node": ">8.0.0"
