@@ -30,6 +30,8 @@ if (WEB_CONFIG.ssl) {
     }, app);
 }
 
+// Marc antoine travaille !
+
 // Listen on provided port, on all network interfaces.
 server.listen(WEB_CONFIG.port);
 server.on('error', onError);
