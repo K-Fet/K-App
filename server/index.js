@@ -1,5 +1,6 @@
 const winston = require('winston');
 const express = require('express');
+const compression = require('compression');
 const fs = require('fs');
 
 const routes = require('./app/routes');
@@ -10,6 +11,10 @@ const WEB_CONFIG = require('./config/web');
 // Logger init
 require('./logger');
 
+// Prod middleware
+if (process.env.NODE_ENV === 'production') {
+    app.use(compression());
+}
 
 // Serve the API first
 app.use('/api/', routes);

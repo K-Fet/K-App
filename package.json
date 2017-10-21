@@ -10,19 +10,21 @@
     "scripts": {
         "build": "cd client/ && npm run build:prod",
         "build:dev": "cd client/ && npm run build",
-        "dev": "npm run dev:back && npm run dev:front",
+        "dev": "concurrently --kill-others \"npm run dev:back\" \"npm run dev:front\"",
         "dev:back": "node server/index.js",
         "dev:front": "cd client/ && npm start",
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
+        "lint": "npm run eslint && cd client/ && npm run lint",
         "postinstall": "cd client/ && npm install",
         "prod": "export NODE_ENV=production npm start",
-        "test": "nyc mocha server/test/ && npm run eslint",
+        "test": "nyc mocha server/test/ && npm run lint",
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
     },
     "dependencies": {
         "bcrypt-nodejs": "0.0.3",
         "body-parser": "^1.4.3",
+        "compression": "^1.7.1",
         "cookie-parser": "^1.4.3",
         "deepmerge": "^2.0.0",
         "express": "^4.13.4",
@@ -33,6 +35,7 @@
     },
     "devDependencies": {
         "codecov": "^2.3.1",
+        "concurrently": "^3.5.0",
         "eslint": "^4.9.0",
         "mocha": "^4.0.1",
         "nyc": "^11.2.1",
