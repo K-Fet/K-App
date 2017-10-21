@@ -1,6 +1,12 @@
 # K-App
 K-App application repository
 
+[![license](https://img.shields.io/github/license/K-fet/K-App.svg)](./LICENSE.md)
+[![David](https://img.shields.io/david/K-fet/K-App.svg)](https://david-dm.org/K-fet/K-App)
+[![David](https://img.shields.io/david/dev/K-fet/K-App.svg)](https://david-dm.org/K-fet/K-App)
+[![Travis](https://img.shields.io/travis/K-fet/K-App.svg)](https://travis-ci.org/K-fet/K-App)
+[![Codecov branch](https://img.shields.io/codecov/c/github/K-fet/K-App.svg)](https://codecov.io/gh/K-fet/K-App/)
+
 ## Usage
 
 ### Pre-Requisites
@@ -80,3 +86,11 @@ It will only launch the front so all API calls will not work.
 (You can use `npm run dev` to start the back and the front).
 
 All API requests made at the angular app will be transferred to the server.
+
+
+## Testing (back only)
+
+Launch the tests: `npm test`
+
+Create coverage report: `npm run coverage`
+

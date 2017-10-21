@@ -41,6 +41,7 @@ server.on('listening', () => {
 // Listen on provided port, on all network interfaces.
 server.listen(WEB_CONFIG.port);
 
+
 /**
  * Function called when an error is thrown by the http server
  * It can stop the entire process
