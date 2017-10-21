@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     /**
      * SSL Configuration.
@@ -18,4 +20,9 @@ module.exports = {
      */
     port: process.env.PORT || 3000,
 
+
+    /**
+     * Absolute path to the folder containing all the static files
+     */
+    publicFolder: path.resolve('../../client/dist/')
 };

@@ -94,3 +94,5 @@ Launch the tests: `npm test`
 
 Create coverage report: `npm run coverage`
 
+## [Licence](./LICENSE)
+

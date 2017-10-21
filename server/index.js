@@ -7,8 +7,18 @@ const app = express();
 
 const WEB_CONFIG = require('./config/web');
 
+// Logger init
+require('./logger');
 
-app.use('/', routes);
+
+// Serve the API first
+app.use('/api/', routes);
+
+// Then try to send existing files
+app.use(express.static(WEB_CONFIG.publicFolder));
+
+// Otherwise send index.html
+app.get('*', (req, res) => res.sendFile(WEB_CONFIG.publicFolder + '/index.html'));
 
 
 //
@@ -21,7 +31,7 @@ if (WEB_CONFIG.ssl && (!WEB_CONFIG.ssl.cert || !WEB_CONFIG.ssl.key)) {
 
 // Create HTTP or HTTPS server.
 let server;
-if (WEB_CONFIG.ssl) {
+if (!WEB_CONFIG.ssl) {
     server = require('http').createServer(app);
 } else {
     server = require('https').createServer({
@@ -34,7 +44,7 @@ server.on('error', onError);
 server.on('listening', () => {
     const addr = server.address();
     const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    winston.log('Listening on ' + bind);
+    winston.info('Listening on ' + bind);
 });
 
 
