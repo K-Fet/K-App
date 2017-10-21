@@ -1,11 +1,11 @@
 # K-App
 K-App application repository
 
-[![license](https://img.shields.io/github/license/K-fet/K-App.svg)](./LICENSE.md)
-[![David](https://img.shields.io/david/K-fet/K-App.svg)](https://david-dm.org/K-fet/K-App)
-[![David](https://img.shields.io/david/dev/K-fet/K-App.svg)](https://david-dm.org/K-fet/K-App)
-[![Travis](https://img.shields.io/travis/K-fet/K-App.svg)](https://travis-ci.org/K-fet/K-App)
-[![Codecov branch](https://img.shields.io/codecov/c/github/K-fet/K-App.svg)](https://codecov.io/gh/K-fet/K-App/)
+[![license](https://img.shields.io/github/license/K-Fet/K-App.svg)](./LICENSE.md)
+[![David](https://img.shields.io/david/K-Fet/K-App.svg)](https://david-dm.org/K-Fet/K-App)
+[![David](https://img.shields.io/david/dev/K-Fet/K-App.svg)](https://david-dm.org/K-Fet/K-App)
+[![Travis](https://img.shields.io/travis/K-Fet/K-App.svg)](https://travis-ci.org/K-Fet/K-App)
+[![Codecov branch](https://img.shields.io/codecov/c/github/K-Fet/K-App.svg)](https://codecov.io/gh/K-Fet/K-App/)
 
 ## Usage
 
@@ -18,7 +18,7 @@ To launch the project you will need:
 
 ### Getting the sources
 
-You can download the latest release from [here](https://github.com/K-fet/K-App/releases).
+You can download the latest release from [here](https://github.com/K-Fet/K-App/releases).
 
 ### Configuring
 
@@ -52,7 +52,7 @@ Optional:
 
 ### Environment
 
-Clone the repo: `git clone https://github.com/K-fet/K-App.git`.
+Clone the repo: `git clone https://github.com/K-Fet/K-App.git`.
 
 Install dependencies: `npm install`.
 
