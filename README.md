@@ -1,32 +1,75 @@
 # K-App
 K-App application repository
 
-# Require
+## Usage
 
-You need to install:
-- NodeJS (npm is included): https://nodejs.org/en/
-- Git
-  - Windows user: https://git-scm.com/downloads
-  - Linux user: sudo apt-get install git
+### Pre-Requisites
+
+To launch the project you will need:
+- [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
+- [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
+
+
+### Getting the sources
+
+You can download the latest release from [here](https://github.com/K-fet/K-App/releases).
+
+### Configuring
+
+All the configuration is in [here](/server/config) :
+- _logger.js_: Configuration of the logger [winston](https://github.com/winstonjs/winston).
+- _web.js_: Configuration of the web server, like ssl, port of the application, etc.
+
+
+### Compiling assets and starting the server
+
+1. Run `npm install`.
+2. Run `npm build`.
+3. Run `npm run prod`.
+
+
+### Updating
+
+TODO.
+
+
+## Development
+
+In addition to the default pre-requisites, you will need:
+
+- Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
 
 Optional:
 - Text editor: Visual code https://code.visualstudio.com/
+- Or a full IDE: [Webstorm](https://www.jetbrains.com/webstorm/)
+    (student licence available) 
 
-# Dev
+### Environment
 
-Install project (from root): 
-```bash
-npm install
-```
+Clone the repo: `git clone https://github.com/K-fet/K-App.git`.
 
-Launch dev mode (from root): 
-```bash
-npm run dev
-```
+Install dependencies: `npm install`.
 
-It will first launch the server (backend) and then launch angular (frontend).
-There will have two things :
-* The server who will be available at http://localhost:3000
-* The angular app who will be available at http://localhost:4200
+### Launching server and client
 
-All api requests made at the angular app will be transferred to the server.
+#### Back
+
+The back use [expressjs](https://expressjs.com). 
+It can be launch with `npm run dev:back`.
+
+It will be available at http://localhost:3000.
+For now you have to restart it manually when you make modifications.
+
+
+#### Front
+
+The front is an angular 2 application. It uses _angular-cli_.
+You can start developing front with `npm run dev:front`.
+
+The app will be launch at http://localhost:4200. 
+It will automatically be reloaded when you edit angular files. 
+
+It will only launch the front so all API calls will not work.
+(You can use `npm run dev` to start the back and the front).
+
+All API requests made at the angular app will be transferred to the server.

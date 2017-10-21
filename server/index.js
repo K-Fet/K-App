@@ -16,7 +16,7 @@ app.use('/', routes);
 //
 
 if (WEB_CONFIG.ssl && (!WEB_CONFIG.ssl.cert || !WEB_CONFIG.ssl.key)) {
-    throw new Error("Cannot start HTTPS server, `sslKey` or `sslCert` is missing in config.js.");
+    throw new Error("Cannot start HTTPS server, `ssl.key` or `ssl.cert` is missing in config.js.");
 }
 
 // Create HTTP or HTTPS server.
@@ -30,8 +30,6 @@ if (WEB_CONFIG.ssl) {
     }, app);
 }
 
-// Listen on provided port, on all network interfaces.
-server.listen(WEB_CONFIG.port);
 server.on('error', onError);
 server.on('listening', () => {
     const addr = server.address();
@@ -39,6 +37,9 @@ server.on('listening', () => {
     console.log('Listening on ' + bind);
 });
 
+
+// Listen on provided port, on all network interfaces.
+server.listen(WEB_CONFIG.port);
 
 /**
  * Function called when an error is thrown by the http server

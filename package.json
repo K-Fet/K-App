@@ -1,31 +1,33 @@
 {
-  "name": "K-App",
-  "version": "0.0.1",
-  "description": "K-App provide a large panel of useful tools for associations",
-  "main": "server/index.js",
-  "repository": "https://github.com/K-Fet/K-App",
-  "author": "Marc-Antoine Fernandes <embraser01@gmail.com>",
-  "license": "Apache-2.0",
-  "private": true,
-  "scripts": {
-    "start": "node server/index.js && cd client/ && npm start",
-    "postinstall": "cd client/ && npm install",
-    "test": "",
-    "dev": "",
-    "prod": ""
-  },
-  "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
-    "body-parser": "^1.4.3",
-    "cookie-parser": "^1.4.3",
-    "deepmerge": "^1.5.1",
-    "express": "^4.13.4",
-    "morgan": "^1.1.1",
-    "passport": "^0.3.2",
-    "passport-local": "^0.1.6",
-    "winston": "^3.0.0-rc0"
-  },
-  "engines": {
-    "node": ">8.0.0"
-  }
+    "name": "K-App",
+    "version": "0.0.1",
+    "description": "K-App provide a large panel of useful tools for associations",
+    "main": "server/index.js",
+    "repository": "https://github.com/K-Fet/K-App",
+    "author": "Marc-Antoine Fernandes <embraser01@gmail.com>",
+    "license": "Apache-2.0",
+    "private": true,
+    "scripts": {
+        "build": "cd client/ && npm run build --prod",
+        "postinstall": "cd client/ && npm install",
+        "test": "",
+        "dev:front": "cd client/ && npm start",
+        "dev:back": "node server/index.js",
+        "dev": "npm run dev:back && npm run dev:front",
+        "prod": "export NODE_ENV=production npm start"
+    },
+    "dependencies": {
+        "bcrypt-nodejs": "0.0.3",
+        "body-parser": "^1.4.3",
+        "cookie-parser": "^1.4.3",
+        "deepmerge": "^1.5.1",
+        "express": "^4.13.4",
+        "morgan": "^1.1.1",
+        "passport": "^0.3.2",
+        "passport-local": "^0.1.6",
+        "winston": "^3.0.0-rc0"
+    },
+    "engines": {
+        "node": ">8.0.0"
+    }
 }
