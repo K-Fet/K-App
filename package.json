@@ -17,7 +17,7 @@
         "eslint:watch": "esw --watch server/",
         "postinstall": "cd client/ && npm install",
         "prod": "export NODE_ENV=production npm start",
-        "test": "nyc mocha server/test/",
+        "test": "nyc mocha server/test/ && npm run eslint",
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
     },
     "dependencies": {
