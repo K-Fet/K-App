@@ -9,12 +9,14 @@
     "private": true,
     "scripts": {
         "build": "cd client/ && npm run build --prod",
-        "postinstall": "cd client/ && npm install",
-        "test": "",
-        "dev:front": "cd client/ && npm start",
-        "dev:back": "node server/index.js",
         "dev": "npm run dev:back && npm run dev:front",
-        "prod": "export NODE_ENV=production npm start"
+        "dev:back": "node server/index.js",
+        "dev:front": "cd client/ && npm start",
+        "eslint": "eslint server/",
+        "eslint:watch": "esw --watch server/",
+        "postinstall": "cd client/ && npm install",
+        "prod": "export NODE_ENV=production npm start",
+        "test": "cd client/ && npm test"
     },
     "dependencies": {
         "bcrypt-nodejs": "0.0.3",
@@ -26,6 +28,9 @@
         "passport": "^0.3.2",
         "passport-local": "^0.1.6",
         "winston": "^3.0.0-rc0"
+    },
+    "devDependencies": {
+        "eslint": "^4.9.0"
     },
     "engines": {
         "node": ">8.0.0"

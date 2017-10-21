@@ -2,7 +2,7 @@ const winston = require('winston');
 const express = require('express');
 const fs = require('fs');
 
-const routes = require('./routes');
+const routes = require('./app/routes');
 const app = express();
 
 const WEB_CONFIG = require('./config/web');
@@ -16,7 +16,7 @@ app.use('/', routes);
 //
 
 if (WEB_CONFIG.ssl && (!WEB_CONFIG.ssl.cert || !WEB_CONFIG.ssl.key)) {
-    throw new Error("Cannot start HTTPS server, `ssl.key` or `ssl.cert` is missing in config.js.");
+    throw new Error('Cannot start HTTPS server, `ssl.key` or `ssl.cert` is missing in config.js.');
 }
 
 // Create HTTP or HTTPS server.
@@ -34,7 +34,7 @@ server.on('error', onError);
 server.on('listening', () => {
     const addr = server.address();
     const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    console.log('Listening on ' + bind);
+    winston.log('Listening on ' + bind);
 });
 
 
@@ -51,16 +51,16 @@ function onError(error) {
         throw error;
     }
 
-    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    const bind = typeof WEB_CONFIG.port === 'string' ? 'Pipe ' + WEB_CONFIG.port : 'Port ' + WEB_CONFIG.port;
 
     // Handle specific listen errors with friendly messages.
     switch (error.code) {
         case 'EACCES':
-            console.error(`Web app :${bind} requires elevated privileges`);
+            winston.error(`Web app :${bind} requires elevated privileges`);
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(`Web app :${bind} is already in use`);
+            winston.error(`Web app :${bind} is already in use`);
             process.exit(1);
             break;
         default:

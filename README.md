@@ -60,6 +60,13 @@ It can be launch with `npm run dev:back`.
 It will be available at http://localhost:3000.
 For now you have to restart it manually when you make modifications.
 
+Also, a [linter](https://en.wikipedia.org/wiki/Lint_(software)) is configured.
+You can check your files with: `npm run eslint`, or check while you edit files with
+`npm run eslint:watch`.
+
+Plugins exist for [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+and [Webstorm](http://plugins.jetbrains.com/plugin/7494).
+
 
 #### Front
 
