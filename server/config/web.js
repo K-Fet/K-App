@@ -24,5 +24,5 @@ module.exports = {
     /**
      * Absolute path to the folder containing all the static files
      */
-    publicFolder: path.resolve('../../client/dist/')
+    publicFolder: path.resolve(__dirname, '../../client/dist/')
 };
