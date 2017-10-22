@@ -3,5 +3,5 @@ module.exports = {
     user     : 'root',
     password : '',
     database : 'kapp',
-    debug    : true //set true if you wanna see debug logger
-}
+    debug    : false //set true if you wanna see debug logger
+};
