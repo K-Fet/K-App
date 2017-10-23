@@ -3,6 +3,12 @@
         "es6": true,
         "node": true
     },
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
+    },
     "extends": "eslint:recommended",
     "rules": {
         "comma-spacing": [
@@ -12,6 +18,7 @@
                 "after": true
             }
         ],
+        "eqeqeq": "error",
         "indent": [
             "error",
             4,
@@ -30,6 +37,14 @@
         "semi": [
             "error",
             "always"
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
         ]
     },
     "root": true

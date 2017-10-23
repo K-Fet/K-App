@@ -2,14 +2,12 @@ const winston = require('winston');
 const express = require('express');
 const compression = require('compression');
 const fs = require('fs');
-const connection  = require('express-myconnection');
-const mysql = require('mysql');
 
 const routes = require('./app/routes');
 const app = express();
 
 const WEB_CONFIG = require('./config/web');
-const DB_CONFIG = require('./config/db');
+// const DB_CONFIG = require('./config/db');
 
 // Logger init
 require('./logger');
@@ -18,12 +16,6 @@ require('./logger');
 if (process.env.NODE_ENV === 'production') {
     app.use(compression());
 }
-
-//DB connection
-
-app.use(
-    connection(mysql,DB_CONFIG,'request')
-);
 
 // Serve the API first
 app.use('/api/', routes);

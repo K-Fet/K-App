@@ -18,7 +18,7 @@
         "lint": "npm run eslint && cd client/ && npm run lint",
         "postinstall": "cd client/ && npm install",
         "prod": "export NODE_ENV=production npm start",
-        "test": "nyc mocha server/test/ && npm run lint",
+        "test": "nyc mocha server/test/**/*.js && npm run lint",
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
     },
     "dependencies": {
@@ -28,9 +28,8 @@
         "cookie-parser": "^1.4.3",
         "deepmerge": "^2.0.0",
         "express": "^4.13.4",
-        "express-myconnection": "^1.0.4",
         "morgan": "^1.1.1",
-        "mysql": "^2.15.0",
+        "mysql2": "^1.4.2",
         "passport": "^0.4.0",
         "passport-local": "^1.0.0",
         "winston": "^3.0.0-rc1"
@@ -40,6 +39,7 @@
         "concurrently": "^3.5.0",
         "eslint": "^4.9.0",
         "mocha": "^4.0.1",
+        "node-mocks-http": "^1.6.6",
         "nyc": "^11.2.1",
         "should": "^13.1.2",
         "sinon": "^4.0.1"
