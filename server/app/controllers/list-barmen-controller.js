@@ -9,7 +9,7 @@ const winston = require('winston');
  */
 async function getListBarmen(req, res) {
     //async: declare a function which can wait for a expression with the 'await' keyword
-    const [rows] = await req.db.query('SELECT firstName, lastName FROM kapp.barman ORDER BY firstName');
+    const [rows] = await req.db.query('SELECT * FROM kapp.barman');
     // Declare const array
     // await: wait for the expression
     // req.db.query: execute function called query of the db object define in req object (parameter)
