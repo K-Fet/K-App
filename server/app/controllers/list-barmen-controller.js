@@ -18,7 +18,7 @@ async function getListBarmen(req, res) {
     req.db.release();
     // Release the database connection
 
-    res.send(`Voici la liste des barmen de la K-Fet :  ${rows[0].solution}`);
+    res.send(`Voici la liste des barmen de la K-Fet :  ${rows[0]}`);
     // res.send(): send the string back to the client 
 
     winston.debug('API request to get list of Barmen:', rows[0]);
