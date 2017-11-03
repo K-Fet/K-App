@@ -8,8 +8,9 @@ const winston = require('winston');
  * @return {Promise.<void>} Nothing
  */
 async function getListBarmen(req, res) {
+
     //async: declare a function which can wait for a expression with the 'await' keyword
-    const [rows] = await req.db.query('SELECT firstName as Name FROM kapp.barman');
+    const [rows] = await req.db.query('SELECT * FROM kapp.barman');
     // Declare const array
     // await: wait for the expression
     // req.db.query: execute function called query of the db object define in req object (parameter)
@@ -18,7 +19,9 @@ async function getListBarmen(req, res) {
     req.db.release();
     // Release the database connection
 
-    res.send(`Voici la liste des barmen de la K-Fet :  ${rows.Name}`);
+   // res.send(JSON.stringify(rows, null, 4));
+   res.json( rows);
+
     // res.send(): send the string back to the client 
 
     winston.debug('API request to get list of Barmen:', rows);
