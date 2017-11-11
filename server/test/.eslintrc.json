@@ -1,6 +1,7 @@
 {
     "rules": {
         "no-unused-vars": "off",
-        "no-undef": "off"
+        "no-undef": "off",
+        "require-jsdoc": "off"
     }
 }
