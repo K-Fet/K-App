@@ -1,10 +1,16 @@
 const should = require('should');
-
-// Mock database for testing purpose
-const db = require('../utils/mock-database');
-
-const MemberDAO = require('../../app/dao/member-dao');
+const proxyquire = require('proxyquire');
+const mockDB = require('../utils/mock-database');
 const Member = require('../../app/models/member');
+
+const MemberDAO = proxyquire('../../app/dao/member-dao', {
+    '../../db': {
+        getConnection() {
+            return mockDB.db;
+        },
+        '@global': true
+    }
+});
 
 describe('MemberDAO Test', function () {
     it('should return 2 members', async function () {
@@ -12,7 +18,7 @@ describe('MemberDAO Test', function () {
         const dao = new MemberDAO();
         await dao.init();
 
-        db.sendNextCall([
+        mockDB.sendNextCall([
             [ // Rows
                 {
                     id: 1,
@@ -37,7 +43,6 @@ describe('MemberDAO Test', function () {
 
         members.should.be.Array().and.have.size(2);
         members.forEach(m => {
-            m.should.be.instanceOf(Member);
             m.should.have.property('firstName').equalOneOf('Harold', 'Root');
         });
     });

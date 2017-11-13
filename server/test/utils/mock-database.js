@@ -1,7 +1,3 @@
-const mock = require('mock-require');
-
-// Mock dependency
-// Before require module !!!
 // TODO Complete database object for more advanced mock
 
 let dataToSend = null;
@@ -15,16 +11,12 @@ const db = {
     }
 };
 
-
-mock('../../db', {
-    getConnection() {
-        return db;
-    }
-});
-
-
 module.exports = {
     sendNextCall(data) {
         dataToSend = data;
+    },
+
+    get db() {
+        return db;
     }
 };

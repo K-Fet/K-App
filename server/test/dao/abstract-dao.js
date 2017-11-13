@@ -1,9 +1,15 @@
 const should = require('should');
+const proxyquire = require('proxyquire');
+const mockDB = require('../utils/mock-database');
 
-// Mock database for testing purpose
-require('../utils/mock-database');
-
-const AbstractDAO = require('../../app/dao/abstract-dao');
+const AbstractDAO = proxyquire('../../app/dao/abstract-dao', {
+    '../../db': {
+        getConnection() {
+            return mockDB.db;
+        },
+        '@global': true
+    }
+});
 
 describe('AbstractDAO Test', function () {
     it('should initialize the database', async function () {
