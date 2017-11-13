@@ -31,7 +31,10 @@ class AbstractDAO {
      * MUST BE Called at the end of all operation
      */
     end() {
-        if (this.db) this.db.release();
+        if (this.db) {
+            this.db.release();
+            this.db = null;
+        }
     }
 
 }

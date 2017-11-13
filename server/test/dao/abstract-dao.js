@@ -1,10 +1,12 @@
 const should = require('should');
-const sinon = require('sinon');
+
+// Mock database for testing purpose
+require('../utils/mock-database');
+
 const AbstractDAO = require('../../app/dao/abstract-dao');
 
-
 describe('AbstractDAO Test', function () {
-    /*it('should initialize the database', async function () {
+    it('should initialize the database', async function () {
         // Given
         const dao = new AbstractDAO();
 
@@ -13,7 +15,21 @@ describe('AbstractDAO Test', function () {
 
         // Then
 
-        dao.should.have.property('db');
+        dao.should.have.property('db').which.is.a.Object();
+    });
 
-    });*/
+    it('should release the connection and reset properties', async function () {
+        // Given
+        const dao = new AbstractDAO();
+
+        await dao.init();
+
+        // When
+
+        dao.end();
+
+        // Then
+
+        dao.should.have.property('db').which.is.null();
+    });
 });

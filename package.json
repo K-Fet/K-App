@@ -39,6 +39,7 @@
         "concurrently": "^3.5.0",
         "eslint": "^4.9.0",
         "mocha": "^4.0.1",
+        "mock-require": "^2.0.2",
         "node-mocks-http": "^1.6.6",
         "nodemon": "^1.12.1",
         "nyc": "^11.2.1",
