@@ -6,13 +6,13 @@ const memberDAO = new MemberDAO();
 /**
  * Return all members of the app.
  *
- * @returns {Promise<void>} Members
+ * @returns {Promise<Array>} Members
  */
 async function getAllMembers() {
     await memberDAO.init();
 
     winston.info('Member service: get all members');
-    const members = memberDAO.findAll();
+    const members = await memberDAO.findAll();
 
     memberDAO.end();
     return members;

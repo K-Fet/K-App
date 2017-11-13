@@ -1,8 +1,7 @@
-const winston = require('winston');
 const AbstractDAO = require('./abstract-dao');
 const Member = require('../models/member');
 
-const MEMBER_TABLE = '';
+const MEMBER_TABLE = 'member';
 
 /**
  * Member DAO.
@@ -10,15 +9,14 @@ const MEMBER_TABLE = '';
 class MemberDAO extends AbstractDAO {
 
     /**
+     * Find all members in database.
      *
      * @returns {Promise<Array>}
      */
     async findAll() {
         const [rows] = await this.db.execute(`SELECT * FROM \`${MEMBER_TABLE}\``);
 
-        const members = [];
-
-        rows.forEach(row => {
+        return rows.map(row => {
             const m = new Member();
 
             m.id = row.id;
@@ -27,10 +25,8 @@ class MemberDAO extends AbstractDAO {
             m.lastName = row.lastName;
             m.school = row.school;
 
-            members.push(m);
+            return m;
         });
-
-        return members;
     }
 }
 

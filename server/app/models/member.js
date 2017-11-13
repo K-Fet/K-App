@@ -16,16 +16,18 @@ class Member {
 
     /**
      * Generate a JSON object with only visible field.
-     * @returns {string}
+     * Will be used by {@link JSON}: https://stackoverflow.com/a/34607330/5285167
+     *
+     * @returns {{id: string, createdAt: string, firstName: string, lastName: string, school: string}}
      */
     toJSON() {
-        return JSON.stringify({
+        return {
             id: this.id,
             createdAt: this.createdAt,
             firstName: this.firstName,
             lastName: this.lastName,
             school: this.school
-        });
+        };
     }
 }
 

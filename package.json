@@ -11,7 +11,7 @@
         "build": "cd client/ && npm run build:prod",
         "build:dev": "cd client/ && npm run build",
         "dev": "concurrently --kill-others \"npm run dev:back\" \"npm run dev:front\"",
-        "dev:back": "node server/index.js",
+        "dev:back": "nodemon --watch server --watch server/index.js",
         "dev:front": "cd client/ && npm start",
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
@@ -40,11 +40,19 @@
         "eslint": "^4.9.0",
         "mocha": "^4.0.1",
         "node-mocks-http": "^1.6.6",
+        "nodemon": "^1.12.1",
         "nyc": "^11.2.1",
         "should": "^13.1.2",
         "sinon": "^4.0.1"
     },
     "engines": {
         "node": ">8.0.0"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "**/test/**",
+            "client/"
+        ],
+        "delay": "2500"
     }
 }
