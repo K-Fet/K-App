@@ -33,11 +33,15 @@ function checkout_last_release() {
 
 # Set current directory to here
 cd "${0%/*}"
-
-systemctl stop 'kapp@*'
+cd ..
 
 checkout_last_release
 
-systemctl start 'kapp@*'
+# Install or update dependencies
+npm install --production --loglevel warn
+npm prune --production
+
+# Restart all instance of the app
+systemctl restart 'kapp@*'
 
 printf "Server updated !\n\n"

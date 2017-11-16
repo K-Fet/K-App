@@ -23,24 +23,6 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
 sudo apt-get -y install nodejs
 ```
 
-### Get the latest release
-
-```bash
-cd /srv/
-
-# Clone the repo under the 'kapp' folder
-git clone https://github.com/K-Fet/K-App.git kapp
-
-# Launch the update process
-./kapp/tools/update.sh
-
-```
-
-Here we use the `/srv/kapp` base folder for our app. 
-Be free to change it, but this will change 
-the service config and the backup config.
-
-
 ### Create a specified user
 
 You don't want to run the app as `root` :)
@@ -102,6 +84,30 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 ```
+
+### Get the latest release
+
+```bash
+cd /srv/
+
+# Clone the repo under the 'kapp' folder
+git clone https://github.com/K-Fet/K-App.git kapp
+
+# Launch the update process
+./kapp/tools/update.sh
+
+```
+
+Here we use the `/srv/kapp` base folder for our app. 
+Be free to change it, but this will change 
+the service config and the backup config.
+
+### Ready, Set, Go! 
+
+Everything is ready, we just need to launch an instance of the server.
+
+For this, execute: `systemctl start kapp@3000`, 
+where `3000` is the web port.
 
 
 ### Database
