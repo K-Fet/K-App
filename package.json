@@ -4,14 +4,17 @@
     "description": "K-App provide a large panel of useful tools for associations",
     "main": "server/index.js",
     "repository": "https://github.com/K-Fet/K-App",
-    "author": "Marc-Antoine Fernandes <embraser01@gmail.com>",
+    "contributors": [
+        "Corentin Giraud",
+        "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>"
+    ],
     "license": "Apache-2.0",
     "private": true,
     "scripts": {
         "build": "cd client/ && npm run build:prod",
         "build:dev": "cd client/ && npm run build",
         "dev": "concurrently --kill-others \"npm run dev:back\" \"npm run dev:front\"",
-        "dev:back": "node server/index.js",
+        "dev:back": "nodemon --watch server --watch server/index.js",
         "dev:front": "cd client/ && npm start",
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
@@ -26,10 +29,10 @@
         "body-parser": "^1.4.3",
         "compression": "^1.7.1",
         "cookie-parser": "^1.4.3",
-        "deepmerge": "^2.0.0",
+        "deepmerge": "^2.0.1",
         "express": "^4.13.4",
         "morgan": "^1.1.1",
-        "mysql2": "^1.4.2",
+        "mysql2": "^1.5.0",
         "passport": "^0.4.0",
         "passport-local": "^1.0.0",
         "winston": "^3.0.0-rc1"
@@ -37,14 +40,31 @@
     "devDependencies": {
         "codecov": "^2.3.1",
         "concurrently": "^3.5.0",
-        "eslint": "^4.9.0",
+        "eslint": "^4.11.0",
         "mocha": "^4.0.1",
         "node-mocks-http": "^1.6.6",
-        "nyc": "^11.2.1",
-        "should": "^13.1.2",
-        "sinon": "^4.0.1"
+        "nodemon": "^1.12.1",
+        "nyc": "^11.3.0",
+        "proxyquire": "^1.8.0",
+        "should": "^13.1.3",
+        "should-sinon": "0.0.6",
+        "sinon": "^4.1.2"
     },
     "engines": {
         "node": ">8.0.0"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "**/test/**",
+            "client/"
+        ],
+        "delay": "2500"
+    },
+    "nyc": {
+        "include": "server/",
+        "exclude": [
+            "**/app/routes/**.js",
+            "**/test/**.js"
+        ]
     }
 }
