@@ -17,6 +17,9 @@ if (process.env.NODE_ENV === 'production') {
     app.use(compression());
 }
 
+// Configure proxy
+app.set('trust proxy', WEB_CONFIG.trustedProxy);
+
 // Serve the API first
 app.use('/api/', routes);
 
@@ -54,8 +57,8 @@ server.on('listening', () => {
 });
 
 
-// Listen on provided port, on all network interfaces.
-server.listen(WEB_CONFIG.port);
+// Listen on provided port, on provided interface or all of them.
+server.listen(WEB_CONFIG.port, WEB_CONFIG.hostname);
 
 
 /**

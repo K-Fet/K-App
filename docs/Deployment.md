@@ -78,8 +78,11 @@ Environment=DB_PWD=ComplicatedPassword
 Type=simple
 User=kapp
 WorkingDirectory=/srv/kapp/
-ExecStart=/usr/bin/npm start
+ExecStart=/usr/bin/npm run prod
 Restart=on-failure
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
 
 [Install]
 WantedBy=multi-user.target
@@ -106,9 +109,11 @@ the service config and the backup config.
 
 Everything is ready, we just need to launch an instance of the server.
 
-For this, execute: `systemctl start kapp@3000`, 
+For this, execute: `systemctl start kapp@3000.service`, 
 where `3000` is the web port.
 
+To let the server reboot after machine reboot, 
+execute :`systemctl enable kapp@3000.service`
 
 ### Database
 
@@ -124,3 +129,51 @@ To update the project, you just have to execute this script:
 `./tools/update.sh`
 
 It will pull the latest release from git and restart everything.
+
+## Proxying / Load balancing
+
+There are several tools that can be used as proxies.
+Why add a proxy in front of the _NodeJS_ server?
+- **Load balancing**: NodeJS run in a single threaded environment, 
+if you want to use all the available CPU cores of your machine, 
+you can launch multiple instance of the application and let the load balancer 
+share the load between instances.
+
+- **Caching, Compression**: The proxy can send the front app files 
+to clients, with compression and cache control.
+
+- **Security**: By default, the NodeJS ***does not*** use _HTTPS_. 
+It can be configured in `/server/config/web.js`, but not by environment variables.
+Instead, you can add HTTPS directly in the proxy 
+(n.b.: data between _Proxy_ and _NodeJS_ ***will not*** be encrypted). 
+
+### Caddy
+
+[Caddy](https://caddyserver.com/) is a really good web server, with automatic HTTPS, 
+and an easy configuration.
+
+First, install _Caddy_ : `curl https://getcaddy.com | bash -s personal http.cache`.
+
+Next create a `Caddyfile` anywhere you want:
+
+```
+kapp.example.com   # Your site's address
+
+#####
+##### TODO :
+#####   - Add caching
+#####   - Complete proxy
+#####   - Compression
+#####   - Loging
+
+# API load balancer
+proxy /api localhost:3000 localhost:3000
+
+
+```
+
+### Nginx
+
+[`Nginx`](https://nginx.org/en/) is a well known web server. 
+Documentation is available on their site.
+

@@ -41,6 +41,9 @@ checkout_last_release
 npm install --production --loglevel warn
 npm prune --production
 
+# Build assets for client
+npm run build
+
 # Restart all instance of the app
 systemctl restart 'kapp@*'
 
