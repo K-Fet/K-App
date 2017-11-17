@@ -11,17 +11,10 @@ To see how to make automatic backups, see [Backups](./Backups.md).
 
 ### Requirements
 
-First of all, let's install all the required modules.
+To run the project you will need:
+- [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
+- [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 
-#### NodeJS
-
-The server need NodeJS v8.4 and higher only.
-
-```bash
-sudo apt-get -y install curl
-curl -sL https://deb.nodesource.com/setup_8.x | sudo bash -
-sudo apt-get -y install nodejs
-```
 
 ### Create a specified user
 
