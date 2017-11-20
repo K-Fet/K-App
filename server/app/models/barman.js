@@ -1,7 +1,7 @@
 /**
  * This class represents a barman.
  */
-class Barman{
+class Barman {
     /**
      * Constructor.
      * Initialize class fields
