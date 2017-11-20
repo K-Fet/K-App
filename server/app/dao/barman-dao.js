@@ -6,7 +6,7 @@ const BARMAN_TABLE = 'barman';
 /**
  * Barman DAO.
  */
-class BarmanDAO extends AbstractDAO{
+class BarmanDAO extends AbstractDAO {
     /**
      * Find all members in database.
      *
