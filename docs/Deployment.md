@@ -16,15 +16,6 @@ To run the project you will need:
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 
 
-### Create a specified user
-
-You don't want to run the app as `root` :)
-
-Execute : `adduser kapp -s /bin/null`
-
-- `-s`: User's login shell. Set to null, we don't want somebody to start a bash
-
-
 ### Service file
 
 We will use `systemd` to monitor and control our app.
@@ -47,7 +38,8 @@ After=network.target mysql.service
 
 # Port where the server will listen
 # With '%i' we can launch app with `systemctl start kapp@3000`
-Environment=PORT=%i                     
+Environment=PORT=%i
+Environment=HOSTNAME=localhost      # Do not serve directly internet
 
 #  Database configuration
 #       Default can be found in the /server/config/ folder of the project.
@@ -64,18 +56,27 @@ Environment=DB_PWD=ComplicatedPassword
 #Environment=DB_DATABASE=my_awesome_database
 
 
-######################################################
-##
-##      SERVICE CONFIGURATION
-##
-Type=simple
-User=kapp
-WorkingDirectory=/srv/kapp/
-ExecStart=/usr/bin/npm run prod
-Restart=on-failure
-RestartSec=10
+### SERVER CONFIGURATION
+
+# Launch
+
+Type=simple                         # No child process
+WorkingDirectory=/srv/kapp/         # Set working directory
+ExecStart=/usr/bin/npm run prod     # Run command line
+Restart=on-failure                  # Restart only on failure (exit > 0)
+RestartSec=10                       # Minimum duration the server must be up
+
+# Logging
 StandardOutput=syslog
 StandardError=syslog
+
+# Security
+
+DynamicUser=yes                     # See https://www.freedesktop.org/software/systemd/man/systemd.exec.html#DynamicUser=
+CapabilityBoundingSet=              # 'CAP_NET_BIND_SERVICE' if PORT is less than 1024
+NoNewPrivileges=yes                 # Prevent privilege escalation
+ProtectControlGroups=yes
+ProtectKernelModules=yes
 
 [Install]
 WantedBy=multi-user.target
@@ -110,10 +111,36 @@ execute :`systemctl enable kapp@3000.service`
 
 ### Database
 
-TODO:
+#### Create the database
 
-- Create database
-- Create user (with only the right database)
+First connect to mysql shell with ***root*** access,
+then create the app database:
+
+```mysql
+CREATE DATABASE kapp;
+```
+
+Then launch the script `/tools/sql/init.sql` to create the database structure:
+```mysql
+source /path/to/tools/sql/init.sql;
+```
+
+
+#### Create the user
+
+Let's start by making a new user within the MySQL shell:
+
+```mysql
+CREATE USER 'kapp'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
+```
+
+This user has no permissions to do anything (even login). 
+To grant access to the database, do this:
+
+```mysql
+GRANT USAGE, SELECT, INSERT, UPDATE, DELETE ON `kapp`.* TO 'kapp'@'localhost';
+FLUSH PRIVILEGES;
+```
 
 
 ## Updating
@@ -147,22 +174,35 @@ and an easy configuration.
 
 First, install _Caddy_ : `curl https://getcaddy.com | bash -s personal http.cache`.
 
-Next create a `Caddyfile` anywhere you want:
+Next create a `Caddyfile` in a private folder (not accessible by the NodeJS server):
+You can use `/etc/`
 
 ```
-kapp.example.com   # Your site's address
+kapp.example.com  { # Your site's address
 
-#####
-##### TODO :
-#####   - Add caching
-#####   - Complete proxy
-#####   - Compression
-#####   - Loging
-
-# API load balancer
-proxy /api localhost:3000 localhost:3000
-
-
+    # Serve client app
+    root /srv/kapp/client/dist/
+    
+    # Compress responses
+    gzip
+    
+    # Set usefull headers
+    header / {
+        # Cache application for one day
+        Cache-Control "public, max-age=86400"
+    }
+    
+    # Log everything to stdout, treated by journalctl
+    log stdout
+    
+    # Proxy request for API
+    proxy /api locahost:3000 {
+        policy round_robin      # Use round robin for the backend
+        fail_timeout 5m         # Time before considering a backend down
+        try_duration 4s         # How long proxy will try to find a backend
+        transparent             # Set headers as the proxy except
+    }
+}
 ```
 
 ### Nginx

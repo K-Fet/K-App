@@ -1,6 +1,7 @@
 module.exports = {
     /**
-     * TODO Document
+     * Level of logging.
+     * @see https://github.com/winstonjs/winston#logging-levels
      */
     level: 'silly'
 };
