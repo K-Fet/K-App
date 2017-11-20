@@ -10,11 +10,11 @@ K-App application repository
 ## Usage
 
 For a production environment, please check [this](./docs/Deployment.md) file 
-which explain every thing :).
+which explain everything :).
 
 ## Contribute
 
-To dev the project you will need:
+To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
