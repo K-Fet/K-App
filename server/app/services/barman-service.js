@@ -18,14 +18,6 @@ async function getAllBarmen() {
     return barmen;
 }
 
-/*getAllBarmen()
-.then(results=>{
-  console.log(results);
-})
-.catch(err=>{
-  console.log(err);
-})*/
-
 module.exports = {
     getAllBarmen
 };

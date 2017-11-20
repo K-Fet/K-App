@@ -6,14 +6,13 @@ const BARMAN_TABLE = 'barman';
 /**
  * Barman DAO.
  */
-
 class BarmanDAO extends AbstractDAO{
     /**
      * Find all members in database.
      *
      * @returns {Promise<Array>}
      */
-     async findAll() {
+    async findAll() {
         const [rows] = await this.db.execute(`SELECT * FROM \`${BARMAN_TABLE}\``);
 
         return rows.map(row => {

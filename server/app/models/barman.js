@@ -6,7 +6,7 @@ class Barman{
      * Constructor.
      * Initialize class fields
      */
-     constructor() {
+    constructor() {
         this.id = '';
         this.email = '';
         this.password = '';
@@ -24,13 +24,12 @@ class Barman{
      * Generate a JSON object with only visible field.
      * Will be used by {@link JSON}: https://stackoverflow.com/a/34607330/5285167
      *
-     * @returns {{id: string, createdAt: string, firstName: string, lastName: string, school: string}}
+     * @returns Object
      */
     toJSON() {
         return {
             id: this.id,
             email: this.email,
-            password: this.password,
             surnom: this.surnom,
             createdAt: this.createdAt,
             code: this.code,
