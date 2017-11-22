@@ -9,40 +9,14 @@ K-App application repository
 
 ## Usage
 
-### Pre-Requisites
+For a production environment, please check [this](./docs/Deployment.md) file 
+which explain everything :).
 
-To launch the project you will need:
+## Contribute
+
+To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
-
-
-### Getting the sources
-
-You can download the latest release from [here](https://github.com/K-Fet/K-App/releases).
-
-### Configuring
-
-All the configuration is in [here](/server/config) :
-- _logger.js_: Configuration of the logger [winston](https://github.com/winstonjs/winston).
-- _web.js_: Configuration of the web server, like ssl, port of the application, etc.
-
-
-### Compiling assets and starting the server
-
-1. Run `npm install`.
-2. Run `npm build`.
-3. Run `npm run prod`.
-
-
-### Updating
-
-TODO.
-
-
-## Development
-
-In addition to the default pre-requisites, you will need:
-
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
 
 Optional:
@@ -93,6 +67,3 @@ All API requests made at the angular app will be transferred to the server.
 Launch the tests: `npm test`
 
 Create coverage report: `npm run coverage`
-
-## [Licence](./LICENSE)
-
