@@ -17,12 +17,10 @@ Help us with the review by carefully filling the following information:
 <!-- You must respect the following requirement before ask for a merge to. -->
 
 - [] PR is rebased on top of `origin/master` <!-- DO: git fetch && git rebase origin/master -->
-- [] PR passes tests <!-- DO: npm t -->
-- [] PR doesn't introduce new style violations <!-- npm run lint -->
 - [] PR provide new tests for new behaviors
-- [] PR doesn't add new `console.log` into the code
 - [] PR doesn't introduce commented out code
 - [] PR has been tested locally on the main use cases
+- [] Documentation have been updated if it is necessary
 
 ### Ask review to
 
