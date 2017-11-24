@@ -20,7 +20,7 @@ Help us with the review by carefully filling the following information:
 - [] PR provide new tests for new behaviors
 - [] PR doesn't introduce commented out code
 - [] PR has been tested locally on the main use cases
-- [] Documentation have been updated if it is necessary
+- [] Documentation have been updated if necessary
 
 ### Ask review to
 
