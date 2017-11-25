@@ -123,11 +123,33 @@ async function updateServiceById(req, res) {
     return res.end();
 }
 
+/**
+ * update a service by id in the database.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
+async function getBarmenByServiceId(req, res) {
+    try {
+        const id = req.params.serviceId;
+        const barmen = await serviceService.getBarmenByServiceId(id);
+        
+
+        res.json(barmen);
+    } catch (e) {
+        winston.error('Error while getting service by Id', e);
+        res.sendStatus(500);
+    }
+
+    return res.end();
+}
 
 module.exports = {
     getAllServices,
     getServiceById,
     deleteServiceById,
     addService,
-    updateServiceById
+    updateServiceById,
+    getBarmenByServiceId
 };

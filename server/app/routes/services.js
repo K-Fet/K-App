@@ -6,6 +6,6 @@ router.get('/:serviceId(\\d+)', serviceController.getServiceById);
 router.delete('/:serviceId(\\d+)', serviceController.deleteServiceById);
 router.post('/', serviceController.addService);
 router.put('/:serviceId(\\d+)', serviceController.updateServiceById);
-
+router.get('/:serviceId(\\d+)/barmen', serviceController.getBarmenByServiceId);
 
 module.exports = router;

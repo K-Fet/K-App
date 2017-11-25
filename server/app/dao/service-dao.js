@@ -1,7 +1,10 @@
 const AbstractDAO = require('./abstract-dao');
 const Service = require('../models/service');
+const Barman = require('../models/barman');
 
 const SERVICE_TABLE = 'service';
+const BARMAN_TABLE = 'barman';
+const BARMAN_AS_SERVICE_TABLE = 'barman_has_service';
 
 /**
  * Service DAO.
@@ -95,7 +98,6 @@ class ServiceDAO extends AbstractDAO {
      * @returns {Promise<Array>}
      */
     async updateServiceById(newService) {
-        console.log('entre dans addService dao');
 
         await this.db.execute(`UPDATE \`${SERVICE_TABLE}\` SET name=?, nbMax=?, categoryId=? WHERE id=?`,
             [
@@ -105,6 +107,39 @@ class ServiceDAO extends AbstractDAO {
                 newService.id
             ]);
 
+    }
+
+    /**
+     * Add a service  in database.
+     *
+     * @param newService {Service} new Service 
+     * @returns {Promise<Array>}
+     */
+    async getBarmenByServiceId(id) {
+        const [rows] = await this.db.execute(`SELECT \`${BARMAN_TABLE}\`.* FROM \`${SERVICE_TABLE}\`,\`${BARMAN_TABLE}\`, 
+            \`${BARMAN_AS_SERVICE_TABLE}\`  WHERE \`${BARMAN_TABLE}\`.id=\`${BARMAN_AS_SERVICE_TABLE}\`.barmanId && \`${BARMAN_AS_SERVICE_TABLE}\`.serviceId=\`${SERVICE_TABLE}\`.id && \`${SERVICE_TABLE}\`.id=?`, id);
+
+        if(rows.lenght===0) {
+            return null;
+        }
+
+        return rows.map(row => {
+            const b = new Barman();
+
+            b.id = row.id;
+            b.email = row.email;
+            b.surnom = row.surname;
+            b.createdAt = row.createdAt;
+            b.code = row.code;
+            b.firstName = row.firstName;
+            b.lastName = row.lastName;
+            b.birth = row.dateOfBirth;
+            b.facebook = row.facebook;
+            b.godfather = row.godFather;
+            b.cheminement = row.cheminement;
+
+            return b;
+        });
     }
 
 }

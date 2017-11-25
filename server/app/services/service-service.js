@@ -82,10 +82,28 @@ async function updateServiceById(newService) {
     return services;
 }
 
+
+/**
+ * Return service of the app By Id
+ * 
+ * @param id {Number} Integer id of a service
+ * @returns {Promise<Array>} Services
+ */
+async function getBarmenByServiceId(id) {
+    await serviceDAO.init();
+
+    winston.info('Services service: get Barmen by service Id');
+    const barmen = await serviceDAO.getBarmenByServiceId(id);
+
+    serviceDAO.end();
+    return barmen;
+}
+
 module.exports = {
     getAllServices,
     getServiceById,
     deleteServiceById,
     addService,
-    updateServiceById
+    updateServiceById,
+    getBarmenByServiceId
 };
