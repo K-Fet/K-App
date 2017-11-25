@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
 
+router.use('/auth', am(require('./auth')))
+
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 

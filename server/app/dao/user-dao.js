@@ -1,7 +1,7 @@
 const AbstractDAO = require('./abstract-dao');
 const Member = require('../models/member');
 
-const MEMBER_TABLE = 'member';
+const MEMBER_TABLE = 'user';
 
 /**
  * Member DAO.
@@ -27,6 +27,16 @@ class MemberDAO extends AbstractDAO {
 
             return m;
         });
+    }
+
+    /**
+     * Find a user by their email.
+     *
+     * @param email Email
+     * @returns {Promise<User>}
+     */
+    async findByEmail(email) {
+        return null;
     }
 }
 

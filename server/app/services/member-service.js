@@ -1,5 +1,5 @@
 const winston = require('winston');
-const MemberDAO = require('../dao/member-dao');
+const MemberDAO = require('../dao/user-dao');
 
 const memberDAO = new MemberDAO();
 

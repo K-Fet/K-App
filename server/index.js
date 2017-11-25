@@ -7,7 +7,6 @@ const routes = require('./app/routes');
 const app = express();
 
 const WEB_CONFIG = require('./config/web');
-// const DB_CONFIG = require('./config/db');
 
 // Logger init
 require('./logger');

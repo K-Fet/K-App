@@ -56,6 +56,10 @@ Environment=DB_PWD=ComplicatedPassword
 #Environment=DB_DATABASE=my_awesome_database
 
 
+# JWT Secret
+Environment=JWT_SECRET=UltraComplicatedSecret
+
+
 ### SERVER CONFIGURATION
 
 # Launch
