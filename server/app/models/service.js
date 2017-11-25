@@ -2,7 +2,7 @@
  * This class represents a service.
  */
 class Service {
-    /**
+    /**+
      * Constructor.
      * Initialize class fields
      */
