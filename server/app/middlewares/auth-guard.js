@@ -2,7 +2,7 @@ const router = require('express').Router();
 const jwt = require('express-jwt');
 
 const {jwtSecret} = require('../../config/jwt');
-const {getRevokedTokenId} = require('../services/auth-service');
+const {isTokenRevoked} = require('../services/auth-service');
 
 
 /**
@@ -15,8 +15,8 @@ const {getRevokedTokenId} = require('../services/auth-service');
 function isRevokedCallback(req, payload, done) {
     const tokenId = payload.jit;
 
-    getRevokedTokenId(tokenId)
-        .then(token => done(null, !!token))
+    isTokenRevoked(tokenId)
+        .then(jit => done(null, !!jit))
         .catch(err => done(err));
 }
 
@@ -34,7 +34,7 @@ router.use(jwt({
 /*eslint no-unused-vars: "off"*/
 router.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        res.status(401).send('Invalid token...');
+        res.status(401).send('Invalid token !');
     }
 });
 

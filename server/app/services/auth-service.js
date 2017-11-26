@@ -2,26 +2,26 @@ const winston = require('winston');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
-const {AuthDAO} = require('../dao/auth-dao');
-const {jwtSecret} = require('../../config/jwt');
-const {verify} = require('../../utils/password-manager');
+const { AuthDAO } = require('../dao/auth-dao');
+const { jwtSecret } = require('../../config/jwt');
+const { verify } = require('../../utils/password-manager');
 
 const authDAO = new AuthDAO();
 
 /**
- * Return all barmen of the app.
+ * Check if a token is revoked or not.
  *
  * @param tokenId {String} JIT
- * @returns {Promise<String>} Return null if the token is not revoked
+ * @returns {Promise<Boolean>} Return false if the token is not revoked
  */
-async function getRevokedTokenId(tokenId) {
+async function isTokenRevoked(tokenId) {
     await authDAO.init();
 
-    winston.info('Auth service: get revoked tokenId');
-    const token = await authDAO.getRevokedJTI(tokenId);
+    winston.info('Auth service: is token revoked');
+    const isRevoked = await authDAO.isTokenRevoked(tokenId);
 
     authDAO.end();
-    return token;
+    return isRevoked;
 }
 
 /**
@@ -38,26 +38,42 @@ async function login(email, password) {
 
     const user = await authDAO.findByEmail(email);
 
-    // TODO Crypt password.
-    if (!user || !verify('password', user.password)) {
+    if (!user || !verify(password, user.password)) {
         const e = new Error('Bad email/password combination');
         e.name = 'LoginError';
         throw e;
     }
 
     // Sign with default (HMAC SHA256)
-    const uuid = uuidv4();
-    await authDAO.saveNewTokenId();
+    const jit = uuidv4();
+    await authDAO.saveNewTokenId(user.id, jit);
 
     authDAO.end();
 
+    // TODO Add permissions
     return jwt.sign({
-        jit: uuid
+        jit: jit
     }, jwtSecret);
+}
+
+/**
+ * Logout a user by revoking his token.
+ *
+ * @param tokenId Token's JIT
+ * @return {Promise.<void>} Nothing
+ * @throws An error if the token could not be find.
+ */
+async function logout(tokenId) {
+    await authDAO.init();
+
+    await authDAO.revokeToken(tokenId);
+
+    authDAO.end();
 }
 
 
 module.exports = {
-    getRevokedTokenId,
-    login
+    isTokenRevoked,
+    login,
+    logout
 };
