@@ -3,7 +3,7 @@ const sinon = require('sinon');
 require('should-sinon');
 const proxyquire = require('proxyquire');
 
-class MemberStub {
+class UserDAOStub {
     init() {
         return Promise.resolve();
     }
@@ -19,20 +19,20 @@ class MemberStub {
     }
 }
 
-const memberService = proxyquire('../../app/services/member-service', {
-    '../dao/member-dao': MemberStub
+const userService = proxyquire('../../app/services/user-service', {
+    '../dao/user-dao': { UserDAO: UserDAOStub }
 });
 
-describe('Member service Test', function () {
+describe('User service Test', function () {
     it('should call init and end', async function () {
         // Given
 
-        const initSpy = sinon.spy(MemberStub.prototype, 'init');
-        const endSpy = sinon.spy(MemberStub.prototype, 'end');
+        const initSpy = sinon.spy(UserDAOStub.prototype, 'init');
+        const endSpy = sinon.spy(UserDAOStub.prototype, 'end');
 
         // When
 
-        await memberService.getAllMembers();
+        await userService.getAllUsers();
 
         // Then
         initSpy.should.have.been.calledOnce();
@@ -48,7 +48,7 @@ describe('Member service Test', function () {
         // Given
         // When
 
-        const members = await memberService.getAllMembers();
+        const members = await userService.getAllUsers();
 
         // Then
         members.should.be.an.Array().with.size(2).and.containDeepOrdered(['item 1', 'item 2']);

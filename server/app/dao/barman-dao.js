@@ -1,5 +1,5 @@
-const AbstractDAO = require('./abstract-dao');
-const Barman = require('../models/barman.js');
+const { AbstractDAO } = require('./abstract-dao');
+const { Barman } = require('../models/barman.js');
 
 const BARMAN_TABLE = 'barman';
 
@@ -36,4 +36,6 @@ class BarmanDAO extends AbstractDAO {
     }
 }
 
-module.exports = BarmanDAO;
+module.exports = {
+    BarmanDAO
+};

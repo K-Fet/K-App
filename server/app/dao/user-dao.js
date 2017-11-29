@@ -1,12 +1,12 @@
-const AbstractDAO = require('./abstract-dao');
-const Member = require('../models/member');
+const { AbstractDAO } = require('./abstract-dao');
+const { User } = require('../models/user');
 
-const MEMBER_TABLE = 'user';
+const USER_TABLE = 'user';
 
 /**
- * Member DAO.
+ * User DAO.
  */
-class MemberDAO extends AbstractDAO {
+class UserDAO extends AbstractDAO {
 
     /**
      * Find all members in database.
@@ -14,31 +14,29 @@ class MemberDAO extends AbstractDAO {
      * @returns {Promise<Array>}
      */
     async findAll() {
-        const [rows] = await this.db.execute(`SELECT * FROM \`${MEMBER_TABLE}\``);
+        const [rows] = await this.db.execute(`SELECT * FROM \`${USER_TABLE}\``);
 
-        return rows.map(row => {
-            const m = new Member();
-
-            m.id = row.id;
-            m.createdAt = row.createdAt;
-            m.firstName = row.firstName;
-            m.lastName = row.lastName;
-            m.school = row.school;
-
-            return m;
-        });
+        return rows.map(row => User.parse(row));
     }
 
     /**
      * Find a user by their email.
      *
      * @param email Email
-     * @returns {Promise<User>}
+     * @returns {Promise<User>} Return null if not find.
      */
     async findByEmail(email) {
-        return null;
+        const [rows] = await this.db.execute(
+            `SELECT * FROM \`${USER_TABLE}\` WHERE email=?`,
+            email
+        );
+
+        // Will return null if rows[0] is undefined
+        return User.parse(rows[0]);
     }
 }
 
-module.exports = MemberDAO;
+module.exports = {
+    UserDAO
+};
 

@@ -1,46 +1,45 @@
+const { User } = require('./user');
+
 /**
- * This class represents a barman.
+ * This class represents fa barman.
  */
-class Barman {
+class Barman extends User {
     /**
      * Constructor.
      * Initialize class fields
      */
     constructor() {
-        this.id = '';
-        this.email = '';
-        this.password = '';
-        this.surnom = '';
-        this.createdAt = '';
-        this.code = '';
-        this.firstName = '';
-        this.lastName = '';
-        this.birth = '';
+        super();
+        // Change id for a `userId` field to match database
+        this.userId = this.id;
+        this.id = undefined;
+
+        // Init other field
+        this.nickname = '';
         this.facebook = '';
-        this.godfather = '';
-        this.cheminement = '';
+        this.godFather = 0;
+        this.dateOfBirth = 0;
+        this.flow = '';
     }
+
     /**
      * Generate a JSON object with only visible field.
      * Will be used by {@link JSON}: https://stackoverflow.com/a/34607330/5285167
      *
-     * @returns Object
+     * @returns {Object}
      */
     toJSON() {
         return {
-            id: this.id,
-            email: this.email,
-            surnom: this.surnom,
-            createdAt: this.createdAt,
-            code: this.code,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            birth: this.birth,
+            ...super.toJSON(),
+            nickname: this.nickname,
             facebook: this.facebook,
-            godfather: this.godfather,
-            cheminement: this.cheminement
+            godFather: this.godFather,
+            dateOfBirth: this.dateOfBirth,
+            flow: this.flow
         };
     }
 }
 
-module.exports = Barman;
+module.exports = {
+    Barman
+};

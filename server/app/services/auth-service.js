@@ -2,11 +2,13 @@ const winston = require('winston');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
-const { AuthDAO } = require('../dao/auth-dao');
+const { AuthDAO, UserDAO } = require('../dao/');
 const { jwtSecret } = require('../../config/jwt');
 const { verify } = require('../../utils/password-manager');
 
 const authDAO = new AuthDAO();
+const userDAO = new UserDAO();
+
 
 /**
  * Check if a token is revoked or not.
@@ -34,25 +36,30 @@ async function isTokenRevoked(tokenId) {
  * @returns {Promise<String>} JWT Signed token
  */
 async function login(email, password) {
-    await authDAO.init();
-
-    const user = await authDAO.findByEmail(email);
+    await userDAO.init();
+    const user = await userDAO.findByEmail(email);
+    userDAO.end();
 
     if (!user || !verify(password, user.password)) {
         const e = new Error('Bad email/password combination');
         e.name = 'LoginError';
         throw e;
     }
-
     // Sign with default (HMAC SHA256)
     const jit = uuidv4();
-    await authDAO.saveNewTokenId(user.id, jit);
 
+    await authDAO.init();
+    await authDAO.saveNewTokenId(user.id, jit);
     authDAO.end();
+
+    const permissions = [];
+
+    winston.info(`Logging user ${user.id}, has permissions : ${permissions.join(', ')}`);
 
     // TODO Add permissions
     return jwt.sign({
-        jit: jit
+        jit,
+        permissions
     }, jwtSecret);
 }
 

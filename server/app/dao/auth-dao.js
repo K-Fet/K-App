@@ -1,4 +1,4 @@
-const AbstractDAO = require('./abstract-dao');
+const { AbstractDAO } = require('./abstract-dao');
 
 const AUTH_TABLE = 'jwt-token';
 
