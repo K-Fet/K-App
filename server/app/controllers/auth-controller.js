@@ -39,6 +39,25 @@ async function login(req, res) {
     return res.end();
 }
 
+/**
+ * Logout a user.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
+async function logout(req, res) {
+    try {
+        await authService.logout(req.user.jit);
+    } catch (e) {
+        winston.error(`Error while logging out user ${req.user.id}`, e);
+        res.sendStatus(500);
+    }
+
+    return res.end();
+}
+
 module.exports = {
     login,
+    logout
 };
