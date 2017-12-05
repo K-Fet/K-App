@@ -4,7 +4,7 @@ const { DataTypes } = require('sequelize');
 /**
  * This class represents fa barman.
  */
-class Barman extends User {
+class SpecialAccount extends User {
 
     /**
      * Initialization function.
@@ -35,15 +35,10 @@ class Barman extends User {
      * Set associations for the model
      * @param models
      */
-    static associate(models) {
-        this.belongsToMany(models.Kommission, { through: models.KommissionWrapper });
-        this.belongsToMany(models.Role, { through: models.RoleWrapper });
-        this.belongsToMany(models.Service, { through: models.ServiceWrapper });
-
-        this.hasOne(Barman, { as: 'godFather' });
+    static associate(models) { // eslint-disable-line no-unused-vars
     }
 }
 
 module.exports = {
-    Barman
+    SpecialAccount
 };

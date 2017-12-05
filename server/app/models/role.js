@@ -1,9 +1,10 @@
 const { Model, DataTypes } = require('sequelize');
 
 /**
- * This class represents a JWT.
+ * This class represent a Role.
  */
-class JWT extends Model {
+class Role extends Model {
+
     /**
      * Initialization function.
      *
@@ -18,29 +19,28 @@ class JWT extends Model {
                 autoIncrement: true
             },
 
-            revoked: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
+            name: {
+                type: DataTypes.STRING,
                 allowNull: false
-            }
+            },
+
+            description: DataTypes.STRING,
         }, {
-            sequelize
+            sequelize,
+            updatedAt: false
         });
     }
+
 
     /**
      * Set associations for the model
      * @param models
      */
     static associate(models) {
-        this.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            }
-        });
+        this.belongsToMany(models.Barman, { through: models.RoleWrapper });
     }
 }
 
 module.exports = {
-    JWT
+    Role
 };

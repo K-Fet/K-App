@@ -7,10 +7,11 @@ class User extends Model {
     /**
      * Initialization function.
      *
-     * @param sequelize
+     * @param sequelize Sequelize instance
+     * @param child Configuration object from a child class
      * @returns {Model}
      */
-    static init(sequelize) {
+    static init(sequelize, child) {
         return super.init({
             id: {
                 type: DataTypes.INTEGER,
@@ -47,8 +48,28 @@ class User extends Model {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: true
+            },
+            ...child
+        }, {
+            sequelize,
+
+            // Do not delete row, even when the user delete is account
+            paranoid: true
+        });
+    }
+
+
+    /**
+     * Set associations for the model
+     * @param models
+     */
+    static associate(models) {
+        this.hasMany(models.JWT, {
+            onDelete: 'CASCADE',
+            foreignKey: {
+                allowNull: false
             }
-        }, { sequelize });
+        });
     }
 }
 
