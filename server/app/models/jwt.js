@@ -13,9 +13,8 @@ class JWT extends Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true
+                type: DataTypes.UUID,
+                primaryKey: true
             },
 
             revoked: {

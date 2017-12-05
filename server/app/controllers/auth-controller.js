@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('../../logger');
 const authService = require('../services/auth-service');
 
 /**
@@ -32,7 +32,7 @@ async function login(req, res) {
             jwt
         });
     } catch (e) {
-        winston.error('Error while logging user', e);
+        logger.error('Error while logging user', e);
         res.sendStatus(500);
     }
 
@@ -50,7 +50,7 @@ async function logout(req, res) {
     try {
         await authService.logout(req.user.jit);
     } catch (e) {
-        winston.error(`Error while logging out user ${req.user.id}`, e);
+        logger.error(`Error while logging out user ${req.user.id}`, e);
         res.sendStatus(500);
     }
 

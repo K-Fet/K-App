@@ -19,14 +19,6 @@ class RoleWrapper extends Model {
             updatedAt: false
         });
     }
-
-
-    /**
-     * Set associations for the model
-     * @param models there is not any associations
-     */
-    static associate(models) { // eslint-disable-line no-unused-vars
-    }
 }
 
 module.exports = {

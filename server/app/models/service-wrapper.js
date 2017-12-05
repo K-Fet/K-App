@@ -14,14 +14,6 @@ class ServiceWrapper extends Model {
     static init(sequelize) {
         return super.init({}, { sequelize });
     }
-
-
-    /**
-     * Set associations for the model
-     * @param models there is not any associations
-     */
-    static associate(models) { // eslint-disable-line no-unused-vars
-    }
 }
 
 module.exports = {

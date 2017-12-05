@@ -1,7 +1,5 @@
-const winston = require('winston');
-const { UserDAO } = require('../dao/user-dao');
-
-const userDAO = new UserDAO();
+const logger = require('../../logger');
+const { User } = require('../models/user');
 
 /**
  * Return all users of the app.
@@ -9,13 +7,9 @@ const userDAO = new UserDAO();
  * @returns {Promise<Array>} Users
  */
 async function getAllUsers() {
-    await userDAO.init();
 
-    winston.info('User service: get all users');
-    const users = await userDAO.findAll();
-
-    userDAO.end();
-    return users;
+    logger.info('User service: get all users');
+    return await User.findAll();
 }
 
 module.exports = {

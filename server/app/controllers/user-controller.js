@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('../../logger');
 const userService = require('../services/user-service');
 
 /**
@@ -14,7 +14,7 @@ async function getAllUsers(req, res) {
 
         res.json(users);
     } catch (e) {
-        winston.error('Error while getting all users', e);
+        logger.error('Error while getting all users', e);
         res.sendStatus(500);
     }
 

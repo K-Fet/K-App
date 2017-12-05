@@ -1,14 +1,11 @@
-const winston = require('winston');
+const logger = require('../../logger');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
-const { AuthDAO, UserDAO } = require('../dao/');
 const { jwtSecret } = require('../../config/jwt');
 const { verify } = require('../../utils/password-manager');
 
-const authDAO = new AuthDAO();
-const userDAO = new UserDAO();
-
+const { User, JWT } = require('../models');
 
 /**
  * Check if a token is revoked or not.
@@ -17,13 +14,9 @@ const userDAO = new UserDAO();
  * @returns {Promise<Boolean>} Return false if the token is not revoked
  */
 async function isTokenRevoked(tokenId) {
-    await authDAO.init();
+    logger.info('Auth service: is token revoked');
 
-    winston.info('Auth service: is token revoked');
-    const isRevoked = await authDAO.isTokenRevoked(tokenId);
-
-    authDAO.end();
-    return isRevoked;
+    return !!await JWT.findOne({ where: { revoked: true, id: tokenId } });
 }
 
 /**
@@ -36,9 +29,8 @@ async function isTokenRevoked(tokenId) {
  * @returns {Promise<String>} JWT Signed token
  */
 async function login(email, password) {
-    await userDAO.init();
-    const user = await userDAO.findByEmail(email);
-    userDAO.end();
+
+    const user = await User.findOne({ where: { email } });
 
     if (!user || !verify(password, user.password)) {
         const e = new Error('Bad email/password combination');
@@ -46,19 +38,24 @@ async function login(email, password) {
         throw e;
     }
     // Sign with default (HMAC SHA256)
-    const jit = uuidv4();
+    const id = uuidv4();
 
-    await authDAO.init();
-    await authDAO.saveNewTokenId(user.id, jit);
-    authDAO.end();
+    const token = new JWT({
+        id
+    });
 
-    const permissions = [];
+    await user.addJWT(token);
 
-    winston.info(`Logging user ${user.id}, has permissions : ${permissions.join(', ')}`);
+    // TODO Add permissions in a better way
+    const permissions = [
+        'barman:read',
+        'user:read'
+    ];
 
-    // TODO Add permissions
+    logger.info(`Logging user ${user.id}, has permissions : ${permissions.join(', ')}`);
+
     return jwt.sign({
-        jit,
+        jit: id,
         permissions
     }, jwtSecret);
 }
@@ -71,11 +68,15 @@ async function login(email, password) {
  * @throws An error if the token could not be find.
  */
 async function logout(tokenId) {
-    await authDAO.init();
+    const token = await JWT.findById(tokenId);
 
-    await authDAO.revokeToken(tokenId);
+    if (!token) {
+        const e = new Error('This token does not exist');
+        e.name = 'LogoutError';
+        throw e;
+    }
 
-    authDAO.end();
+    await token.update({ revoked: true });
 }
 
 

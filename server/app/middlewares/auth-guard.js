@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const jwt = require('express-jwt');
 
-const {jwtSecret} = require('../../config/jwt');
-const {isTokenRevoked} = require('../services/auth-service');
+const { jwtSecret } = require('../../config/jwt');
+const { isTokenRevoked } = require('../services/auth-service');
 
 
 /**
