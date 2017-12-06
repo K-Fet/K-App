@@ -4,13 +4,30 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 
+//Annimation
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+//Flex Layout
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+//Menu import
+import {MatSidenavModule, MatListModule, MatToolbarModule, MatIconModule, MatButtonModule} from '@angular/material';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MenuComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule,
+    MatSidenavModule, 
+    MatListModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]
