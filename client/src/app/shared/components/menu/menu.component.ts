@@ -1,5 +1,6 @@
 import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, OnDestroy, Component} from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -7,16 +8,22 @@ import {ChangeDetectorRef, Component} from '@angular/core';
   styleUrls: ['./menu.component.scss']
 })
 
-export class MenuComponent {
+export class MenuComponent implements OnDestroy {
 
   mobileQuery: MediaQueryList;
-  
+  router: Router;
+
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(router: Router, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.router = router;
+  }
+
+  logout() {
+    this.router.navigate(['/login']);
   }
 
   ngOnDestroy(): void {
