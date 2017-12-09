@@ -1,26 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { CommonModule } from '@angular/common';
 
-//Annimation
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
-//Flex Layout
-import { FlexLayoutModule } from '@angular/flex-layout';
-
-//Material import
-import {
-  MatSidenavModule,
-  MatListModule,
-  MatToolbarModule,
-  MatIconModule,
-  MatButtonModule
-} from '@angular/material';
-
-//Component
+//Components
 import { AppComponent } from './app.component';
-import { MenuComponent } from './menu/menu.component';
-import { MediaMatcher } from '@angular/cdk/layout';
+import { MenuComponent } from './shared/components/menu/menu.component';
+
+//Modules
+import { MainRoutingModule } from './modules/main-routing/main-routing.module';
+import { SharedModule } from './modules/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -28,17 +18,13 @@ import { MediaMatcher } from '@angular/cdk/layout';
     MenuComponent
   ],
   imports: [
+    MainRoutingModule,
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
-    MatSidenavModule, 
-    MatListModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    FlexLayoutModule,
-    HttpModule
+    SharedModule
   ],
   bootstrap: [AppComponent],
-  providers: [MediaMatcher]
+  providers: []
 })
 export class AppModule { }
