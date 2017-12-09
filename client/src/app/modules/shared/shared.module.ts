@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule }   from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+//Services
+import { LoginService } from '../../shared/services/login.service';
+
 //Angular material imports
 import { CdkTableModule } from '@angular/cdk/table';
 import {
@@ -75,5 +78,8 @@ import {
     FormsModule,
     FlexLayoutModule
   ],
+  providers: [
+    LoginService
+  ]
 })
 export class SharedModule { }
