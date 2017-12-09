@@ -1,8 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-
-import { AppComponent } from './app.component';
+import { HttpModule } from '@angular/http';
 
 //Annimation
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -10,9 +8,19 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 //Flex Layout
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-//Menu import
-import {MatSidenavModule, MatListModule, MatToolbarModule, MatIconModule, MatButtonModule} from '@angular/material';
+//Material import
+import {
+  MatSidenavModule,
+  MatListModule,
+  MatToolbarModule,
+  MatIconModule,
+  MatButtonModule
+} from '@angular/material';
+
+//Component
+import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @NgModule({
   declarations: [
@@ -27,9 +35,10 @@ import { MenuComponent } from './menu/menu.component';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    HttpModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [MediaMatcher]
 })
 export class AppModule { }
