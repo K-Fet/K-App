@@ -1,7 +1,5 @@
-const winston = require('winston');
-const BarmanDAO = require('../dao/barman-dao');
-
-const barmanDAO = new BarmanDAO();
+const logger = require('../../logger');
+const { Barman } = require('../models/barman');
 
 /**
  * Return all barmen of the app.
@@ -9,13 +7,9 @@ const barmanDAO = new BarmanDAO();
  * @returns {Promise<Array>} Barmen
  */
 async function getAllBarmen() {
-    await barmanDAO.init();
 
-    winston.info('Barman service: get all barmen');
-    const barmen = await barmanDAO.findAll();
-
-    barmanDAO.end();
-    return barmen;
+    logger.info('Barman service: get all barmen');
+    return await Barman.findAll();
 }
 
 module.exports = {

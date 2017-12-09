@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('./logger');
 const express = require('express');
 const compression = require('compression');
 const fs = require('fs');
@@ -7,10 +7,12 @@ const routes = require('./app/routes');
 const app = express();
 
 const WEB_CONFIG = require('./config/web');
-// const DB_CONFIG = require('./config/db');
 
 // Logger init
 require('./logger');
+
+// Database init
+require('./db');
 
 // Prod middleware
 if (process.env.NODE_ENV === 'production') {
@@ -53,7 +55,7 @@ server.on('error', onError);
 server.on('listening', () => {
     const addr = server.address();
     const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    winston.info('Listening on ' + bind);
+    logger.info('Listening on ' + bind);
 });
 
 
@@ -76,11 +78,11 @@ function onError(error) {
     // Handle specific listen errors with friendly messages.
     switch (error.code) {
         case 'EACCES':
-            winston.error(`Web app :${bind} requires elevated privileges`);
+            logger.error(`Web app :${bind} requires elevated privileges`);
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            winston.error(`Web app :${bind} is already in use`);
+            logger.error(`Web app :${bind} is already in use`);
             process.exit(1);
             break;
         default:

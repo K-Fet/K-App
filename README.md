@@ -30,6 +30,10 @@ Clone the repo: `git clone https://github.com/K-Fet/K-App.git`.
 
 Install dependencies: `npm install`.
 
+**N.B.:** You will need to configure the database connection and 
+also the JWT secret in order to test the app. 
+You can quickly edit these settings in `/server/config` (be careful not to commit your changes).
+
 ### Launching server and client
 
 #### Back

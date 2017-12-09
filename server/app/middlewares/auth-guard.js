@@ -1,15 +1,41 @@
+const router = require('express').Router();
+const jwt = require('express-jwt');
+
+const { jwtSecret } = require('../../config/jwt');
+const { isTokenRevoked } = require('../services/auth-service');
+
+
 /**
- * Return a 403 if the user is not authenticated.
- * Else pass through
+ * Check if the provided JWT is revoked or not.
  *
  * @param req Request
- * @param res Response
- * @param next Next function
- * @returns {*}
+ * @param payload {Object} JWT Payload
+ * @param done Callback
  */
-function authGuard(req, res, next) {
-    // TODO Check jwt
-    return next();
+function isRevokedCallback(req, payload, done) {
+    const tokenId = payload.jit;
+
+    isTokenRevoked(tokenId)
+        .then(jit => done(null, !!jit))
+        .catch(err => done(err));
 }
 
-module.exports = authGuard;
+
+// Install the middleware
+
+router.use(jwt({
+    secret: jwtSecret,
+    isRevoked: isRevokedCallback
+}));
+
+
+// Handle errors when parsing token
+
+/*eslint no-unused-vars: "off"*/
+router.use((err, req, res, next) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send('Invalid token !');
+    }
+});
+
+module.exports = router;

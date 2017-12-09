@@ -7,28 +7,28 @@ const httpMocks = require('node-mocks-http');
 
 // Mock Service
 const mockObj = {
-    getAllMembers() {
+    getAllUsers() {
         return Promise.resolve(['item 1', 'item 2']);
     }
 };
 
-const memberController = proxyquire('../../app/controllers/member-controller', {
-    '../services/member-service': mockObj
+const userController = proxyquire('../../app/controllers/user-controller', {
+    '../services/user-service': mockObj
 });
 
-describe('Member controller tests', function () {
+describe('User controller tests', function () {
     it('should not fail and send a JSON parsed data', async function () {
         // Given
 
         const res = httpMocks.createResponse();
         const req = httpMocks.createRequest({
             method: 'GET',
-            url: '/members/',
+            url: '/user/',
             params: {}
         });
 
         // When
-        await memberController.getAllMembers(req, res);
+        await userController.getAllUsers(req, res);
 
 
         // Then
@@ -43,15 +43,15 @@ describe('Member controller tests', function () {
         const res = httpMocks.createResponse();
         const req = httpMocks.createRequest({
             method: 'GET',
-            url: '/members/',
+            url: '/user/',
             params: {}
         });
 
-        const serviceStub = sinon.stub(mockObj, 'getAllMembers');
+        const serviceStub = sinon.stub(mockObj, 'getAllUsers');
         serviceStub.throws();
 
         // When
-        await memberController.getAllMembers(req, res);
+        await userController.getAllUsers(req, res);
 
         // Then
         res._isEndCalled().should.be.true();

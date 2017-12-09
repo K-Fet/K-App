@@ -1,14 +1,19 @@
 const winston = require('winston');
-const { transports, format } = winston;
+const { format } = winston;
+const toYAML = require('winston-console-formatter');
 
 const LOGGER_CONFIG = require('./config/logger');
 
-winston.configure({
+const logger = winston.createLogger({
     level: LOGGER_CONFIG.level,
+    transports: [
+        new winston.transports.Console()
+    ],
     format: format.combine(
-        format.timestamp(),
+        format.colorize({ all: true }),
         format.splat(),
-        format.simple()
-    ),
-    transports: [new transports.Console()]
+        winston.format.simple()
+    )
 });
+
+module.exports = logger;

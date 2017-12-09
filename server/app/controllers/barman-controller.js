@@ -1,4 +1,4 @@
-const winston = require('winston');
+const logger = require('../../logger');
 const barmanService = require('../services/barman-service');
 
 /**
@@ -14,7 +14,7 @@ async function getAllBarmen(req, res) {
 
         res.json(barmen);
     } catch (e) {
-        winston.error('Error while getting all barmen', e);
+        logger.error('Error while getting all barmen', e);
         res.sendStatus(500);
     }
 
