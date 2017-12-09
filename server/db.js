@@ -44,11 +44,16 @@ logger.debug('Models loaded: %s', modelNameList);
     Populate database
 ==========================*/
 
-logger.debug('Synchronising the database...');
 
-sequelize.sync().then(() => {
-    logger.debug('Database is synchronised with sequelize');
-});
+if (process.env.NODE_ENV !== 'test') {
+    logger.debug('Synchronising the database...');
+
+    sequelize.sync().then(() => {
+        logger.debug('Database is synchronised with sequelize');
+    });
+} else {
+    logger.debug('[TEST] Skip synchronisation');
+}
 
 
 module.exports = sequelize;
