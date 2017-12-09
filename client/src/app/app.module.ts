@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 
-//Components
+// Components
 import { AppComponent } from './app.component';
 import { MenuComponent } from './shared/components/menu/menu.component';
 
-//Modules
+// Modules
 import { MainRoutingModule } from './modules/main-routing/main-routing.module';
 import { SharedModule } from './modules/shared/shared.module';
 

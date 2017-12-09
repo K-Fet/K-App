@@ -75,5 +75,5 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  */
 // import 'intl/locale-data/jsonp/en';
 
-//HammerJS (angular material dependency)
+// HammerJS (angular material dependency)
 import 'hammerjs/hammer';
