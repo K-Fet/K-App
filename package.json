@@ -14,7 +14,7 @@
         "build": "cd client/ && npm run build:prod",
         "build:dev": "cd client/ && npm run build",
         "dev": "concurrently --kill-others \"npm run dev:back\" \"npm run dev:front\"",
-        "dev:back": "nodemon --watch server --watch server/index.js",
+        "dev:back": "nodemon --watch server --watch server/index.js --inspect",
         "dev:front": "cd client/ && npm start",
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
@@ -37,7 +37,7 @@
         "sequelize": "^4.27.0",
         "uuid": "^3.1.0",
         "winston": "^3.0.0-rc1",
-        "winston-console-formatter": "^0.3.1"
+        "winston-console-formatter": "^1.0.0-alpha.3"
     },
     "devDependencies": {
         "codecov": "^2.3.1",

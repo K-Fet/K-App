@@ -1,6 +1,5 @@
 const winston = require('winston');
 const { format } = winston;
-const toYAML = require('winston-console-formatter');
 
 const LOGGER_CONFIG = require('./config/logger');
 
