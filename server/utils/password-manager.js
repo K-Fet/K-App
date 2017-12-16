@@ -7,9 +7,8 @@
  */
 async function verify(password, hash) {
     // TODO Argon2 verify
-    return true;
+    return password === hash;
 }
-
 
 
 module.exports = {

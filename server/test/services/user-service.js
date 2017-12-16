@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const path = require('path');
 require('should-sinon');
 const { sequelizeMockingMocha } = require('sequelize-mocking');
+const { fixDataTypes } = require('../utils/mock-database');
 
 const { getAllUsers } = require('../../app/services/user-service');
 
@@ -21,6 +22,9 @@ sequelizeMockingMocha(
     require('../../db'),
     path.resolve(path.join(__dirname, '../resources/fake-users-database.json'))
 );
+
+fixDataTypes(require('../../db'));
+
 
 describe('User service Test', function () {
 
