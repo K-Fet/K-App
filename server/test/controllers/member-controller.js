@@ -7,28 +7,28 @@ const httpMocks = require('node-mocks-http');
 
 // Mock Service
 const mockObj = {
-    getAllUsers() {
+    getAllMembers() {
         return Promise.resolve(['item 1', 'item 2']);
     }
 };
 
-const userController = proxyquire('../../app/controllers/user-controller', {
-    '../services/user-service': mockObj
+const memberController = proxyquire('../../app/controllers/member-controller', {
+    '../services/member-service': mockObj
 });
 
-describe('User controller tests', function () {
+describe('Member controller tests', function () {
     it('should not fail and send a JSON parsed data', async function () {
         // Given
 
         const res = httpMocks.createResponse();
         const req = httpMocks.createRequest({
             method: 'GET',
-            url: '/user/',
+            url: '/member/',
             params: {}
         });
 
         // When
-        await userController.getAllUsers(req, res);
+        await memberController.getAllMembers(req, res);
 
 
         // Then

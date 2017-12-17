@@ -1,6 +1,6 @@
 [
     {
-        "model": "User",
+        "model": "Member",
         "data": {
             "id": 1,
             "firstName": "John",
@@ -12,7 +12,7 @@
         }
     },
     {
-        "model": "User",
+        "model": "Member",
         "data": {
             "id": 2,
             "firstName": "John",
