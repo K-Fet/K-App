@@ -2,7 +2,6 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const am = require('../../utils/async-middleware');
-const logger = require('../../logger');
 
 
 // Middlewares
@@ -23,30 +22,11 @@ router.use('/users', am(require('./users')));
 router.use('/barmen', am(require('./barmen')));
 
 
-// Error handling
-
 /*eslint no-unused-vars: "off"*/
 router.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        return res.status(403).json({
-            error: err.name,
-            message: 'You don\'t have enough permissions !'
-        });
+        res.status(401).send('You don\'t have enough permissions !');
     }
-
-    if (err.userError) {
-        logger.verbose('User error for request %s. Error name: %s', req.path, err.name);
-        return res.status(400).json({
-            error: err.name,
-            message: err.message
-        });
-    }
-
-    logger.error('Server error for the request %s', req.path, err);
-    return res.status(500).json({
-        error: 'ServerError',
-        message: 'A problem has occurred, try again later'
-    });
 });
 
 
