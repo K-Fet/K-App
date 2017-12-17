@@ -1,5 +1,6 @@
-const logger = require('../../logger');
 const authService = require('../services/auth-service');
+const { createUserError } = require('../../utils');
+
 
 /**
  * Login a user by responding with a JWT.
@@ -9,34 +10,25 @@ const authService = require('../services/auth-service');
  * @return {Promise.<void>} Nothing
  */
 async function login(req, res) {
-    try {
-        const email = req.body.email;
-        const password = req.body.password;
+    const email = req.body.email;
+    const password = req.body.password;
 
-        if (!email
-            || typeof email !== 'string'
-            || !password
-            || typeof password !== 'string'
-        ) {
-
-            res.status(400).json({
-                message: 'Bad request, the body has not the good structure {email: string, password: string).'
-            });
-
-            return res.end();
-        }
-
-        const jwt = await authService.login(email, password);
-
-        res.json({
-            jwt
-        });
-    } catch (e) {
-        logger.error('Error while logging user', e);
-        res.sendStatus(500);
+    if (!email
+        || typeof email !== 'string'
+        || !password
+        || typeof password !== 'string'
+    ) {
+        throw createUserError(
+            'BadRequest',
+            'The body has not the good structure {email: string, password: string).'
+        );
     }
 
-    return res.end();
+    const jwt = await authService.login(email, password);
+
+    res.json({
+        jwt
+    });
 }
 
 /**
@@ -47,14 +39,9 @@ async function login(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function logout(req, res) {
-    try {
-        await authService.logout(req.user.jit);
-    } catch (e) {
-        logger.error(`Error while logging out user ${req.user.id}`, e);
-        res.sendStatus(500);
-    }
+    await authService.logout(req.user.jit);
 
-    return res.end();
+    res.sendStatus(200);
 }
 
 module.exports = {

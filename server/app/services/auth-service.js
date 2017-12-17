@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
 const { jwtSecret } = require('../../config/jwt');
-const { verify } = require('../../utils/password-manager');
+const { verify, createUserError } = require('../../utils');
 
 const { User, JWT } = require('../models');
 
@@ -33,9 +33,7 @@ async function login(email, password) {
     const user = await User.findOne({ where: { email } });
 
     if (!user || !verify(password, user.password)) {
-        const e = new Error('Bad email/password combination');
-        e.name = 'LoginError';
-        throw e;
+        throw createUserError('LoginError', 'Bad email/password combination');
     }
     // Sign with default (HMAC SHA256)
     const id = uuidv4();
@@ -70,11 +68,7 @@ async function login(email, password) {
 async function logout(tokenId) {
     const token = await JWT.findById(tokenId);
 
-    if (!token) {
-        const e = new Error('This token does not exist');
-        e.name = 'LogoutError';
-        throw e;
-    }
+    if (!token) throw createUserError('LogoutError', 'This token does not exist');
 
     await token.update({ revoked: true });
 }
