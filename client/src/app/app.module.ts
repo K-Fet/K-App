@@ -11,7 +11,7 @@ import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
-import { MembersListComponent } from './members/list/members-list.component';
+import { UsersListComponent } from './users/list/users-list.component';
 
 // Services
 import { AuthGuard } from './_guards/auth.guard';
@@ -29,7 +29,7 @@ import { LoginService } from './_services/login.service';
         MenuComponent,
         LoginComponent,
         MenuComponent,
-        MembersListComponent,
+        UsersListComponent,
     ],
     imports: [
         CommonModule,

@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginService.logout();
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/members';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/users';
     }
 
     login() {
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     const password: string = this.password;
     this.loginService.login(email, password)
     .subscribe(jwt => {
-        this.router.navigate(['/members']);
+        this.router.navigate(['/users']);
     });
     }
 }
