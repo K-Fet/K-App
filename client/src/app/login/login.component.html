@@ -1,0 +1,24 @@
+<div fxLayoutAlign="center">
+  <mat-card>
+    <mat-card-content>
+      <form #connexionForm="ngForm" fxLayout="column">
+        <mat-form-field>
+          <input matInput placeholder="Email" autocapitalize="off"
+          autocorrect="off" required [(ngModel)]="email" name="email">
+          <mat-error *ngIf="emailFormControl.hasError('required')">
+            Email <strong>requis</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="password" placeholder="Mot de passe"
+          [(ngModel)]="password" required name="password" >
+          <mat-error *ngIf="passwordFormControl.hasError('required')">
+            Mot de passe <strong>requis</strong>
+          </mat-error>
+        </mat-form-field>
+        <button mat-button type="button" (click)="login()" 
+        [disabled]="!connexionForm.valid">CONNEXION</button>
+      </form>
+    </mat-card-content>
+  </mat-card>      
+</div>
