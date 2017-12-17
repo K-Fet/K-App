@@ -23,6 +23,7 @@ export class MenuComponent implements OnDestroy {
   }
 
   logout() {
+    // TODO ask @Marco if a service call is necessary
     localStorage.removeItem('currentUser');
     this.router.navigate(['/login']);
   }
