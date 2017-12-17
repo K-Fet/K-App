@@ -31,7 +31,7 @@ export class UserService {
     }
 
     delete(id: number) {
-        return this.http.delete('/api/users/' + id);
+        return this.http.delete('/api/users/' + id).catch(this.handleError);
     }
     private handleError(err: HttpErrorResponse) {
         let errorMessage = '';

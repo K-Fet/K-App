@@ -38,6 +38,7 @@ async function createMember(req, res) {
         lastName: req.body.lastName,
         school: req.body.school,
         active: req.body.active,
+        password: req.body.email,
     });
 
     newMember = await memberService.createMember(newMember);

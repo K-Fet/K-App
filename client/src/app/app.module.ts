@@ -13,6 +13,7 @@ import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
 import { UsersListComponent } from './users/list/users-list.component';
 import { UserNewComponent } from './users/new/user-new.component';
+import { UserEditComponent } from './users/edit/user-edit.component';
 
 // Services
 import { AuthGuard } from './_guards/auth.guard';
@@ -33,7 +34,8 @@ import { MaterialModule } from './_helpers/material.module';
         LoginComponent,
         MenuComponent,
         UsersListComponent,
-        UserNewComponent
+        UserNewComponent,
+        UserEditComponent
     ],
     imports: [
         CommonModule,

@@ -9,12 +9,14 @@ import { AuthGuard } from './_guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { UsersListComponent } from './users/list/users-list.component';
 import { UserNewComponent } from './users/new/user-new.component';
+import { UserEditComponent } from './users/edit/user-edit.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/users', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'users', component: UsersListComponent, canActivate: [AuthGuard] },
     { path: 'users/new', component: UserNewComponent, canActivate: [AuthGuard] },
+    { path: 'users/:id', component: UserEditComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

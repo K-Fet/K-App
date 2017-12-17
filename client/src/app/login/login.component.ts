@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginService } from '../_services/login.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { JWT } from '../_models/JWT';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +32,9 @@ export class LoginComponent implements OnInit {
     const password: string = this.password;
     this.loginService.login(email, password)
     .subscribe(jwt => {
+        if (jwt) {
+            localStorage.setItem('currentUser', JSON.stringify(jwt));
+        }
         this.router.navigate(['/users']);
     });
     }

@@ -11,29 +11,27 @@ import { ToasterService } from '../../_services/toaster.service';
 })
 
 export class UserNewComponent implements OnInit {
-    email: string;
     firstName: string;
     lastName: string;
     school: string;
 
-    emailFormControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
     lastNameFormControl: FormControl = new FormControl('', [Validators.required]);
     firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
     schoolFormControl: FormControl = new FormControl('', [Validators.required]);
 
-    constructor(private userService: UserService, private toasterService: ToasterService) {}
+    constructor(private userService: UserService, private toasterService: ToasterService, private router: Router) {}
     ngOnInit(): void {
 
     }
 
     add() {
         const user = new User();
-        user.email = this.email;
         user.firstName = this.firstName;
         user.lastName = this.lastName;
         user.school = this.school;
         this.userService.create(user).subscribe(() => {
             this.toasterService.showToaster('Utilisateur créé', 'Fermer');
+            this.router.navigate(['/users'] );
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

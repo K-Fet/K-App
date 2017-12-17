@@ -13,6 +13,8 @@ import 'rxjs/add/operator/switchMap';
 import { MatSort, MatPaginator } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ToasterService } from '../../_services/toaster.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -21,7 +23,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 })
 export class UsersListComponent implements OnInit {
 
-    displayedColumns = ['lastName', 'firstName', 'school'];
+    displayedColumns = ['lastName', 'firstName', 'school', 'action'];
     dataSource: UsersDataSource;
     selection = new SelectionModel<string>(true, []);
 
@@ -29,7 +31,7 @@ export class UsersListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild('filter') filter: ElementRef;
 
-    constructor(private userService: UserService) {
+    constructor(private userService: UserService, private toasterService: ToasterService, private router: Router) {
     }
 
     ngOnInit() {
@@ -43,27 +45,20 @@ export class UsersListComponent implements OnInit {
         });
     }
 
-    isAllSelected(): boolean {
-        if (!this.dataSource) { return false; }
-        if (this.selection.isEmpty()) { return false; }
+    edit(user: User) {
+        this.router.navigate(['/users', user.id]);
+    }
 
-        if (this.filter.nativeElement.value) {
-            return this.selection.selected.length === this.dataSource.renderedData.length;
-        } else {
-            return this.selection.selected.length === this.userService.data.length;
-        }
-      }
-
-    masterToggle() {
-        if (!this.dataSource) { return; }
-
-        if (this.isAllSelected()) {
-            this.selection.clear();
-        } else if (this.filter.nativeElement.value) {
-            // this.dataSource.renderedData.forEach(data => this.selection.select(data.id));
-        } else {
-            // this.userService.data.forEach(data => this.selection.select(data.id));
-        }
+    delete(user: User) {
+        console.log(user);
+        this.userService.delete(user.id)
+        .subscribe(() => {
+            this.toasterService.showToaster('Utilisateur supprimé', 'Fermer');
+            this.dataSource = new UsersDataSource(this.userService, this.sort, this.paginator);
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
     }
 
 }
