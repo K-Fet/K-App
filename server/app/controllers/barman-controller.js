@@ -1,4 +1,3 @@
-const logger = require('../../logger');
 const barmanService = require('../services/barman-service');
 
 /**
@@ -9,16 +8,9 @@ const barmanService = require('../services/barman-service');
  * @return {Promise.<void>} Nothing
  */
 async function getAllBarmen(req, res) {
-    try {
-        const barmen = await barmanService.getAllBarmen();
+    const barmen = await barmanService.getAllBarmen();
 
-        res.json(barmen);
-    } catch (e) {
-        logger.error('Error while getting all barmen', e);
-        res.sendStatus(500);
-    }
-
-    return res.end();
+    res.json(barmen);
 }
 
 module.exports = {
