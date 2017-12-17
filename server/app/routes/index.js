@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const am = require('../../utils/async-middleware');
 const logger = require('../../logger');
 
 
@@ -13,14 +12,14 @@ router.use(bodyParser.json());
 
 // Auth
 
-router.use('/auth', am(require('./auth')));
+router.use('/auth', require('./auth'));
 
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
 // Dispatch to child routes
-router.use('/members', am(require('./members')));
-router.use('/barmen', am(require('./barmen')));
+router.use('/members', require('./members'));
+router.use('/barmen', require('./barmen'));
 
 
 // Error handling

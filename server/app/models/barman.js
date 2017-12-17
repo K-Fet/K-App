@@ -15,7 +15,8 @@ class Barman extends Model {
         return super.init({
             id: {
                 type: DataTypes.INTEGER,
-                primaryKey: true
+                primaryKey: true,
+                autoIncrement: true
             },
 
             firstName: {
@@ -72,7 +73,7 @@ class Barman extends Model {
 
         this.hasOne(Barman, { as: 'godFather' });
 
-        this.hasOne(models.ConnectionInformation, { as: 'connection' });
+        this.belongsTo(models.ConnectionInformation, { as: 'connection' });
     }
 }
 

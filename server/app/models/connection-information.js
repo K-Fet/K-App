@@ -16,6 +16,7 @@ class ConnectionInformation extends Model {
         return super.init({
             id: {
                 type: DataTypes.INTEGER,
+                autoIncrement: true,
                 primaryKey: true
             },
 
@@ -41,15 +42,27 @@ class ConnectionInformation extends Model {
      */
     static associate(models) {
         this.hasMany(models.JWT, {
-            as: 'tokens',
             onDelete: 'CASCADE',
             foreignKey: {
+                name: 'connectionId',
                 allowNull: false
             }
         });
 
-        this.belongsTo(models.Barman);
-        this.belongsTo(models.SpecialAccount);
+        this.hasOne(models.Barman, {
+            onDelete: 'CASCADE',
+            foreignKey: {
+                name: 'connectionId',
+                allowNull: false
+            }
+        });
+        this.hasOne(models.SpecialAccount, {
+            onDelete: 'CASCADE',
+            foreignKey: {
+                name: 'connectionId',
+                allowNull: false
+            }
+        });
     }
 }
 
