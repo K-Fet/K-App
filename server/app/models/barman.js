@@ -45,6 +45,12 @@ class Barman extends Model {
             flow: {
                 type: DataTypes.TEXT
             },
+
+            active: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true
+            }
         }, {
             sequelize,
 
