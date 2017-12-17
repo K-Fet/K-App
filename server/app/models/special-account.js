@@ -1,41 +1,45 @@
-const { User } = require('./user');
-const { DataTypes } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 
 /**
- * This class represents fa barman.
+ * This class represents a special account (e.g.: admin).
  */
-class SpecialAccount extends User {
+class SpecialAccount extends Model {
 
     /**
      * Initialization function.
-     *
-     * It differ from standard initialization
-     * function as it extend {@link User}.
      *
      * @param sequelize
      * @returns {Model}
      */
     static init(sequelize) {
-        return super.init(sequelize, {
-            nickname: {
+        return super.init({
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+
+            code: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
 
-            facebook: DataTypes.STRING,
-
-            dateOfBirth: DataTypes.DATEONLY,
-
-            flow: DataTypes.TEXT
+            description: {
+                type: DataTypes.TEXT
+            }
+        }, {
+            sequelize
         });
     }
 
 
     /**
-     * Set associations for the model
+     * Set associations for the model.
+     *
      * @param models
      */
-    static associate(models) { // eslint-disable-line no-unused-vars
+    static associate(models) {
+        this.belongsTo(models.ConnectionInformation, { as: 'connection' });
     }
 }
 

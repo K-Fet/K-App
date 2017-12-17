@@ -3,28 +3,20 @@ const { Model, DataTypes } = require('sequelize');
 /**
  * This class represents a member.
  */
-class User extends Model {
+class Member extends Model {
+
     /**
      * Initialization function.
      *
      * @param sequelize Sequelize instance
-     * @param child Configuration object from a child class
      * @returns {Model}
      */
-    static init(sequelize, child) {
+    static init(sequelize) {
         return super.init({
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
-            },
-
-            deletedAt: DataTypes.DATE,
-
-            email: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true
             },
 
             firstName: {
@@ -37,19 +29,13 @@ class User extends Model {
                 allowNull: false
             },
 
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-
             school: DataTypes.STRING,
 
             active: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: true
-            },
-            ...child
+            }
         }, {
             sequelize,
 
@@ -60,19 +46,14 @@ class User extends Model {
 
 
     /**
-     * Set associations for the model
+     * Set associations for the model.
+     *
      * @param models
      */
-    static associate(models) {
-        this.hasMany(models.JWT, {
-            onDelete: 'CASCADE',
-            foreignKey: {
-                allowNull: false
-            }
-        });
+    static associate(models) { // eslint-disable-line no-unused-vars
     }
 }
 
 module.exports = {
-    User
+    Member
 };

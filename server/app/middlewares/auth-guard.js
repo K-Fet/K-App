@@ -28,14 +28,4 @@ router.use(jwt({
     isRevoked: isRevokedCallback
 }));
 
-
-// Handle errors when parsing token
-
-/*eslint no-unused-vars: "off"*/
-router.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
-        res.status(401).send('Invalid token !');
-    }
-});
-
 module.exports = router;

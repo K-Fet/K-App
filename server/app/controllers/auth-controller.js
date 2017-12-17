@@ -10,21 +10,21 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function login(req, res) {
-    const email = req.body.email;
+    const username = req.body.username;
     const password = req.body.password;
 
-    if (!email
-        || typeof email !== 'string'
+    if (!username
+        || typeof username !== 'string'
         || !password
         || typeof password !== 'string'
     ) {
         throw createUserError(
             'BadRequest',
-            'The body has not the good structure {email: string, password: string).'
+            'The body has not the good structure {username: string, password: string).'
         );
     }
 
-    const jwt = await authService.login(email, password);
+    const jwt = await authService.login(username, password);
 
     res.json({
         jwt
