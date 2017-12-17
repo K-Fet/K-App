@@ -11,12 +11,14 @@ const { ConnectionInformation, JWT } = require('../models');
  * Check if a token is revoked or not.
  *
  * @param tokenId {String} JIT
- * @returns {Promise<Boolean>} Return false if the token is not revoked
+ * @returns {Promise<Boolean>} Return true if the token does not exist or is revoked
  */
 async function isTokenRevoked(tokenId) {
     logger.info('Auth service: is token revoked');
 
-    return !!await JWT.findOne({ where: { revoked: true, id: tokenId } });
+    const token = await JWT.findById(tokenId);
+
+    return !token || token.revoked;
 }
 
 /**
@@ -38,11 +40,9 @@ async function login(username, password) {
     // Sign with default (HMAC SHA256)
     const id = uuidv4();
 
-    const token = new JWT({
+    await user.createJWT({
         id
     });
-
-    await user.addJWT(token);
 
     // TODO Add permissions in a better way
     const permissions = [
