@@ -12,7 +12,7 @@ import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: '/users', pathMatch: 'full' },
+    { path: '', redirectTo: '/members', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'members', component: MembersListComponent, canActivate: [AuthGuard] },
     { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard] },
