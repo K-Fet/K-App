@@ -32,7 +32,8 @@ class JWT extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsTo(models.User, {
+        this.belongsTo(models.ConnectionInformation, {
+            as: 'connection',
             foreignKey: {
                 allowNull: false
             }

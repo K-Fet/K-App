@@ -1,9 +1,10 @@
 const { DataTypes, Model } = require('sequelize');
 
 /**
- * This class represents a special account (e.g.: admin).
+ * This class represents connection information.
+ * An barman/user cannot login without it.
  */
-class SpecialAccount extends Model {
+class ConnectionInformation extends Model {
 
     /**
      * Initialization function.
@@ -18,13 +19,14 @@ class SpecialAccount extends Model {
                 primaryKey: true
             },
 
-            code: {
+            username: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
+                unique: true
             },
 
-            description: {
-                type: DataTypes.TEXT
+            password: {
+                type: DataTypes.STRING
             }
         }, {
             sequelize
@@ -38,10 +40,19 @@ class SpecialAccount extends Model {
      * @param models
      */
     static associate(models) {
-        this.hasOne(models.ConnectionInformation, { as: 'connection' });
+        this.hasMany(models.JWT, {
+            as: 'tokens',
+            onDelete: 'CASCADE',
+            foreignKey: {
+                allowNull: false
+            }
+        });
+
+        this.belongsTo(models.Barman);
+        this.belongsTo(models.SpecialAccount);
     }
 }
 
 module.exports = {
-    SpecialAccount
+    ConnectionInformation
 };
