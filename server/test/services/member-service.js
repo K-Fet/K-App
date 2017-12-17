@@ -40,8 +40,6 @@ describe('Member service Test', function () {
                 'id': 1,
                 'firstName': 'John',
                 'lastName': 'Doe',
-                'email': 'john.doe@example.com',
-                'password': 'MyAwesomePassword',
                 'school': 'INSA Lyon',
                 'active': false
 
@@ -50,8 +48,6 @@ describe('Member service Test', function () {
                 'id': 2,
                 'firstName': 'John',
                 'lastName': 'Smith',
-                'email': 'john.smith@example.com',
-                'password': 'MyAwesomePassword2',
                 'school': 'MIT',
                 'active': true
 
