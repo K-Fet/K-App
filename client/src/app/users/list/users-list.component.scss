@@ -1,0 +1,24 @@
+.example-header {
+    min-height: 56px;
+    max-height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 8px 24px 0;
+    font-size: 20px;
+    justify-content: space-between;
+    border-bottom: 1px solid transparent;
+}
+
+.example-no-results {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    flex-grow: 1;
+    margin-top: 8px;
+}

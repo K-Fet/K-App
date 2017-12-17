@@ -1,3 +1,46 @@
-<p>
-  list works!
-</p>
+<div fxLayoutAlign="center">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Liste des utilisateurs</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="example-header" [style.display]="selection.isEmpty() ? '' : 'none'">
+                <mat-form-field>
+                    <input matInput #filter placeholder="Rechercher des utilisateurs">
+                </mat-form-field>
+            </div>
+            <div class="mat-elevation-z3">
+                <mat-table #table [dataSource]="dataSource" matSort>
+                    <ng-container matColumnDef="lastName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+                        <mat-cell *matCellDef="let user"> {{user.lastName}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="firstName">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
+                        <mat-cell *matCellDef="let user"> {{user.firstName}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="school">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> École </mat-header-cell>
+                        <mat-cell *matCellDef="let user"> {{user.school}} </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <div class="example-no-results"
+                    [style.display]="dataSource.renderedData.length == 0 ? '' : 'none'">
+                    No users found matching filter.
+                </div>
+
+                <mat-paginator #paginator
+                    [length]="dataSource.filteredData.length"
+                    [pageIndex]="0"
+                    [pageSize]="25"
+                    [pageSizeOptions]="[5, 10, 25, 100]">
+                </mat-paginator>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

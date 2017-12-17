@@ -1,0 +1,41 @@
+<div fxLayoutAlign="center">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Ajouter un utilisateur</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form #connexionForm="ngForm" fxLayout="column">
+                <mat-form-field>
+                    <input matInput placeholder="Email" autocapitalize="off"
+                    autocorrect="off" required [(ngModel)]="email" name="email">
+                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                    Email <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Nom de famille"
+                    autocorrect="off" required [(ngModel)]="lastName" name="lastName">
+                    <mat-error *ngIf="lastNameFormControl.hasError('required')">
+                    Nom de famille <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Prénom"
+                    autocorrect="off" required [(ngModel)]="firstName" name="firstName">
+                    <mat-error *ngIf="firstNameFormControl.hasError('required')">
+                    Email <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="École"
+                    [(ngModel)]="school" required name="school" >
+                    <mat-error *ngIf="schoolFormControl.hasError('required')">
+                    École <strong>requise</strong>
+                    </mat-error>
+                </mat-form-field>
+                <button mat-button type="button" (click)="add()" 
+                [disabled]="!connexionForm.valid">Ajouter</button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

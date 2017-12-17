@@ -8,11 +8,13 @@ import { AuthGuard } from './_guards/auth.guard';
 // Components
 import { LoginComponent } from './login/login.component';
 import { UsersListComponent } from './users/list/users-list.component';
+import { UserNewComponent } from './users/new/user-new.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/users', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
     { path: 'users', component: UsersListComponent, canActivate: [AuthGuard] },
+    { path: 'users/new', component: UserNewComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

@@ -1,15 +1,15 @@
 export class User {
 
-    id: Number;
-    lastName: String;
-    firstName: String;
-    email: String;
-    dateNaissance: Date;
+    id: number;
+    lastName: string;
+    firstName: string;
+    email: string;
+    password: string;
     deletedAt: Date;
     createdAt: Date;
     updatedAt: Date;
-    school: String;
-    active: Boolean;
+    school: string;
+    active: boolean;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
