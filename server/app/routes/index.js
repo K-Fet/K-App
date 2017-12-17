@@ -19,7 +19,7 @@ router.use('/auth', am(require('./auth')));
 router.use(require('../middlewares/auth-guard'));
 
 // Dispatch to child routes
-router.use('/users', am(require('./users')));
+router.use('/members', am(require('./members')));
 router.use('/barmen', am(require('./barmen')));
 
 

@@ -1,28 +1,28 @@
-const userService = require('../services/user-service');
-const { User } = require('../models/user');
+const memberService = require('../services/member-service');
+const { Member } = require('../models/member');
 const { checkStructure, createUserError } = require('../../utils');
 
 /**
- * Fetch all the users from the database.
+ * Fetch all the members from the database.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function getAllUsers(req, res) {
-    const users = await userService.getAllUsers();
+async function getAllMembers(req, res) {
+    const members = await memberService.getAllMembers();
 
-    res.json(users);
+    res.json(members);
 }
 
 /**
- * Create an user.
+ * Create a member.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function createUser(req, res) {
+async function createMember(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
     if (!checkStructure(req.body, ['email', 'firstName', 'lastName'])) {
@@ -32,7 +32,7 @@ async function createUser(req, res) {
         );
     }
 
-    let newUser = new User({
+    let newMember = new Member({
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -40,36 +40,36 @@ async function createUser(req, res) {
         active: req.body.active,
     });
 
-    newUser = await userService.createUser(newUser);
+    newMember = await memberService.createMember(newMember);
 
-    res.json(newUser);
+    res.json(newMember);
 }
 
 
 /**
- * Get an user by its id.
+ * Get a member by its id.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function getUserById(req, res) {
-    const userId = req.params.id;
+async function getMemberById(req, res) {
+    const memberId = req.params.id;
 
-    const user = await userService.getUserById(userId);
+    const member = await memberService.getMemberById(memberId);
 
-    res.json(user);
+    res.json(member);
 }
 
 
 /**
- * Update an user.
+ * Update a member.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function updateUser(req, res) {
+async function updateMember(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
     if (!checkStructure(req.body, ['email', 'firstName', 'lastName'])) {
@@ -79,7 +79,7 @@ async function updateUser(req, res) {
         );
     }
 
-    let newUser = new User({
+    let newMember = new Member({
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -87,34 +87,34 @@ async function updateUser(req, res) {
         active: req.body.active,
     });
 
-    const userId = req.params.id;
+    const memberId = req.params.id;
 
-    newUser = await userService.updateUser(userId, newUser);
+    newMember = await memberService.updateMember(memberId, newMember);
 
-    res.json(newUser);
+    res.json(newMember);
 }
 
 /**
- * Delete an user.
+ * Delete a member.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function deleteUser(req, res) {
-    const userId = req.params.id;
+async function deleteMember(req, res) {
+    const memberId = req.params.id;
 
-    const user = await userService.deleteUser(userId);
+    const member = await memberService.deleteMember(memberId);
 
-    res.json(user);
+    res.json(member);
 }
 
 
 module.exports = {
-    getAllUsers,
-    createUser,
-    updateUser,
-    getUserById,
-    deleteUser
+    getAllMembers,
+    createMember,
+    updateMember,
+    getMemberById,
+    deleteMember
 };
 

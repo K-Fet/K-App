@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 const { jwtSecret } = require('../../config/jwt');
 const { verify, createUserError } = require('../../utils');
 
-const { User, JWT } = require('../models');
+const { ConnectionInformation, JWT } = require('../models');
 
 /**
  * Check if a token is revoked or not.
@@ -20,20 +20,20 @@ async function isTokenRevoked(tokenId) {
 }
 
 /**
- * Log a user and create a JWT Token.
+ * Log a member and create a JWT Token.
  * The token will contain every
- * permissions given by the user's role.
+ * permissions given for the user.
  *
- * @param email Email used to login
+ * @param username Username used to login
  * @param password Unencrypted password
  * @returns {Promise<String>} JWT Signed token
  */
-async function login(email, password) {
+async function login(username, password) {
 
-    const user = await User.findOne({ where: { email } });
+    const user = await ConnectionInformation.findOne({ where: { username } });
 
     if (!user || !verify(password, user.password)) {
-        throw createUserError('LoginError', 'Bad email/password combination');
+        throw createUserError('LoginError', 'Bad username/password combination');
     }
     // Sign with default (HMAC SHA256)
     const id = uuidv4();
@@ -47,7 +47,7 @@ async function login(email, password) {
     // TODO Add permissions in a better way
     const permissions = [
         'barman:read',
-        'user:read'
+        'member:read'
     ];
 
     logger.info(`Logging user ${user.id}, has permissions : ${permissions.join(', ')}`);
@@ -59,7 +59,7 @@ async function login(email, password) {
 }
 
 /**
- * Logout a user by revoking his token.
+ * Logout a member by revoking his token.
  *
  * @param tokenId Token's JIT
  * @return {Promise.<void>} Nothing

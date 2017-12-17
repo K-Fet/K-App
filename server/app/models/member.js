@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 /**
  * This class represents a member.
  */
-class User extends Model {
+class Member extends Model {
 
     /**
      * Initialization function.
@@ -66,5 +66,5 @@ class User extends Model {
 }
 
 module.exports = {
-    User
+    Member
 };
