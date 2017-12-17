@@ -1,6 +1,9 @@
 import {MediaMatcher} from '@angular/cdk/layout';
 import {ChangeDetectorRef, OnDestroy, Component} from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginService } from '../_services/login.service';
+import { ToasterService } from '../_services/toaster.service';
+import { error } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-menu',
@@ -15,7 +18,12 @@ export class MenuComponent implements OnDestroy {
 
   private _mobileQueryListener: () => void;
 
-  constructor(router: Router, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(
+    private loginService: LoginService,
+    private toasterService: ToasterService,
+    router: Router,
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -23,9 +31,13 @@ export class MenuComponent implements OnDestroy {
   }
 
   logout() {
-    // TODO ask @Marco if a service call is necessary
-    localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+    this.loginService.logout().subscribe(res => {
+      this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
+      localStorage.removeItem('currentUser');
+      this.router.navigate(['/login']);
+    }, err => {
+      this.toasterService.showToaster(err, 'Fermer');
+    });
   }
 
   ngOnDestroy(): void {

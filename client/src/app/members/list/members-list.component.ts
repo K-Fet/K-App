@@ -50,7 +50,6 @@ export class MembersListComponent implements OnInit {
     }
 
     delete(member: Member) {
-        console.log(member);
         this.memberService.delete(member.id)
         .subscribe(() => {
             this.toasterService.showToaster('Utilisateur supprimé', 'Fermer');

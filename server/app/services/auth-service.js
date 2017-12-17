@@ -67,7 +67,7 @@ async function login(username, password) {
  */
 async function logout(tokenId) {
     const token = await JWT.findById(tokenId);
-
+    
     if (!token) throw createUserError('LogoutError', 'This token does not exist');
 
     await token.update({ revoked: true });

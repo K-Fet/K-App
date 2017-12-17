@@ -16,7 +16,7 @@ const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'members', component: MembersListComponent, canActivate: [AuthGuard] },
     { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard] },
-    { path: 'memebers/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
+    { path: 'members/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

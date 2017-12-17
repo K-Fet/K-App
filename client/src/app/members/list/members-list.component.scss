@@ -9,7 +9,7 @@
     border-bottom: 1px solid transparent;
 }
 
-.example-no-results {
+.no-results {
     display: flex;
     justify-content: center;
     padding: 24px;
@@ -21,4 +21,9 @@
     font-size: 14px;
     flex-grow: 1;
     margin-top: 8px;
+}
+
+.mat-table {
+    overflow: auto;
+    max-height: 500px;
 }

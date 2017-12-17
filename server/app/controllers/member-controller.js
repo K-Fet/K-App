@@ -25,20 +25,18 @@ async function getAllMembers(req, res) {
 async function createMember(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['email', 'firstName', 'lastName'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'school'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'email\', \'firstName\', \'lastName\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'school\']'
         );
     }
 
     let newMember = new Member({
-        email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         school: req.body.school,
-        active: req.body.active,
-        password: req.body.email,
+        active: req.body.active || true,
     });
 
     newMember = await memberService.createMember(newMember);
@@ -73,15 +71,14 @@ async function getMemberById(req, res) {
 async function updateMember(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['email', 'firstName', 'lastName'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'school'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'email\', \'firstName\', \'lastName\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'school\']'
         );
     }
 
     let newMember = new Member({
-        email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         school: req.body.school,

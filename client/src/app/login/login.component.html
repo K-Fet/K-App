@@ -3,10 +3,10 @@
     <mat-card-content>
       <form #connexionForm="ngForm" fxLayout="column">
         <mat-form-field>
-          <input matInput placeholder="Email" autocapitalize="off"
-          autocorrect="off" required [(ngModel)]="email" name="email">
-          <mat-error *ngIf="emailFormControl.hasError('required')">
-            Email <strong>requis</strong>
+          <input matInput placeholder="Username" autocapitalize="off"
+          autocorrect="off" required [(ngModel)]="username" name="username">
+          <mat-error *ngIf="usernameFormControl.hasError('required')">
+            Username <strong>requis</strong>
           </mat-error>
         </mat-form-field>
         <mat-form-field>

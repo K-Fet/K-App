@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { LoginService } from '../_services/login.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ToasterService } from '../_services/toaster.service';
 
 @Component({
   selector: 'app-login',
@@ -9,33 +10,36 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 
 export class LoginComponent implements OnInit {
-    email: string;
+    username: string;
     password: string;
     returnUrl: string;
 
-    emailFormControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
+    usernameFormControl: FormControl = new FormControl('', [Validators.required]);
     passwordFormControl: FormControl = new FormControl('', [Validators.required]);
 
     constructor(
         private loginService: LoginService,
+        private toasterService: ToasterService,
         private router: Router,
         private route: ActivatedRoute) {
     }
 
     ngOnInit() {
-        this.loginService.logout();
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/users';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/members';
     }
 
     login() {
-    const email: string = this.email;
-    const password: string = this.password;
-    this.loginService.login(email, password)
-    .subscribe(jwt => {
-        if (jwt) {
-            localStorage.setItem('currentUser', JSON.stringify(jwt));
-        }
-        this.router.navigate(['/users']);
-    });
+        const username: string = this.username;
+        const password: string = this.password;
+        this.loginService.login(username, password)
+        .subscribe(jwt => {
+            if (jwt) {
+                localStorage.setItem('currentUser', JSON.stringify(jwt));
+            }
+            this.router.navigate([this.returnUrl]);
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
     }
 }
