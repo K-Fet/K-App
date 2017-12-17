@@ -11,15 +11,15 @@ import { routing } from './app.routing';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
-import { UsersListComponent } from './users/list/users-list.component';
-import { UserNewComponent } from './users/new/user-new.component';
-import { UserEditComponent } from './users/edit/user-edit.component';
+import { MembersListComponent } from './members/list/members-list.component';
+import { MemberNewComponent } from './members/new/member-new.component';
+import { MemberEditComponent } from './members/edit/member-edit.component';
 
 // Services
 import { AuthGuard } from './_guards/auth.guard';
 import { ToasterService } from './_services/toaster.service';
 import { LoginService } from './_services/login.service';
-import { UserService } from './_services/user.service';
+import { MemberService } from './_services/member.service';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -33,9 +33,9 @@ import { MaterialModule } from './_helpers/material.module';
         MenuComponent,
         LoginComponent,
         MenuComponent,
-        UsersListComponent,
-        UserNewComponent,
-        UserEditComponent
+        MembersListComponent,
+        MemberNewComponent,
+        MemberEditComponent
     ],
     imports: [
         CommonModule,
@@ -48,7 +48,7 @@ import { MaterialModule } from './_helpers/material.module';
     bootstrap: [AppComponent],
     providers: [
         LoginService,
-        UserService,
+        MemberService,
         AuthGuard,
         ToasterService,
         {

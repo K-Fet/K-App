@@ -7,16 +7,16 @@ import { AuthGuard } from './_guards/auth.guard';
 
 // Components
 import { LoginComponent } from './login/login.component';
-import { UsersListComponent } from './users/list/users-list.component';
-import { UserNewComponent } from './users/new/user-new.component';
-import { UserEditComponent } from './users/edit/user-edit.component';
+import { MembersListComponent } from './members/list/members-list.component';
+import { MemberNewComponent } from './members/new/member-new.component';
+import { MemberEditComponent } from './members/edit/member-edit.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/users', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
-    { path: 'users', component: UsersListComponent, canActivate: [AuthGuard] },
-    { path: 'users/new', component: UserNewComponent, canActivate: [AuthGuard] },
-    { path: 'users/:id', component: UserEditComponent, canActivate: [AuthGuard] },
+    { path: 'members', component: MembersListComponent, canActivate: [AuthGuard] },
+    { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard] },
+    { path: 'memebers/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

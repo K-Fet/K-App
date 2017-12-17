@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { UserService } from '../../_services/user.service';
+import { MemberService } from '../../_services/member.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { User } from '../../_models/index';
+import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './user-edit.component.html',
+  templateUrl: './member-edit.component.html',
 })
 
-export class UserEditComponent implements OnInit {
+export class MemberEditComponent implements OnInit {
     id: string;
     email: string;
     firstName: string;
@@ -25,7 +25,7 @@ export class UserEditComponent implements OnInit {
     private sub: any;
 
     constructor(
-        private userService: UserService,
+        private memberService: MemberService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router
@@ -34,10 +34,10 @@ export class UserEditComponent implements OnInit {
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
             this.id = params['id'];
-            this.userService.getById(+this.id).subscribe(user => {
-                this.firstName = user.firstName;
-                this.lastName = user.lastName;
-                this.school = user.school;
+            this.memberService.getById(+this.id).subscribe(member => {
+                this.firstName = member.firstName;
+                this.lastName = member.lastName;
+                this.school = member.school;
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -46,14 +46,14 @@ export class UserEditComponent implements OnInit {
     }
 
     edit() {
-        const user = new User();
-        user.id = +this.id;
-        user.firstName = this.firstName;
-        user.lastName = this.lastName;
-        user.school = this.school;
-        this.userService.update(user).subscribe(() => {
+        const member = new Member();
+        member.id = +this.id;
+        member.firstName = this.firstName;
+        member.lastName = this.lastName;
+        member.school = this.school;
+        this.memberService.update(member).subscribe(() => {
             this.toasterService.showToaster('Utilisateur modifié', 'Fermer');
-            this.router.navigate(['/users']);
+            this.router.navigate(['/members']);
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

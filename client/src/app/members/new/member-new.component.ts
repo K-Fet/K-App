@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { UserService } from '../../_services/user.service';
+import { MemberService } from '../../_services/member.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { User } from '../../_models/index';
+import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './user-new.component.html',
+  templateUrl: './member-new.component.html',
 })
 
-export class UserNewComponent implements OnInit {
+export class MemberNewComponent implements OnInit {
     firstName: string;
     lastName: string;
     school: string;
@@ -19,19 +19,19 @@ export class UserNewComponent implements OnInit {
     firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
     schoolFormControl: FormControl = new FormControl('', [Validators.required]);
 
-    constructor(private userService: UserService, private toasterService: ToasterService, private router: Router) {}
+    constructor(private memberService: MemberService, private toasterService: ToasterService, private router: Router) {}
     ngOnInit(): void {
 
     }
 
     add() {
-        const user = new User();
-        user.firstName = this.firstName;
-        user.lastName = this.lastName;
-        user.school = this.school;
-        this.userService.create(user).subscribe(() => {
-            this.toasterService.showToaster('Utilisateur créé', 'Fermer');
-            this.router.navigate(['/users'] );
+        const member = new Member();
+        member.firstName = this.firstName;
+        member.lastName = this.lastName;
+        member.school = this.school;
+        this.memberService.create(member).subscribe(() => {
+            this.toasterService.showToaster('Adhérent créé', 'Fermer');
+            this.router.navigate(['/members'] );
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

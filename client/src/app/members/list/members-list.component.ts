@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { User } from '../../_models/index';
-import { UserService } from '../../_services/user.service';
+import { Member } from '../../_models/index';
+import { MemberService } from '../../_services/member.service';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
@@ -18,10 +18,10 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list',
-  templateUrl: './users-list.component.html',
-  styleUrls: ['./users-list.component.scss']
+  templateUrl: './members-list.component.html',
+  styleUrls: ['./members-list.component.scss']
 })
-export class UsersListComponent implements OnInit {
+export class MembersListComponent implements OnInit {
 
     displayedColumns = ['lastName', 'firstName', 'school', 'action'];
     dataSource: UsersDataSource;
@@ -31,11 +31,11 @@ export class UsersListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild('filter') filter: ElementRef;
 
-    constructor(private userService: UserService, private toasterService: ToasterService, private router: Router) {
+    constructor(private memberService: MemberService, private toasterService: ToasterService, private router: Router) {
     }
 
     ngOnInit() {
-        this.dataSource = new UsersDataSource(this.userService, this.sort, this.paginator);
+        this.dataSource = new UsersDataSource(this.memberService, this.sort, this.paginator);
         Observable.fromEvent(this.filter.nativeElement, 'keyup')
         .debounceTime(150)
         .distinctUntilChanged()
@@ -45,16 +45,16 @@ export class UsersListComponent implements OnInit {
         });
     }
 
-    edit(user: User) {
-        this.router.navigate(['/users', user.id]);
+    edit(member: Member) {
+        this.router.navigate(['/members', member.id]);
     }
 
-    delete(user: User) {
-        console.log(user);
-        this.userService.delete(user.id)
+    delete(member: Member) {
+        console.log(member);
+        this.memberService.delete(member.id)
         .subscribe(() => {
             this.toasterService.showToaster('Utilisateur supprimé', 'Fermer');
-            this.dataSource = new UsersDataSource(this.userService, this.sort, this.paginator);
+            this.dataSource = new UsersDataSource(this.memberService, this.sort, this.paginator);
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');
@@ -68,11 +68,11 @@ export class UsersDataSource extends DataSource<any> {
     get filter(): string { return this.filterChange.value; }
     set filter(filter: string) { this.filterChange.next(filter); }
 
-    filteredData: User[] = [];
-    renderedData: User[] = [];
+    filteredData: Member[] = [];
+    renderedData: Member[] = [];
 
     constructor(
-        private userService: UserService,
+        private memberService: MemberService,
         private sort: MatSort,
         private paginator: MatPaginator
     ) {
@@ -80,9 +80,9 @@ export class UsersDataSource extends DataSource<any> {
         this.filterChange.subscribe(() => this.paginator.pageIndex = 0);
     }
 
-    connect(): Observable<User[]> {
+    connect(): Observable<Member[]> {
         const displayDataChanges = [
-            this.userService.dataChange,
+            this.memberService.dataChange,
             this.sort.sortChange,
             this.filterChange,
             this.paginator.page,
@@ -91,11 +91,11 @@ export class UsersDataSource extends DataSource<any> {
         return Observable.merge(...displayDataChanges)
         .startWith(null)
         .switchMap(() => {
-          return this.userService.getAll();
+          return this.memberService.getAll();
         })
-        .map(users => {
+        .map(members => {
             // Filter data
-            this.filteredData = users.slice().filter((item: User) => {
+            this.filteredData = members.slice().filter((item: Member) => {
                 const searchStr = (item.firstName + item.lastName).toLowerCase();
                 return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
             });
@@ -111,7 +111,7 @@ export class UsersDataSource extends DataSource<any> {
         });
     }
 
-    sortData(data: User[]): User[] {
+    sortData(data: Member[]): Member[] {
         if (!this.sort.active || this.sort.direction === '') { return data; }
 
         return data.sort((a, b) => {

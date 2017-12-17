@@ -1,37 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { User } from '../_models/index';
+import { Member } from '../_models/index';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class UserService {
-    dataChange: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
-    get data(): User[] { return this.dataChange.value; }
+export class MemberService {
+    dataChange: BehaviorSubject<Member[]> = new BehaviorSubject<Member[]>([]);
+    get data(): Member[] { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>('/api/users').catch(this.handleError);
+        return this.http.get<Member[]>('/api/members').catch(this.handleError);
     }
 
     getById(id: number) {
-        return this.http.get<User>('/api/users/' + id);
+        return this.http.get<Member>('/api/members/' + id);
     }
 
-    create(user: User) {
-        return this.http.post('/api/users', user).catch(this.handleError);
+    create(member: Member) {
+        return this.http.post('/api/members', member).catch(this.handleError);
     }
 
-    update(user: User) {
-        return this.http.put('/api/users/' + user.id, user);
+    update(member: Member) {
+        return this.http.put('/api/members/' + member.id, member);
     }
 
     delete(id: number) {
-        return this.http.delete('/api/users/' + id).catch(this.handleError);
+        return this.http.delete('/api/members/' + id).catch(this.handleError);
     }
     private handleError(err: HttpErrorResponse) {
         let errorMessage = '';
@@ -41,7 +41,7 @@ export class UserService {
             console.log(err);
             switch (err.error) {
                 case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter un utilisateur`;
+                    errorMessage = `Erreur, impossible d'ajouter un adhérent`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;
