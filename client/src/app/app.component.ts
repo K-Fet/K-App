@@ -1,19 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-    title = 'app';
+export class AppComponent {
+  title = 'K-App';
 
-    constructor(private http: HttpClient) {}
-
-    ngOnInit(): void {
-        this.http.get('/api/hello', {responseType: 'text'}).subscribe(data => {
-            console.log('Result: ' + data);
-        });
-    }
+  constructor(private router: Router) {}
 }

@@ -41,7 +41,7 @@ async function login(req, res) {
 async function logout(req, res) {
     await authService.logout(req.user.jit);
 
-    res.sendStatus(200);
+    res.send({});
 }
 
 module.exports = {

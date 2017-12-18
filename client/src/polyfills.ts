@@ -37,8 +37,12 @@
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
 
+/** IE10 and IE11 requires the following for the Reflect API. */
+// import 'core-js/es6/reflect';
+
+
 /** Evergreen browsers require these. **/
-import 'core-js/es6/reflect';
+// Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
 import 'core-js/es7/reflect';
 
 
@@ -70,3 +74,6 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+
+// HammerJS (angular material dependency)
+import 'hammerjs/hammer';
