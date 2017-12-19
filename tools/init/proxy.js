@@ -1,5 +1,10 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 const inquirer = require('inquirer');
+const path = require('path');
+const util = require('util');
+const { overwriteOrNot } = require('./util');
+const exec = util.promisify(require('child_process').exec);
 
 /**
  *
@@ -64,9 +69,61 @@ async function askQuestions(configObj) {
     }
 }
 
-
+/**
+ * Install component.
+ *
+ * @param config
+ * @return {Promise<void>}
+ */
 async function configure(config) {
+    if (!config.proxy || !config.proxy.caddy) return;
 
+    const clientFolder = path.resolve(__dirname, '../../client/dist/');
+
+    let backendList = '';
+
+    for (let i = 0; i < config.app.instances; i++) {
+        // TODO When proxy is not on localhost
+        backendList += `localhost:${config.app.firstPort + i} `;
+    }
+
+    const caddyFile = `
+${config.proxy.caddy.serverAddress} { # Your site's address
+
+    # Serve client app
+    root ${clientFolder}
+    
+    # Compress responses
+    gzip
+    
+    # Set usefull headers
+    header / {
+        # Cache application for one day
+        Cache-Control "public, max-age=86400"
+    }
+    
+    # Log everything to stdout, treated by journalctl
+    log stdout
+    
+    # Proxy request for API
+    proxy /api ${backendList}{
+        policy round_robin      # Use round robin for the backend
+        fail_timeout 5m         # Time before considering a backend down
+        try_duration 4s         # How long proxy will try to find a backend
+        transparent             # Set headers as the proxy except
+    }
+}
+`;
+
+    await overwriteOrNot('/srv/caddy/Caddyfile', caddyFile);
+
+
+    if (!config.proxy.caddy.install) return;
+
+    console.log('Installing Caddy Server');
+    const { stderr } = await exec('curl https://getcaddy.com | bash -s personal http.cache');
+    console.error('Error while installation:', stderr);
+    console.log('Caddy Server installed');
 }
 
 module.exports = {

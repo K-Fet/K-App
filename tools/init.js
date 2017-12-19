@@ -1,5 +1,18 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
+if (process.getuid && process.getuid() === 0) {
+    console.error('You have to run this tool as root');
+    process.exit(1);
+}
+
+if (process.platform === 'win32') {
+    console.error('This tool does not work on Windows at this moment');
+    process.exit(1);
+}
+
+
 
 const config = {
     app: {
@@ -11,7 +24,8 @@ const config = {
         dir: '/srv/kapp/backups',
         username: null,
         password: null,
-        every: 'daily'
+        frequency: 'daily',
+        deleteAfter: 30
     },
 
     mysql: {
@@ -30,6 +44,9 @@ const config = {
         nginx: false
     },
 
+    jwt: {
+        secret: ''
+    },
     account: {
         admin: {
             password: null

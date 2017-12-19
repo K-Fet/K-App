@@ -14,9 +14,10 @@ To see how to make automatic backups, see [Backups](./Backups.md).
 To run the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
+- [Git](https://git-scm.com)
 
 
-### Service file
+### Systemd configuration
 
 We will use `systemd` to monitor and control our app.
 We need to create a new file containing the service configuration.
@@ -86,75 +87,8 @@ ProtectKernelModules=yes
 WantedBy=multi-user.target
 ```
 
-### Get the latest release
 
-```bash
-cd /srv/
-
-# Clone the repo under the 'kapp' folder
-git clone https://github.com/K-Fet/K-App.git kapp
-
-# Launch the update process
-./kapp/tools/update.sh
-
-```
-
-Here we use the `/srv/kapp` base folder for our app. 
-Be free to change it, but this will change 
-the service config and the backup config.
-
-### Ready, Set, Go! 
-
-Everything is ready, we just need to launch an instance of the server.
-
-For this, execute: `systemctl start kapp@3000.service`, 
-where `3000` is the web port.
-
-To let the server reboot after machine reboot, 
-execute :`systemctl enable kapp@3000.service`
-
-### Database
-
-#### Create the database
-
-First connect to mysql shell with ***root*** access,
-then create the app database:
-
-```mysql
-CREATE DATABASE kapp;
-```
-
-Then launch the script `/tools/sql/init.sql` to create the database structure:
-```mysql
-source /path/to/tools/sql/init.sql;
-```
-
-
-#### Create the user
-
-Let's start by making a new user within the MySQL shell:
-
-```mysql
-CREATE USER 'kapp'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
-```
-
-This user has no permissions to do anything (even login). 
-To grant access to the database, do this:
-
-```mysql
-GRANT USAGE, SELECT, INSERT, UPDATE, DELETE ON `kapp`.* TO 'kapp'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-
-## Updating
-
-To update the project, you just have to execute this script: 
-`./tools/update.sh`
-
-It will pull the latest release from git and restart everything.
-
-## Proxying / Load balancing
+### Proxying / Load balancing
 
 There are several tools that can be used as proxies.
 Why add a proxy in front of the _NodeJS_ server?
@@ -171,7 +105,7 @@ It can be configured in `/server/config/web.js`, but not by environment variable
 Instead, you can add HTTPS directly in the proxy 
 (n.b.: data between _Proxy_ and _NodeJS_ ***will not*** be encrypted). 
 
-### Caddy
+#### Caddy
 
 [Caddy](https://caddyserver.com/) is a really good web server, with automatic HTTPS, 
 and an easy configuration.
@@ -209,8 +143,114 @@ kapp.example.com  { # Your site's address
 }
 ```
 
-### Nginx
+#### Nginx
 
 [`Nginx`](https://nginx.org/en/) is a well known web server. 
 Documentation is available on their site.
 
+
+### Database configuration
+
+#### Create the database
+
+First connect to mysql shell with ***root*** access,
+then create the app database:
+
+```mysql
+CREATE DATABASE kapp;
+```
+
+Then Sequelize gonna create everything it wants to work.
+
+#### Create the user
+
+Let's start by making a new user within the MySQL shell:
+
+```mysql
+CREATE USER 'kapp'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
+```
+
+This user has no permissions to do anything (even login). 
+To grant access to the database, do this:
+
+```mysql
+GRANT USAGE, SELECT, INSERT, UPDATE, DELETE ON `kapp`.* TO 'kapp'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Get the sources
+
+Now that everything is wired up, we can clone the project
+and we will be almost done.
+
+```bash
+cd /srv/
+
+# Clone the repo under the 'kapp' folder
+git clone https://github.com/K-Fet/K-App.git kapp
+
+# Launch the update process to init
+./kapp/tools/update.sh
+```
+
+
+### Ready, Set, Go!
+
+
+Everything is ready, we just need to launch an instance of the server.
+
+For this, execute: `systemctl start kapp@3000.service`, 
+where `3000` is the web port.
+
+To let the server reboot after machine reboot, 
+execute :`systemctl enable kapp@3000.service`
+
+
+## Usage
+
+### Launching
+
+If you want to launch an instance of the server,
+do this:
+
+```bash
+systemctl start kapp@3000.service
+```
+With `3000` as the web port. 
+
+
+### Updating
+
+Updating is quite simple, you just have to launch this script:
+```bash
+./kapp/tools/update.sh
+```
+
+It will pull the latest release from git and restart everything.
+
+
+### Get the latest release
+
+```bash
+cd /srv/
+
+# Clone the repo under the 'kapp' folder
+git clone https://github.com/K-Fet/K-App.git kapp
+
+# Launch the update process
+./kapp/tools/update.sh
+```
+
+Here we use the `/srv/kapp` base folder for our app. 
+Be free to change it, but this will change 
+the service config and the backup config.
+
+### Ready, Set, Go! 
+
+Everything is ready, we just need to launch an instance of the server.
+
+For this, execute: `systemctl start kapp@3000.service`, 
+where `3000` is the web port.
+
+To let the server reboot after machine reboot, 
+execute :`systemctl enable kapp@3000.service`

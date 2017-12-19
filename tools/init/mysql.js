@@ -44,7 +44,12 @@ async function askQuestions(configObj) {
     };
 }
 
-
+/**
+ * Install component.
+ *
+ * @param config
+ * @return {Promise<void>}
+ */
 async function configure(config) {
 
 }

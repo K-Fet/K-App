@@ -29,12 +29,6 @@ async function askQuestions(configObj) {
     };
 }
 
-
-async function configure(config) {
-
-}
-
 module.exports = {
-    askQuestions,
-    configure
+    askQuestions
 };
