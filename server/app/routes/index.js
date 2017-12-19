@@ -6,7 +6,8 @@ const logger = require('../../logger');
 
 // Middlewares
 
-router.use(morgan('combined'));
+router.use(morgan('combined', { stream: logger.stream }));
+
 router.use(bodyParser.json());
 
 

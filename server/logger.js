@@ -15,4 +15,17 @@ const logger = winston.createLogger({
     )
 });
 
+
+logger.stream = {
+    /**
+     * Stream the morgan logger to winston.
+     *
+     * @param message
+     * @param encoding
+     */
+    write(message, encoding) {
+        logger.info(message);
+    }
+};
+
 module.exports = logger;
