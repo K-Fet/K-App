@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const crypto = require('crypto');
 
@@ -22,6 +23,7 @@ async function askQuestions(configObj) {
         },
     ];
 
+    console.log('Configuring JWT:');
     const answers = await inquirer.prompt(questions);
 
     configObj.jwt = {

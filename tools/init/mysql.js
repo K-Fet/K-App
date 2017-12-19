@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 
 /**
@@ -34,6 +35,7 @@ async function askQuestions(configObj) {
         }
     ];
 
+    console.log('Configuring Database:');
     const answers = await inquirer.prompt(questions);
 
     configObj.mysql = {
@@ -44,17 +46,6 @@ async function askQuestions(configObj) {
     };
 }
 
-/**
- * Install component.
- *
- * @param config
- * @return {Promise<void>}
- */
-async function configure(config) {
-
-}
-
 module.exports = {
-    askQuestions,
-    configure
+    askQuestions
 };

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
+/* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const path = require('path');
 const util = require('util');
@@ -43,6 +43,7 @@ async function askQuestions(configObj) {
         }
     ];
 
+    console.log('Configuring Proxy:');
     const answers = await inquirer.prompt(questions);
 
     if (!answers.useProxy) return;
@@ -116,7 +117,6 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
 `;
 
     await overwriteOrNot('/srv/caddy/Caddyfile', caddyFile);
-
 
     if (!config.proxy.caddy.install) return;
 

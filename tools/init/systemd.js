@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const path = require('path');
 const appPackage = require('../../package');
@@ -34,6 +35,7 @@ async function askQuestions(configObj) {
         }
     ];
 
+    console.log('Configuring application:');
     const answers = await inquirer.prompt(questions);
 
     configObj.app = {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const path = require('path');
 const { overwriteOrNot } = require('./util');
@@ -71,6 +72,7 @@ async function askQuestions(configObj) {
         },
     ];
 
+    console.log('Configuring Backups:');
     const answers = await inquirer.prompt(questions);
 
     if (!answers.useBackup) return;
