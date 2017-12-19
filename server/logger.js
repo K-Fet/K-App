@@ -23,7 +23,7 @@ logger.stream = {
      * @param message
      * @param encoding
      */
-    write(message, encoding) {
+    write(message, encoding) {  // eslint-disable-line no-unused-vars
         logger.info(message);
     }
 };
