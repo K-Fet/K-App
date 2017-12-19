@@ -6,6 +6,7 @@ const models = require('./app/models/index');
 const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.password, {
     host: DB_CONFIG.host,
     dialect: 'mysql',
+    timezone: 'Europe/Paris',
 
     pool: {
         max: 5,
