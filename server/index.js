@@ -8,9 +8,6 @@ const app = express();
 
 const WEB_CONFIG = require('./config/web');
 
-// Logger init
-require('./logger');
-
 // Database init
 require('./db');
 
