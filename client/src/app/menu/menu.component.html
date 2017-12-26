@@ -8,7 +8,8 @@
     </button>
   </mat-toolbar>
   <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
+    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
       <mat-nav-list>
           <mat-list>
             <h3 mat-subheader>Adhérents</h3>

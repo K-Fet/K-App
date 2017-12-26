@@ -1,10 +1,18 @@
 <div fxLayoutAlign="center">
-    <mat-card>
+    <mat-card fxFlex="550px" fxFlex.lt-sm="95">
         <mat-card-header>
-            <mat-card-title>Liste des adhérents</mat-card-title>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Listes des adhérents</h1>
+                </section>
+            </mat-card-title>
+            <div fxFlex></div>
+            <a mat-mini-fab color="primary" routerLink="/members/new">
+                <mat-icon>add</mat-icon>
+            </a>
         </mat-card-header>
         <mat-card-content>
-            <div class="example-header">
+            <div class="header">
                 <mat-form-field>
                     <input matInput #filter placeholder="Rechercher des utilisateurs">
                 </mat-form-field>
@@ -45,7 +53,7 @@
                 <mat-paginator #paginator
                     [length]="dataSource.filteredData.length"
                     [pageIndex]="0"
-                    [pageSize]="25"
+                    [pageSize]="10"
                     [pageSizeOptions]="[5, 10, 25, 100]">
                 </mat-paginator>
             </div>
