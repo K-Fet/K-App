@@ -1,7 +1,11 @@
 <div fxLayoutAlign="center">
-    <mat-card>
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
         <mat-card-header>
-            <mat-card-title>Ajouter un adhérent</mat-card-title>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Ajouter un adhérent</h1>
+                </section>
+            </mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <form #connexionForm="ngForm" fxLayout="column">
@@ -16,7 +20,7 @@
                     <input matInput placeholder="Prénom"
                     autocorrect="off" required [(ngModel)]="firstName" name="firstName">
                     <mat-error *ngIf="firstNameFormControl.hasError('required')">
-                    Email <strong>requis</strong>
+                    Prénom <strong>requis</strong>
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
@@ -26,8 +30,10 @@
                     École <strong>requise</strong>
                     </mat-error>
                 </mat-form-field>
-                <button mat-button type="button" (click)="add()" 
-                [disabled]="!connexionForm.valid">Ajouter</button>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="button" (click)="add()" 
+                    [disabled]="!connexionForm.valid">Ajouter</button>
+                </div>
             </form>
         </mat-card-content>
     </mat-card>
