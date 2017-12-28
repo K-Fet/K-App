@@ -10,6 +10,7 @@ import { LoginComponent } from './login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/members', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
     { path: 'members', component: MembersListComponent, canActivate: [AuthGuard] },
     { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard] },
     { path: 'members/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
+    { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

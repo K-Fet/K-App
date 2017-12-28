@@ -6,7 +6,6 @@ import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 
 @Component({
-  selector: 'app-login',
   templateUrl: './member-new.component.html',
 })
 

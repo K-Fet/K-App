@@ -14,6 +14,9 @@ import { LoginComponent } from './login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MyServicesComponent } from './services/my-services/my-services.component';
+import { PlanningComponent } from './services/planning/planning.component';
 
 // Services
 import { AuthGuard } from './_guards/auth.guard';
@@ -35,7 +38,10 @@ import { MaterialModule } from './_helpers/material.module';
         MenuComponent,
         MembersListComponent,
         MemberNewComponent,
-        MemberEditComponent
+        MemberEditComponent,
+        DashboardComponent,
+        MyServicesComponent,
+        PlanningComponent
     ],
     imports: [
         CommonModule,

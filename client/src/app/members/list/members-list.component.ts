@@ -12,7 +12,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
-  selector: 'app-list',
   templateUrl: './members-list.component.html',
   styleUrls: ['./members-list.component.scss']
 })
