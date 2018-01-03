@@ -1,5 +1,6 @@
-const logger = require('../../logger');
 const barmanService = require('../services/barman-service');
+const { Barman } = require('../models/barman');
+const { checkStructure, createUserError } = require('../../utils');
 
 /**
  * Fetch all the barmen from the database.
@@ -9,55 +10,109 @@ const barmanService = require('../services/barman-service');
  * @return {Promise.<void>} Nothing
  */
 async function getAllBarmen(req, res) {
-    try {
-        const barmen = await barmanService.getAllBarmen();
+    const barmen = await barmanService.getAllBarmen();
 
-        res.json(barmen);
-    } catch(e) {
-        logger.error('Error while getting all barmen', e),
-        res.sendStatus(500);
-    }
-
-    return res.end();
+    res.json(barmen);
 }
 
 /**
- * Fetch the barman linked to an Id from the database.
+* Create a Barman
+*
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function createBarman(req, res) {
+    // FIXME We should check the type of each provided field, instead of just the presence
+    if (!checkStructure(req.body, ['firstName', 'lastName'])) {
+        throw createUserError(
+            'BadRequest',
+            'The body has missing properties, needed: [\'firstName\', \'lastName\']'
+        );
+    }
+
+    let newBarman = new Barman({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        nickname: req.body.nickname,
+        facebook: req.body.facebook,
+        godFather: req.body.godFather,
+        dateOfBirth: req.body.dateOfBirth,
+        flow: req.body.flow,
+        kommissions: req.body.kommissions,
+        roles: req.body.roles,
+        services: req.body.services,
+        active: req.body.active
+    });
+
+    newBarman = await barmanService.createBarman(newBarman);
+
+    res.json(newBarman);
+}
+
+/**
+ * Get a barman by his id.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
 async function getBarmanById(req, res) {
-    try {
-        const barmanId = req.params.barmanId;
-        const barman = await barmanService.getBarmanById(barmanId);
+    const barmanId = req.params.id;
 
-        res.json(barman);
-    }catch (e) {
-        logger.error('Error while getting a barman by his Id', e);
-        res.sendStatus(500);
-    }
+    const barman = await barmanService.getBarmanById(barmanId);
 
-    return res.end();
+    res.json(barman);
 }
 
 /**
- * Delete the barman linked to an Id from the database.
- *
+* Upadate a barman.
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function updateBarman(req, res) {
+    // FIXME We should check the type of each provided field, instead of just the presence
+    if (!checkStructure(req.body, ['firstName', 'lastName'])) {
+        throw createUserError(
+            'BadRequest',
+            'The body has missing properties, needed: [\'firstName\', \'lastName\']'
+        );
+    }
+    let newBarman = new Barman({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        nickname: req.body.nickname,
+        facebook: req.body.facebook,
+        godFather: req.body.godFather,
+        dateOfBirth: req.body.dateOfBirth,
+        flow: req.body.flow,
+        kommissions: req.body.kommissions,
+        roles: req.body.roles,
+        services: req.body.services,
+        active: req.body.active
+    });
+
+    newBarman = await barmanService.updateBarman(newBarman);
+
+    res.json(newBarman);
+
+}
+
+/**
+ * Delete a barman
+
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
 async function deleteBarmanById(req, res) {
-    try {
-        const barmanId = req.params.barmanId;
-        await barmanService.deleteBarmanById(barmanId);
+    const barmanId = req.params.id;
 
-    } catch (e) {
-        logger.error('Error while deleting a barman by his Id', e);
-        res.sendStatus(500);
-    }
+    const barman = await barmanService.deleteBarmanById(barmanId);
+
+    res.json(barman);
+
 }
 
 /**
@@ -68,21 +123,18 @@ async function deleteBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getServicesBarman(req, res) {
-    try {
-        const barmanId = req.params.barmanId;
-        const services = await barmanService.getServicesOfBarman(barmanId);
+    const barmanId = req.params.id;
 
-        res.json(services);
-    } catch (e) {
-        logger.error('Error while getting Services of a barman');
-        res.sendStatus(500);
-    }
-    return res.end();
+    const services = await barmanService.getServicesOfBarman(barmanId);
+
+    res.json(services);
 }
 
 module.exports = {
     getAllBarmen,
+    createBarman,
     getBarmanById,
+    updateBarman,
     deleteBarmanById,
     getServicesBarman
 };

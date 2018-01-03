@@ -1,6 +1,7 @@
 const logger = require('../../logger');
 const { Barman } = require('../models/barman');
 const { Service } = require ('../models/service');
+const { createUserError } = require('../../utils');
 
 /**
  * Return all barmen of the app.
@@ -9,72 +10,112 @@ const { Service } = require ('../models/service');
  */
 async function getAllBarmen() {
 
-    logger.info('Barman service: get all barmen');
+    logger.verbose('Barman service: get all barmen');
     return await Barman.findAll();
 }
 
 /**
- * Return all barmen of the app.
+ * Create a Barman.
  *
- * @returns {Promise<Array>} Barmen
+ * @param newBarman {Barman} partial member
+ * @return {Promise<Barman|Errors.ValidationError>} The created barman with its id
  */
-async function createBarman() { // quels sont les attributs à changer
+async function createBarman(newBarman) {
 
-    logger.info('Barman service: create a barman');
+    logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
+    return await newBarman.save();
 }
 
 /**
- * Return all barmen of the app.
- *
- * @returns {Promise<Array>} Barmen
+ * Get a Barman by his id.
+ * @param barmanId {number} Barman Id
+ * @returns {Promise<Barman>} Barmen
  */
 async function getBarmanById(barmanId) {
 
-    logger.info('Barman service: get a barman by his Id');
-    return await Barman.findById(barmanId);
+    logger.verbose('Barman service: get a barman by his id %d', barmanId);
+
+    const barman = Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    return await barman;
 }
 
 /**
- * Return all barmen of the app.
+ * Update a barman
+ * This will copy only the allowed changes from the `updatedBarman`
+ * into the current barman.
+ * This means, with this function, you can not change everything like
+ * the `createdAt` field or others.
  *
- * @returns void
+ * @param barmanId {number} barman id
+ * @param updatedBarman {Barman} Updated barman, constructed from the request.
+ * @return {Promise<Barman>} The updated barman
+ */
+async function updateBarmanById(barmanId, updatedBarman) {
+
+    const currentBarman = await Barman.findById(barmanId);
+
+    if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
+
+
+    return await currentBarman.update({
+        firstName: updatedBarman.firstName,
+        lastName: updatedBarman.lastName,
+        nickname: updatedBarman.nickname,
+        facebook: updatedBarman.facebook,
+        godFather: updatedBarman.godFather,
+        dateOfBirth: updatedBarman.dateOfBirth,
+        flow: updatedBarman.flow,
+        kommissions: updatedBarman.kommissions,
+        roles: updatedBarman.roles,
+        services: updatedBarman.services,
+        active: updatedBarman.active
+    });
+}
+
+/**
+ * Delete a Barman.
+ *
+ * @param barmanId {number} barman id
+ * @returns {Promise<Barman>} The deleted barman
  */
 async function deleteBarmanById(barmanId) {
 
-    logger.info('Barman service: delete a barman by his Id');
-    Barman.destroy({
-        where :{Id: barmanId}
-    });
+    logger.verbose('Barman service: deleting member with id %d', barmanId);
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    await barman.destroy();
+
+    return barman;
 }
 
 /**
- * Return all barmen of the app.
+ * Get the services assigned to a barman
  *
- * @returns {Promise<Array>} Barmen
- */
-async function updateBarmanById(barmanId) { // quels sont les attributs à changer
-
-    logger.info('Barman service: update a barman by his Id');
-    Barman.update({
-
-    },
-    { where :{Id: barmanId}
-
-    });
-}
-
-/**
- * Return all barmen of the app.
- *
- * @returns {Promise<Array>} Barmen
+ * @param barmanId {number} barman id
+ * @returns {Promise<Array>} An array of Services
  */
 async function getServicesOfBarman(barmanId) {
-    logger.info('Barman service: get services of a barman');
-    return await Service.findAll({
-        where:{Barman: barmanId}//faux à corriger
-    });
-}
+    logger.verbose('Barman service: get services of a barman');
 
+    /*const barman = Barman.findById(barmanId);
+
+    return await Service.findAll({
+        attributes: ['name']
+    },
+    {
+        where: {
+
+        }
+    });*/
+}
 
 module.exports = {
     getAllBarmen,
