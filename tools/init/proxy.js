@@ -39,7 +39,7 @@ async function askQuestions(configObj) {
             name: 'siteAddress',
             message: 'What is your site\'s address?',
             validate: input => !!input || 'You must provide an address',
-            when: answers => answers.useBackup
+            when: answers => answers.proxyServer === 'Caddy Server'
         }
     ];
 
@@ -48,11 +48,7 @@ async function askQuestions(configObj) {
 
     if (!answers.useProxy) return;
 
-    configObj.proxy = {
-        dir: answers.backupDir,
-        username: answers.dbUser,
-        password: answers.dbPassword
-    };
+    configObj.proxy = {};
 
     switch (answers.proxyServer) {
         case 'Caddy Server':

@@ -18,7 +18,7 @@ async function askQuestions(configObj) {
         {
             type: 'confirm',
             name: 'createAdmin',
-            message: 'Do you want to create the admin account?',
+            message: 'Do you want to create an admin account?',
             default: false,
         },
         {
@@ -30,7 +30,7 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'adminCode',
-            message: 'Code used to do operations?',
+            message: 'Code used to do operations (not the password)?',
             valid: input => !!input
         }
     ];
@@ -59,7 +59,7 @@ async function configure(config) {
     if (!config.account) return;
 
     // Init sequelize instance
-    const sequelize = new Sequelize(config.mysql.database, config.mysql.username, config.mysql.password, {
+    const sequelize = new Sequelize(config.mysql.database, config.mysql.app.username, config.mysql.app.password, {
         host: config.mysql.host,
         dialect: 'mysql',
         timezone: 'Europe/Paris',

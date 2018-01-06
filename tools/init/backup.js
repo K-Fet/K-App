@@ -45,31 +45,7 @@ async function askQuestions(configObj) {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
             }
-        },
-        {
-            type: 'input',
-            name: 'dbUser',
-            message: 'Username?',
-            default: () => {
-                if (configObj.mysql && configObj.mysql.username) {
-                    return configObj.mysql.username;
-                }
-                return 'kapp';
-            },
-            when: answers => answers.useBackup
-        },
-        {
-            type: 'password',
-            name: 'dbPassword',
-            message: 'Password?',
-            default: () => {
-                if (configObj && configObj.mysql && configObj.mysql.password) {
-                    return configObj.mysql.password;
-                }
-                return 'kapp';
-            },
-            when: answers => answers.useBackup
-        },
+        }
     ];
 
     console.log('Configuring Backups:');
@@ -79,11 +55,8 @@ async function askQuestions(configObj) {
 
     configObj.backup = {
         dir: answers.backupDir,
-        username: answers.dbUser,
-        password: answers.dbPassword,
         frequency: answers.frequency,
         deleteAfter: answers.deleteAfter
-
     };
 }
 
@@ -117,8 +90,8 @@ Type=oneshot
 ExecStart=${path.resolve(__dirname, '..', 'save-all.sh')}
 
 Environment=BACKUP_DIR=${config.backup.dir}
-Environment=MYSQL_UNAME=${config.backup.username}
-Environment=MYSQL_PWORD=${config.backup.password}
+Environment=MYSQL_UNAME=${config.mysql.backup.username}
+Environment=MYSQL_PWORD=${config.mysql.backup.password}
 Environment=MYSQL_DATABASE_NAME=${config.mysql.database}
 Environment=KEEP_BACKUPS_FOR=${config.backup.deleteAfter}
 `;

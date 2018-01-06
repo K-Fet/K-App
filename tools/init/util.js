@@ -4,7 +4,6 @@ const inquirer = require('inquirer');
 const util = require('util');
 
 const writeFile = util.promisify(fs.writeFile);
-const mkdir = util.promisify(fs.mkdir);
 
 /**
  * Create all directories needed.

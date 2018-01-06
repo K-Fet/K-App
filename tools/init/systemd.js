@@ -16,7 +16,7 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'instanceNum',
-            message: 'How many instances?',
+            message: 'How many instances do you want to use?',
             default: 4,
             validate: input => {
                 if (input >>> 0 === parseFloat(input)) return true;
@@ -66,8 +66,8 @@ Environment=PORT=%i
 Environment=HOSTNAME=${config.proxy ? 'localhost' : ''}
 
 Environment=DB_HOST=${config.mysql.host}
-Environment=DB_USER=${config.mysql.username}
-Environment=DB_PWD=${config.mysql.password}
+Environment=DB_USER=${config.mysql.app.username}
+Environment=DB_PWD=${config.mysql.app.password}
 Environment=DB_DATABASE=${config.mysql.database}
 
 Environment=JWT_SECRET=${config.jwt.secret}

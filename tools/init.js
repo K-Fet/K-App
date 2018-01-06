@@ -38,6 +38,7 @@ async function askAll() {
 
 async function configAll() {
     await systemd.configure(configuration);
+    await mysql.configure(configuration);
     await backup.configure(configuration);
     await proxy.configure(configuration);
     await account.configure(configuration);

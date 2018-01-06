@@ -13,36 +13,7 @@ To run the project you will need:
 
 You have to configure MySQL for the application.
 
-### Create the database
-
-First connect to _mysql_ shell with ***root*** access,
-then create the app database:
-
-```mysql
-CREATE DATABASE kapp;
-```
-
-Then Sequelize gonna create everything it wants to work.
-
-
-### Create the user
-
-Let's start by making a new user within the MySQL shell:
-
-```mysql
-CREATE USER 'kapp'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
-```
-
-This user has no permissions to do anything (even login). 
-To grant access to the database, do this:
-
-```mysql
-GRANT USAGE, SELECT, INSERT, UPDATE, DELETE ON `kapp`.* TO 'kapp'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-
-## Clone the sources
+## Clone the sources and install dependencies
 
 ```bash
 cd /srv/
@@ -52,15 +23,32 @@ git clone https://github.com/K-Fet/K-App.git kapp
 
 # Launch the update process
 ./kapp/tools/update.sh
+```
 
-# Launch the init script and follow instructions
+## Configure the application
+
+Before launching the app you **must** configure the application.
+The easy way is to use this script:
+```bash
 ./kapp/tools/init.js
 ```
 
+It will ask you a bunch of question and install everything as wanted.
+To do so, you have to launch this script as ***root***.
 
-## Launching instances
+What does it do ? 
+* Create the _sytemd_ service file 
+* Create the database and users in the _mysql_ server
+* Ask you if you want a proxy (and can even install one - [Caddy](https://caddyserver.com))
+* Create a new secret for [JWT](https://jwt.io)
+* Configure an automated backup as you want
+* Create an admin account on the app
 
-Now that everything is configured, you just have to launch every instances:
+After this initialization script, everything should be in place!
+
+## Launching the application
+
+Now that everything is configured, you just have to launch every instances you prepared:
 
 ```bash
 # Launch each instance
@@ -69,7 +57,7 @@ systemctl start kapp@3001.service
 systemctl start kapp@3002.service
 systemctl start kapp@3003.service
 
-# To relaunch nodejs after a reboot
+# To enable auto-restart after rebooting the machine
 systemctl enable kapp@3000.service
 systemctl enable kapp@3001.service
 systemctl enable kapp@3002.service
