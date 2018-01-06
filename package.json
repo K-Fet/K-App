@@ -21,7 +21,7 @@
         "lint": "npm run eslint && cd client/ && npm run lint",
         "postinstall": "cd client/ && npm install",
         "prod": "export NODE_ENV=production npm start",
-        "test": "concurrently --kill-others \"npm run test:back\" \"npm run test:front\"",
+        "test": "concurrently \"npm run test:back\" \"npm run test:front\"",
         "test:back": "nyc mocha server/test/**/*.js --require server/test/mocha.env",
         "test:front": "npm run lint",
         "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
