@@ -21,6 +21,7 @@ router.use(require('../middlewares/auth-guard'));
 // Dispatch to child routes
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
+router.use('/kommissions', require('./kommissions'));
 
 
 // Error handling
