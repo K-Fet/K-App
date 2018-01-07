@@ -34,7 +34,7 @@ async function login(username, password) {
 
     const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (!user || !verify(password, user.password)) {
+    if (!user || !(await verify(user.password, password))) {
         throw createUserError('LoginError', 'Bad username/password combination');
     }
 

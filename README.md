@@ -9,7 +9,7 @@ K-App application repository
 
 ## Usage
 
-For a production environment, please check [this](./docs/Deployment.md) file 
+For a production environment, please check [this](./docs/QuickDeployment.md) file 
 which explain everything :).
 
 ## Contribute

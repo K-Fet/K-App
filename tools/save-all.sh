@@ -36,8 +36,12 @@ KEEP_BACKUPS_FOR=${!KEEP_BACKUPS_FOR:=30}           # Default is 30 days
 TIMESTAMP=$(date +%F)
 
 function delete_old_backups() {
-  echo "Deleting $BACKUP_DIR/*.sql.gz older than $KEEP_BACKUPS_FOR days"
-  find ${BACKUP_DIR} -type f -name "*.sql.gz" -mtime +${KEEP_BACKUPS_FOR} -exec rm {} \;
+  if [ -z "$KEEP_BACKUPS_FOR" ]; then
+    echo "Skip deleting old backups"
+  else
+    echo "Deleting $BACKUP_DIR/*.sql.gz older than $KEEP_BACKUPS_FOR days"
+    find ${BACKUP_DIR} -type f -name "*.sql.gz" -mtime +${KEEP_BACKUPS_FOR} -exec rm {} \;
+  fi
 }
 
 function mysql_login() {
