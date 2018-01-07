@@ -21,7 +21,7 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'dbUser',
-            message: 'Privileged username?',
+            message: 'Privileged username (to create database and users)?',
             default: 'root'
         },
         {
@@ -57,6 +57,19 @@ async function askQuestions(configObj) {
         database: answers.dbName
     };
 }
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('> Database config:');
+    console.log(`>> Hostname: ${config.mysql.host}`);
+    console.log(`>> Database name: ${config.mysql.database}`);
+    console.log(`>> Privileged username: ${config.mysql.root.username}`);
+}
+
 
 /**
  *
@@ -105,5 +118,6 @@ async function configure(config) {
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

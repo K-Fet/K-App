@@ -2,7 +2,7 @@
 /* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const path = require('path');
-const { overwriteOrNot } = require('./util');
+const { overwriteOrNot, createDirDeep } = require('./util');
 
 
 /**
@@ -60,6 +60,24 @@ async function askQuestions(configObj) {
     };
 }
 
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('> Backup config:');
+    if (!config.backup) {
+        console.log('>> Do not backup!');
+        return;
+    }
+    console.log(`>> Location for backups: ${config.backup.dir}`);
+    console.log(`>> Frequency: ${config.backup.frequency}`);
+    console.log(`>> Delete backups after: ${config.backup.deleteAfter} days`);
+}
+
+
 /**
  * Install component.
  *
@@ -96,11 +114,16 @@ Environment=MYSQL_DATABASE_NAME=${config.mysql.database}
 Environment=KEEP_BACKUPS_FOR=${config.backup.deleteAfter}
 `;
 
+
+    // Create backup folder
+    await createDirDeep(config.backup.dir);
+
     await overwriteOrNot('/etc/systemd/system/kapp-save.timer', timerFile);
     await overwriteOrNot('/etc/systemd/system/kapp-save.service', backupFile);
 }
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

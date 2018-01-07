@@ -37,7 +37,7 @@ async function overwriteOrNot(file, data) {
         if (!answers.overwrite) return true;
 
     } else {
-        createDirDeep(file);
+        createDirDeep(path.dirname(file));
     }
 
     await writeFile(file, data, 'utf8');

@@ -35,7 +35,7 @@ async function askQuestions(configObj) {
         }
     ];
 
-    console.log('Configuring Proxy:');
+    console.log('Configuring Account:');
     const answers = await inquirer.prompt(questions);
 
     if (!answers.createAdmin) return;
@@ -48,6 +48,23 @@ async function askQuestions(configObj) {
         }
     };
 }
+
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('> Account config:');
+    if (!config.account) {
+        console.log('>> Do not create admin account!');
+        return;
+    }
+
+    console.log(`>> Admin username: ${config.account.admin.username}`);
+}
+
 
 /**
  * Install component.
@@ -83,5 +100,6 @@ async function configure(config) {
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

@@ -12,6 +12,8 @@ if (process.platform === 'win32') {
     process.exit(1);
 }
 
+const inquirer = require('inquirer');
+
 const account = require('./init/account');
 const backup = require('./init/backup');
 const jwt = require('./init/jwt');
@@ -36,6 +38,29 @@ async function askAll() {
     await account.askQuestions(configuration);
 }
 
+async function confirmConfig() {
+
+    console.log('==============================');
+    console.log('Current configuration:');
+
+    systemd.confirmConfig(configuration);
+    mysql.confirmConfig(configuration);
+    backup.confirmConfig(configuration);
+    proxy.confirmConfig(configuration);
+    jwt.confirmConfig(configuration);
+    account.confirmConfig(configuration);
+
+
+    const answers = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'continue',
+        message: 'Do you to proceed with the installation?',
+        default: true
+    }]);
+
+    return answers.continue;
+}
+
 async function configAll() {
     await systemd.configure(configuration);
     await mysql.configure(configuration);
@@ -44,10 +69,12 @@ async function configAll() {
     await account.configure(configuration);
 }
 
-askAll().then(() => {
-    return configAll();
-}).then(() => {
-    console.log('Done configuring');
-}).catch(e => {
-    console.error('Error while configuring :', e);
-});
+async function main() {
+    do await askAll(); while (!await confirmConfig());
+
+    console.log('Starting installation...');
+    await configAll();
+    console.log('Installation done!');
+}
+
+main().catch(e => console.error('Error while configuring :', e));
