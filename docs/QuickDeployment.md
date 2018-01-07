@@ -9,10 +9,6 @@ To run the project you will need:
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Git](https://git-scm.com)
 
-## Database
-
-You have to configure MySQL for the application.
-
 ## Clone the sources and install dependencies
 
 ```bash
