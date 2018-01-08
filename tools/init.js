@@ -75,6 +75,7 @@ async function main() {
     console.log('Starting installation...');
     await configAll();
     console.log('Installation done!');
+    process.exit(0);
 }
 
 main().catch(e => console.error('Error while configuring :', e));
