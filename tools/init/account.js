@@ -86,6 +86,8 @@ async function configure(config) {
     SpecialAccount.init(sequelize);
     SpecialAccount.associate({ ConnectionInformation });
 
+    await sequelize.sync();
+
     await SpecialAccount.create({
         code: await hash(config.account.admin.code),
         description: 'Administrator',
