@@ -47,11 +47,11 @@ async function askQuestions(configObj) {
         },
         app: {
             username: 'kapp-u-' + (Math.floor(Math.random() * 9000) + 1000),
-            password: crypto.randomBytes(64).toString('hex')
+            password: crypto.randomBytes(32).toString('hex')
         },
         backup: {
             username: 'kapp-b-' + (Math.floor(Math.random() * 9000) + 1000),
-            password: crypto.randomBytes(64).toString('hex')
+            password: crypto.randomBytes(32).toString('hex')
         },
         host: answers.dbHost,
         database: answers.dbName
@@ -96,8 +96,25 @@ async function configure(config) {
     const backupUser = config.mysql.backup.username;
     const database = config.mysql.database;
 
+    const [rows] = await co.query(`SHOW DATABASES LIKE '${database}'`);
+
+    if (rows.length > 0) {
+        const { doContinue } = await inquirer.prompt([{
+            type: 'confirm',
+            name: 'doContinue',
+            message: `The database ${database} already exists, overwrite (WARNING: Everything will be deleted)?`,
+            default: false
+        }]);
+
+        if (!doContinue) {
+            console.log('Skipping mysql configuration!');
+            return;
+        }
+
+        await co.query(`DROP DATABASE ${database}`);
+    }
+
     console.info(`Creating the database ${database}`);
-    // TODO Handle when the database already exists
     await co.query(`CREATE DATABASE ${database}`);
 
     console.info(`Creating app & backup users (${appUser} & ${backupUser})`);

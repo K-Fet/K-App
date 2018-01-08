@@ -87,10 +87,10 @@ async function configure(config) {
     SpecialAccount.associate({ ConnectionInformation });
 
     await SpecialAccount.create({
-        code: hash(config.account.admin.code),
+        code: await hash(config.account.admin.code),
         description: 'Administrator',
         connection: {
-            password: hash(config.account.admin.password),
+            password: await hash(config.account.admin.password),
             username: config.account.admin.username
         }
     });
