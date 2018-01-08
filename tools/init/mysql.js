@@ -79,14 +79,14 @@ function confirmConfig(config) {
 async function configure(config) {
     if (!config.mysql) return;
 
-    const co = mysql.createConnection({
+    const co = await mysql.createConnection({
         host: config.mysql.host,
         user: config.mysql.root.username,
         password: config.mysql.root.password
     });
 
     try {
-        await co.query('SELECT 1+1 AS Test');
+        await co.connect();
     } catch (e) {
         console.error('Unable to connect to the database, aborting installation', e);
         return process.exit(1);
