@@ -83,10 +83,11 @@ Environment=DB_DATABASE=${config.mysql.database}
 
 Environment=JWT_SECRET=${config.jwt.secret}
 
+Environment=NODE_ENV=production
 
 Type=simple
 WorkingDirectory=${root}
-ExecStart=/usr/bin/npm run prod
+ExecStart=/usr/bin/node server/index.js
 Restart=on-failure
 RestartSec=10
 
