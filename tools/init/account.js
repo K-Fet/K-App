@@ -99,6 +99,8 @@ async function configure(config) {
             password: await hash(config.account.admin.password),
             username: config.account.admin.username
         }
+    }, {
+        include: [ConnectionInformation]
     });
 
     console.info('Administrator created! Here is the password to connect', config.account.admin.password);
