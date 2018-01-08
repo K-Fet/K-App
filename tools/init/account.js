@@ -56,13 +56,13 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> Account config:');
+    console.log('|-- Account config:');
     if (!config.account) {
-        console.log('>> Do not create admin account!');
+        console.log('|   |-- Do not create admin account!');
         return;
     }
 
-    console.log(`>> Admin username: ${config.account.admin.username}`);
+    console.log(`|   |-- Admin username: ${config.account.admin.username}`);
 }
 
 

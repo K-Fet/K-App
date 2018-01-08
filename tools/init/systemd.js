@@ -50,9 +50,9 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> Application config:');
-    console.log(`>> Number of instances: ${config.app.instances}`);
-    console.log(`>> Starting port of instances: ${config.app.firstPort}`);
+    console.log('|-- Application config:');
+    console.log(`|   |-- Number of instances: ${config.app.instances}`);
+    console.log(`|   |-- Starting port of instances: ${config.app.firstPort}`);
 }
 
 

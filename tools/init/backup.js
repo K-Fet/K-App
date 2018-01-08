@@ -67,14 +67,14 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> Backup config:');
+    console.log('|-- Backup config:');
     if (!config.backup) {
-        console.log('>> Do not backup!');
+        console.log('|   |-- Do not backup!');
         return;
     }
-    console.log(`>> Location for backups: ${config.backup.dir}`);
-    console.log(`>> Frequency: ${config.backup.frequency}`);
-    console.log(`>> Delete backups after: ${config.backup.deleteAfter} days`);
+    console.log(`|   |-- Location for backups: ${config.backup.dir}`);
+    console.log(`|   |-- Frequency: ${config.backup.frequency}`);
+    console.log(`|   |-- Delete backups after: ${config.backup.deleteAfter} days`);
 }
 
 

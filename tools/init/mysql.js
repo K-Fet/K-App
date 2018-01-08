@@ -64,10 +64,10 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> Database config:');
-    console.log(`>> Hostname: ${config.mysql.host}`);
-    console.log(`>> Database name: ${config.mysql.database}`);
-    console.log(`>> Privileged username: ${config.mysql.root.username}`);
+    console.log('|-- Database config:');
+    console.log(`|   |-- Hostname: ${config.mysql.host}`);
+    console.log(`|   |-- Database name: ${config.mysql.database}`);
+    console.log(`|   |-- Privileged username: ${config.mysql.root.username}`);
 }
 
 
@@ -86,7 +86,7 @@ async function configure(config) {
     });
 
     try {
-        await co.connect();
+        await co.query('SELECT 1+1 AS Test');
     } catch (e) {
         console.error('Unable to connect to the database, aborting installation', e);
         return process.exit(1);

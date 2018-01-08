@@ -75,16 +75,16 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> Proxy config:');
+    console.log('|-- Proxy config:');
     if (!config.proxy) {
-        console.log('>> Do not use proxy!');
+        console.log('|   |-- Do not use proxy!');
         return;
     }
-    console.log(`>> Proxy used: ${config.proxy.title}`);
+    console.log(`|   |-- Proxy used: ${config.proxy.title}`);
 
     if (config.proxy.caddy) {
-        console.log(`>> Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
-        console.log(`>> Server address: ${config.proxy.caddy.serverAddress}`);
+        console.log(`|   |-- Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
+        console.log(`|   |-- Server address: ${config.proxy.caddy.serverAddress}`);
     }
 }
 

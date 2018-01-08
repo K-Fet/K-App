@@ -33,8 +33,8 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('> JWT config:');
-    console.log(`>> Use a new JWT secret: ${config.jwt.isNew ? 'Yes' : 'No'}`);
+    console.log('|-- JWT config:');
+    console.log(`|   |-- Use a new JWT secret: ${config.jwt.isNew ? 'Yes' : 'No'}`);
 }
 
 

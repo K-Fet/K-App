@@ -19,7 +19,7 @@
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
         "lint": "npm run eslint && cd client/ && npm run lint",
-        "postinstall": "cd client/ && npm install",
+        "postinstall": "cd client/ && npm install --unsafe-perm",
         "prod": "export NODE_ENV=production npm start",
         "test": "concurrently \"npm run test:back\" \"npm run test:front\"",
         "test:back": "nyc mocha server/test/**/*.js --require server/test/mocha.env",
