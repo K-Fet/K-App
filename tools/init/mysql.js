@@ -86,7 +86,7 @@ async function configure(config) {
     });
 
     try {
-        await co.connect();
+        await co.query('SELECT 1+1 AS CoTest');
     } catch (e) {
         console.error('Unable to connect to the database, aborting installation', e);
         return process.exit(1);

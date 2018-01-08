@@ -23,7 +23,7 @@ async function askQuestions(configObj) {
 
     configObj.jwt = {
         secret: answers.jwtSecret || crypto.randomBytes(32).toString('hex'),
-        isNew: !!answers.jwtSecret
+        isNew: !answers.jwtSecret
     };
 }
 
