@@ -100,7 +100,10 @@ async function configure(config) {
             username: config.account.admin.username
         }
     }, {
-        include: [ConnectionInformation]
+        include: [{
+            model: ConnectionInformation,
+            as: 'connection'
+        }]
     });
 
     console.info('Administrator created! Here is the password to connect', config.account.admin.password);
