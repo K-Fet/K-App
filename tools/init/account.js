@@ -79,7 +79,11 @@ async function configure(config) {
     const sequelize = new Sequelize(config.mysql.database, config.mysql.app.username, config.mysql.app.password, {
         host: config.mysql.host,
         dialect: 'mysql',
-        timezone: 'Europe/Paris',
+
+        define: {
+            charset: 'utf8',
+            collate: 'utf8_general_ci'
+        },
     });
 
     ConnectionInformation.init(sequelize);
