@@ -1,6 +1,6 @@
 const kommissionService = require('../services/kommission-service');
 const { Kommission } = require('../models/kommission');
-const { checkStructure, createKommissionError } = require('../../utils');
+const { checkStructure, createUserError } = require('../../utils');
 
 /**
  * Fetch all the kommissions from the database.
@@ -26,7 +26,7 @@ async function createKommission(req, res) {
     
     // FIXME We should check the type of each provided field, instead of just the presence
     if (!checkStructure(req.body, ['id', 'name', 'description'])) {
-        throw createKommissionError(
+        throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'id\', \'name\', \'description\']'
         );
@@ -71,7 +71,7 @@ async function updateKommission(req, res) {
     
     // FIXME We should check the type of each provided field, instead of just the presence
     if (!checkStructure(req.body, ['id', 'name', 'description'])) {
-        throw createKommissionError(
+        throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'id\', \'name\', \'description\']'
         );

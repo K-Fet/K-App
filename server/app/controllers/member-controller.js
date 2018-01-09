@@ -115,4 +115,3 @@ module.exports = {
     getMemberById,
     deleteMember
 };
-

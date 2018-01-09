@@ -1,6 +1,6 @@
 const logger = require('../../logger');
 const { Kommission: Kommission } = require('../models/kommission');
-//const { createKommissionError } = require('../../utils');
+const { createUserError } = require('../../utils');
 
 /**
  * Return all kommissions of the app.
@@ -26,7 +26,7 @@ async function createKommission(newKommission) {
     return await newKommission.save();
 }
     
-    
+
 /**
      * Get a kommission by its id.
      *
@@ -39,7 +39,7 @@ async function getKommissionById(kommissionId) {
     
     const kommission = await Kommission.findById(kommissionId);
     
-    if (!kommission) throw createKommissionError('UnknownKommission', 'This kommission does not exist');
+    if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
     return kommission;
 }
@@ -60,7 +60,7 @@ async function updateKommission(kommissionId, updatedKommission) {
     
     const currentKommission = await Kommission.findById(kommissionId);
     
-    if (!currentKommission) throw createKommissionError('UnknownKommission', 'This kommission does not exist');
+    if (!currentKommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
     logger.verbose('Kommission service: updating kommission named %s %s', currentKommission.firstName, currentKommission.lastName);
     
@@ -84,7 +84,7 @@ async function deleteKommission(kommissionId) {
     
     const kommission = await Kommission.findById(kommissionId);
     
-    if (!kommission) throw createKommissionError('UnknownKommission', 'This kommission does not exist');
+    if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
     await kommission.destroy();
     

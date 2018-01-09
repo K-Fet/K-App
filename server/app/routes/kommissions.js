@@ -3,12 +3,12 @@ const guard = require('express-jwt-permissions')();
 const am = require('../../utils/async-middleware');
 const kommissionController = require('../controllers/kommission-controller');
 
-router.get('/', am(kommissionController.getAllKommission));
+router.get('/', am(kommissionController.getAllKommissions));
 
-router.post('/', am(kommissionController.createMember));
+router.post('/', am(kommissionController.createKommission));
 
-router.get('/:id(\\d+)', am(kommissionController.getMemberById));
-router.put('/:id(\\d+)', am(kommissionController.updateMember));
-router.delete('/:id(\\d+)', am(kommissionController.deleteMember));
+router.get('/:id(\\d+)', am(kommissionController.getKommissionById));
+router.put('/:id(\\d+)', am(kommissionController.updateKommission));
+router.delete('/:id(\\d+)', am(kommissionController.deleteKommission));
 
 module.exports = router;
