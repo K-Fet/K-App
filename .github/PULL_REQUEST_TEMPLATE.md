@@ -22,10 +22,6 @@ Help us with the review by carefully filling the following information:
 - [ ] PR has been tested locally on the main use cases
 - [ ] Documentation have been updated if necessary
 
-### Ask review to
-
-<!-- @mentions of the person or team responsible for reviewing proposed changes. -->
-
 ### More details about this PR
 
 <!-- Add anything else you want to say here! -->
