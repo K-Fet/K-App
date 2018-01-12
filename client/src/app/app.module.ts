@@ -17,6 +17,7 @@ import { MemberEditComponent } from './members/edit/member-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MyServicesComponent } from './services/my-services/my-services.component';
 import { PlanningComponent } from './services/planning/planning.component';
+import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
 
 // Services
 import { AuthGuard } from './_guards/auth.guard';
@@ -41,7 +42,8 @@ import { MaterialModule } from './_helpers/material.module';
         MemberEditComponent,
         DashboardComponent,
         MyServicesComponent,
-        PlanningComponent
+        PlanningComponent,
+        PlanMyServicesComponent
     ],
     imports: [
         CommonModule,

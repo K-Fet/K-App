@@ -1,37 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Member } from '../_models/index';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Service } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
 @Injectable()
-export class MemberService {
-    dataChange: BehaviorSubject<Member[]> = new BehaviorSubject<Member[]>([]);
-    get data(): Member[] { return this.dataChange.value; }
+export class ServiceService {
 
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Member[]>('/api/members').catch(this.handleError);
+        return this.http.get<Service[]>('/api/services').catch(this.handleError);
     }
 
     getById(id: number) {
-        return this.http.get<Member>('/api/members/' + id).catch(this.handleError);
+        return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
     }
 
-    create(member: Member) {
-        return this.http.post('/api/members', member).catch(this.handleError);
+    create(service: Service) {
+        return this.http.post('/api/services', service).catch(this.handleError);
     }
 
-    update(member: Member) {
-        return this.http.put('/api/members/' + member.id, member).catch(this.handleError);
+    update(service: Service) {
+        return this.http.put('/api/services/' + service.id, service).catch(this.handleError);
     }
 
     delete(id: number) {
-        return this.http.delete('/api/members/' + id).catch(this.handleError);
+        return this.http.delete('/api/services/' + id).catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {
