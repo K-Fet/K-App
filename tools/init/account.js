@@ -35,7 +35,7 @@ async function askQuestions(configObj) {
         }
     ];
 
-    console.log('Configuring Proxy:');
+    console.log('Configuring Account:');
     const answers = await inquirer.prompt(questions);
 
     if (!answers.createAdmin) return;
@@ -48,6 +48,23 @@ async function askQuestions(configObj) {
         }
     };
 }
+
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('|-- Account config:');
+    if (!config.account) {
+        console.log('|   |-- Do not create admin account!');
+        return;
+    }
+
+    console.log(`|   |-- Admin username: ${config.account.admin.username}`);
+}
+
 
 /**
  * Install component.
@@ -62,20 +79,31 @@ async function configure(config) {
     const sequelize = new Sequelize(config.mysql.database, config.mysql.app.username, config.mysql.app.password, {
         host: config.mysql.host,
         dialect: 'mysql',
-        timezone: 'Europe/Paris',
+
+        define: {
+            charset: 'utf8',
+            collate: 'utf8_general_ci'
+        },
     });
 
     ConnectionInformation.init(sequelize);
     SpecialAccount.init(sequelize);
     SpecialAccount.associate({ ConnectionInformation });
 
+    await sequelize.sync();
+
     await SpecialAccount.create({
-        code: hash(config.account.admin.code),
+        code: await hash(config.account.admin.code),
         description: 'Administrator',
         connection: {
-            password: hash(config.account.admin.password),
+            password: await hash(config.account.admin.password),
             username: config.account.admin.username
         }
+    }, {
+        include: [{
+            model: ConnectionInformation,
+            as: 'connection'
+        }]
     });
 
     console.info('Administrator created! Here is the password to connect', config.account.admin.password);
@@ -83,5 +111,6 @@ async function configure(config) {
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

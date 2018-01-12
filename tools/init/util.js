@@ -27,17 +27,17 @@ function createDirDeep(pathToCreate) {
  */
 async function overwriteOrNot(file, data) {
     if (fs.existsSync(file)) {
-        const answers = inquirer.prompt([{
+        const { overwrite } = await inquirer.prompt([{
             type: 'confirm',
             name: 'overwrite',
             message: `The file '${file}' already exists, overwrite ?`,
             default: false
         }]);
 
-        if (!answers.overwrite) return true;
+        if (!overwrite) return true;
 
     } else {
-        createDirDeep(file);
+        createDirDeep(path.dirname(file));
     }
 
     await writeFile(file, data, 'utf8');

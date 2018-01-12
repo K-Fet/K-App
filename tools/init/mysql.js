@@ -21,7 +21,7 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'dbUser',
-            message: 'Privileged username?',
+            message: 'Privileged username (to create database and users)?',
             default: 'root'
         },
         {
@@ -47,16 +47,29 @@ async function askQuestions(configObj) {
         },
         app: {
             username: 'kapp-u-' + (Math.floor(Math.random() * 9000) + 1000),
-            password: crypto.randomBytes(64).toString('hex')
+            password: crypto.randomBytes(32).toString('hex')
         },
         backup: {
             username: 'kapp-b-' + (Math.floor(Math.random() * 9000) + 1000),
-            password: crypto.randomBytes(64).toString('hex')
+            password: crypto.randomBytes(32).toString('hex')
         },
         host: answers.dbHost,
         database: answers.dbName
     };
 }
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('|-- Database config:');
+    console.log(`|   |-- Hostname: ${config.mysql.host}`);
+    console.log(`|   |-- Database name: ${config.mysql.database}`);
+    console.log(`|   |-- Privileged username: ${config.mysql.root.username}`);
+}
+
 
 /**
  *
@@ -66,14 +79,14 @@ async function askQuestions(configObj) {
 async function configure(config) {
     if (!config.mysql) return;
 
-    const co = mysql.createConnection({
+    const co = await mysql.createConnection({
         host: config.mysql.host,
         user: config.mysql.root.username,
         password: config.mysql.root.password
     });
 
     try {
-        await co.connect();
+        await co.query('SELECT 1+1 AS CoTest');
     } catch (e) {
         console.error('Unable to connect to the database, aborting installation', e);
         return process.exit(1);
@@ -83,8 +96,25 @@ async function configure(config) {
     const backupUser = config.mysql.backup.username;
     const database = config.mysql.database;
 
+    const [rows] = await co.query(`SHOW DATABASES LIKE '${database}'`);
+
+    if (rows.length > 0) {
+        const { doContinue } = await inquirer.prompt([{
+            type: 'confirm',
+            name: 'doContinue',
+            message: `The database ${database} already exists, overwrite (WARNING: Everything will be deleted)?`,
+            default: false
+        }]);
+
+        if (!doContinue) {
+            console.log('Skipping mysql configuration!');
+            return;
+        }
+
+        await co.query(`DROP DATABASE ${database}`);
+    }
+
     console.info(`Creating the database ${database}`);
-    // TODO Handle when the database already exists
     await co.query(`CREATE DATABASE ${database}`);
 
     console.info(`Creating app & backup users (${appUser} & ${backupUser})`);
@@ -105,5 +135,6 @@ async function configure(config) {
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

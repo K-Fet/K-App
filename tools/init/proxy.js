@@ -48,7 +48,9 @@ async function askQuestions(configObj) {
 
     if (!answers.useProxy) return;
 
-    configObj.proxy = {};
+    configObj.proxy = {
+        title: answers.proxyServer
+    };
 
     switch (answers.proxyServer) {
         case 'Caddy Server':
@@ -65,6 +67,27 @@ async function askQuestions(configObj) {
             break;
     }
 }
+
+
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('|-- Proxy config:');
+    if (!config.proxy) {
+        console.log('|   |-- Do not use proxy!');
+        return;
+    }
+    console.log(`|   |-- Proxy used: ${config.proxy.title}`);
+
+    if (config.proxy.caddy) {
+        console.log(`|   |-- Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
+        console.log(`|   |-- Server address: ${config.proxy.caddy.serverAddress}`);
+    }
+}
+
 
 /**
  * Install component.
@@ -124,5 +147,6 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
 
 module.exports = {
     askQuestions,
+    confirmConfig,
     configure
 };

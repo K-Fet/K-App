@@ -14,12 +14,7 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'jwtSecret',
-            message: 'Do you have a specific JWT Secret?',
-            default: 'Generate',
-            filter: input => {
-                if (input !== 'Generate') return input;
-                return crypto.randomBytes(64).toString('hex');
-            }
+            message: 'Do you have a specific JWT secret (a new one will be generated otherwise)?'
         },
     ];
 
@@ -27,10 +22,23 @@ async function askQuestions(configObj) {
     const answers = await inquirer.prompt(questions);
 
     configObj.jwt = {
-        secret: answers.jwtSecret
+        secret: answers.jwtSecret || crypto.randomBytes(32).toString('hex'),
+        isNew: !answers.jwtSecret
     };
 }
 
+/**
+ * Display config.
+ *
+ * @param config
+ */
+function confirmConfig(config) {
+    console.log('|-- JWT config:');
+    console.log(`|   |-- Use a new JWT secret: ${config.jwt.isNew ? 'Yes' : 'No'}`);
+}
+
+
 module.exports = {
-    askQuestions
+    askQuestions,
+    confirmConfig
 };
