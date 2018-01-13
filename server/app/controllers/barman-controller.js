@@ -122,13 +122,13 @@ async function deleteBarmanById(req, res) {
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function getServicesBarman(req, res) {
+/*async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
     const services = await barmanService.getServicesOfBarman(barmanId);
 
     res.json(services);
-}
+}*/
 
 module.exports = {
     getAllBarmen,
@@ -136,5 +136,5 @@ module.exports = {
     getBarmanById,
     updateBarman,
     deleteBarmanById,
-    getServicesBarman
+    //getServicesBarman
 };

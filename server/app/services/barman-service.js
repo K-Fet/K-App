@@ -1,6 +1,6 @@
 const logger = require('../../logger');
 const { Barman } = require('../models/barman');
-const { Service } = require ('../models/service');
+//const { Service } = require ('../models/service');
 const { createUserError } = require('../../utils');
 
 /**
@@ -102,10 +102,10 @@ async function deleteBarmanById(barmanId) {
  * @param barmanId {number} barman id
  * @returns {Promise<Array>} An array of Services
  */
-async function getServicesOfBarman(barmanId) {
+/* async function getServicesOfBarman(barmanId) {
     logger.verbose('Barman service: get services of a barman');
 
-    /*const barman = Barman.findById(barmanId);
+    const barman = Barman.findById(barmanId);
 
     return await Service.findAll({
         attributes: ['name']
@@ -114,8 +114,8 @@ async function getServicesOfBarman(barmanId) {
         where: {
 
         }
-    });*/
-}
+    });
+}*/
 
 module.exports = {
     getAllBarmen,
@@ -123,5 +123,5 @@ module.exports = {
     getBarmanById,
     deleteBarmanById,
     updateBarmanById,
-    getServicesOfBarman
+    //getServicesOfBarman
 };
