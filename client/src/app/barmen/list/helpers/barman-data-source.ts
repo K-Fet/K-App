@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Member } from '../../../_models/index';
-import { MemberService } from '../../../_services/member.service';
+import { Barman } from '../../../_models/index';
+import { BarmanService } from '../../../_services/barman.service';
 import { MatSort, MatPaginator } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
@@ -10,19 +10,17 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
-import { ToasterService } from '../../../_services/index';
 
-export class MemberDataSource extends DataSource<any> {
+export class BarmanDataSource extends DataSource<any> {
     filterChange = new BehaviorSubject('');
     get filter(): string { return this.filterChange.value; }
     set filter(filter: string) { this.filterChange.next(filter); }
 
-    filteredData: Member[] = [];
-    renderedData: Member[] = [];
+    filteredData: Barman[] = [];
+    renderedData: Barman[] = [];
 
     constructor(
-        private memberService: MemberService,
-        private toasterService: ToasterService,
+        private barmanService: BarmanService,
         private sort: MatSort,
         private paginator: MatPaginator
     ) {
@@ -30,9 +28,9 @@ export class MemberDataSource extends DataSource<any> {
         this.filterChange.subscribe(() => this.paginator.pageIndex = 0);
     }
 
-    connect(): Observable<Member[]> {
+    connect(): Observable<Barman[]> {
         const displayDataChanges = [
-            this.memberService.dataChange,
+            this.barmanService.dataChange,
             this.sort.sortChange,
             this.filterChange,
             this.paginator.page,
@@ -41,11 +39,11 @@ export class MemberDataSource extends DataSource<any> {
         return Observable.merge(...displayDataChanges)
         .startWith()
         .switchMap(() => {
-            return this.memberService.getAll();
+            return this.barmanService.getAll();
         })
         .map(members => {
             // Filter data
-            this.filteredData = members.slice().filter((item: Member) => {
+            this.filteredData = members.slice().filter((item: Barman) => {
                 const searchStr = (item.firstName + item.lastName).toLowerCase();
                 return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
             });
@@ -61,7 +59,7 @@ export class MemberDataSource extends DataSource<any> {
         });
     }
 
-    sortData(data: Member[]): Member[] {
+    sortData(data: Barman[]): Barman[] {
         if (!this.sort.active || this.sort.direction === '') { return data; }
 
         return data.sort((a, b) => {
@@ -69,9 +67,9 @@ export class MemberDataSource extends DataSource<any> {
             let propertyB: number|string = '';
 
             switch (this.sort.active) {
+                // TODO implement others properties
                 case 'lastName': [propertyA, propertyB] = [a.lastName, b.lastName]; break;
                 case 'firstName': [propertyA, propertyB] = [a.firstName, b.firstName]; break;
-                case 'school': [propertyA, propertyB] = [a.school, b.school]; break;
             }
 
             const valueA = isNaN(+propertyA) ? propertyA : +propertyA;

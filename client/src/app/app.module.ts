@@ -18,12 +18,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MyServicesComponent } from './services/my-services/my-services.component';
 import { PlanningComponent } from './services/planning/planning.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
+import { BarmenListComponent } from './barmen/list/barmen-list.component';
+import { BarmanNewComponent } from './barmen/new/barman-new.component';
 
 // Services
+import { ToasterService, LoginService, MemberService, BarmanService, ServiceService } from './_services/index';
+
+// Guards
 import { AuthGuard } from './_guards/auth.guard';
-import { ToasterService } from './_services/toaster.service';
-import { LoginService } from './_services/login.service';
-import { MemberService } from './_services/member.service';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -43,7 +45,9 @@ import { MaterialModule } from './_helpers/material.module';
         DashboardComponent,
         MyServicesComponent,
         PlanningComponent,
-        PlanMyServicesComponent
+        PlanMyServicesComponent,
+        BarmenListComponent,
+        BarmanNewComponent
     ],
     imports: [
         CommonModule,
@@ -57,6 +61,8 @@ import { MaterialModule } from './_helpers/material.module';
     providers: [
         LoginService,
         MemberService,
+        BarmanService,
+        ServiceService,
         AuthGuard,
         ToasterService,
         {

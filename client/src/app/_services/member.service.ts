@@ -40,9 +40,12 @@ export class MemberService {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
             console.log(err);
-            switch (err.error) {
+            switch (err.error.error) {
                 case 'Not Found':
                     errorMessage = `Erreur, impossible d'ajouter un adhérent`;
+                    break;
+                case 'UnauthorizedError':
+                    errorMessage = `Erreur: opération non autorisée`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;

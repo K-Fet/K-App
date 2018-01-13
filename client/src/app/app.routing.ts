@@ -12,6 +12,8 @@ import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
+import { BarmenListComponent } from './barmen/list/barmen-list.component';
+import { BarmanNewComponent } from './barmen/new/barman-new.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/members', pathMatch: 'full' },
@@ -21,6 +23,8 @@ const routes: Routes = [
     { path: 'members/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [AuthGuard] },
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+    { path: 'barmen', component: BarmenListComponent, canActivate: [AuthGuard] },
+    { path: 'barmen/new', component: BarmanNewComponent, canActivate: [AuthGuard] },
     { path: '**', redirectTo: '' }
 ];
 

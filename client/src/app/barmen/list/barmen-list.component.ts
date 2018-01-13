@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Member } from '../../_models/index';
-import { MemberService } from '../../_services/member.service';
-import { MemberDataSource } from './helpers/member-data-source';
+import { Member, Barman } from '../../_models/index';
+import { BarmanService } from '../../_services/index';
+import { BarmanDataSource } from './helpers/barman-data-source';
 import { Observable } from 'rxjs/Observable';
 import { MatSort, MatPaginator } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
@@ -12,23 +12,23 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
-  templateUrl: './members-list.component.html',
-  styleUrls: ['./members-list.component.scss']
+  templateUrl: './barmen-list.component.html',
+  styleUrls: ['./barmen-list.component.scss']
 })
-export class MembersListComponent implements OnInit {
+export class BarmenListComponent implements OnInit {
 
-    displayedColumns = ['lastName', 'firstName', 'school', 'action'];
-    dataSource: MemberDataSource;
+    displayedColumns = ['nickName', 'lastName', 'firstName', 'action'];
+    dataSource: BarmanDataSource;
 
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild('filter') filter: ElementRef;
 
-    constructor(private memberService: MemberService, private toasterService: ToasterService, private router: Router) {
+    constructor(private barmanService: BarmanService, private toasterService: ToasterService, private router: Router) {
     }
 
     ngOnInit() {
-        this.dataSource = new MemberDataSource(this.memberService, this.toasterService, this.sort, this.paginator);
+        this.dataSource = new BarmanDataSource(this.barmanService, this.sort, this.paginator);
         Observable.fromEvent(this.filter.nativeElement, 'keyup')
         .debounceTime(150)
         .distinctUntilChanged()
@@ -38,15 +38,11 @@ export class MembersListComponent implements OnInit {
         });
     }
 
-    edit(member: Member) {
-        this.router.navigate(['/members', member.id]);
-    }
-
-    delete(member: Member) {
-        this.memberService.delete(member.id)
+    delete(barman: Barman) {
+        this.barmanService.delete(barman.id)
         .subscribe(() => {
-            this.toasterService.showToaster('Adhérent supprimé', 'Fermer');
-            this.dataSource = new MemberDataSource(this.memberService, this.toasterService, this.sort, this.paginator);
+            this.toasterService.showToaster('Barman supprimé', 'Fermer');
+            this.dataSource = new BarmanDataSource(this.barmanService, this.sort, this.paginator);
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

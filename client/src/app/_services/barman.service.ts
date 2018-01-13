@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Service } from '../_models/index';
+import { Barman } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
-export class ServiceService {
+export class BarmanService {
+
+    dataChange: BehaviorSubject<Barman[]> = new BehaviorSubject<Barman[]>([]);
+    get data(): Barman[] { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 
+    getAll() {
+        return this.http.get<Barman[]>('/api/barmen').catch(this.handleError);
+    }
+
     getById(id: number) {
-        return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
+        return this.http.get<Barman>('/api/barmen/' + id).catch(this.handleError);
     }
 
-    create(service: Service) {
-        return this.http.post('/api/services', service).catch(this.handleError);
+    create(barman: Barman) {
+        return this.http.post('/api/barmen', barman).catch(this.handleError);
     }
 
-    update(service: Service) {
-        return this.http.put('/api/services/' + service.id, service).catch(this.handleError);
+    update(barman: Barman) {
+        return this.http.put('/api/barmen/' + barman.id, barman).catch(this.handleError);
     }
 
     delete(id: number) {
-        return this.http.delete('/api/services/' + id).catch(this.handleError);
+        return this.http.delete('/api/barmen/' + id).catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {
@@ -35,7 +43,7 @@ export class ServiceService {
             console.log(err);
             switch (err.error) {
                 case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter un service`;
+                    errorMessage = `Erreur, impossible d'ajouter un barman`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;
