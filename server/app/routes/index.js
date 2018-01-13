@@ -10,9 +10,6 @@ router.use(morgan('combined', { stream: logger.stream }));
 
 router.use(bodyParser.json());
 
-//a remettre apres le auth (permet de contourner l'authentification)
-router.use('/kommissions', require('./kommissions'));
-
 // Auth
 
 router.use('/auth', require('./auth'));
@@ -23,7 +20,7 @@ router.use(require('../middlewares/auth-guard'));
 // Dispatch to child routes
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
-
+router.use('/kommissions', require('./kommissions'));
 
 
 // Error handling
