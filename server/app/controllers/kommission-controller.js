@@ -25,15 +25,14 @@ async function getAllKommissions(req, res) {
 async function createKommission(req, res) {
     
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['id', 'name', 'description'])) {
+    if (!checkStructure(req.body, ['name', 'description'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'id\', \'name\', \'description\']'
+            'The body has missing properties, needed: [\'name\', \'description\']'
         );
     }
     
     let newKommission = new Kommission({
-        id: req.body.id,
         name: req.body.name,
         description: req.body.description,
     });
@@ -70,15 +69,14 @@ async function getKommissionById(req, res) {
 async function updateKommission(req, res) {
     
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['id', 'name', 'description'])) {
+    if (!checkStructure(req.body, ['name', 'description'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'id\', \'name\', \'description\']'
+            'The body has missing properties, needed: [\'name\', \'description\']'
         );
     }
     
     let newKommission = new Kommission({
-        id: req.body.id,
         name: req.body.name,
         description: req.body.description,
     });

@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const { Kommission: Kommission } = require('../models/kommission');
+const { Kommission } = require('../models/kommission');
 const { createUserError } = require('../../utils');
 
 /**
@@ -65,7 +65,6 @@ async function updateKommission(kommissionId, updatedKommission) {
     logger.verbose('Kommission service: updating kommission named %s %s', currentKommission.firstName, currentKommission.lastName);
     
     return await currentKommission.update({
-        id: updatedKommission.id,
         name: updatedKommission.name,
         description: updatedKommission.description,
             
