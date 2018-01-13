@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/Service';
 import { ServiceService } from '../../_services/service.service';
 import { ToasterService } from '../../_services/toaster.service';
@@ -9,7 +9,7 @@ import { ToasterService } from '../../_services/toaster.service';
     templateUrl: './my-services.component.html',
 })
 
-export class MyServicesComponent {
+export class MyServicesComponent implements OnInit {
 
     services: Service[];
 
@@ -17,6 +17,5 @@ export class MyServicesComponent {
     }
 
     ngOnInit() {
-        this.services = ServiceService.get
     }
 }

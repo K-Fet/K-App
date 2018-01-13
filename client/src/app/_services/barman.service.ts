@@ -43,7 +43,7 @@ export class BarmanService {
             console.log(err);
             switch (err.error) {
                 case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter un barman`;
+                    errorMessage = `Erreur, impossible de recuperer le barman`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;

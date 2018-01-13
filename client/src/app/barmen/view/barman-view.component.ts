@@ -9,7 +9,7 @@ import { Barman } from '../../_models/Barman';
 
 export class BarmanViewComponent implements OnInit {
 
-    barman: Barman;
+    barman: Barman = new Barman;
 
     constructor(
         private barmanService: BarmanService,

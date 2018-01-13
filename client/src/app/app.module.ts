@@ -20,6 +20,8 @@ import { PlanningComponent } from './services/planning/planning.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
 import { BarmenListComponent } from './barmen/list/barmen-list.component';
 import { BarmanNewComponent } from './barmen/new/barman-new.component';
+import { BarmanViewComponent } from './barmen/view/barman-view.component';
+import { BarmanEditComponent } from './barmen/edit/barman-edit.component';
 
 // Services
 import { ToasterService, LoginService, MemberService, BarmanService, ServiceService } from './_services/index';
@@ -47,7 +49,9 @@ import { MaterialModule } from './_helpers/material.module';
         PlanningComponent,
         PlanMyServicesComponent,
         BarmenListComponent,
-        BarmanNewComponent
+        BarmanNewComponent,
+        BarmanViewComponent,
+        BarmanEditComponent
     ],
     imports: [
         CommonModule,
