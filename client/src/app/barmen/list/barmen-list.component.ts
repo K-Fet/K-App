@@ -38,15 +38,8 @@ export class BarmenListComponent implements OnInit {
         });
     }
 
-    delete(barman: Barman) {
-        this.barmanService.delete(barman.id)
-        .subscribe(() => {
-            this.toasterService.showToaster('Barman supprimé', 'Fermer');
-            this.dataSource = new BarmanDataSource(this.barmanService, this.sort, this.paginator);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+    view(barman: Barman) {
+        this.router.navigate(['/barman', barman.id]);
     }
 
 }

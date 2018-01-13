@@ -21,8 +21,6 @@ export class MemberEditComponent implements OnInit {
     firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
     schoolFormControl: FormControl = new FormControl('', [Validators.required]);
 
-    private sub: any;
-
     constructor(
         private memberService: MemberService,
         private toasterService: ToasterService,
@@ -31,7 +29,7 @@ export class MemberEditComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
+        this.route.params.subscribe(params => {
             this.id = params['id'];
             this.memberService.getById(+this.id).subscribe(member => {
                 this.firstName = member.firstName;
