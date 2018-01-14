@@ -9,7 +9,7 @@ K-App application repository
 
 ## Usage
 
-For a production environment, please check [this](./docs/QuickDeployment.md) file 
+For a production environment, please check [this document](./docs/QuickDeployment.md) 
 which explain everything :).
 
 ## Contribute
@@ -51,6 +51,7 @@ You can check your files with: `npm run eslint`, or check while you edit files w
 Plugins exist for [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 and [Webstorm](http://plugins.jetbrains.com/plugin/7494).
 
+Don't forget to set needed environment variables (such as `DB_PWD`)
 
 #### Front
 

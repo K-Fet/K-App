@@ -3,6 +3,10 @@
 This document will explain how to deploy 
 the application on a Debian 9 Linux.
 
+
+A shorter version is available [here](./QuickDeployment.md).
+
+
 ## Backups 
 
 To see how to make automatic backups, see [Backups](./Backups.md).
@@ -40,7 +44,9 @@ After=network.target mysql.service
 # Port where the server will listen
 # With '%i' we can launch app with `systemctl start kapp@3000`
 Environment=PORT=%i
-Environment=HOSTNAME=localhost      # Do not serve directly internet
+
+# Do not serve directly internet
+Environment=HOSTNAME=localhost
 
 #  Database configuration
 #       Default can be found in the /server/config/ folder of the project.
@@ -65,11 +71,11 @@ Environment=JWT_SECRET=UltraComplicatedSecret
 
 # Launch
 
-Type=simple                         # No child process
-WorkingDirectory=/srv/kapp/         # Set working directory
-ExecStart=/usr/bin/npm run prod     # Run command line
-Restart=on-failure                  # Restart only on failure (exit > 0)
-RestartSec=10                       # Minimum duration the server must be up
+Type=simple
+WorkingDirectory=/srv/kapp/
+ExecStart=/usr/bin/npm run prod
+Restart=on-failure
+RestartSec=10
 
 # Logging
 StandardOutput=syslog
@@ -77,9 +83,11 @@ StandardError=syslog
 
 # Security
 
-DynamicUser=yes                     # See https://www.freedesktop.org/software/systemd/man/systemd.exec.html#DynamicUser=
-CapabilityBoundingSet=              # 'CAP_NET_BIND_SERVICE' if PORT is less than 1024
-NoNewPrivileges=yes                 # Prevent privilege escalation
+DynamicUser=yes
+
+# 'CAP_NET_BIND_SERVICE' if PORT is less than 1024
+CapabilityBoundingSet=
+NoNewPrivileges=yes
 ProtectControlGroups=yes
 ProtectKernelModules=yes
 
@@ -164,17 +172,19 @@ Then Sequelize gonna create everything it wants to work.
 
 #### Create the user
 
-Let's start by making a new user within the MySQL shell:
+Let's start by making two new users within the MySQL shell:
 
 ```mysql
-CREATE USER 'kapp'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
+CREATE USER 'kapp-user'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
+CREATE USER 'kapp-backup'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
 ```
 
-This user has no permissions to do anything (even login). 
+The first will be for the application, the second will be used to backup data.
 To grant access to the database, do this:
 
 ```mysql
-GRANT USAGE, SELECT, INSERT, UPDATE, DELETE ON `kapp`.* TO 'kapp'@'localhost';
+GRANT ALL ON `kapp`.* TO 'kapp-user'@'localhost';
+GRANT SELECT, LOCK TABLES ON `kapp`.* TO 'kapp-backup'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
@@ -192,18 +202,6 @@ git clone https://github.com/K-Fet/K-App.git kapp
 # Launch the update process to init
 ./kapp/tools/update.sh
 ```
-
-
-### Ready, Set, Go!
-
-
-Everything is ready, we just need to launch an instance of the server.
-
-For this, execute: `systemctl start kapp@3000.service`, 
-where `3000` is the web port.
-
-To let the server reboot after machine reboot, 
-execute :`systemctl enable kapp@3000.service`
 
 
 ## Usage
@@ -244,6 +242,15 @@ git clone https://github.com/K-Fet/K-App.git kapp
 Here we use the `/srv/kapp` base folder for our app. 
 Be free to change it, but this will change 
 the service config and the backup config.
+
+### One last thing
+
+You will need an admin account to manage your application.
+
+To do that you have to launch this script:
+```bash
+node ./kapp/tools/prod-scripts/account.js
+```
 
 ### Ready, Set, Go! 
 

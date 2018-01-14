@@ -5,7 +5,9 @@ const crypto = require('crypto');
 const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
 const { ConnectionInformation, SpecialAccount } = require('../../server/app/models');
+const mysqlConf = require('./mysql');
 
+const isCLI = require.main === module;
 
 /**
  *
@@ -20,6 +22,7 @@ async function askQuestions(configObj) {
             name: 'createAdmin',
             message: 'Do you want to create an admin account?',
             default: false,
+            when: !isCLI
         },
         {
             type: 'input',
@@ -42,7 +45,7 @@ async function askQuestions(configObj) {
 
     configObj.account = {
         admin: {
-            password: crypto.randomBytes(64).toString('hex'),
+            password: crypto.randomBytes(20).toString('hex'),
             code: answers.adminCode,
             username: answers.adminUsername
         }
@@ -108,6 +111,17 @@ async function configure(config) {
 
     console.info('Administrator created! Here is the password to connect', config.account.admin.password);
 }
+
+
+if (isCLI) {
+    console.log('You must have created a database for the app!');
+    const config = {};
+
+    mysqlConf.askQuestions(config)
+        .then(() => askQuestions(config))
+        .then(() => configure(config));
+}
+
 
 module.exports = {
     askQuestions,

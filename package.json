@@ -62,7 +62,8 @@
     "nodemonConfig": {
         "ignore": [
             "**/test/**",
-            "client/"
+            "client/",
+            "tools/"
         ],
         "delay": "2500"
     },
