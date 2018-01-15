@@ -78,7 +78,8 @@ async function createJWT(user) {
     // TODO Add permissions in a better way
     const permissions = [
         'barman:read',
-        'member:read'
+        'member:read',
+        'barman:write'
     ];
 
     logger.info(`Creating a new JWT ${user.id}, with permissions : ${permissions.join(', ')}`);

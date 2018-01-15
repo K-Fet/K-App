@@ -69,7 +69,7 @@ async function getBarmanById(req, res) {
 */
 async function updateBarman(req, res) {
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'godfather', 'dateOfBirth', 'flow'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
         throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
@@ -84,11 +84,12 @@ async function updateBarman(req, res) {
         flow: req.body.flow,
         active: req.body.active
     });
+    
+    const barmanId = req.params.id;
 
-    newBarman = await barmanService.updateBarman(newBarman);
+    newBarman = await barmanService.updateBarmanById(barmanId, newBarman);
 
     res.json(newBarman);
-
 }
 
 /**
@@ -98,7 +99,7 @@ async function updateBarman(req, res) {
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
-async function deleteBarmanById(req, res) {
+async function deleteBarman(req, res) {
     const barmanId = req.params.id;
 
     const barman = await barmanService.deleteBarmanById(barmanId);
@@ -112,5 +113,5 @@ module.exports = {
     createBarman,
     getBarmanById,
     updateBarman,
-    deleteBarmanById,
+    deleteBarman
 };

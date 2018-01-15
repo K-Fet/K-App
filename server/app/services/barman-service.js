@@ -34,7 +34,7 @@ async function getBarmanById(barmanId) {
 
     logger.verbose('Barman service: get a barman by his id %d', barmanId);
 
-    const barman = Barman.findById(barmanId);
+    const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
@@ -53,9 +53,8 @@ async function getBarmanById(barmanId) {
  * @return {Promise<Barman>} The updated barman
  */
 async function updateBarmanById(barmanId, updatedBarman) {
-
     const currentBarman = await Barman.findById(barmanId);
-
+    
     if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
