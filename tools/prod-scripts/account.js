@@ -27,8 +27,13 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'adminUsername',
-            message: 'Username of admin (used to connect)?',
+            message: 'Username for admin (used to connect)?',
             default: 'admin'
+        },
+        {
+            type: 'password',
+            name: 'adminPassword',
+            message: 'Password for admin, leave blank to generate one (recommended on prod)?'
         },
         {
             type: 'input',
@@ -45,7 +50,7 @@ async function askQuestions(configObj) {
 
     configObj.account = {
         admin: {
-            password: crypto.randomBytes(20).toString('hex'),
+            password: answers.adminPassword || crypto.randomBytes(20).toString('hex'),
             code: answers.adminCode,
             username: answers.adminUsername
         }
@@ -79,7 +84,7 @@ async function configure(config) {
     if (!config.account) return;
 
     // Init sequelize instance
-    const sequelize = new Sequelize(config.mysql.database, config.mysql.app.username, config.mysql.app.password, {
+    const sequelize = new Sequelize(config.mysql.database, config.mysql.root.username, config.mysql.root.password, {
         host: config.mysql.host,
         dialect: 'mysql',
 
