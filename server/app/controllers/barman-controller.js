@@ -24,7 +24,7 @@ async function getAllBarmen(req, res) {
 */
 async function createBarman(req, res) {
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'godfather', 'dateOfBirth', 'flow'])) {
         throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
@@ -73,7 +73,7 @@ async function getBarmanById(req, res) {
 */
 async function updateBarman(req, res) {
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'godfather', 'dateOfBirth', 'flow'])) {
         throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
