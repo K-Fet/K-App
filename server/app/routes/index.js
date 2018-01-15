@@ -10,7 +10,6 @@ router.use(morgan('combined', { stream: logger.stream }));
 
 router.use(bodyParser.json());
 
-
 // Auth
 
 router.use('/auth', require('./auth'));
@@ -21,6 +20,7 @@ router.use(require('../middlewares/auth-guard'));
 // Dispatch to child routes
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
+router.use('/kommissions', require('./kommissions'));
 
 
 // Error handling
