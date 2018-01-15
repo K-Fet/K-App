@@ -1,6 +1,5 @@
 const logger = require('../../logger');
 const { Barman } = require('../models/barman');
-//const { Service } = require ('../models/service');
 const { createUserError } = require('../../utils');
 
 /**
@@ -61,7 +60,6 @@ async function updateBarmanById(barmanId, updatedBarman) {
 
     logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
 
-
     return await currentBarman.update({
         firstName: updatedBarman.firstName,
         lastName: updatedBarman.lastName,
@@ -70,9 +68,6 @@ async function updateBarmanById(barmanId, updatedBarman) {
         godFather: updatedBarman.godFather,
         dateOfBirth: updatedBarman.dateOfBirth,
         flow: updatedBarman.flow,
-        kommissions: updatedBarman.kommissions,
-        roles: updatedBarman.roles,
-        services: updatedBarman.services,
         active: updatedBarman.active
     });
 }
@@ -96,32 +91,10 @@ async function deleteBarmanById(barmanId) {
     return barman;
 }
 
-/**
- * Get the services assigned to a barman
- *
- * @param barmanId {number} barman id
- * @returns {Promise<Array>} An array of Services
- */
-/* async function getServicesOfBarman(barmanId) {
-    logger.verbose('Barman service: get services of a barman');
-
-    const barman = Barman.findById(barmanId);
-
-    return await Service.findAll({
-        attributes: ['name']
-    },
-    {
-        where: {
-
-        }
-    });
-}*/
-
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     deleteBarmanById,
     updateBarmanById,
-    //getServicesOfBarman
 };

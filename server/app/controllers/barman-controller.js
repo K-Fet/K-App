@@ -27,7 +27,7 @@ async function createBarman(req, res) {
     if (!checkStructure(req.body, ['firstName', 'lastName'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
         );
     }
 
@@ -35,14 +35,14 @@ async function createBarman(req, res) {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         nickname: req.body.nickname,
-        facebook: req.body.facebook,
+        facebook: req.body.facebook || null,
         godFather: req.body.godFather,
         dateOfBirth: req.body.dateOfBirth,
         flow: req.body.flow,
-        kommissions: req.body.kommissions,
-        roles: req.body.roles,
-        services: req.body.services,
-        active: req.body.active
+        kommissions: req.body.kommissions || null,
+        roles: req.body.roles || null,
+        services: req.body.services || null,
+        active: req.body.active || null
     });
 
     newBarman = await barmanService.createBarman(newBarman);
@@ -76,21 +76,21 @@ async function updateBarman(req, res) {
     if (!checkStructure(req.body, ['firstName', 'lastName'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
         );
     }
     let newBarman = new Barman({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         nickname: req.body.nickname,
-        facebook: req.body.facebook,
+        facebook: req.body.facebook || null,
         godFather: req.body.godFather,
         dateOfBirth: req.body.dateOfBirth,
         flow: req.body.flow,
-        kommissions: req.body.kommissions,
-        roles: req.body.roles,
-        services: req.body.services,
-        active: req.body.active
+        kommissions: req.body.kommissions || null,
+        roles: req.body.roles || null,
+        services: req.body.services || null,
+        active: req.body.active || null
     });
 
     newBarman = await barmanService.updateBarman(newBarman);
@@ -115,26 +115,10 @@ async function deleteBarmanById(req, res) {
 
 }
 
-/**
- * Fetch the services of a barman linked to an Id from the database.
- *
- * @param req Request
- * @param res Response
- * @return {Promise.<void>} Nothing
- */
-/*async function getServicesBarman(req, res) {
-    const barmanId = req.params.id;
-
-    const services = await barmanService.getServicesOfBarman(barmanId);
-
-    res.json(services);
-}*/
-
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     updateBarman,
     deleteBarmanById,
-    //getServicesBarman
 };
