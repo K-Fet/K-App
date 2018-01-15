@@ -6,11 +6,7 @@ const { Sequelize } = require('sequelize');
 const models = require('../../server/app/models');
 const mysqlConf = require('../prod-scripts/mysql');
 
-const {
-    JWT, SpecialAccount, ConnectionInformation, ServiceWrapper,
-    Service, RoleWrapper, Role, KommissionWrapper, Kommission,
-    Category, Barman, Member
-} = models;
+const { Service, Role, Kommission, Category, Barman, Member } = models;
 
 
 async function ask(conf) {
@@ -51,10 +47,15 @@ async function ask(conf) {
             message: 'How many members do you want?',
             default: 200,
             validate: input => {
-                if (input >>> 0 === parseFloat(input)) return true;
+                if (input >>> 0 === parseFloat(input)) {
+                    if (parseInt(input) <= 300) {
+                        return true;
+                    }
+                    return 'Max value is 300';
+                }
                 return 'You must enter a positive integer';
             },
-            when: answers => answers.generateList
+            when: answers => answers.generateList.includes('Members')
         }
     ]);
 
@@ -115,10 +116,7 @@ async function generateServices() {
     try {
         // Create a category for standard services
 
-        const category = await Category.create({
-            name: 'Services standards'
-        });
-
+        const category = await Category.findOrCreate({ where: { name: 'Services standards' } });
 
         const startDay = new Date();
         startDay.setDate(startDay.getDate() - (startDay.getDay() + 6) % 7);
@@ -183,6 +181,7 @@ async function generate(config) {
         host: config.mysql.host,
         dialect: 'mysql',
 
+        logging: false,
         define: {
             charset: 'utf8',
             collate: 'utf8_general_ci'
@@ -203,12 +202,13 @@ async function generate(config) {
     await sequelize.sync();
 
     const generationTasks = [];
+    const list = config.generate.generateList;
 
-    if (config.generate.Kommissions) generationTasks.push(generateKommissions());
-    if (config.generate.Roles) generationTasks.push(generateRoles());
-    if (config.generate.Members) generationTasks.push(generateMembers());
-    if (config.generate.Barmen) generationTasks.push(generateBarmen());
-    if (config.generate.Services) generationTasks.push(generateServices());
+    if (list.includes('Kommissions')) generationTasks.push(generateKommissions());
+    if (list.includes('Roles')) generationTasks.push(generateRoles());
+    if (list.includes('Members')) generationTasks.push(generateMembers());
+    if (list.includes('Barmen')) generationTasks.push(generateBarmen());
+    if (list.includes('Services')) generationTasks.push(generateServices());
 
     await Promise.all(generationTasks);
 

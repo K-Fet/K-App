@@ -12,6 +12,8 @@ const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.pa
         collate: 'utf8_general_ci'
     },
 
+    logging: DB_CONFIG.debug,
+
     pool: {
         max: 5,
         min: 0,

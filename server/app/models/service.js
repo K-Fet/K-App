@@ -20,8 +20,7 @@ class Service extends Model {
             },
 
             name: {
-                type: DataTypes.STRING,
-                allowNull: false
+                type: DataTypes.STRING
             },
 
             startAt: {
