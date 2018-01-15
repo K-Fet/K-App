@@ -21,6 +21,7 @@ router.use(require('../middlewares/auth-guard'));
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
 router.use('/kommissions', require('./kommissions'));
+router.use('/roles', require('./roles'));
 
 
 // Error handling
