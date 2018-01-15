@@ -113,7 +113,57 @@ async function generateBarmen() {
 
 async function generateServices() {
     try {
+        // Create a category for standard services
 
+        const category = await Category.create({
+            name: 'Services standards'
+        });
+
+
+        const startDay = new Date();
+        startDay.setDate(startDay.getDate() - (startDay.getDay() + 6) % 7);
+        startDay.setHours(0, 0, 0, 0);
+
+        const servicesToCreate = [];
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 5; j++) {
+
+                const dayNoon = new Date(startDay.getTime());
+                dayNoon.setHours(12);
+
+                const dayNoonEnd = new Date(dayNoon.getTime());
+                dayNoonEnd.setHours(14);
+
+                servicesToCreate.push({
+                    startAt: dayNoon,
+                    endAt: dayNoonEnd,
+                    nbMax: 4,
+                    category
+                });
+
+
+                if (j !== 4) { // Friday does not have evening service
+                    const dayEvening = new Date(dayNoon.getTime());
+                    dayEvening.setHours(19);
+
+                    const dayEveningEnd = new Date(dayEvening.getTime());
+                    dayEveningEnd.setDate(dayNoon.getDate() + 1);
+                    dayEveningEnd.setHours(1);
+
+                    servicesToCreate.push({
+                        startAt: dayEvening,
+                        endAt: dayEveningEnd,
+                        nbMax: 4,
+                        category
+                    });
+                }
+
+                startDay.setDate(startDay.getDate() + 1);
+            }
+        }
+
+        await Service.bulkCreate(servicesToCreate);
         console.log('Services generated!');
     } catch (e) {
         console.error('Error while generating services', e);
