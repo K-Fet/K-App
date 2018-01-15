@@ -24,10 +24,10 @@ async function getAllBarmen(req, res) {
 */
 async function createBarman(req, res) {
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'godfather', 'dateOfBirth', 'flow'])) {
+    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
         );
     }
 
@@ -35,14 +35,10 @@ async function createBarman(req, res) {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         nickname: req.body.nickname,
-        facebook: req.body.facebook || null,
-        godFather: req.body.godFather,
+        facebook: req.body.facebook,
         dateOfBirth: req.body.dateOfBirth,
         flow: req.body.flow,
-        kommissions: req.body.kommissions || null,
-        roles: req.body.roles || null,
-        services: req.body.services || null,
-        active: req.body.active || null
+        active: req.body.active
     });
 
     newBarman = await barmanService.createBarman(newBarman);
@@ -76,21 +72,17 @@ async function updateBarman(req, res) {
     if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'godfather', 'dateOfBirth', 'flow'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'godfather\', \'dateOfBirth\', \'flow\']'
+            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
         );
     }
     let newBarman = new Barman({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         nickname: req.body.nickname,
-        facebook: req.body.facebook || null,
-        godFather: req.body.godFather,
+        facebook: req.body.facebook,
         dateOfBirth: req.body.dateOfBirth,
         flow: req.body.flow,
-        kommissions: req.body.kommissions || null,
-        roles: req.body.roles || null,
-        services: req.body.services || null,
-        active: req.body.active || null
+        active: req.body.active
     });
 
     newBarman = await barmanService.updateBarman(newBarman);
