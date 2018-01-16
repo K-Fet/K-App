@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Category } from '../../_models/index';
+import { Role } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
-import { CategoryService } from '../../_services/category.service';
+import { RoleService } from '../../_services/role.service';
 
 @Component({
-  templateUrl: './category-edit.component.html',
+  templateUrl: './role-edit.component.html',
 })
 
-export class CategoryEditComponent implements OnInit {
+export class RoleEditComponent implements OnInit {
     id: string;
     name: string;
+    description: string;
 
     nameFormControl: FormControl = new FormControl('', [Validators.required]);
+    descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
 
     constructor(
-        private categoryService: CategoryService,
+        private roleService: RoleService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router
@@ -25,8 +27,9 @@ export class CategoryEditComponent implements OnInit {
     ngOnInit() {
         this.route.params.subscribe(params => {
             this.id = params['id'];
-            this.categoryService.getById(+this.id).subscribe(category => {
-                this.name = category.name;
+            this.roleService.getById(+this.id).subscribe(role => {
+                this.name = role.name;
+                this.description = role.description;
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -35,12 +38,13 @@ export class CategoryEditComponent implements OnInit {
     }
 
     edit() {
-        const category = new Category();
-        category.id = +this.id;
-        category.name = this.name;
-        this.categoryService.update(category).subscribe(() => {
-            this.toasterService.showToaster('Catégorie de service modifiée', 'Fermer');
-            this.router.navigate(['/categories']);
+        const role = new Role();
+        role.id = +this.id;
+        role.name = this.name;
+        role.description = this.description;
+        this.roleService.update(role).subscribe(() => {
+            this.toasterService.showToaster('Rôle modifié', 'Fermer');
+            this.router.navigate(['/roles']);
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

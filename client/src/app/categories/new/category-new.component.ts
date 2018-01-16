@@ -6,7 +6,7 @@ import { ToasterService } from '../../_services/toaster.service';
 import { CategoryService } from '../../_services/category.service';
 
 @Component({
-  templateUrl: './member-new.component.html',
+  templateUrl: './category-new.component.html',
 })
 
 export class CategoryNewComponent implements OnInit {
@@ -23,7 +23,7 @@ export class CategoryNewComponent implements OnInit {
         const category = new Category();
         category.name = this.name;
         this.categoryService.create(category).subscribe(() => {
-            this.toasterService.showToaster('Catégorie de service créé', 'Fermer');
+            this.toasterService.showToaster('Catégorie de service créée', 'Fermer');
             this.router.navigate(['/categories'] );
         },
         error => {

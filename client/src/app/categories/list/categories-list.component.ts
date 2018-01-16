@@ -10,10 +10,10 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
-  templateUrl: './members-list.component.html',
-  styleUrls: ['./members-list.component.scss']
+  templateUrl: './categories-list.component.html',
+  styleUrls: ['./categories-list.component.scss']
 })
-export class CategoryListComponent implements OnInit {
+export class CategoriesListComponent implements OnInit {
 
     displayedColumns = ['name'];
     categoriesData: MatTableDataSource<Category>;
