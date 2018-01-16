@@ -19,9 +19,6 @@ git clone https://github.com/K-Fet/K-App.git kapp
 cd kapp/
 
 # Launch the update process
-chmod +x ./tools/update.sh
-chmod +x ./tools/init.js
-
 ./tools/update.sh
 ```
 
