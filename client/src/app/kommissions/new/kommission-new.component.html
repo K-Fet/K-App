@@ -3,14 +3,14 @@
         <mat-card-header>
             <mat-card-title>
                 <section class="mat-typography">
-                    <h1>Ajouter un rôle</h1>
+                    <h1>Ajouter une kommission</h1>
                 </section>
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <form #addForm="ngForm" fxLayout="column">
                 <mat-form-field>
-                    <input matInput placeholder="Nom du rôle"
+                    <input matInput placeholder="Nom de la kommission"
                     autocorrect="off" required [(ngModel)]="name" name="name">
                     <mat-error *ngIf="nameFormControl.hasError('required')">
                     Nom <strong>requis</strong>

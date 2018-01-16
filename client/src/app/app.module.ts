@@ -22,6 +22,15 @@ import { BarmenListComponent } from './barmen/list/barmen-list.component';
 import { BarmanNewComponent } from './barmen/new/barman-new.component';
 import { BarmanViewComponent } from './barmen/view/barman-view.component';
 import { BarmanEditComponent } from './barmen/edit/barman-edit.component';
+import { KommissionsListComponent } from './kommissions/list/kommissions-list.component';
+import { KommissionNewComponent } from './kommissions/new/kommission-new.component';
+import { KommissionEditComponent } from './kommissions/edit/kommission-edit.component';
+import { RolesListComponent } from './roles/list/roles-list.component';
+import { RoleNewComponent } from './roles/new/role-new.component';
+import { RoleEditComponent } from './roles/edit/role-edit.component';
+import { CategoriesListComponent } from './categories/list/categories-list.component';
+import { CategoryNewComponent } from './categories/new/category-new.component';
+import { CategoryEditComponent } from './categories/edit/category-edit.component';
 
 // Services
 import { ToasterService, LoginService, MemberService, BarmanService, ServiceService } from './_services/index';
@@ -34,6 +43,9 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { KommissionService } from './_services/kommission.service';
+import { RoleService } from './_services/role.service';
+import { CategoryService } from './_services/category.service';
 
 @NgModule({
     declarations: [
@@ -51,7 +63,16 @@ import { MaterialModule } from './_helpers/material.module';
         BarmenListComponent,
         BarmanNewComponent,
         BarmanViewComponent,
-        BarmanEditComponent
+        BarmanEditComponent,
+        KommissionEditComponent,
+        KommissionNewComponent,
+        KommissionsListComponent,
+        RoleEditComponent,
+        RoleNewComponent,
+        RolesListComponent,
+        CategoryEditComponent,
+        CategoryNewComponent,
+        CategoriesListComponent
     ],
     imports: [
         CommonModule,
@@ -67,6 +88,9 @@ import { MaterialModule } from './_helpers/material.module';
         MemberService,
         BarmanService,
         ServiceService,
+        KommissionService,
+        RoleService,
+        CategoryService,
         AuthGuard,
         ToasterService,
         {

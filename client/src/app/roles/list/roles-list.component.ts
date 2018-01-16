@@ -13,7 +13,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
   templateUrl: './roles-list.component.html',
   styleUrls: ['./roles-list.component.scss']
 })
-export class RoleListComponent implements OnInit {
+export class RolesListComponent implements OnInit {
 
     displayedColumns = ['name', 'description'];
     rolesData: MatTableDataSource<Role>;

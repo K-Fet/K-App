@@ -25,7 +25,14 @@
                     </ng-container>
                     <ng-container matColumnDef="description">
                         <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-                        <mat-cell *matCellDef="let kommission"> {{kommission.name}} </mat-cell>
+                        <mat-cell *matCellDef="let kommission"> {{kommission.description}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                        <mat-cell *matCellDef="let kommission" >
+                            <button mat-icon-button (click)="edit(kommission)"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button (click)="delete(kommission)"><mat-icon>delete</mat-icon></button>
+                        </mat-cell>
                     </ng-container>
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

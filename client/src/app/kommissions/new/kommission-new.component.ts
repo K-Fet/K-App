@@ -1,33 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Role } from '../../_models/index';
+import { Kommission } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
-import { RoleService } from '../../_services/role.service';
+import { KommissionService } from '../../_services/kommission.service';
 
 @Component({
-  templateUrl: './role-new.component.html',
+  templateUrl: './kommission-new.component.html',
 })
 
-export class RoleNewComponent implements OnInit {
+export class KommissionNewComponent implements OnInit {
     name: string;
     description: string;
 
     nameFormControl: FormControl = new FormControl('', [Validators.required]);
     descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
 
-    constructor(private roleService: RoleService, private toasterService: ToasterService, private router: Router) {}
+    constructor(private kommissionService: KommissionService, private toasterService: ToasterService, private router: Router) {}
     ngOnInit(): void {
 
     }
 
     add() {
-        const role = new Role();
-        role.name = this.name;
-        role.description = this.description;
-        this.roleService.create(role).subscribe(() => {
-            this.toasterService.showToaster('Rôle créé', 'Fermer');
-            this.router.navigate(['/roles'] );
+        const kommission = new Kommission();
+        kommission.name = this.name;
+        kommission.description = this.description;
+        this.kommissionService.create(kommission).subscribe(() => {
+            this.toasterService.showToaster('Kommission créée', 'Fermer');
+            this.router.navigate(['/kommissions'] );
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

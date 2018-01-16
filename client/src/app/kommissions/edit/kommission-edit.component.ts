@@ -27,9 +27,9 @@ export class KommissionEditComponent implements OnInit {
     ngOnInit() {
         this.route.params.subscribe(params => {
             this.id = params['id'];
-            this.kommissionService.getById(+this.id).subscribe(role => {
-                this.name = role.name;
-                this.description = role.description;
+            this.kommissionService.getById(+this.id).subscribe(kommission => {
+                this.name = kommission.name;
+                this.description = kommission.description;
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -44,7 +44,7 @@ export class KommissionEditComponent implements OnInit {
         kommission.description = this.description;
         this.kommissionService.update(kommission).subscribe(() => {
             this.toasterService.showToaster('Kommission modifiée', 'Fermer');
-            this.router.navigate(['/roles']);
+            this.router.navigate(['/kommissions']);
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

@@ -13,9 +13,9 @@ import 'rxjs/add/operator/distinctUntilChanged';
   templateUrl: './kommissions-list.component.html',
   styleUrls: ['./kommissions-list.component.scss']
 })
-export class RoleListComponent implements OnInit {
+export class KommissionsListComponent implements OnInit {
 
-    displayedColumns = ['name', 'description'];
+    displayedColumns = ['name', 'description', 'action'];
     kommissionsData: MatTableDataSource<Kommission>;
 
     @ViewChild(MatSort) sort: MatSort;
@@ -37,7 +37,7 @@ export class RoleListComponent implements OnInit {
     }
 
     edit(kommission: Kommission) {
-        this.router.navigate(['/roles', kommission.id]);
+        this.router.navigate(['/kommissions', kommission.id]);
     }
 
     delete(kommission: Kommission) {
@@ -51,5 +51,10 @@ export class RoleListComponent implements OnInit {
         });
     }
 
+    applyFilter(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.kommissionsData.filter = filterValue;
+    }
 }
 

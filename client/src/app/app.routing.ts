@@ -10,6 +10,15 @@ import { LoginComponent } from './login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
+import { KommissionsListComponent } from './kommissions/list/kommissions-list.component';
+import { KommissionNewComponent } from './kommissions/new/kommission-new.component';
+import { KommissionEditComponent } from './kommissions/edit/kommission-edit.component';
+import { RolesListComponent } from './roles/list/roles-list.component';
+import { RoleNewComponent } from './roles/new/role-new.component';
+import { RoleEditComponent } from './roles/edit/role-edit.component';
+import { CategoriesListComponent } from './categories/list/categories-list.component';
+import { CategoryNewComponent } from './categories/new/category-new.component';
+import { CategoryEditComponent } from './categories/edit/category-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
 import { BarmenListComponent } from './barmen/list/barmen-list.component';
@@ -23,6 +32,15 @@ const routes: Routes = [
     { path: 'members', component: MembersListComponent, canActivate: [AuthGuard] },
     { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard] },
     { path: 'members/:id', component: MemberEditComponent, canActivate: [AuthGuard] },
+    { path: 'kommissions', component: KommissionsListComponent, canActivate: [AuthGuard] },
+    { path: 'kommissions/new', component: KommissionNewComponent, canActivate: [AuthGuard] },
+    { path: 'kommissions/:id', component: KommissionEditComponent, canActivate: [AuthGuard] },
+    { path: 'roles', component: RolesListComponent, canActivate: [AuthGuard] },
+    { path: 'roles/new', component: RoleNewComponent, canActivate: [AuthGuard] },
+    { path: 'roles/:id', component: RoleEditComponent, canActivate: [AuthGuard] },
+    { path: 'categories', component: CategoriesListComponent, canActivate: [AuthGuard] },
+    { path: 'categories/new', component: CategoryNewComponent, canActivate: [AuthGuard] },
+    { path: 'categories/:id', component: CategoryEditComponent, canActivate: [AuthGuard] },
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [AuthGuard] },
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
     { path: 'barmen', component: BarmenListComponent, canActivate: [AuthGuard] },
