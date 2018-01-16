@@ -1,13 +1,21 @@
 {
     "name": "K-App",
-    "version": "0.0.1",
+    "version": "1.0-alpha",
     "description": "K-App provide a large panel of useful tools for associations",
-    "main": "server/index.js",
-    "repository": "https://github.com/K-Fet/K-App",
     "contributors": [
         "Corentin Giraud",
-        "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>"
+        "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
+        "Baptiste Viry",
+        "Clément Guittat",
+        "Mickael Gadou"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/K-Fet/K-App"
+    },
+    "bugs": {
+        "url": "https://github.com/K-Fet/K-App/issues"
+    },
     "license": "Apache-2.0",
     "private": true,
     "scripts": {
@@ -19,6 +27,7 @@
         "eslint": "eslint server/",
         "eslint:watch": "esw --watch server/",
         "lint": "npm run eslint && cd client/ && npm run lint",
+        "install:prod": "npm install --production --loglevel warn && npm run postinstall",
         "postinstall": "cd client/ && npm install --unsafe-perm",
         "prod": "NODE_ENV=production node server/index.js",
         "test": "concurrently \"npm run test:back\" \"npm run test:front\"",
@@ -56,6 +65,7 @@
         "should-sinon": "0.0.6",
         "sinon": "^4.1.3"
     },
+    "main": "server/index.js",
     "engines": {
         "node": ">8.0.0"
     },

@@ -41,7 +41,7 @@ cd ..
 checkout_last_release
 
 # Install or update dependencies
-npm install --production --loglevel warn
+npm run install:prod
 npm prune --production
 
 # Build assets for client
