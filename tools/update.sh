@@ -31,12 +31,12 @@ function checkout_last_release() {
 # RUN SCRIPT
 #==============================================================================
 
-# Load error handler
-source 'lib/lib.trap.sh'
-
 # Set current directory to here
 cd "${0%/*}"
 cd ..
+
+# Load error handler
+source 'lib/lib.trap.sh'
 
 checkout_last_release
 
@@ -51,5 +51,4 @@ npm run build
 systemctl restart 'kapp@*'
 
 printf "Server updated !\n\n"
-
 exit 0

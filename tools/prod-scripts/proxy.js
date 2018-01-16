@@ -3,7 +3,7 @@
 const inquirer = require('inquirer');
 const path = require('path');
 const util = require('util');
-const { overwriteOrNot } = require('./util');
+const { overwriteOrNot, systemdDaemonReload } = require('./util');
 const exec = util.promisify(require('child_process').exec);
 
 /**
@@ -98,6 +98,13 @@ function confirmConfig(config) {
 async function configure(config) {
     if (!config.proxy || !config.proxy.caddy) return;
 
+    await configureCaddy(config);
+}
+
+
+async function configureCaddy(config) {
+
+    const CADDYFILE_PATH = '/srv/caddy/Caddyfile';
     const clientFolder = path.resolve(__dirname, '../../client/dist/');
 
     let backendList = '';
@@ -135,14 +142,61 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
 }
 `;
 
-    await overwriteOrNot('/srv/caddy/Caddyfile', caddyFile);
+    await overwriteOrNot(CADDYFILE_PATH, caddyFile);
 
     if (!config.proxy.caddy.install) return;
 
     console.log('Installing Caddy Server');
     const { stderr } = await exec('curl https://getcaddy.com | bash -s personal http.cache');
-    console.error('Error while installation:', stderr);
+    if (stderr) return console.error('Error while installation:', stderr);
+
+    const caddyService = `
+[Unit]
+Description=Caddy HTTP/2 web server
+Documentation=https://caddyserver.com/docs
+After=network-online.target
+Wants=network-online.target systemd-networkd-wait-online.service
+
+[Service]
+Restart=on-abnormal
+
+; User and group the process will run as.
+User=www-data
+Group=www-data
+
+; Letsencrypt-issued certificates will be written to this directory.
+Environment=CADDYPATH=/etc/ssl/caddy
+
+; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
+ExecStart=/usr/local/bin/caddy -log stdout -agree=true -conf=${CADDYFILE_PATH} -root=/var/tmp
+ExecReload=/bin/kill -USR1 $MAINPID
+
+; Use graceful shutdown with a reasonable timeout
+KillMode=mixed
+KillSignal=SIGQUIT
+TimeoutStopSec=5s
+
+LimitNOFILE=1048576
+LimitNPROC=512
+
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=full
+ReadWriteDirectories=/etc/ssl/caddy
+
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target`;
+
+    await overwriteOrNot('/etc/systemd/system/caddy.service', caddyService);
+    
     console.log('Caddy Server installed');
+
+    await systemdDaemonReload();
 }
 
 module.exports = {

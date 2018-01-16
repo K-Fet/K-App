@@ -81,6 +81,10 @@ function hr(){
 # RUN SCRIPT
 #==============================================================================
 
+# Set current directory to here
+cd "${0%/*}"
+cd ..
+
 # Load error handler
 source 'lib/lib.trap.sh'
 
@@ -89,3 +93,4 @@ hr
 backup_databases
 hr
 printf "All backed up!\n\n"
+exit 0

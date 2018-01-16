@@ -3,7 +3,7 @@
 const inquirer = require('inquirer');
 const path = require('path');
 const appPackage = require('../../package');
-const { overwriteOrNot } = require('./util');
+const { overwriteOrNot, systemdDaemonReload } = require('./util');
 
 
 /**
@@ -107,6 +107,8 @@ WantedBy=multi-user.target
 `;
 
     await overwriteOrNot('/etc/systemd/system/kapp@.service', serviceFile);
+
+    await systemdDaemonReload();
 }
 
 module.exports = {

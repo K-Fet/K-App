@@ -68,3 +68,16 @@ systemctl enable kapp@3003.service
 the _number of instances_ in the **init.js** script.
 For example, here, there are **4** instances and 
 the first port is **3000**.
+
+### Caddy Server
+
+If you chose to install ***Caddy Server*** manually, don't forget 
+to add a [service file](https://github.com/mholt/caddy/tree/master/dist/init/linux-systemd)
+to reboot at startup!
+
+Otherwise, you just have to launch it with:
+
+```bash
+systemctl start caddy
+systemctl enable caddy
+```

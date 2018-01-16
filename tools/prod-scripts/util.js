@@ -1,9 +1,13 @@
+/* eslint-disable no-console */
 const fs = require('fs');
+const child_process = require('child_process');
 const path = require('path');
 const inquirer = require('inquirer');
 const util = require('util');
 
+
 const writeFile = util.promisify(fs.writeFile);
+const exec = util.promisify(child_process.exec);
 
 /**
  * Create all directories needed.
@@ -44,7 +48,21 @@ async function overwriteOrNot(file, data) {
     return false;
 }
 
+/**
+ * Reload systemd with
+ * `systemctl daemon-reload`
+ * @return {Promise<void>}
+ */
+async function systemdDaemonReload() {
+    console.log('Reloading systemd');
+    const { stderr } = await exec('systemctl daemon-reload');
+    if (stderr) return console.error('Error while reloading systemd', stderr);
+    console.log('Systemd reloaded');
+}
+
+
 module.exports = {
     overwriteOrNot,
-    createDirDeep
+    createDirDeep,
+    systemdDaemonReload
 };
