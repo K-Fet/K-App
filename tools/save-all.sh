@@ -80,6 +80,10 @@ function hr(){
 #==============================================================================
 # RUN SCRIPT
 #==============================================================================
+
+# Load error handler
+source 'lib/lib.trap.sh'
+
 delete_old_backups
 hr
 backup_databases

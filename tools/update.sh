@@ -31,6 +31,9 @@ function checkout_last_release() {
 # RUN SCRIPT
 #==============================================================================
 
+# Load error handler
+source 'lib/lib.trap.sh'
+
 # Set current directory to here
 cd "${0%/*}"
 cd ..
@@ -38,7 +41,7 @@ cd ..
 checkout_last_release
 
 # Install or update dependencies
-npm install --production --loglevel warn
+npm run install:prod
 npm prune --production
 
 # Build assets for client
@@ -48,3 +51,5 @@ npm run build
 systemctl restart 'kapp@*'
 
 printf "Server updated !\n\n"
+
+exit 0
