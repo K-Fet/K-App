@@ -5,7 +5,9 @@ const crypto = require('crypto');
 const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
 const { ConnectionInformation, SpecialAccount } = require('../../server/app/models');
+const mysqlConf = require('./mysql');
 
+const isCLI = require.main === module;
 
 /**
  *
@@ -20,12 +22,18 @@ async function askQuestions(configObj) {
             name: 'createAdmin',
             message: 'Do you want to create an admin account?',
             default: false,
+            when: !isCLI
         },
         {
             type: 'input',
             name: 'adminUsername',
-            message: 'Username of admin (used to connect)?',
+            message: 'Username for admin (used to connect)?',
             default: 'admin'
+        },
+        {
+            type: 'password',
+            name: 'adminPassword',
+            message: 'Password for admin, leave blank to generate one (recommended on prod)?'
         },
         {
             type: 'input',
@@ -42,7 +50,7 @@ async function askQuestions(configObj) {
 
     configObj.account = {
         admin: {
-            password: crypto.randomBytes(64).toString('hex'),
+            password: answers.adminPassword || crypto.randomBytes(20).toString('hex'),
             code: answers.adminCode,
             username: answers.adminUsername
         }
@@ -76,7 +84,7 @@ async function configure(config) {
     if (!config.account) return;
 
     // Init sequelize instance
-    const sequelize = new Sequelize(config.mysql.database, config.mysql.app.username, config.mysql.app.password, {
+    const sequelize = new Sequelize(config.mysql.database, config.mysql.root.username, config.mysql.root.password, {
         host: config.mysql.host,
         dialect: 'mysql',
 
@@ -108,6 +116,17 @@ async function configure(config) {
 
     console.info('Administrator created! Here is the password to connect', config.account.admin.password);
 }
+
+
+if (isCLI) {
+    console.log('You must have created a database for the app!');
+    const config = {};
+
+    mysqlConf.askQuestions(config)
+        .then(() => askQuestions(config))
+        .then(() => configure(config));
+}
+
 
 module.exports = {
     askQuestions,

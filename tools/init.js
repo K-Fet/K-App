@@ -14,12 +14,12 @@ if (process.platform === 'win32') {
 
 const inquirer = require('inquirer');
 
-const account = require('./init/account');
-const backup = require('./init/backup');
-const jwt = require('./init/jwt');
-const mysql = require('./init/mysql');
-const proxy = require('./init/proxy');
-const systemd = require('./init/systemd');
+const account = require('./prod-scripts/account');
+const backup = require('./prod-scripts/backup');
+const jwt = require('./prod-scripts/jwt');
+const mysql = require('./prod-scripts/mysql');
+const proxy = require('./prod-scripts/proxy');
+const systemd = require('./prod-scripts/systemd');
 
 
 const configuration = {};
