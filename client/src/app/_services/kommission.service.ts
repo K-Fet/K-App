@@ -1,38 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Barman } from '../_models/index';
+import { Kommission } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
-export class BarmanService {
+export class KommissionService {
 
-    dataChange: BehaviorSubject<Barman[]> = new BehaviorSubject<Barman[]>([]);
-    get data(): Barman[] { return this.dataChange.value; }
+    dataChange: BehaviorSubject<Kommission[]> = new BehaviorSubject<Kommission[]>([]);
+    get data(): Kommission[] { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Barman[]>('/api/barmen').catch(this.handleError);
+        return this.http.get<Kommission[]>('/api/kommissions').catch(this.handleError);
     }
 
     getById(id: number) {
-        return this.http.get<Barman>('/api/barmen/' + id).catch(this.handleError);
+        return this.http.get<Kommission>('/api/kommissions/' + id).catch(this.handleError);
     }
 
-    create(barman: Barman) {
-        return this.http.post('/api/barmen', barman).catch(this.handleError);
+    create(kommission: Kommission) {
+        return this.http.post('/api/kommissions', kommission).catch(this.handleError);
     }
 
-    update(barman: Barman) {
-        return this.http.put('/api/barmen/' + barman.id, barman).catch(this.handleError);
+    update(kommission: Kommission) {
+        return this.http.put('/api/kommissions/' + kommission.id, kommission).catch(this.handleError);
     }
 
     delete(id: number) {
-        return this.http.delete('/api/barmen/' + id).catch(this.handleError);
+        return this.http.delete('/api/kommissions/' + id).catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {
@@ -41,8 +41,8 @@ export class BarmanService {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
             switch (err.error.error) {
-                case 'UknowBarman':
-                    errorMessage = `Erreur, impossible de recuperer le barman`;
+                case 'UknownKommission':
+                    errorMessage = `Erreur, impossible de recuperer la kommission`;
                     break;
                 case 'UnauthorizedError':
                     errorMessage = `Erreur: opération non autorisée`;

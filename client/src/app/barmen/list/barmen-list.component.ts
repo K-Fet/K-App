@@ -17,7 +17,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class BarmenListComponent implements OnInit {
 
-    displayedColumns = ['nickName', 'lastName', 'firstName', 'action'];
+    displayedColumns = ['nickname', 'lastName', 'firstName', 'action'];
     dataSource: BarmanDataSource;
 
     @ViewChild(MatSort) sort: MatSort;
@@ -39,8 +39,10 @@ export class BarmenListComponent implements OnInit {
     }
 
     view(barman: Barman) {
-        this.router.navigate(['/barman', barman.id]);
+        this.router.navigate(['/barmen', barman.id]);
     }
-
+    edit(barman: Barman) {
+        this.router.navigate(['/barmen', barman.id, 'edit']);
+    }
 }
 

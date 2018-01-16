@@ -1,3 +1,5 @@
+import { ConnectionInformation, Kommission, Role } from './index';
+
 export class Barman {
 
         id: number;
@@ -12,7 +14,14 @@ export class Barman {
         dateOfBirth: Date;
         flow: string;
         active: boolean;
-        godFather: number;
+        godFatherId: number;
+
+        // Associations
+
+        connectionInformation: ConnectionInformation;
+        godFather: Barman;
+        kommissions: Kommission[];
+        roles: Role[];
 
         constructor(values: Object = {}) {
             Object.assign(this, values);

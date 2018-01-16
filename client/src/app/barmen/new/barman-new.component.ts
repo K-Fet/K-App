@@ -17,7 +17,7 @@ export class BarmanNewComponent implements OnInit {
     facebook: string;
     dateOfBirth: Date;
     flow: string;
-    godFather: number;
+    godFatherId: number;
 
     lastNameFormControl: FormControl = new FormControl('', [Validators.required]);
     firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
@@ -40,7 +40,7 @@ export class BarmanNewComponent implements OnInit {
         barman.username = this.username;
         barman.dateOfBirth = this.dateOfBirth;
         barman.flow = this.flow;
-        barman.godFather = this.godFather;
+        barman.godFatherId = this.godFatherId;
 
         if (this.facebook) {
             barman.facebook = this.facebook;

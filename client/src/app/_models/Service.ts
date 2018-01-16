@@ -1,13 +1,19 @@
+import { Category } from './index';
+
 export class Service {
 
-        id: number;
-        name: string;
-        startingDate: Date;
-        endingDate: Date;
-        nbMax: number;
-        categoryId: number;
+    id: number;
+    name: string;
+    startingDate: Date;
+    endingDate: Date;
+    nbMax: number;
+    categoryId: number;
 
-        constructor(values: Object = {}) {
-            Object.assign(this, values);
-        }
+    // Association
+
+    category: Category;
+
+    constructor(values: Object = {}) {
+        Object.assign(this, values);
     }
+}

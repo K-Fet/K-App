@@ -41,9 +41,9 @@ export class BarmanDataSource extends DataSource<any> {
         .switchMap(() => {
             return this.barmanService.getAll();
         })
-        .map(members => {
+        .map(barmen => {
             // Filter data
-            this.filteredData = members.slice().filter((item: Barman) => {
+            this.filteredData = barmen.slice().filter((item: Barman) => {
                 const searchStr = (item.firstName + item.lastName).toLowerCase();
                 return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
             });
@@ -67,7 +67,7 @@ export class BarmanDataSource extends DataSource<any> {
             let propertyB: number|string = '';
 
             switch (this.sort.active) {
-                // TODO implement others properties
+                case 'nickname' : [propertyA, propertyB] = [a.nickname, b.nickname]; break;
                 case 'lastName': [propertyA, propertyB] = [a.lastName, b.lastName]; break;
                 case 'firstName': [propertyA, propertyB] = [a.firstName, b.firstName]; break;
             }
