@@ -16,9 +16,13 @@ cd /srv/
 
 # Clone the repo under the 'kapp' folder
 git clone https://github.com/K-Fet/K-App.git kapp
+cd kapp/
 
 # Launch the update process
-./kapp/tools/update.sh
+chmod +x ./tools/update.sh
+chmod +x ./tools/init.js
+
+./tools/update.sh
 ```
 
 ## Configure the application
@@ -26,7 +30,7 @@ git clone https://github.com/K-Fet/K-App.git kapp
 Before launching the app you **must** configure the application.
 The easy way is to use this script:
 ```bash
-./kapp/tools/init.js
+./tools/init.js
 ```
 
 It will ask you a bunch of question and install everything as wanted.
