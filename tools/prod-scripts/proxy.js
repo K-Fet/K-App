@@ -3,8 +3,12 @@
 const inquirer = require('inquirer');
 const path = require('path');
 const util = require('util');
-const { overwriteOrNot, systemdDaemonReload } = require('./util');
+const { overwriteOrNot, systemdDaemonReload, createDirDeep } = require('./util');
 const exec = util.promisify(require('child_process').exec);
+
+const CADDYFILE_PATH = '/srv/caddy/Caddyfile';
+const CADDY_SSL_PATH = '/etc/ssl/caddy';
+
 
 /**
  *
@@ -104,7 +108,8 @@ async function configure(config) {
 
 async function configureCaddy(config) {
 
-    const CADDYFILE_PATH = '/srv/caddy/Caddyfile';
+    if (config.proxy.caddy.install) await caddyInstallation();
+
     const clientFolder = path.resolve(__dirname, '../../client/dist/');
 
     let backendList = '';
@@ -143,9 +148,12 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
 `;
 
     await overwriteOrNot(CADDYFILE_PATH, caddyFile);
+    await exec(`chown root:www-data ${CADDYFILE_PATH}`);
+    await exec(`chmod 444 ${CADDYFILE_PATH}`);
+}
 
-    if (!config.proxy.caddy.install) return;
 
+async function caddyInstallation() {
     console.log('Installing Caddy Server');
     const { stderr } = await exec('curl https://getcaddy.com --fail --silent --show-error | bash -s personal http.cache');
     if (stderr) return console.error('Error while installation:', stderr);
@@ -165,7 +173,7 @@ User=www-data
 Group=www-data
 
 ; Letsencrypt-issued certificates will be written to this directory.
-Environment=CADDYPATH=/etc/ssl/caddy
+Environment=CADDYPATH=${CADDY_SSL_PATH}
 
 ; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
 ExecStart=/usr/local/bin/caddy -log stdout -agree=true -conf=${CADDYFILE_PATH} -root=/var/tmp
@@ -183,7 +191,7 @@ PrivateTmp=true
 PrivateDevices=true
 ProtectHome=true
 ProtectSystem=full
-ReadWriteDirectories=/etc/ssl/caddy
+ReadWriteDirectories=${CADDY_SSL_PATH}
 
 CapabilityBoundingSet=CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_BIND_SERVICE
@@ -192,6 +200,21 @@ NoNewPrivileges=true
 [Install]
 WantedBy=multi-user.target`;
 
+    try {
+        // Create www-data user (don't care about the output)
+        await exec('groupadd -g 33 www-data');
+        await exec('useradd g www-data --no-user-group --home-dir /var/www' +
+            ' --no-create-home --shell /usr/sbin/nologin --system --uid 33 www-data');
+    } catch (e) {
+        console.info('Skip www-data creation');
+    }
+
+    // Create ssl dir path
+    await createDirDeep(CADDY_SSL_PATH);
+    await exec(`chown -R root:www-data ${CADDY_SSL_PATH}`);
+    await exec(`chmod 0770 ${CADDY_SSL_PATH}`);
+
+    // Create the caddy service file
     await overwriteOrNot('/etc/systemd/system/caddy.service', caddyService);
 
     console.log('Caddy Server installed');
