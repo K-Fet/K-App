@@ -40,22 +40,6 @@ async function ask(conf) {
                 }
             ],
             validate: answer => answer.length < 1 ? 'You must choose at least one topping.' : true
-        },
-        {
-            type: 'input',
-            name: 'nbMembers',
-            message: 'How many members do you want?',
-            default: 200,
-            validate: input => {
-                if (input >>> 0 === parseFloat(input)) {
-                    if (parseInt(input) <= 300) {
-                        return true;
-                    }
-                    return 'Max value is 300';
-                }
-                return 'You must enter a positive integer';
-            },
-            when: answers => answers.generateList.includes('Members')
         }
     ]);
 
