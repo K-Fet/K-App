@@ -9,8 +9,6 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class MemberService {
-    dataChange: BehaviorSubject<Member[]> = new BehaviorSubject<Member[]>([]);
-    get data(): Member[] { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 

@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Member, Barman } from '../../_models/index';
 import { BarmanService } from '../../_services/index';
-import { BarmanDataSource } from './helpers/barman-data-source';
-import { Observable } from 'rxjs/Observable';
-import { MatSort, MatPaginator } from '@angular/material';
+import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
 
@@ -18,24 +16,26 @@ import 'rxjs/add/operator/distinctUntilChanged';
 export class BarmenListComponent implements OnInit {
 
     displayedColumns = ['nickname', 'lastName', 'firstName', 'action'];
-    dataSource: BarmanDataSource;
+    barmenData: MatTableDataSource<Barman>;
 
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild('filter') filter: ElementRef;
 
     constructor(private barmanService: BarmanService, private toasterService: ToasterService, private router: Router) {
     }
 
     ngOnInit() {
-        this.dataSource = new BarmanDataSource(this.barmanService, this.sort, this.paginator);
-        Observable.fromEvent(this.filter.nativeElement, 'keyup')
-        .debounceTime(150)
-        .distinctUntilChanged()
-        .subscribe(() => {
-            if (!this.dataSource) { return; }
-            this.dataSource.filter = this.filter.nativeElement.value;
+        this.barmanService.getAll().subscribe(barmen => {
+            this.barmenData = new MatTableDataSource(barmen);
+            this.barmenData.paginator = this.paginator;
+            this.barmenData.sort = this.sort;
         });
+    }
+
+    applyFilter(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.barmenData.filter = filterValue;
     }
 
     view(barman: Barman) {

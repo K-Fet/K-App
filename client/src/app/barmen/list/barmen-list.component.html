@@ -14,11 +14,11 @@
         <mat-card-content>
             <div class="header">
                 <mat-form-field>
-                    <input matInput #filter placeholder="Rechercher des barmen">
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des barmen">
                 </mat-form-field>
             </div>
             <div class="mat-elevation-z3">
-                <mat-table #table [dataSource]="dataSource" matSort>
+                <mat-table #table [dataSource]="barmenData" matSort>
                     <ng-container matColumnDef="nickname">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
                         <mat-cell *matCellDef="let barman"> {{barman.nickname}} </mat-cell>
@@ -45,13 +45,8 @@
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
                 </mat-table>
-                <div class="no-results"
-                    [style.display]="dataSource.renderedData.length == 0 ? '' : 'none'">
-                    Aucun barmen ne correspond à la recherche.
-                </div>
 
                 <mat-paginator #paginator
-                    [length]="dataSource.filteredData.length"
                     [pageIndex]="0"
                     [pageSize]="10"
                     [pageSizeOptions]="[5, 10, 25, 100]">

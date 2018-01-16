@@ -1,0 +1,37 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="550px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Listes des catégories de service</h1>
+                </section>
+            </mat-card-title>
+            <div fxFlex></div>
+            <a mat-mini-fab color="primary" routerLink="/categories/new">
+                <mat-icon>add</mat-icon>
+            </a>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="header">
+                <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des categories de services">
+                </mat-form-field>
+            </div>
+            <div class="mat-elevation-z3">
+                <mat-table #table [dataSource]="categoriesData" matSort>
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+                        <mat-cell *matCellDef="let category"> {{category.name}} </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <mat-paginator #paginator
+                    [pageIndex]="0"
+                    [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 25, 100]">
+                </mat-paginator>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

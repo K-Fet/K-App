@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Member } from '../../_models/index';
 import { MemberService } from '../../_services/member.service';
-import { MemberDataSource } from './helpers/member-data-source';
 import { Observable } from 'rxjs/Observable';
-import { MatSort, MatPaginator } from '@angular/material';
+import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
 
@@ -18,23 +17,23 @@ import 'rxjs/add/operator/distinctUntilChanged';
 export class MembersListComponent implements OnInit {
 
     displayedColumns = ['lastName', 'firstName', 'school', 'action'];
-    dataSource: MemberDataSource;
+    membersData: MatTableDataSource<Member>;
 
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild('filter') filter: ElementRef;
 
     constructor(private memberService: MemberService, private toasterService: ToasterService, private router: Router) {
     }
 
     ngOnInit() {
-        this.dataSource = new MemberDataSource(this.memberService, this.toasterService, this.sort, this.paginator);
-        Observable.fromEvent(this.filter.nativeElement, 'keyup')
-        .debounceTime(150)
-        .distinctUntilChanged()
-        .subscribe(() => {
-            if (!this.dataSource) { return; }
-            this.dataSource.filter = this.filter.nativeElement.value;
+        this.update();
+    }
+
+    update() {
+        this.memberService.getAll().subscribe(members => {
+            this.membersData = new MatTableDataSource(members);
+            this.membersData.paginator = this.paginator;
+            this.membersData.sort = this.sort;
         });
     }
 
@@ -46,7 +45,7 @@ export class MembersListComponent implements OnInit {
         this.memberService.delete(member.id)
         .subscribe(() => {
             this.toasterService.showToaster('Adhérent supprimé', 'Fermer');
-            this.dataSource = new MemberDataSource(this.memberService, this.toasterService, this.sort, this.paginator);
+            this.update();
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');

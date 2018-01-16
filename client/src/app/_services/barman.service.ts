@@ -10,9 +10,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class BarmanService {
 
-    dataChange: BehaviorSubject<Barman[]> = new BehaviorSubject<Barman[]>([]);
-    get data(): Barman[] { return this.dataChange.value; }
-
     constructor(private http: HttpClient) { }
 
     getAll() {
