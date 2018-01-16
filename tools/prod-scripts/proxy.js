@@ -147,7 +147,7 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
     if (!config.proxy.caddy.install) return;
 
     console.log('Installing Caddy Server');
-    const { stderr } = await exec('curl https://getcaddy.com | bash -s personal http.cache');
+    const { stderr } = await exec('curl https://getcaddy.com --fail --silent --show-error | bash -s personal http.cache');
     if (stderr) return console.error('Error while installation:', stderr);
 
     const caddyService = `
@@ -193,7 +193,7 @@ NoNewPrivileges=true
 WantedBy=multi-user.target`;
 
     await overwriteOrNot('/etc/systemd/system/caddy.service', caddyService);
-    
+
     console.log('Caddy Server installed');
 
     await systemdDaemonReload();
