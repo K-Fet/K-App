@@ -17,6 +17,7 @@ which explain everything :).
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
+- [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
 
 Optional:
