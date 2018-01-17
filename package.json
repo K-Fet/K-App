@@ -60,7 +60,7 @@
         "nodemon": "^1.14.8",
         "nyc": "^11.4.1",
         "proxyquire": "^1.8.0",
-        "sequelize-mocking": "^1.3.1",
+        "sequelize-mocking": "^1.3.2",
         "should": "^13.2.0",
         "should-sinon": "0.0.6",
         "sinon": "^4.1.3"
