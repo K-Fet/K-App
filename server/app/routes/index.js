@@ -27,10 +27,20 @@ router.use('/kommissions', require('./kommissions'));
 
 /*eslint no-unused-vars: "off"*/
 router.use((err, req, res, next) => {
-    if (err.name === 'UnauthorizedError') {
+    // Express-jwt-permissions error
+    if (err.code === 'permission_denied') {
+        logger.verbose('Not enough permissions error at %s for %s', req.path, req.user.jit);
         return res.status(403).json({
+            error: 'PermissionError',
+            message: 'You don\'t have enough permissions!'
+        });
+    }
+
+    // Express-jwt error
+    if (err.name === 'UnauthorizedError') {
+        return res.status(401).json({
             error: err.name,
-            message: 'You don\'t have enough permissions !'
+            message: 'You have to log in in order to do that'
         });
     }
 
