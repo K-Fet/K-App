@@ -4,6 +4,9 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
+// Forms
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 // Routes
 import { routing } from './app.routing';
 
@@ -33,7 +36,8 @@ import { CategoryNewComponent } from './categories/new/category-new.component';
 import { CategoryEditComponent } from './categories/edit/category-edit.component';
 
 // Services
-import { ToasterService, LoginService, MemberService, BarmanService, ServiceService } from './_services/index';
+import { ToasterService, LoginService, MemberService,
+    BarmanService, ServiceService, KommissionService, RoleService, CategoryService } from './_services/index';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -43,9 +47,6 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { KommissionService } from './_services/kommission.service';
-import { RoleService } from './_services/role.service';
-import { CategoryService } from './_services/category.service';
 
 @NgModule({
     declarations: [
@@ -80,7 +81,9 @@ import { CategoryService } from './_services/category.service';
         BrowserAnimationsModule,
         MaterialModule,
         HttpClientModule,
-        routing
+        routing,
+        FormsModule,
+        ReactiveFormsModule
     ],
     bootstrap: [AppComponent],
     providers: [
@@ -97,7 +100,7 @@ import { CategoryService } from './_services/category.service';
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,
             multi: true
-        },
+        }
     ]
 })
 export class AppModule { }
