@@ -51,5 +51,11 @@ export class CategoriesListComponent implements OnInit {
         });
     }
 
+    applyFilter(filterValue: string) {
+        filterValue = filterValue.trim(); // Remove whitespace
+        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+        this.categoriesData.filter = filterValue;
+    }
+
 }
 

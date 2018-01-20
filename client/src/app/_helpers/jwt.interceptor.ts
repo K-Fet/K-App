@@ -18,12 +18,17 @@ export class JwtInterceptor implements HttpInterceptor {
                 }
             });
         }
-        return next.handle(request).do((err: any) => {
-            if (err instanceof HttpErrorResponse) {
-                if (err.status === 401) {
-                    this.router.navigate(['/login'] );
+        return next.handle(request).do(
+            () => {},
+            (error: any) => {
+                if (error instanceof HttpErrorResponse) {
+                    if (error.status === 401) {
+                        this.router.navigate(['/login']);
+                    }
+                    if (error.status === 404) {
+                        // TODO this.router.navigate(['/404']);
+                    }
                 }
-            }
-        });
+            });
     }
 }
