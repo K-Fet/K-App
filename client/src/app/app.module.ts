@@ -34,6 +34,7 @@ import { RoleEditComponent } from './roles/edit/role-edit.component';
 import { CategoriesListComponent } from './categories/list/categories-list.component';
 import { CategoryNewComponent } from './categories/new/category-new.component';
 import { CategoryEditComponent } from './categories/edit/category-edit.component';
+import { DialogComponent } from './dialog/dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -73,7 +74,11 @@ import { MaterialModule } from './_helpers/material.module';
         RolesListComponent,
         CategoryEditComponent,
         CategoryNewComponent,
-        CategoriesListComponent
+        CategoriesListComponent,
+        DialogComponent
+    ],
+    entryComponents: [
+        DialogComponent
     ],
     imports: [
         CommonModule,

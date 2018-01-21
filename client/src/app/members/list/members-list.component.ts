@@ -1,29 +1,32 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Member } from '../../_models/index';
 import { MemberService } from '../../_services/member.service';
 import { Observable } from 'rxjs/Observable';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
+import { DialogComponent } from '../../dialog/dialog.component';
 
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
-  templateUrl: './members-list.component.html',
-  styleUrls: ['./members-list.component.scss']
+    templateUrl: './members-list.component.html',
+    styleUrls: ['./members-list.component.scss']
 })
 export class MembersListComponent implements OnInit {
 
     displayedColumns = ['lastName', 'firstName', 'school', 'action'];
     membersData: MatTableDataSource<Member>;
 
+    deletedMember: Member;
+
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private memberService: MemberService, private toasterService: ToasterService, private router: Router) {
-    }
+    constructor(
+        private memberService: MemberService,
+        private toasterService: ToasterService,
+        private router: Router,
+        public dialog: MatDialog) { }
 
     ngOnInit() {
         this.update();
@@ -41,7 +44,7 @@ export class MembersListComponent implements OnInit {
         this.router.navigate(['/members', member.id]);
     }
 
-    delete(member: Member) {
+    delete(member: Member, code: number) {
         this.memberService.delete(member.id)
         .subscribe(() => {
             this.toasterService.showToaster('Adhérent supprimé', 'Fermer');
@@ -57,6 +60,17 @@ export class MembersListComponent implements OnInit {
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.membersData.filter = filterValue;
     }
+    openDialog(member: Member): void {
+        this.deletedMember = member;
+        const dialogRef = this.dialog.open(DialogComponent, {
+            width: '350px',
+            data: { member }
+        });
 
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.delete(this.deletedMember, result);
+            }
+        });
+    }
 }
-

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { MemberService } from '../../_services/member.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Member } from '../../_models/index';
@@ -11,21 +11,21 @@ import { ToasterService } from '../../_services/toaster.service';
 
 export class MemberEditComponent implements OnInit {
     id: string;
-    email: string;
     firstName: string;
     lastName: string;
     school: string;
 
-    emailFormControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
-    lastNameFormControl: FormControl = new FormControl('', [Validators.required]);
-    firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
-    schoolFormControl: FormControl = new FormControl('', [Validators.required]);
+    formArray: FormArray;
+    memberFormGroup: FormGroup;
+    codeFormGroup: FormGroup;
+    form: FormGroup;
 
     constructor(
         private memberService: MemberService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private formBuilder: FormBuilder
     ) {}
 
     ngOnInit() {
@@ -39,6 +39,21 @@ export class MemberEditComponent implements OnInit {
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
+        });
+        this.memberFormGroup = this.formBuilder.group({
+            lastNameFormControl: ['', Validators.required],
+            firstNameFormControl: ['', Validators.required],
+            schoolFormControl: ['', Validators.required]
+        });
+        this.codeFormGroup = this.formBuilder.group({
+            codeFormControl: ['', Validators.required]
+        });
+        this.formArray = this.formBuilder.array([
+            this.memberFormGroup,
+            this.codeFormGroup
+        ]);
+        this.form = this.formBuilder.group({
+            formArray: this.formArray
         });
     }
 

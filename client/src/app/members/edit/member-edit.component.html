@@ -8,32 +8,48 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <form #connexionForm="ngForm" fxLayout="column">
-                <mat-form-field>
-                    <input matInput placeholder="Nom de famille"
-                    autocorrect="off" required [(ngModel)]="lastName" name="lastName">
-                    <mat-error *ngIf="lastNameFormControl.hasError('required')">
-                    Nom de famille <strong>requis</strong>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Prénom"
-                    autocorrect="off" required [(ngModel)]="firstName" name="firstName">
-                    <mat-error *ngIf="firstNameFormControl.hasError('required')">
-                    Prénom <strong>requis</strong>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="École"
-                    [(ngModel)]="school" required name="school" >
-                    <mat-error *ngIf="schoolFormControl.hasError('required')">
-                    École <strong>requise</strong>
-                    </mat-error>
-                </mat-form-field>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="edit()" 
-                    [disabled]="!connexionForm.valid">Modifier</button>
-                </div>
+            <form [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
+                <mat-vertical-stepper formArrayName="formArray" linear>
+                    <mat-step formGroupName="0" [stepControl]="formArray.get([0])" label="Informations">
+                        <div fxLayout="column" fxLayoutAlign="center">
+                            <mat-form-field>
+                                <input matInput placeholder="Nom de famille"
+                                autocorrect="off" [(ngModel)]="lastName"
+                                formControlName="lastNameFormControl" required>
+                                <mat-error *ngIf="memberFormGroup.controls.lastNameFormControl.hasError('required')">
+                                Nom de famille <strong>requis</strong>
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <input matInput placeholder="Prénom"
+                                autocorrect="off" [(ngModel)]="firstName"
+                                formControlName="firstNameFormControl" required>
+                                <mat-error *ngIf="memberFormGroup.controls.firstNameFormControl.hasError('required')">
+                                Prénom <strong>requis</strong>
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <input matInput placeholder="École"
+                                [(ngModel)]="school" formControlName="schoolFormControl" required>
+                                <mat-error *ngIf="memberFormGroup.controls.schoolFormControl.hasError('required')">
+                                École <strong>requise</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </mat-step>
+                    <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Code Barman">
+                        <div fxLayout="column" fxLayoutAlign="center">
+                            <mat-form-field>
+                                <input matInput type="password" placeholder="Code" formControlName="codeFormControl" required>
+                            </mat-form-field>
+                            <mat-error *ngIf="codeFormGroup.controls.codeFormControl.hasError('required')">
+                            Code <strong>requis</strong>
+                            </mat-error>
+                        </div>
+                    </mat-step>
+                </mat-vertical-stepper>
+                <button fxFlex="50" mat-button type="button" (click)="edit()" 
+                [disabled]="!form.valid">Modifier</button>
             </form>
         </mat-card-content>
     </mat-card>

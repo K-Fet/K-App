@@ -38,7 +38,7 @@
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
                         <mat-cell *matCellDef="let member" >
                             <button mat-icon-button (click)="edit(member)"><mat-icon>edit</mat-icon></button>
-                            <button mat-icon-button (click)="delete(member)"><mat-icon>delete</mat-icon></button>
+                            <button mat-icon-button (click)="openDialog(member)"><mat-icon>delete</mat-icon></button>
                         </mat-cell>
                     </ng-container>
 
