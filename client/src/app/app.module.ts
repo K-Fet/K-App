@@ -35,6 +35,7 @@ import { CategoriesListComponent } from './categories/list/categories-list.compo
 import { CategoryNewComponent } from './categories/new/category-new.component';
 import { CategoryEditComponent } from './categories/edit/category-edit.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { NotFoundComponent } from './404/not-found.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -75,7 +76,8 @@ import { MaterialModule } from './_helpers/material.module';
         CategoryEditComponent,
         CategoryNewComponent,
         CategoriesListComponent,
-        DialogComponent
+        DialogComponent,
+        NotFoundComponent
     ],
     entryComponents: [
         DialogComponent

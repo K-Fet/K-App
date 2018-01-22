@@ -25,9 +25,6 @@ export class JwtInterceptor implements HttpInterceptor {
                     if (error.status === 401) {
                         this.router.navigate(['/login']);
                     }
-                    if (error.status === 404) {
-                        // TODO this.router.navigate(['/404']);
-                    }
                 }
             });
     }
