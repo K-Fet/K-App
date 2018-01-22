@@ -128,11 +128,12 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
     # Compress responses
     gzip
     
-    # Set usefull headers
-    header / {
-        # Cache application for one day
-        Cache-Control "public, max-age=86400"
-    }
+    # Add cache for one day (except for API calls)
+    header / Cache-Control "public, max-age=86400"
+    header /api -Cache-Control
+
+    # Remove Server header
+    header / -Server
     
     # Log everything to stdout, treated by journalctl
     log stdout
@@ -143,6 +144,12 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
         fail_timeout 5m         # Time before considering a backend down
         try_duration 4s         # How long proxy will try to find a backend
         transparent             # Set headers as the proxy except
+    }
+
+    # Rewrite everything that does not exist to index
+    rewrite {
+        if {path} not_starts_with /api
+        to {path} /
     }
 }
 `;

@@ -14,6 +14,14 @@ require('./db');
 // Prod middleware
 if (process.env.NODE_ENV === 'production') {
     app.use(compression());
+    app.disable('x-powered-by');
+    
+    // Prevent click jacking
+    app.use((req, res, next) => {
+        res.setHeader('X-Frame-Options', 'DENY'); 
+        res.setHeader('X-XSS-Protection', '1; mode=block');
+        return next();
+    });
 }
 
 // Configure proxy
