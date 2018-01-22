@@ -144,6 +144,11 @@ ${config.proxy.caddy.serverAddress} { # Your site's address
         try_duration 4s         # How long proxy will try to find a backend
         transparent             # Set headers as the proxy except
     }
+
+    # Rewrite everything that does not exist to index
+    rewrite {
+        to {path} /
+    }
 }
 `;
 
