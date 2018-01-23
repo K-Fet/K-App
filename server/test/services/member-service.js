@@ -6,24 +6,24 @@ const { sequelizeMockingMocha } = require('sequelize-mocking');
 
 const { getAllMembers } = require('../../app/services/member-service');
 
-// Basic configuration: create a sinon sandbox for testing
-let sandbox = null;
-
-beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-});
-
-afterEach(function () {
-    sandbox && sandbox.restore();
-});
-
-sequelizeMockingMocha(
-    require('../../db'),
-    path.resolve(path.join(__dirname, '../resources/fake-members-database.json'))
-);
-
-
 describe('Member service Test', function () {
+
+    // Basic configuration: create a sinon sandbox for testing
+    let sandbox = null;
+
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+    });
+
+    afterEach(function () {
+        sandbox && sandbox.restore();
+    });
+
+    sequelizeMockingMocha(
+        require('../../db'),
+        path.resolve(path.join(__dirname, '../resources/fake-members-database.json'))
+    );
+
 
     it('should return members in array', async function () {
         // Given
