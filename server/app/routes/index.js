@@ -22,6 +22,7 @@ router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
 router.use('/kommissions', require('./kommissions'));
 router.use('/roles', require('./roles'));
+router.use('/services', require('./services'));
 
 
 // Error handling
