@@ -96,9 +96,9 @@ async function updateRole(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteRole(req, res) {
-    const RoleId = req.params.id;
+    const roleId = req.params.id;
 
-    const role = await roleService.deleteRole(RoleId);
+    const role = await roleService.deleteRole(roleId);
 
     res.json(role);
 }

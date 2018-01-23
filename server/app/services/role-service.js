@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const { Role: Role } = require('../models/role');
+const { Role } = require('../models/');
 const { createUserError } = require('../../utils');
 
 /**
