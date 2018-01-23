@@ -1,5 +1,5 @@
 const serviceService = require('../services/service-service');
-const { Service } = require('../models/service');
+const { Service } = require('../models/');
 const { checkStructure, createUserError } = require('../../utils');
 
 /**
@@ -25,10 +25,10 @@ async function getAllServices(req, res) {
 async function createService(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'startAt', 'endAt', 'nbMax', 'category'])) {
+    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'startAt\', \'endAt\', \'nbMax\', \'category\']'
+            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
         );
     }
 
@@ -72,10 +72,10 @@ async function getServiceById(req, res) {
 async function updateService(req, res) {
 
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'startAt', 'endAt', 'nbMax', 'category'])) {
+    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'startAt\', \'endAt\', \'nbMax\', \'category\']'
+            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
         );
     }
 
