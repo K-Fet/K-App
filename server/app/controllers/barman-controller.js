@@ -1,7 +1,8 @@
 const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
+const { checkStructure, createUserError } = require('../../utils');
+const { Service } = require('../models/service');
 
 /**
  * Fetch all the barmen from the database.
@@ -108,10 +109,77 @@ async function deleteBarman(req, res) {
 
 }
 
+/**
+ * Get the services of a barman
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function getServicesBarman(req, res) {
+    const barmanId = req.params.id;
+
+    const services = await barmanService.getBarmanServices(barmanId);
+
+    res.json(services);
+}
+
+/**
+* Create a Service
+*
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function createServiceBarman(req, res) {
+    const barmanId = req.params.id;
+    const serviceId = req.params.idService;
+
+    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
+        throw createUserError(
+            'BadRequest',
+            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
+        );
+    }
+
+    let newService = new Service({
+        id: serviceId,
+        name: req.body.name,
+        startAt: req.body.startAt,
+        endAt: req.body.endAt,
+        nbMax: req.body.nbMax,
+        category: req.body.category,
+    });
+
+    newService = await barmanService.createServiceBarman(barmanId, newService);
+
+    res.json(newService);
+}
+
+/**
+* Delete a Service of a barman
+*
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function deleteServiceBarman(req, res) {
+
+    const barmanId = req.params.id;
+    const serviceId = req.params.idService;
+
+    const service = await barmanService.deleteServiceBarman(barmanId, serviceId);
+
+    res.json(service);
+}
+
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     updateBarman,
-    deleteBarman
+    deleteBarman,
+    getServicesBarman,
+    createServiceBarman,
+    deleteServiceBarman
 };

@@ -197,10 +197,88 @@ async function deleteBarmanById(barmanId) {
     return barman;
 }
 
+/**
+ * Get the services of a barman
+ *
+ * @param barmanId {number} barman id
+ * @returns {Promise<Array>} Barmen's services
+ */
+async function getBarmanServices(barmanId) {
+
+    logger.verbose('Barman service: retreive services of the barman ', barmanId );
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    return await Service.findAll({
+        include: [{
+            model: Barman,
+            where: {id: barmanId}
+        }]
+    });
+}
+
+/**
+* Create a service for a barman
+*
+* @param barmanID {number} barman id
+* @param newService {Service} partial member
+* @returns {Promise<Service|Errors.ValidationError>} The created service
+*/
+async function createServiceBarman(barmanId, newService) {
+
+    logger.verbose('Barman service: create a Service for the barman ', barmanId, newService.name);
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    return await newService.save({
+        include: [{
+            model: Barman,
+            where: {id: barmanId}
+        }]
+    });
+}
+
+/**
+* Delete a Service of a barman
+*
+* @param barmanId {number} barman id
+* @param serviceId {number} service id
+*
+* @returns {Promise<Service>} The deleted service
+*/
+async function deleteServiceBarman(barmanId, serviceId) {
+
+    logger.verbose('Barman service: delete the service', serviceId, 'of the barman', barmanId);
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    const service = await Service.findById(serviceId);
+
+    if (!service) throw createUserError('UnknownService', 'This service does not exist');
+
+    await service.destroy({
+        include: [{
+            model: Barman,
+            where: {id: barmanId}
+        }]
+    });
+
+    return service;
+}
+
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     deleteBarmanById,
     updateBarmanById,
+    getBarmanServices,
+    createServiceBarman,
+    deleteServiceBarman
 };
