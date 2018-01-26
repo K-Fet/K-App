@@ -87,7 +87,8 @@ async function createJWT(user) {
     return jwt.sign({
         jit: id,
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration),
-        permissions
+        permissions,
+        connection: user
     }, jwtSecret);
 }
 
