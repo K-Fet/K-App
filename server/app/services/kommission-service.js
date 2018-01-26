@@ -41,7 +41,7 @@ async function getKommissionById(kommissionId) {
     
     if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
-    return kommission;
+    return kommission.getBarmans();
 }
     
     
