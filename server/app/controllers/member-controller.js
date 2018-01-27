@@ -1,5 +1,4 @@
 const memberService = require('../services/member-service');
-const userService = require('../services/user-service');
 const { Member } = require('../models/member');
 const { checkStructure, createUserError } = require('../../utils');
 
