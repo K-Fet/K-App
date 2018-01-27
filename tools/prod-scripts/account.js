@@ -46,7 +46,7 @@ async function askQuestions(configObj) {
     console.log('Configuring Account:');
     const answers = await inquirer.prompt(questions);
 
-    if (!answers.createAdmin) return;
+    if (!answers.createAdmin && !isCLI) return;
 
     configObj.account = {
         admin: {
@@ -88,6 +88,7 @@ async function configure(config) {
         host: config.mysql.host,
         dialect: 'mysql',
 
+        logging: false,
         define: {
             charset: 'utf8',
             collate: 'utf8_general_ci'
@@ -114,7 +115,7 @@ async function configure(config) {
         }]
     });
 
-    console.info('Administrator created! Here is the password to connect', config.account.admin.password);
+    console.log('Administrator created! Here is the password to connect', config.account.admin.password);
 }
 
 
@@ -124,7 +125,8 @@ if (isCLI) {
 
     mysqlConf.askQuestions(config)
         .then(() => askQuestions(config))
-        .then(() => configure(config));
+        .then(() => configure(config))
+        .catch(e => console.error('Error:', e));
 }
 
 
