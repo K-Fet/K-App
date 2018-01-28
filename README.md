@@ -7,12 +7,29 @@ K-App application repository
 [![Travis](https://img.shields.io/travis/K-Fet/K-App.svg)](https://travis-ci.org/K-Fet/K-App)
 [![Codecov branch](https://img.shields.io/codecov/c/github/K-Fet/K-App.svg)](https://codecov.io/gh/K-Fet/K-App/)
 
+
+## Introduction
+
+This repo contains the application used to manage the association.
+
+It is written in javascript (back) and typescript (front).
+It uses these frameworks:
+- [Express](https://expressjs.com) for the web server.
+- [Sequelize](http://sequelizejs.com) as ORM.
+- [Angular 5](https://angular.io/) for the front app.
+- [Eslint](https://eslint.org/) and [TSlint](https://palantir.github.io/tslint/) for linter.
+
+And we use *MySQL* as database.
+
 ## Usage
 
 For a production environment, please check [this document](./docs/QuickDeployment.md) 
 which explain everything :).
 
-## Contribute
+
+---
+
+## Developing
 
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
@@ -20,53 +37,75 @@ To contribute to the project you will need:
 - [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
 
+After installing NodeJS,
+you have to install `node-gyp` as recommended 
+[here](https://www.npmjs.com/package/node-gyp#installation).
+
 Optional:
 - Text editor: Visual code https://code.visualstudio.com/
 - Or a full IDE: [Webstorm](https://www.jetbrains.com/webstorm/)
     (student licence available) 
 
-### Environment
+Clone the repo with `git clone https://github.com/K-Fet/K-App.git`.
 
-Clone the repo: `git clone https://github.com/K-Fet/K-App.git`.
+Then, run `npm install`.
 
-Install dependencies: `npm install`.
+### Configuration
 
-**N.B.:** You will need to configure the database connection and 
-also the JWT secret in order to test the app. 
-You can quickly edit these settings in `/server/config` (be careful not to commit your changes).
+To configure your environnement, you have two choices:
 
-### Launching server and client
+1. Go to `/server/config/` and edit each files with your values.
+ Be careful to **NOT COMMIT** these files.
 
-#### Back
+2. Launch the server with environment variables.
 
-The back use [expressjs](https://expressjs.com). 
-It can be launch with `npm run dev:back`.
+### Environment variables
 
-It will be available at http://localhost:3000.
-For now you have to restart it manually when you make modifications.
+Here are a list _(usually updated)_ of all the environment variables:
 
-Also, a [linter](https://en.wikipedia.org/wiki/Lint_(software)) is configured.
-You can check your files with: `npm run eslint`, or check while you edit files with
-`npm run eslint:watch`.
+###### Database 
 
-Plugins exist for [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-and [Webstorm](http://plugins.jetbrains.com/plugin/7494).
+* `DB_HOST`: Host for the mysql server (default: `localhost`)
+* `DB_USER`: Username for the mysql server (default: `root`)
+* `DB_PWD`:  Password for the mysql server (default: ``)
+* `DB_DATABASE`: Name of the database (default: `kapp`)
 
-Don't forget to set needed environment variables (such as `DB_PWD`)
+###### Web
 
-#### Front
+* `PORT`: Port for the web app (default: `3000`)
+* `HOSTNAME`: Hostname to serve (default: _all interfaces_)
+* `TRUSTED_PROXY`: Value for [express's proxy configuration](https://expressjs.com/en/guide/behind-proxies.html)
 
-The front is an angular 2 application. It uses _angular-cli_.
-You can start developing front with `npm run dev:front`.
+###### JWT
 
-The app will be launch at http://localhost:4200. 
-It will automatically be reloaded when you edit angular files. 
+* `JWT_SECRET`: JWT secret to use (default: `devModeSecret` only in development)
 
-It will only launch the front so all API calls will not work.
-(You can use `npm run dev` to start the back and the front).
+### Launch server
 
-All API requests made at the angular app will be transferred to the server.
+To launch the app, run: `npm run dev:back` and `npm run dev:front` in two terminal instances.
 
+The front will be available at _http://localhost:4200_ and the back at _http://localhost:3000_.
+
+All API calls made to the front will be transferred to the back.
+
+### Notes
+
+As you have to follow *eslint* and *tslint* configured guidelines, 
+you can install these plugins to watch linter errors.
+
+* For [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+* For [Webstorm](http://plugins.jetbrains.com/plugin/7494)
+
+
+The app uses [nodemon](https://nodemon.io/) to watch for code change.
+The app will restart or reload when you edit the code.
+
+#### Dev scripts
+
+The folder `/tools/` offer scripts to ease development:
+
+- `node tools/prod-scripts/account.js`: Use it to create a default account in the app.
+- `node tools/dev-scripts/populate-db.js`: Use it to create fake data.
 
 ## Testing (back only)
 
