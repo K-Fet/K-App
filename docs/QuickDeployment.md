@@ -9,6 +9,9 @@ To run the project you will need:
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Git](https://git-scm.com)
 
+After installing NodeJS,
+you have to install `node-gyp` as recommended [here](https://www.npmjs.com/package/node-gyp#installation).
+
 ## Clone the sources and install dependencies
 
 ```bash
