@@ -15,7 +15,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class RolesListComponent implements OnInit {
 
-    displayedColumns = ['name', 'description'];
+    displayedColumns = ['name', 'description', 'action'];
     rolesData: MatTableDataSource<Role>;
 
     @ViewChild(MatSort) sort: MatSort;

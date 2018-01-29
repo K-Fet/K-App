@@ -42,14 +42,6 @@
                     [(ngModel)]="barman.facebook" name="facebook" >
                 </mat-form-field>
                 <mat-form-field>
-                    <!-- TODO select box with server connexion -->
-                    <input matInput placeholder="Parrain/Marraine ID"
-                    [(ngModel)]="barman.godFather" required name="godFather">
-                    <mat-error *ngIf="godFatherFormControl.hasError('required')">
-                    Parrain/Marraine ID <strong>requis</strong>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
                     <!-- TODO improve date picker choice -->
                     <input matInput [matDatepicker]="picker" placeholder="Date de naissance"
                     [(ngModel)]="barman.dateOfBirth" required name="dateOfBirth">
@@ -68,6 +60,7 @@
                 </mat-form-field>
                 <!-- TODO add kommission field -->
                 <!-- TODO add role field -->
+                <!-- TODO add godFather field -->
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="button" (click)="edit()" 
                     [disabled]="!addForm.valid">Modifier</button>

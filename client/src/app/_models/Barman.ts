@@ -1,29 +1,34 @@
-import { ConnectionInformation, Kommission, Role } from './index';
+import { ConnectionInformation, Kommission, Role, AssociationChanges } from './index';
 
 export class Barman {
 
-        id: number;
-        lastName: string;
-        firstName: string;
-        nickname: string;
-        username: string;
-        deletedAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
-        facebook: string;
-        dateOfBirth: Date;
-        flow: string;
-        active: boolean;
-        godFatherId: number;
+    id: number;
+    lastName: string;
+    firstName: string;
+    nickname: string;
+    username: string;
+    deletedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+    facebook: string;
+    dateOfBirth: Date;
+    flow: string;
+    active: boolean;
 
-        // Associations
+    // Associations
 
-        connectionInformation: ConnectionInformation;
-        godFather: Barman;
-        kommissions: Kommission[];
-        roles: Role[];
+    connectionInformation: ConnectionInformation;
+    godFather: Barman;
+    kommissions: Kommission[];
+    roles: Role[];
 
-        constructor(values: Object = {}) {
-            Object.assign(this, values);
-        }
+    _embeded: {
+        godFather: Number;
+        kommissions: AssociationChanges[],
+        roles: AssociationChanges[],
+    };
+
+    constructor(values: Object = {}) {
+        Object.assign(this, values);
     }
+}

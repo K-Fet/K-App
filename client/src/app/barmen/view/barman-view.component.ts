@@ -29,4 +29,14 @@ export class BarmanViewComponent implements OnInit {
             });
         });
     }
+
+    delete() {
+        this.barmanService.delete(this.barman.id).subscribe(() => {
+            this.toasterService.showToaster('Barman supprimé', 'Fermer');
+            this.router.navigate(['barmen']);
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
+    }
 }

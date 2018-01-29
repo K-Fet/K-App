@@ -6,6 +6,10 @@
                     <h1>Détails de {{barman.nickname}}</h1>
                 </section>
             </mat-card-title>
+            <div fxFlex></div>
+            <button mat-mini-fab color="primary" (click)="delete()">
+                <mat-icon>delete</mat-icon>
+            </button>
         </mat-card-header>
         <mat-card-content>
             <mat-list>
@@ -24,16 +28,11 @@
                 </mat-list-item>
                 <mat-list-item>
                     <h4 mat-line>Username (email)</h4>
-                    <p mat-line>{{barman.connection.username}}</p>
+                    <!-- TODO Implement username -->
                 </mat-list-item>
                 <mat-list-item>
                     <h4 mat-line>Facebook</h4>
                     <p mat-line>{{barman.facebook || "Inconnu"}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 mat-line>Parrain</h4>
-                    <p mat-line>{{barman.godFather}}</p>
-                    <!-- TODO Print godfather nickname instead of the id -->
                 </mat-list-item>
                 <mat-list-item>
                     <h4 mat-line>Cheminement</h4>
@@ -43,11 +42,11 @@
                 <h3 mat-subheader>Dates</h3>
                 <mat-list-item>
                     <h4 mat-line>Date d'entrée</h4>
-                    <p mat-line>{{barman.createdAt}}</p>
+                    <p mat-line>{{barman.createdAt | date:'d MMM y'}}</p>
                 </mat-list-item>
                 <mat-list-item>
                     <h4 mat-line>Date de dernière modification</h4>
-                    <p mat-line>{{barman.updatedAt}}</p>
+                    <p mat-line>{{barman.updatedAt |  date:'d MMM y'}}</p>
                 </mat-list-item>
                 <!-- TODO Add departure date (change model ?) -->
             </mat-list>
