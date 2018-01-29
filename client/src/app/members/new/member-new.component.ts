@@ -14,6 +14,7 @@ export class MemberNewComponent implements OnInit {
     firstName: string;
     lastName: string;
     school: string;
+    code: Number;
 
     formArray: FormArray;
     memberFormGroup: FormGroup;
@@ -49,7 +50,7 @@ export class MemberNewComponent implements OnInit {
         member.firstName = this.firstName;
         member.lastName = this.lastName;
         member.school = this.school;
-        this.memberService.create(member).subscribe(() => {
+        this.memberService.create(member, this.code).subscribe(() => {
             this.toasterService.showToaster('Adhérent créé', 'Fermer');
             this.router.navigate(['/members'] );
         },
