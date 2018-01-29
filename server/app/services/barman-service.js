@@ -221,15 +221,17 @@ async function getBarmanServices(barmanId) {
 * @param newService {Service} partial member
 * @returns {Promise<Service|Errors.ValidationError>} The created service
 */
-async function createServiceBarman(barmanId, serviceId) {
+async function createServiceBarman(barmanId, servicesId) {
 
-    logger.verbose('Barman service: create a Service for the barman ', barmanId, serviceId);
+    logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    return await barman.addService(serviceId);
+    // TODO check if every services is known
+
+    return await barman.addService(servicesId);
 }
 
 /**

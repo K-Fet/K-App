@@ -140,11 +140,11 @@ async function createServiceBarman(req, res) {
         );
     }
 
-    let serviceId = req.body;
+    let servicesId = req.body.ids;
 
-    let newService = await barmanService.createServiceBarman(barmanId, serviceId);
+    await barmanService.createServiceBarman(barmanId, servicesId);
 
-    res.json(newService);
+    res.sendStatus(200);
 }
 
 /**
