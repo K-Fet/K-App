@@ -2,7 +2,6 @@ const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
 const { checkStructure, createUserError } = require('../../utils');
-const { Service } = require('../models/service');
 
 /**
  * Fetch all the barmen from the database.
