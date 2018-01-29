@@ -70,9 +70,10 @@ async function getMemberById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateMember(req, res) {
+    const reqMember = req.body.member;
 
     // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'school'])) {
+    if (!checkStructure(reqMember, ['firstName', 'lastName', 'school'])) {
         throw createUserError(
             'BadRequest',
             'The body has missing properties, needed: [\'firstName\', \'lastName\', \'school\']'
@@ -80,10 +81,10 @@ async function updateMember(req, res) {
     }
 
     let newMember = new Member({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        school: req.body.school,
-        active: req.body.active,
+        firstName: reqMember.firstName,
+        lastName: reqMember.lastName,
+        school: reqMember.school,
+        active: reqMember.active,
     });
 
     const memberId = req.params.id;
