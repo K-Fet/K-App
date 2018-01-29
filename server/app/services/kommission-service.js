@@ -38,7 +38,13 @@ async function getKommissionById(kommissionId) {
     
     logger.verbose('Kommission service: get kommission by id %d', kommissionId);
     
-    const kommission = await Kommission.findAll({where: {id: kommissionId}, include: [{model: Barman, through: {attributes:['id', 'firstname', 'lastname', 'nickname', 'facebook', 'dateofBirth', 'flow']}}]});
+    const kommission = await Kommission.findOne({where: {id: kommissionId}, 
+        include: [{
+            model: Barman, through: {
+                attributes:['id', 'firstname', 'lastname', 'nickname', 'facebook', 'dateofBirth', 'flow']
+            }
+        }]
+    });
     
     if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
