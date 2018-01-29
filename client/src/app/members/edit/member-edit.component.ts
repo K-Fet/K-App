@@ -14,6 +14,7 @@ export class MemberEditComponent implements OnInit {
     firstName: string;
     lastName: string;
     school: string;
+    code: Number;
 
     formArray: FormArray;
     memberFormGroup: FormGroup;
@@ -63,7 +64,7 @@ export class MemberEditComponent implements OnInit {
         member.firstName = this.firstName;
         member.lastName = this.lastName;
         member.school = this.school;
-        this.memberService.update(member).subscribe(() => {
+        this.memberService.update(member, this.code).subscribe(() => {
             this.toasterService.showToaster('Utilisateur modifié', 'Fermer');
             this.router.navigate(['/members']);
         },
