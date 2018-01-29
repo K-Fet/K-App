@@ -211,12 +211,7 @@ async function getBarmanServices(barmanId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    return await Service.findAll({
-        include: [{
-            model: Barman,
-            where: {id: barmanId}
-        }]
-    });
+    return await barman.getServices();
 }
 
 /**
@@ -226,20 +221,15 @@ async function getBarmanServices(barmanId) {
 * @param newService {Service} partial member
 * @returns {Promise<Service|Errors.ValidationError>} The created service
 */
-async function createServiceBarman(barmanId, newService) {
+async function createServiceBarman(barmanId, serviceId) {
 
-    logger.verbose('Barman service: create a Service for the barman ', barmanId, newService.name);
+    logger.verbose('Barman service: create a Service for the barman ', barmanId, serviceId);
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    return await newService.save({
-        include: [{
-            model: Barman,
-            where: {id: barmanId}
-        }]
-    });
+    return await barman.addService(serviceId);
 }
 
 /**

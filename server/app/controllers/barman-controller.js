@@ -133,25 +133,17 @@ async function getServicesBarman(req, res) {
 */
 async function createServiceBarman(req, res) {
     const barmanId = req.params.id;
-    const serviceId = req.params.idService;
 
-    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
+    if (!checkStructure(req.body, ['id'])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
+            'The body has missing properties, needed: [\'id\']'
         );
     }
 
-    let newService = new Service({
-        id: serviceId,
-        name: req.body.name,
-        startAt: req.body.startAt,
-        endAt: req.body.endAt,
-        nbMax: req.body.nbMax,
-        category: req.body.category,
-    });
+    let serviceId = req.body;
 
-    newService = await barmanService.createServiceBarman(barmanId, newService);
+    let newService = await barmanService.createServiceBarman(barmanId, serviceId);
 
     res.json(newService);
 }
@@ -166,7 +158,7 @@ async function createServiceBarman(req, res) {
 async function deleteServiceBarman(req, res) {
 
     const barmanId = req.params.id;
-    const serviceId = req.params.idService;
+    const serviceId = req.body;
 
     const service = await barmanService.deleteServiceBarman(barmanId, serviceId);
 
