@@ -1,5 +1,6 @@
 const logger = require('../../logger');
 const { Kommission } = require('../models/kommission');
+const { Barman } = require('../models/barman');
 const { createUserError } = require('../../utils');
 
 /**
@@ -37,11 +38,11 @@ async function getKommissionById(kommissionId) {
     
     logger.verbose('Kommission service: get kommission by id %d', kommissionId);
     
-    const kommission = await Kommission.findById(kommissionId);
+    const kommission = await Kommission.findAll({where: {id: kommissionId}, include: [{model: Barman, through: {attributes:['id', 'firstname', 'lastname', 'nickname', 'facebook', 'dateofBirth', 'flow']}}]});
     
     if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
-    return kommission.getBarmans();
+    return kommission;
 }
     
     
