@@ -31,7 +31,7 @@ router.use('/services', require('./services'));
 router.use((err, req, res, next) => {
     // Express-jwt-permissions error
     if (err.code === 'permission_denied') {
-        logger.verbose('Not enough permissions error at %s for %s', req.path, req.user.jit);
+        logger.verbose('Not enough permissions error for %s %s with token %s', req.method, req.path, req.user.jit);
         return res.status(403).json({
             error: 'PermissionError',
             message: 'You don\'t have enough permissions!'
@@ -47,14 +47,14 @@ router.use((err, req, res, next) => {
     }
 
     if (err.userError) {
-        logger.verbose('User error for request %s. Error name: %s', req.path, err.name);
+        logger.verbose('User error for request %s %s. Error name: %s', req.method, req.path, err.name);
         return res.status(400).json({
             error: err.name,
             message: err.message
         });
     }
 
-    logger.error('Server error for the request %s', req.path, err);
+    logger.error('Server error for the request %s %s', req.method, req.path, err);
     return res.status(500).json({
         error: 'ServerError',
         message: 'A problem has occurred, try again later'
