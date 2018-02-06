@@ -20,9 +20,10 @@ const jwt = require('./prod-scripts/jwt');
 const mysql = require('./prod-scripts/mysql');
 const proxy = require('./prod-scripts/proxy');
 const systemd = require('./prod-scripts/systemd');
+const { systemStartAndEnable } = require('./prod-scripts/util');
 
 
-const configuration = {};
+const config = {};
 
 
 //=======================
@@ -30,25 +31,25 @@ const configuration = {};
 //=======================
 
 async function askAll() {
-    await systemd.askQuestions(configuration);
-    await mysql.askQuestions(configuration);
-    await backup.askQuestions(configuration);
-    await proxy.askQuestions(configuration);
-    await jwt.askQuestions(configuration);
-    await account.askQuestions(configuration);
+    await systemd.askQuestions(config);
+    await mysql.askQuestions(config);
+    await backup.askQuestions(config);
+    await proxy.askQuestions(config);
+    await jwt.askQuestions(config);
+    await account.askQuestions(config);
 }
 
 async function confirmConfig() {
 
     console.log('==============================');
-    console.log('Current configuration:');
+    console.log('Current config:');
 
-    systemd.confirmConfig(configuration);
-    mysql.confirmConfig(configuration);
-    backup.confirmConfig(configuration);
-    proxy.confirmConfig(configuration);
-    jwt.confirmConfig(configuration);
-    account.confirmConfig(configuration);
+    systemd.confirmConfig(config);
+    mysql.confirmConfig(config);
+    backup.confirmConfig(config);
+    proxy.confirmConfig(config);
+    jwt.confirmConfig(config);
+    account.confirmConfig(config);
 
 
     const answers = await inquirer.prompt([{
@@ -62,11 +63,44 @@ async function confirmConfig() {
 }
 
 async function configAll() {
-    await systemd.configure(configuration);
-    await mysql.configure(configuration);
-    await backup.configure(configuration);
-    await proxy.configure(configuration);
-    await account.configure(configuration);
+    await systemd.configure(config);
+    await mysql.configure(config);
+    await backup.configure(config);
+    await proxy.configure(config);
+    await account.configure(config);
+}
+
+async function startEverything() {
+    const answers = await inquirer.prompt([{
+        type: 'confirm',
+        name: 'start',
+        message: 'Do you to start everything needed? (NodeJS, Caddy, Backups, etc.)',
+        default: true
+    }]);
+
+    if (!answers.start) return;
+
+    console.log('Starting instances...');
+
+    for (let i = 0; i < config.app.instances; i++) {
+        await systemStartAndEnable(`kapp@${config.app.firstPort + i}.service`);
+    }
+
+    console.log(`${config.app.instances} instances started!`);
+
+    if (config.backup) {
+        console.log('Launching backup task...');
+        await systemStartAndEnable('kapp.timer');
+        console.log('Backup task launched');
+    }
+
+    if (config.proxy.caddy.install) {
+        console.log('Launching caddy server...');
+        await systemStartAndEnable('caddy');
+        console.log('Caddy server launched');
+    }
+
+    console.log('Everything is started!');
 }
 
 async function main() {
@@ -75,7 +109,9 @@ async function main() {
     console.log('Starting installation...');
     await configAll();
     console.log('Installation done!');
-    process.exit(0);
+    await startEverything();
 }
 
-main().catch(e => console.error('Error while configuring :', e));
+main()
+    .catch(e => console.error('Error while configuring :', e))
+    .then(() => process.exit(0));

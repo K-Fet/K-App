@@ -126,7 +126,8 @@ if (isCLI) {
     mysqlConf.askQuestions(config)
         .then(() => askQuestions(config))
         .then(() => configure(config))
-        .catch(e => console.error('Error:', e));
+        .catch(e => console.error('Error:', e))
+        .then(() => process.exit(0));
 }
 
 
