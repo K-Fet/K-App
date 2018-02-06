@@ -33,6 +33,7 @@ which explain everything :).
 
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
+- [Yarn](https://yarnpkg.com)version 1.3.2 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
@@ -48,7 +49,7 @@ Optional:
 
 Clone the repo with `git clone https://github.com/K-Fet/K-App.git`.
 
-Then, run `npm install`.
+Then, run `yarn`.
 
 ### Configuration
 
@@ -82,7 +83,7 @@ Here are a list _(usually updated)_ of all the environment variables:
 
 ### Launch server
 
-To launch the app, run: `npm run dev:back` and `npm run dev:front` in two terminal instances.
+To launch the app, run: `yarn run dev:back` and `yarn run dev:front` in two terminal instances.
 
 The front will be available at _http://localhost:4200_ and the back at _http://localhost:3000_.
 
@@ -109,6 +110,6 @@ The folder `/tools/` offer scripts to ease development:
 
 ## Testing (back only)
 
-Launch the tests: `npm test`
+Launch the tests: `yarn test`
 
-Create coverage report: `npm run coverage`
+Create coverage report: `yarn run coverage`

@@ -41,11 +41,11 @@ source 'lib/lib.trap.sh'
 checkout_last_release
 
 # Install or update dependencies
-npm run install:prod
-npm prune --production
+yarn run install:prod
+yarn prune --production
 
 # Build assets for client
-npm run build
+yarn run build
 
 # Restart all instance of the app
 systemctl restart 'kapp@*'
