@@ -9,8 +9,6 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class MemberService {
-    dataChange: BehaviorSubject<Member[]> = new BehaviorSubject<Member[]>([]);
-    get data(): Member[] { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 
@@ -22,26 +20,30 @@ export class MemberService {
         return this.http.get<Member>('/api/members/' + id).catch(this.handleError);
     }
 
-    create(member: Member) {
-        return this.http.post('/api/members', member).catch(this.handleError);
+    create(member: Member, code: Number) {
+        return this.http.post('/api/members', {code: code, member: member}).catch(this.handleError);
     }
 
-    update(member: Member) {
-        return this.http.put('/api/members/' + member.id, member).catch(this.handleError);
+    update(member: Member, code: Number) {
+        return this.http.put('/api/members/' + member.id, {code: code, member: member}).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: number, code: Number) {
         return this.http.delete('/api/members/' + id).catch(this.handleError);
     }
+
     private handleError(err: HttpErrorResponse) {
         let errorMessage = '';
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
             console.log(err);
-            switch (err.error) {
+            switch (err.error.error) {
                 case 'Not Found':
                     errorMessage = `Erreur, impossible d'ajouter un adhérent`;
+                    break;
+                case 'UnauthorizedError':
+                    errorMessage = `Erreur: opération non autorisée`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;

@@ -1,0 +1,71 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Ajouter un Barman</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form #addForm="ngForm" fxLayout="column">
+                <mat-form-field>
+                    <input matInput placeholder="Nom de famille"
+                    autocorrect="off" required [(ngModel)]="lastName" name="lastName">
+                    <mat-error *ngIf="lastNameFormControl.hasError('required')">
+                    Nom de famille <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Prénom"
+                    autocorrect="off" required [(ngModel)]="firstName" name="firstName">
+                    <mat-error *ngIf="firstNameFormControl.hasError('required')">
+                    Prénom <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Surnom"
+                    [(ngModel)]="nickname" required name="nickname" >
+                    <mat-error *ngIf="nicknameFormControl.hasError('required')">
+                    Surnom <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Username (adresse email)"
+                    [(ngModel)]="username" required name="username" >
+                    <mat-error *ngIf="usernameFormControl.hasError('required')">
+                    Username <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Facebook"
+                    [(ngModel)]="facebook" name="facebook" >
+                </mat-form-field>
+                <mat-form-field>
+                    <!-- TODO improve date picker choice -->
+                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance"
+                    [(ngModel)]="dateOfBirth" required name="dateOfBirth">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="dateOfBirthFormControl.hasError('required')">
+                    Date de naissance <strong>requise</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <textarea matInput placeholder="Cheminement"
+                    [(ngModel)]="flow" required name="flow"></textarea>
+                    <mat-error *ngIf="flowFormControl.hasError('required')">
+                    Cheminenement <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <!-- TODO add kommission field -->
+                <!-- TODO add role field -->
+                <!-- TODO add godfather field -->
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="button" (click)="add()" 
+                    [disabled]="!addForm.valid">Ajouter</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

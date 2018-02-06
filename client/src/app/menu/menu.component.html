@@ -12,9 +12,27 @@
     [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
       <mat-nav-list>
           <mat-list>
+            <a mat-list-item routerLink="/dashboard">Dashboard</a>
+            <mat-divider></mat-divider>
             <h3 mat-subheader>Adhérents</h3>
             <a mat-list-item routerLink="/members">Liste</a>
             <a mat-list-item routerLink="/members/new">Nouveau</a>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Barmen</h3>
+            <a mat-list-item routerLink="/barmen">Liste</a>
+            <a mat-list-item routerLink="/barmen/new">Nouveau</a>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Kommissions</h3>
+            <a mat-list-item routerLink="/kommissions">Liste</a>
+            <a mat-list-item routerLink="/kommissions/new">Nouveau</a>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Rôles</h3>
+            <a mat-list-item routerLink="/roles">Liste</a>
+            <a mat-list-item routerLink="/roles/new">Nouveau</a>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Catégories de service</h3>
+            <a mat-list-item routerLink="/categories">Liste</a>
+            <a mat-list-item routerLink="/categories/new">Nouveau</a>
             <mat-divider></mat-divider>
           </mat-list>
       </mat-nav-list>

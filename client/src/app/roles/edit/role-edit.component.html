@@ -1,0 +1,34 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Modifier un rôle</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form #modifyForm="ngForm" fxLayout="column">
+                <mat-form-field>
+                    <input matInput placeholder="Nom du rôle"
+                    autocorrect="off" required [(ngModel)]="name" name="name">
+                    <mat-error *ngIf="nameFormControl.hasError('required')">
+                    Nom <strong>requis</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <textarea matInput placeholder="Description"
+                    [(ngModel)]="description" required name="description"></textarea>
+                    <mat-error *ngIf="descriptionFormControl.hasError('required')">
+                    Description <strong>requise</strong>
+                    </mat-error>
+                </mat-form-field>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="button" (click)="edit()" 
+                    [disabled]="!modifyForm.valid">Modifier</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
+    

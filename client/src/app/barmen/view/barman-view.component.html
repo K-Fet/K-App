@@ -1,0 +1,55 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Détails de {{barman.nickname}}</h1>
+                </section>
+            </mat-card-title>
+            <div fxFlex></div>
+            <button mat-mini-fab color="primary" (click)="delete()">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-list>
+                <h3 mat-subheader>Informations</h3>
+                <mat-list-item>
+                    <h4 mat-line>Surnom barman</h4>
+                    <p mat-line>{{barman.nickname}}</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Prénom</h4>
+                    <p mat-line>{{barman.firstName}}</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Nom</h4>
+                    <p mat-line>{{barman.lastName}}</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Username (email)</h4>
+                    <!-- TODO Implement username -->
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Facebook</h4>
+                    <p mat-line>{{barman.facebook || "Inconnu"}}</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Cheminement</h4>
+                    <p mat-line>{{barman.flow}}</p>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <h3 mat-subheader>Dates</h3>
+                <mat-list-item>
+                    <h4 mat-line>Date d'entrée</h4>
+                    <p mat-line>{{barman.createdAt | date:'d MMM y'}}</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <h4 mat-line>Date de dernière modification</h4>
+                    <p mat-line>{{barman.updatedAt |  date:'d MMM y'}}</p>
+                </mat-list-item>
+                <!-- TODO Add departure date (change model ?) -->
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</div>

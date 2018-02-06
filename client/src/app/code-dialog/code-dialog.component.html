@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Supprimer un adhérent</h2>
+<mat-dialog-content fxLayout="column">
+    <p>Suppression de <strong>{{data.member.firstName}} {{data.member.lastName}}</strong></p>
+    <div [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
+        <mat-form-field>
+            <input matInput type="password" placeholder="Code" formControlName="codeFormControl" required [(ngModel)]="code">
+        </mat-form-field>
+        <mat-error *ngIf="form.controls.codeFormControl.hasError('required')">
+        Code <strong>requis</strong>
+        </mat-error>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="center">
+    <button mat-button [mat-dialog-close]="code">Yes</button>
+    <button mat-button [mat-dialog-close]="false">No</button>
+</mat-dialog-actions>
