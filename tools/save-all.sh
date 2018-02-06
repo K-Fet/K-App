@@ -86,7 +86,7 @@ cd "${0%/*}"
 cd ..
 
 # Load error handler
-source 'lib/lib.trap.sh'
+source 'tools/lib/lib.trap.sh'
 
 delete_old_backups
 hr

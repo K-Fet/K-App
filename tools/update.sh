@@ -36,7 +36,7 @@ cd "${0%/*}"
 cd ..
 
 # Load error handler
-source 'lib/lib.trap.sh'
+source 'tools/lib/lib.trap.sh'
 
 checkout_last_release
 
