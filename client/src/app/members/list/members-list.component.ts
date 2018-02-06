@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
-import { DialogComponent } from '../../dialog/dialog.component';
+import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class MembersListComponent implements OnInit {
     }
 
     delete(member: Member, code: number) {
-        this.memberService.delete(member.id)
+        this.memberService.delete(member.id, code)
         .subscribe(() => {
             this.toasterService.showToaster('Adhérent supprimé', 'Fermer');
             this.update();
@@ -62,7 +62,7 @@ export class MembersListComponent implements OnInit {
     }
     openDialog(member: Member): void {
         this.deletedMember = member;
-        const dialogRef = this.dialog.open(DialogComponent, {
+        const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
             data: { member }
         });

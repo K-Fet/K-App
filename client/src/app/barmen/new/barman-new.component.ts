@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService, BarmanService } from '../../_services/index';
@@ -8,7 +8,7 @@ import { Barman } from '../../_models/Barman';
   templateUrl: './barman-new.component.html'
 })
 
-export class BarmanNewComponent implements OnInit {
+export class BarmanNewComponent {
 
     lastName: string;
     firstName: string;
@@ -28,9 +28,6 @@ export class BarmanNewComponent implements OnInit {
     godFatherFormControl: FormControl = new FormControl('', [Validators.required]);
 
     constructor(private barmanService: BarmanService, private toasterService: ToasterService, private router: Router) {}
-    ngOnInit(): void {
-
-    }
 
     add() {
         const barman = new Barman();
@@ -40,13 +37,7 @@ export class BarmanNewComponent implements OnInit {
         barman.username = this.username;
         barman.dateOfBirth = this.dateOfBirth;
         barman.flow = this.flow;
-        barman.godFatherId = this.godFatherId;
-
-        if (this.facebook) {
-            barman.facebook = this.facebook;
-        }
-
-        console.log(barman);
+        barman.facebook = this.facebook;
 
         this.barmanService.create(barman).subscribe(() => {
             this.toasterService.showToaster('Barman créé', 'Fermer');

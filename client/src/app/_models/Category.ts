@@ -1,5 +1,3 @@
-import { Service } from './index';
-
 export class Category {
 
     id: number;

@@ -5,15 +5,15 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-dialog-overview-example-dialog',
-    templateUrl: './dialog.component.html',
+    templateUrl: './code-dialog.component.html',
 })
-export class DialogComponent {
+export class CodeDialogComponent {
 
     code: number;
     form: FormGroup;
 
     constructor(
-        public dialogRef: MatDialogRef<DialogComponent>,
+        public dialogRef: MatDialogRef<CodeDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.form = new FormGroup({
