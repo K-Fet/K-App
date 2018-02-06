@@ -8,35 +8,17 @@
     </mat-card-header>
     <mat-card-content>
         <div>
-            <div fxFlex="20" fxLayoutAlign="center">
-                <button mat-fab color="primary">Ven</button>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="center">
-                <button mat-fab color="primary">Lun</button>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="center">
-                <button mat-fab color="primary">Mar</button>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="center">
-                <button mat-fab color="primary">Mer</button>
-            </div>
-            <div fxFlex="20" fxLayoutAlign="center">
-                <button mat-fab color="primary">Jeu</button>
+            <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
+                <button mat-fab color="primary" (click)="updateServicesDetails(day)">{{day.name}}</button>
             </div>
         </div>
         <div>
             <mat-list>
-                <mat-list-item>
-                    <h4 matLine>Midi</h4>
-                    <p matLine> La Konchita, La Dèle, Le Machin </p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Début de soirée</h4>
-                    <p matLine> La Konchita, La Dèle, Le Machin </p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Fin de soirée</h4>
-                    <p matLine> La Konchita, La Dèle, Le Machin </p>
+                <mat-list-item *ngFor="let service of services">
+                    <h4 matLine>{{service.category.name}}</h4>
+                    <p matLine>
+                        <span *ngFor="let barman of service.barmen">{{barman.surname}}</span>
+                    </p>
                 </mat-list-item>
             </mat-list>
         </div>
