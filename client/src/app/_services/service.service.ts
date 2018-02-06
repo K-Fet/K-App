@@ -11,6 +11,14 @@ export class ServiceService {
 
     constructor(private http: HttpClient) { }
 
+    get(start: Date, end: Date) {
+        return this.http.get<Service[]>('/api/services', {
+            params: {
+              start: start.getTime().toString(),
+              end: end.getTime().toString()
+            }}).catch(this.handleError);
+    }
+
     getById(id: number) {
         return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
     }
