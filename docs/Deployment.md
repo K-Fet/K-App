@@ -17,6 +17,7 @@ To see how to make automatic backups, see [Backups](./Backups.md).
 
 To run the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
+- [Yarn](https://yarnpkg.com)version 1.3.2 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Git](https://git-scm.com)
 
@@ -73,7 +74,7 @@ Environment=JWT_SECRET=UltraComplicatedSecret
 
 Type=simple
 WorkingDirectory=/srv/kapp/
-ExecStart=/usr/bin/npm run prod
+ExecStart=/usr/bin/node server/index.js
 Restart=on-failure
 RestartSec=10
 

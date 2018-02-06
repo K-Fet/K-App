@@ -1,8 +1,5 @@
 language: node_js
-cache:
-  yarn: true
-  directories:
-    - "node_modules"
+cache: yarn
 node_js:
   - "8"
 
@@ -14,7 +11,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
-after_success: npm run coverage
+after_success: yarn run coverage
 
 notifications:
   email: false
