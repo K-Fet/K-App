@@ -42,7 +42,6 @@ checkout_last_release
 
 # Install or update dependencies
 yarn run install:prod
-yarn prune --production
 
 # Build assets for client
 yarn run build
