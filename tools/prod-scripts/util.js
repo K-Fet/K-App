@@ -60,9 +60,21 @@ async function systemdDaemonReload() {
     console.log('Systemd reloaded');
 }
 
+/**
+ * Start a service and enable it at startup.
+ *
+ * @param serviceName service name
+ * @return {Promise<void>}
+ */
+async function systemStartAndEnable(serviceName) {
+    const { stderr } = await exec(`systemctl enable --now ${serviceName}`);
+    if (stderr) return console.error(`Error while enabling and starting service ${serviceName}`, stderr);
+}
+
 
 module.exports = {
     overwriteOrNot,
     createDirDeep,
-    systemdDaemonReload
+    systemdDaemonReload,
+    systemStartAndEnable
 };

@@ -204,5 +204,6 @@ const conf = {};
 mysqlConf.askQuestions(conf)
     .then(() => ask(conf))
     .then(() => generate(conf))
-    .catch(e => console.error('Error while generating data', e));
+    .catch(e => console.error('Error while generating data', e))
+    .then(() => process.exit(0));
 

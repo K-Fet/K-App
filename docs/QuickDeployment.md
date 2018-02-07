@@ -44,41 +44,6 @@ What does it do ?
 * Create a new secret for [JWT](https://jwt.io)
 * Configure an automated backup as you want
 * Create an admin account on the app
+* Launch server
 
 After this initialization script, everything should be in place!
-
-## Launching the application
-
-Now that everything is configured, you just have to launch every instances you prepared:
-
-```bash
-# Launch each instance
-systemctl start kapp@3000.service
-systemctl start kapp@3001.service
-systemctl start kapp@3002.service
-systemctl start kapp@3003.service
-
-# To enable auto-restart after rebooting the machine
-systemctl enable kapp@3000.service
-systemctl enable kapp@3001.service
-systemctl enable kapp@3002.service
-systemctl enable kapp@3003.service
-```
-
-`3000..3003` are deducted from the _first port_ and 
-the _number of instances_ in the **init.js** script.
-For example, here, there are **4** instances and 
-the first port is **3000**.
-
-### Caddy Server
-
-If you chose to install ***Caddy Server*** manually, don't forget 
-to add a [service file](https://github.com/mholt/caddy/tree/master/dist/init/linux-systemd)
-to reboot at startup!
-
-Otherwise, you just have to launch it with:
-
-```bash
-systemctl start caddy
-systemctl enable caddy
-```
