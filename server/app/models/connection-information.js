@@ -46,7 +46,8 @@ class ConnectionInformation extends Model {
             foreignKey: {
                 name: 'connectionId',
                 allowNull: false
-            }
+            },
+            as: 'jwt'
         });
 
         this.hasOne(models.Barman, {
@@ -54,14 +55,16 @@ class ConnectionInformation extends Model {
             foreignKey: {
                 name: 'connectionId',
                 allowNull: false
-            }
+            },
+            as: 'barman'
         });
         this.hasOne(models.SpecialAccount, {
             onDelete: 'CASCADE',
             foreignKey: {
                 name: 'connectionId',
                 allowNull: false
-            }
+            },
+            as: 'specialAccount'
         });
     }
 }

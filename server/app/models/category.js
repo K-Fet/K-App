@@ -33,7 +33,7 @@ class Category extends Model {
      * @param models
      */
     static associate(models) {
-        this.hasMany(models.Service);
+        this.hasMany(models.Service, { as: 'services' });
     }
 }
 
