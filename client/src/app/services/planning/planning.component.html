@@ -9,7 +9,10 @@
     <mat-card-content>
         <div>
             <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
-                <button mat-fab color="primary" (click)="updateServicesDetails(day)">{{day.name}}</button>
+                <button mat-fab color="primary" (click)="day.active ? null : updateServicesDetails(day)"
+                [color]="day.active ? 'accent' : 'primary'">
+                    {{day.name}}
+                </button>
             </div>
         </div>
         <div>

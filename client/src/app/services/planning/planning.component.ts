@@ -18,7 +18,18 @@ export class PlanningComponent implements OnInit {
     constructor(private serviceService: ServiceService) {}
 
     updateServicesDetails(day: Day) {
-        this.serviceService.get(day.date, day.date).subscribe(services => {
+        this.days.map(currentDay => {
+            if (currentDay === day) {
+                currentDay.active = true;
+            } else {
+                currentDay.active = false;
+            }
+            return currentDay;
+        });
+
+        const start = new Date(day.date.setHours(0, 0, 0, 0));
+        const end = new Date(day.date.setHours(23, 59, 0, 0));
+        this.serviceService.get(start, end).subscribe(services => {
             this.services = services.map(service => {
                 return this.serviceService.getById(service.id).subscribe(serviceExtended => {
                     return serviceExtended;
@@ -36,20 +47,22 @@ export class PlanningComponent implements OnInit {
         this.weekday[5] = 'Ven';
         this.weekday[6] = 'Sam';
 
-        // TODO: improve initial value of start and end variable
-        this.start.setDate( this.start.getDate() - 7 );
-        this.end.setDate( this.end.getDate() + 7 );
+        this.start.setDate(this.start.getDate() - (7 - 5 + this.start.getDay()) % 7 );
+        this.end.setDate(this.end.getDate() + (7 + 4 - this.end.getDay()) % 7 );
+
         this.serviceService.get(this.start, this.end).subscribe(services => {
             services.forEach(service => {
                 const startAt = new Date(service.startAt);
                 const day = {
                     name: this.weekday[startAt.getDay().toString()],
-                    date: startAt
+                    date: startAt,
+                    active: false
                 };
                 if (this.days.map(currentDay => currentDay.name).indexOf(day.name) === -1) {
                     this.days.push(day);
                 }
             });
+            this.days[0].active = true;
             this.updateServicesDetails(this.days[0]);
         });
     }
@@ -58,4 +71,5 @@ export class PlanningComponent implements OnInit {
 interface Day {
     name: String;
     date: Date;
+    active: Boolean;
 }
