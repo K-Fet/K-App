@@ -53,8 +53,8 @@ class Service extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Barman, { through: models.ServiceWrapper });
-        this.belongsTo(models.Category);
+        this.belongsToMany(models.Barman, { through: models.ServiceWrapper, as: 'barmen' });
+        this.belongsTo(models.Category, { as: 'category' });
     }
 }
 

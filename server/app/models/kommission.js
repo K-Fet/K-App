@@ -37,7 +37,7 @@ class Kommission extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Barman, { through: models.KommissionWrapper });
+        this.belongsToMany(models.Barman, { through: models.KommissionWrapper, as: 'barmen' });
     }
 }
 

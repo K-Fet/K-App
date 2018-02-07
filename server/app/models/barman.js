@@ -67,9 +67,9 @@ class Barman extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Kommission, { through: models.KommissionWrapper });
-        this.belongsToMany(models.Role, { through: models.RoleWrapper });
-        this.belongsToMany(models.Service, { through: models.ServiceWrapper });
+        this.belongsToMany(models.Kommission, { through: models.KommissionWrapper, as: 'kommissions' });
+        this.belongsToMany(models.Role, { through: models.RoleWrapper, as: 'roles' });
+        this.belongsToMany(models.Service, { through: models.ServiceWrapper, as: 'services' });
 
         this.hasOne(Barman, { as: 'godFather' });
 
