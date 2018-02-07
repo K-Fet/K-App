@@ -28,7 +28,7 @@
         "eslint:watch": "esw --watch server/",
         "lint": "yarn run eslint && cd client/ && yarn run lint",
         "install:prod": "yarn install --production --loglevel warn",
-        "postinstall": "cd client/ && yarn install",
+        "postinstall": "cd client/ && yarn install --production=false",
         "prod": "NODE_ENV=production node server/index.js",
         "test": "concurrently \"yarn run test:back\" \"yarn run test:front\"",
         "test:back": "nyc mocha server/test/**/*.js --require server/test/mocha.env",
