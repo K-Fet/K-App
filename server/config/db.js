@@ -35,5 +35,5 @@ module.exports = {
      *
      * @default false
      */
-    debug: true
+    debug: false
 };
