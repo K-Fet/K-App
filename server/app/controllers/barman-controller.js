@@ -16,12 +16,12 @@ async function getAllBarmen(req, res) {
 }
 
 /**
-* Create a Barman
-*
-* @param req Request
-* @param res Response
-* @return {Promise.<void>} Nothing
-*/
+ * Create a Barman
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function createBarman(req, res) {
     // FIXME We should check the type of each provided field, instead of just the presence
     if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
@@ -62,32 +62,30 @@ async function getBarmanById(req, res) {
 }
 
 /**
-* Upadate a barman.
-* @param req Request
-* @param res Response
-* @return {Promise.<void>} Nothing
-*/
+ * Update a barman.
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function updateBarman(req, res) {
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
-        );
-    }
+    const newUser = req.body;
+
+    if (!newUser) throw createUserError('BadRequest', 'Missing body');
+
     let newBarman = new Barman({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        nickname: req.body.nickname,
-        facebook: req.body.facebook,
-        dateOfBirth: req.body.dateOfBirth,
-        flow: req.body.flow,
-        active: req.body.active
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        connection: newUser.connection,
+        nickname: newUser.nickname,
+        facebook: newUser.facebook,
+        dateOfBirth: newUser.dateOfBirth,
+        flow: newUser.flow,
+        active: newUser.active
     });
-    
+
     const barmanId = req.params.id;
 
-    newBarman = await barmanService.updateBarmanById(barmanId, newBarman);
+    newBarman = await barmanService.updateBarmanById(barmanId, newBarman, newUser._embedded);
 
     res.json(newBarman);
 }

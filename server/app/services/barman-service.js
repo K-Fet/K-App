@@ -1,6 +1,7 @@
 const logger = require('../../logger');
-const { Barman } = require('../models/barman');
-const { createUserError } = require('../../utils');
+const sequelize = require('../../db');
+const { Barman, Kommission, Role } = require('../models');
+const { createUserError, cleanObject } = require('../../utils');
 
 /**
  * Return all barmen of the app.
@@ -50,25 +51,92 @@ async function getBarmanById(barmanId) {
  *
  * @param barmanId {number} barman id
  * @param updatedBarman {Barman} Updated barman, constructed from the request.
+ * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Barman>} The updated barman
  */
-async function updateBarmanById(barmanId, updatedBarman) {
-    const currentBarman = await Barman.findById(barmanId);
-    
+async function updateBarmanById(barmanId, updatedBarman, _embedded) {
+    const currentBarman = await Barman.findById(barmanId, {
+        include: [
+            {
+                model: Kommission,
+                as: 'kommissions'
+            },
+            {
+                model: Role,
+                as: 'roles'
+            }
+        ]
+    });
+
     if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
 
-    return await currentBarman.update({
+    const transaction = await sequelize.transaction();
+
+
+    await currentBarman.update(cleanObject({
         firstName: updatedBarman.firstName,
         lastName: updatedBarman.lastName,
         nickname: updatedBarman.nickname,
         facebook: updatedBarman.facebook,
-        godFather: updatedBarman.godFather,
         dateOfBirth: updatedBarman.dateOfBirth,
         flow: updatedBarman.flow,
         active: updatedBarman.active
-    });
+    }), { transaction });
+
+    // If connection information is changed
+    if (updatedBarman.connection) {
+        const co = await currentBarman.getConnection();
+        await co.update({ username: updatedBarman.connection.username }, { transaction });
+    }
+
+    // Associations
+
+    for (const associationKey of Object.keys(_embedded)) {
+        const value = _embedded[associationKey];
+
+        if (associationKey === 'godFather') {
+            const wantedGodFather = await Barman.findById(value);
+
+            if (!wantedGodFather) {
+                await transaction.rollback();
+                throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+            }
+
+            await currentBarman.setGodFather(wantedGodFather, { transaction });
+
+        } else if (associationKey === 'kommissions') {
+            try {
+                if (value.add && value.add.length > 0) {
+                    await currentBarman.addKommissions(value.add, { transaction });
+                }
+                if (value.remove && value.remove.length > 0) {
+                    await currentBarman.removeKommissions(value.remove, { transaction });
+                }
+            } catch (err) {
+                await transaction.rollback();
+                throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+            }
+        } else if (associationKey === 'roles') {
+            try {
+                if (value.add && value.add.length > 0) {
+                    await currentBarman.addRoles(value.add, { transaction });
+                }
+                if (value.remove && value.remove.length > 0) {
+                    await currentBarman.removeRoles(value.remove, { transaction });
+                }
+            } catch (err) {
+                await transaction.rollback();
+                throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+            }
+        } else {
+            throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+        }
+    }
+
+    await transaction.commit();
+    return currentBarman;
 }
 
 /**
