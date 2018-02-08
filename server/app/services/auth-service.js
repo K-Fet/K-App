@@ -71,7 +71,7 @@ async function createJWT(user) {
     // Sign with default (HMAC SHA256)
     const id = uuidv4();
 
-    await user.createJWT({
+    await user.createJwt({
         id
     });
 
