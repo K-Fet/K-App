@@ -18,12 +18,62 @@ async function getAllBarmen() {
  * Create a Barman.
  *
  * @param newBarman {Barman} partial member
- * @return {Promise<Barman|Errors.ValidationError>} The created barman with its id
+ * @param _embedded {Object} Object containing associations to update, see swagger for more information.
+ * @return {Promise<Barman>} The created barman with its id
  */
-async function createBarman(newBarman) {
+async function createBarman(newBarman, _embedded) {
 
     logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
-    return await newBarman.save();
+
+    const transaction = await sequelize.transaction();
+
+    await newBarman.save({ transaction });
+
+    // Associations
+    for (const associationKey of Object.keys(_embedded)) {
+        const value = _embedded[associationKey];
+
+        if (associationKey === 'godFather') {
+            const wantedGodFather = await Barman.findById(value);
+
+            if (!wantedGodFather) {
+                await transaction.rollback();
+                throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+            }
+
+            await newBarman.setGodFather(wantedGodFather, { transaction });
+
+        } else if (associationKey === 'kommissions') {
+            try {
+                if (value.add && value.add.length > 0) {
+                    await newBarman.addKommissions(value.add, { transaction });
+                }
+                if (value.remove && value.remove.length > 0) {
+                    await newBarman.removeKommissions(value.remove, { transaction });
+                }
+            } catch (err) {
+                await transaction.rollback();
+                throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+            }
+        } else if (associationKey === 'roles') {
+            try {
+                if (value.add && value.add.length > 0) {
+                    await newBarman.addRoles(value.add, { transaction });
+                }
+                if (value.remove && value.remove.length > 0) {
+                    await newBarman.removeRoles(value.remove, { transaction });
+                }
+            } catch (err) {
+                await transaction.rollback();
+                throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+            }
+        } else {
+            throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+        }
+    }
+
+    await transaction.commit();
+    return newBarman;
 }
 
 /**

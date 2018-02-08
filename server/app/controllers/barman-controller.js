@@ -36,18 +36,21 @@ async function createBarman(req, res) {
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details.message);
+    
+    const newUser = req.body;
 
     let newBarman = new Barman({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        nickname: req.body.nickname,
-        facebook: req.body.facebook,
-        dateOfBirth: req.body.dateOfBirth,
-        flow: req.body.flow,
-        active: req.body.active
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        connection: newUser.connection,
+        nickname: newUser.nickname,
+        facebook: newUser.facebook,
+        dateOfBirth: newUser.dateOfBirth,
+        flow: newUser.flow,
+        active: newUser.active
     });
 
-    newBarman = await barmanService.createBarman(newBarman);
+    newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
 
     res.json(newBarman);
 }
