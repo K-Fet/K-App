@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Barman, Kommission, Role } = require('../models');
-const { createUserError, cleanObject } = require('../../utils');
+const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
 
 /**
  * Return all barmen of the app.
@@ -74,64 +74,83 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
     const transaction = await sequelize.transaction();
 
+    try {
+        await currentBarman.update(cleanObject({
+            firstName: updatedBarman.firstName,
+            lastName: updatedBarman.lastName,
+            nickname: updatedBarman.nickname,
+            facebook: updatedBarman.facebook,
+            dateOfBirth: updatedBarman.dateOfBirth,
+            flow: updatedBarman.flow,
+            active: updatedBarman.active
+        }), { transaction });
 
-    await currentBarman.update(cleanObject({
-        firstName: updatedBarman.firstName,
-        lastName: updatedBarman.lastName,
-        nickname: updatedBarman.nickname,
-        facebook: updatedBarman.facebook,
-        dateOfBirth: updatedBarman.dateOfBirth,
-        flow: updatedBarman.flow,
-        active: updatedBarman.active
-    }), { transaction });
 
-    // If connection information is changed
-    if (updatedBarman.connection) {
-        const co = await currentBarman.getConnection();
-        await co.update({ username: updatedBarman.connection.username }, { transaction });
+        // If connection information is changed
+        if (updatedBarman.connection) {
+            const co = await currentBarman.getConnection();
+
+            const coData = {
+                username: updatedBarman.connection.username,
+                password: hash(updatedBarman.connection.password)
+            };
+
+            // If there is no connection yet, create one
+            if (!co) {
+                await currentBarman.createConnection(cleanObject(coData), { transaction });
+            } else {
+                await co.update(cleanObject(coData), { transaction });
+            }
+        }
+    } catch (err) {
+        logger.warn('Barman service: Error while updating barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating barman');
     }
 
     // Associations
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
 
-    for (const associationKey of Object.keys(_embedded)) {
-        const value = _embedded[associationKey];
+            if (associationKey === 'godFather') {
+                const wantedGodFather = await Barman.findById(value);
 
-        if (associationKey === 'godFather') {
-            const wantedGodFather = await Barman.findById(value);
+                if (!wantedGodFather) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                }
 
-            if (!wantedGodFather) {
+                await currentBarman.setGodFather(wantedGodFather, { transaction });
+
+            } else if (associationKey === 'kommissions') {
+                try {
+                    if (value.add && value.add.length > 0) {
+                        await currentBarman.addKommissions(value.add, { transaction });
+                    }
+                    if (value.remove && value.remove.length > 0) {
+                        await currentBarman.removeKommissions(value.remove, { transaction });
+                    }
+                } catch (err) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+                }
+            } else if (associationKey === 'roles') {
+                try {
+                    if (value.add && value.add.length > 0) {
+                        await currentBarman.addRoles(value.add, { transaction });
+                    }
+                    if (value.remove && value.remove.length > 0) {
+                        await currentBarman.removeRoles(value.remove, { transaction });
+                    }
+                } catch (err) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+                }
+            } else {
                 await transaction.rollback();
-                throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
             }
-
-            await currentBarman.setGodFather(wantedGodFather, { transaction });
-
-        } else if (associationKey === 'kommissions') {
-            try {
-                if (value.add && value.add.length > 0) {
-                    await currentBarman.addKommissions(value.add, { transaction });
-                }
-                if (value.remove && value.remove.length > 0) {
-                    await currentBarman.removeKommissions(value.remove, { transaction });
-                }
-            } catch (err) {
-                await transaction.rollback();
-                throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
-            }
-        } else if (associationKey === 'roles') {
-            try {
-                if (value.add && value.add.length > 0) {
-                    await currentBarman.addRoles(value.add, { transaction });
-                }
-                if (value.remove && value.remove.length > 0) {
-                    await currentBarman.removeRoles(value.remove, { transaction });
-                }
-            } catch (err) {
-                await transaction.rollback();
-                throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
-            }
-        } else {
-            throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
         }
     }
 
