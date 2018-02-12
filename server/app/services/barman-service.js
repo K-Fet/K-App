@@ -1,6 +1,6 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Barman, Kommission, Role } = require('../models');
+const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
 const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
 
 /**
@@ -35,7 +35,27 @@ async function getBarmanById(barmanId) {
 
     logger.verbose('Barman service: get a barman by his id %d', barmanId);
 
-    const barman = await Barman.findById(barmanId);
+    const barman = await Barman.findById(barmanId, {
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection',
+                attributes: [ 'id', 'username' ]
+            },
+            {
+                model: Barman,
+                as: 'godFather'
+            },
+            {
+                model: Kommission,
+                as: 'kommissions'
+            },
+            {
+                model: Role,
+                as: 'roles'
+            }
+        ]
+    });
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 

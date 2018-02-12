@@ -2,12 +2,12 @@ import { Category } from './index';
 
 export class Service {
 
-    id: number;
-    name: string;
+    id: Number;
+    name: String;
     startingDate: Date;
     endingDate: Date;
-    nbMax: number;
-    categoryId: number;
+    nbMax: Number;
+    categoryId: Number;
 
     // Association
 

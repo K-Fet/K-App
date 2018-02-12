@@ -8,62 +8,49 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <form #addForm="ngForm" fxLayout="column">
+            <form [formGroup]="barmanForm" fxLayout="column">
                 <mat-form-field>
-                    <input matInput placeholder="Nom de famille"
-                    autocorrect="off" required [(ngModel)]="barman.lastName" name="lastName">
-                    <mat-error *ngIf="lastNameFormControl.hasError('required')">
-                    Nom de famille <strong>requis</strong>
-                    </mat-error>
+                    <input matInput placeholder="Nom de famille" formControlName="lastName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Prénom"
-                    autocorrect="off" required [(ngModel)]="barman.firstName" name="firstName">
-                    <mat-error *ngIf="firstNameFormControl.hasError('required')">
-                    Prénom <strong>requis</strong>
-                    </mat-error>
+                    <input matInput placeholder="Prénom" formControlName="firstName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Surnom"
-                    [(ngModel)]="barman.nickname" required name="nickname" >
-                    <mat-error *ngIf="nicknameFormControl.hasError('required')">
-                    Surnom <strong>requis</strong>
-                    </mat-error>
+                    <input matInput placeholder="Surnom" formControlName="nickname">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Username (adresse email)"
-                    [(ngModel)]="barman.username" required name="username" >
-                    <mat-error *ngIf="usernameFormControl.hasError('required')">
-                    Username <strong>requis</strong>
-                    </mat-error>
+                    <input matInput placeholder="Username (adresse email)" formControlName="username">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Facebook"
-                    [(ngModel)]="barman.facebook" name="facebook" >
+                    <input matInput placeholder="Facebook" formControlName="facebook">
                 </mat-form-field>
                 <mat-form-field>
-                    <!-- TODO improve date picker choice -->
-                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance"
-                    [(ngModel)]="barman.dateOfBirth" required name="dateOfBirth">
+                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="dateOfBirthFormControl.hasError('required')">
-                    Date de naissance <strong>requise</strong>
-                    </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <textarea matInput placeholder="Cheminement"
-                    [(ngModel)]="barman.flow" required name="flow"></textarea>
-                    <mat-error *ngIf="flowFormControl.hasError('required')">
-                    Cheminenement <strong>requis</strong>
-                    </mat-error>
+                    <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
                 </mat-form-field>
-                <!-- TODO add kommission field -->
-                <!-- TODO add role field -->
-                <!-- TODO add godFather field -->
+                <mat-form-field>
+                    <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
+                        <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
+                        <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
+                        <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-checkbox formControlName="active">Actif</mat-checkbox>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="button" (click)="edit()" 
-                    [disabled]="!addForm.valid">Modifier</button>
+                    [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
                 </div>
             </form>
         </mat-card-content>

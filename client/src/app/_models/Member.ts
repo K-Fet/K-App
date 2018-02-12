@@ -1,13 +1,13 @@
 export class Member {
 
-    id: number;
-    lastName: string;
-    firstName: string;
-    school: string;
+    id: Number;
+    lastName: String;
+    firstName: String;
+    school: String;
     deletedAt: Date;
     createdAt: Date;
     updatedAt: Date;
-    active: boolean;
+    active: Boolean;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
