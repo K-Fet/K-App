@@ -2,30 +2,29 @@ import { ConnectionInformation, Kommission, Role, AssociationChanges } from './i
 
 export class Barman {
 
-    id: number;
-    lastName: string;
-    firstName: string;
-    nickname: string;
-    username: string;
+    id: Number;
+    lastName: String;
+    firstName: String;
+    nickname: String;
     deletedAt: Date;
     createdAt: Date;
     updatedAt: Date;
-    facebook: string;
+    facebook: String;
     dateOfBirth: Date;
-    flow: string;
-    active: boolean;
+    flow: String;
+    active: Boolean;
 
     // Associations
 
-    connectionInformation: ConnectionInformation;
+    connection: ConnectionInformation;
     godFather: Barman;
     kommissions: Kommission[];
     roles: Role[];
 
-    _embeded: {
-        godFather: Number;
-        kommissions: AssociationChanges[],
-        roles: AssociationChanges[],
+    _embedded: {
+        godFather?: Number;
+        kommissions?: AssociationChanges,
+        roles?: AssociationChanges,
     };
 
     constructor(values: Object = {}) {

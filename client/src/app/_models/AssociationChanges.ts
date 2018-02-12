@@ -1,4 +1,4 @@
 export class AssociationChanges {
-    id: Number;
-    action: string;
+    add?: Number[];
+    remove?: Number[];
 }

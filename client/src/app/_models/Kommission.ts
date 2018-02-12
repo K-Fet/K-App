@@ -1,8 +1,8 @@
 export class Kommission {
 
-    id: number;
-    name: string;
-    description: string;
+    id: Number;
+    name: String;
+    description: String;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
