@@ -10,14 +10,14 @@ import { Barman } from '../../_models/Barman';
 
 export class BarmanNewComponent {
 
-    lastName: String;
-    firstName: String;
-    nickname: String;
-    username: String;
-    facebook: String;
+    lastName: string;
+    firstName: string;
+    nickname: string;
+    username: string;
+    facebook: string;
     dateOfBirth: Date;
-    flow: String;
-    godFatherId: Number;
+    flow: string;
+    godFatherId: number;
 
     lastNameFormControl: FormControl = new FormControl('', [Validators.required]);
     firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
@@ -34,7 +34,7 @@ export class BarmanNewComponent {
         barman.firstName = this.firstName;
         barman.lastName = this.lastName;
         barman.nickname = this.nickname;
-        // barman.username = this.username;
+        barman.username = this.username;
         barman.dateOfBirth = this.dateOfBirth;
         barman.flow = this.flow;
         barman.facebook = this.facebook;

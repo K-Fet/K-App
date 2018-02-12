@@ -30,18 +30,19 @@
                     Surnom <strong>requis</strong>
                     </mat-error>
                 </mat-form-field>
-                <!-- <mat-form-field>
+                <mat-form-field>
                     <input matInput placeholder="Username (adresse email)"
                     [(ngModel)]="username" required name="username" >
                     <mat-error *ngIf="usernameFormControl.hasError('required')">
                     Username <strong>requis</strong>
                     </mat-error>
-                </mat-form-field> -->
+                </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Facebook"
                     [(ngModel)]="facebook" name="facebook" >
                 </mat-form-field>
                 <mat-form-field>
+                    <!-- TODO improve date picker choice -->
                     <input matInput [matDatepicker]="picker" placeholder="Date de naissance"
                     [(ngModel)]="dateOfBirth" required name="dateOfBirth">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
