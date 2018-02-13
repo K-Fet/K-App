@@ -303,11 +303,11 @@ async function createServiceBarman(barmanId, servicesId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    servicesId.forEach(Id=>{
+    for (const Id of servicesId) {
         const service = await Service.findById(Id);
         if (!service) throw createUserError('UnknownService', 'This service does not exist');
         await barman.addService(servicesId);
-    })
+    }
     return 200;
 }
 
@@ -325,7 +325,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    servicesId.forEach(Id=>{
+    for (const Id of servicesId) {
         const service = await Service.findById(Id);
         if (!service) throw createUserError('UnknownService', 'This service does not exist');
         await service.destroy({
@@ -334,7 +334,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
                 where: {id: barmanId}
             }]
         });
-    })
+    }
 
     return 200;
 }
