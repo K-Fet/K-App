@@ -1,6 +1,6 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
+const { ConnectionInformation, Barman, Kommission, Role, Service } = require('../models');
 const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
 
 /**
@@ -26,49 +26,73 @@ async function createBarman(newBarman, _embedded) {
     logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
 
     const transaction = await sequelize.transaction();
+    try {
+        await newBarman.save({ transaction });
 
-    await newBarman.save({ transaction });
+        // If connection information is changed
+        if (newBarman.connection) {
+            const co = await newBarman.getConnection();
+
+            const coData = {
+                username: newBarman.connection.username,
+                password: hash(newBarman.connection.password)
+            };
+
+            // If there is no connection yet, create one
+            if (!co) {
+                await newBarman.createConnection(cleanObject(coData), { transaction });
+            } else {
+                await co.update(cleanObject(coData), { transaction });
+            }
+        }
+    }catch (err) {
+        logger.warn('Barman service: Error while creating barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while creating barman');
+    }
 
     // Associations
-    for (const associationKey of Object.keys(_embedded)) {
-        const value = _embedded[associationKey];
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
 
-        if (associationKey === 'godFather') {
-            const wantedGodFather = await Barman.findById(value);
+            if (associationKey === 'godFather') {
+                const wantedGodFather = await Barman.findById(value);
 
-            if (!wantedGodFather) {
-                await transaction.rollback();
-                throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                if (!wantedGodFather) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                }
+
+                await newBarman.setGodFather(wantedGodFather, { transaction });
+
+            } else if (associationKey === 'kommissions') {
+                try {
+                    if (value.add && value.add.length > 0) {
+                        await newBarman.addKommissions(value.add, { transaction });
+                    }
+                    if (value.remove && value.remove.length > 0) {
+                        throw createUserError('No Removed value allowed', 'When creating a barman, impossible to add removed value');
+                    }
+                } catch (err) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+                }
+            } else if (associationKey === 'roles') {
+                try {
+                    if (value.add && value.add.length > 0) {
+                        await newBarman.addRoles(value.add, { transaction });
+                    }
+                    if (value.remove && value.remove.length > 0) {
+                        throw createUserError('No Removed value allowed', 'When creating a barman, impossible to add removed value');
+                    }
+                } catch (err) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+                }
+            } else {
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
             }
-
-            await newBarman.setGodFather(wantedGodFather, { transaction });
-
-        } else if (associationKey === 'kommissions') {
-            try {
-                if (value.add && value.add.length > 0) {
-                    await newBarman.addKommissions(value.add, { transaction });
-                }
-                if (value.remove && value.remove.length > 0) {
-                    await newBarman.removeKommissions(value.remove, { transaction });
-                }
-            } catch (err) {
-                await transaction.rollback();
-                throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
-            }
-        } else if (associationKey === 'roles') {
-            try {
-                if (value.add && value.add.length > 0) {
-                    await newBarman.addRoles(value.add, { transaction });
-                }
-                if (value.remove && value.remove.length > 0) {
-                    await newBarman.removeRoles(value.remove, { transaction });
-                }
-            } catch (err) {
-                await transaction.rollback();
-                throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
-            }
-        } else {
-            throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
         }
     }
 
@@ -268,7 +292,7 @@ async function getBarmanServices(barmanId) {
 * Create a service for a barman
 *
 * @param barmanID {number} barman id
-* @param newService {Service} partial member
+* @param serviceId {number<Array>} service ids
 * @returns {Promise<Service|Errors.ValidationError>} The created service
 */
 async function createServiceBarman(barmanId, servicesId) {
@@ -279,9 +303,12 @@ async function createServiceBarman(barmanId, servicesId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    // TODO check if every services is known
-
-    return await barman.addService(servicesId);
+    servicesId.forEach(Id=>{
+        const service = await Service.findById(Id);
+        if (!service) throw createUserError('UnknownService', 'This service does not exist');
+        await barman.addService(servicesId);
+    })
+    return 200;
 }
 
 /**
@@ -292,26 +319,24 @@ async function createServiceBarman(barmanId, servicesId) {
 *
 * @returns {Promise<Service>} The deleted service
 */
-async function deleteServiceBarman(barmanId, serviceId) {
-
-    logger.verbose('Barman service: delete the service', serviceId, 'of the barman', barmanId);
+async function deleteServiceBarman(barmanId, servicesId) {
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    const service = await Service.findById(serviceId);
+    servicesId.forEach(Id=>{
+        const service = await Service.findById(Id);
+        if (!service) throw createUserError('UnknownService', 'This service does not exist');
+        await service.destroy({
+            include: [{
+                model: Barman,
+                where: {id: barmanId}
+            }]
+        });
+    })
 
-    if (!service) throw createUserError('UnknownService', 'This service does not exist');
-
-    await service.destroy({
-        include: [{
-            model: Barman,
-            where: {id: barmanId}
-        }]
-    });
-
-    return service;
+    return 200;
 }
 
 module.exports = {

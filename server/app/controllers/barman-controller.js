@@ -136,14 +136,14 @@ async function getServicesBarman(req, res) {
 async function createServiceBarman(req, res) {
     const barmanId = req.params.id;
 
-    if (!checkStructure(req.body, ['id'])) {
+    if (!checkStructure(req.body, [ ])) {
         throw createUserError(
             'BadRequest',
-            'The body has missing properties, needed: [\'id\']'
+            'The body has missing properties, needed: [ ]'
         );
     }
 
-    let servicesId = req.body.ids;
+    const servicesId = req.body;
 
     await barmanService.createServiceBarman(barmanId, servicesId);
 
@@ -160,11 +160,19 @@ async function createServiceBarman(req, res) {
 async function deleteServiceBarman(req, res) {
 
     const barmanId = req.params.id;
-    const serviceId = req.body;
 
-    const service = await barmanService.deleteServiceBarman(barmanId, serviceId);
+    if (!checkStructure(req.body, [ ])) {
+        throw createUserError(
+            'BadRequest',
+            'The body has missing properties, needed: [ ]'
+        );
+    }
 
-    res.json(service);
+    const servicesId = req.body;
+
+    await barmanService.deleteServiceBarman(barmanId, servicesId);
+
+    res.sendStatus(200);
 }
 
 module.exports = {
