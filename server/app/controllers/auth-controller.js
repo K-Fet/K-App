@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const authService = require('../services/auth-service');
 const { createUserError } = require('../../utils');
 
@@ -10,19 +11,16 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function login(req, res) {
-    const username = req.body.username;
-    const password = req.body.password;
+    const schema = Joi.object().keys({
+        username: Joi.string().required(),
+        password: Joi.string().required()
+    });
 
-    if (!username
-        || typeof username !== 'string'
-        || !password
-        || typeof password !== 'string'
-    ) {
-        throw createUserError(
-            'BadRequest',
-            'The body has not the good structure {username: string, password: string).'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
+
+    const { username, password } = req.body;
 
     const jwt = await authService.login(username, password);
 

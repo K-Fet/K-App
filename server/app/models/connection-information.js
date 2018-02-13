@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const Joi = require('joi');
 
 /**
  * This class represents connection information.
@@ -69,6 +70,12 @@ class ConnectionInformation extends Model {
     }
 }
 
+const ConnectionInformationSchema = Joi.object().keys({
+    username: Joi.string(),
+    password: Joi.string()
+}).min(1);
+
 module.exports = {
-    ConnectionInformation
+    ConnectionInformation,
+    ConnectionInformationSchema
 };

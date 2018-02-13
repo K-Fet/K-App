@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const Joi = require('joi');
 
 /**
  * This class represent a Category.
@@ -37,6 +38,12 @@ class Category extends Model {
     }
 }
 
+const CategorySchema = Joi.object().keys({
+    name: Joi.string()
+});
+
+
 module.exports = {
-    Category
+    Category,
+    CategorySchema
 };

@@ -1,4 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
+const Joi = require('joi');
+const { AssociationChangesSchema } = require('./schemas');
 
 /**
  * This class represent a Role.
@@ -37,10 +39,20 @@ class Role extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Barman, { through: models.RoleWrapper, as : 'barman' });
+        this.belongsToMany(models.Barman, { through: models.RoleWrapper, as: 'barman' });
     }
 }
 
+
+const RoleSchema = Joi.object().keys({
+    name: Joi.string(),
+    description: Joi.string(),
+    _embedded: Joi.object().keys({
+        barmen: AssociationChangesSchema
+    })
+});
+
 module.exports = {
-    Role
+    Role,
+    RoleSchema
 };

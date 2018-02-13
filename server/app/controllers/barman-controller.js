@@ -1,5 +1,7 @@
+const Joi = require('joi');
 const barmanService = require('../services/barman-service');
-const { Barman } = require('../models/barman');
+const { Barman } = require('../models');
+const { BarmanSchema } = require('../models/schemas');
 const { checkStructure, createUserError } = require('../../utils');
 
 /**
@@ -68,19 +70,15 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
+    const schema = BarmanSchema.min(1);
     const newUser = req.body;
 
-    if (!newUser) throw createUserError('BadRequest', 'Missing body');
+    const { error } = schema.validate(newUser);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newBarman = new Barman({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        connection: newUser.connection,
-        nickname: newUser.nickname,
-        facebook: newUser.facebook,
-        dateOfBirth: newUser.dateOfBirth,
-        flow: newUser.flow,
-        active: newUser.active
+        ...newUser,
+        _embedded: undefined // Remove the only external object
     });
 
     const barmanId = req.params.id;

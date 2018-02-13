@@ -1,4 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
+const Joi = require('joi');
+const { AssociationChangesSchema, ConnectionInformationSchema } = require('./schemas');
 
 /**
  * This class represents a barman.
@@ -77,6 +79,25 @@ class Barman extends Model {
     }
 }
 
+const BarmanSchema = Joi.object().keys({
+    firstname: Joi.string(),
+    lastName: Joi.string(),
+    connection: ConnectionInformationSchema,
+    active: Joi.boolean(),
+    nickname: Joi.string(),
+    facebook: Joi.string().uri(),
+    dateOfBirth: Joi.string().isoDate(),
+    flow: Joi.string(),
+
+    _embedded: Joi.object({
+        godFather: Joi.number().integer(),
+        kommissions: AssociationChangesSchema,
+        roles: AssociationChangesSchema,
+    })
+});
+
+
 module.exports = {
-    Barman
+    Barman,
+    BarmanSchema
 };
