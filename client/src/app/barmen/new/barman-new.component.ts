@@ -1,43 +1,78 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService } from '../../_services/index';
-import { Barman } from '../../_models/Barman';
+import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
+import { Barman, Kommission, Role } from '../../_models/index';
 
 @Component({
   templateUrl: './barman-new.component.html'
 })
 
-export class BarmanNewComponent {
+export class BarmanNewComponent implements OnInit {
 
-    lastName: string;
-    firstName: string;
-    nickname: string;
-    username: string;
-    facebook: string;
-    dateOfBirth: Date;
-    flow: string;
-    godFatherId: number;
+    barman: Barman = new Barman();
 
-    lastNameFormControl: FormControl = new FormControl('', [Validators.required]);
-    firstNameFormControl: FormControl = new FormControl('', [Validators.required]);
-    nicknameFormControl: FormControl = new FormControl('', [Validators.required]);
-    usernameFormControl: FormControl = new FormControl('', [Validators.required]);
-    dateOfBirthFormControl: FormControl = new FormControl('', [Validators.required]);
-    flowFormControl: FormControl = new FormControl('', [Validators.required]);
-    godFatherFormControl: FormControl = new FormControl('', [Validators.required]);
+    kommissions: Kommission[] = new Array<Kommission>();
+    roles: Role[] = new Array<Role>();
+    barmen: Barman[] = new Array<Barman>();
 
-    constructor(private barmanService: BarmanService, private toasterService: ToasterService, private router: Router) {}
+    barmanForm: FormGroup;
+
+    constructor(
+        private barmanService: BarmanService,
+        private kommissionService: KommissionService,
+        private roleService: RoleService,
+        private toasterService: ToasterService,
+        private router: Router,
+        private fb: FormBuilder
+    ) {
+        this.createForm();
+    }
+
+    createForm() {
+        this.barmanForm = this.fb.group({
+            lastName: new FormControl('', [Validators.required]),
+            firstName: new FormControl('', [Validators.required]),
+            nickname: new FormControl('', [Validators.required]),
+            facebook: new FormControl(''),
+            username: new FormControl('', [Validators.required]),
+            dateOfBirth: new FormControl('', [Validators.required]),
+            flow: new FormControl('', [Validators.required]),
+            godFather: new FormControl('', [Validators.required]),
+            roles: new FormControl(''),
+            kommissions: new FormControl(''),
+            active: new FormControl('')
+        });
+    }
+
+    ngOnInit(): void {
+        // Get kommissions
+        this.kommissionService.getAll().subscribe(kommissions => {
+            this.kommissions = kommissions;
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
+
+        // Get roles
+        this.roleService.getAll().subscribe(roles => {
+            this.roles = roles;
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
+
+        // Get barmen
+        this.barmanService.getAll().subscribe(barmen => {
+            this.barmen = barmen;
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
+    }
 
     add() {
-        const barman = new Barman();
-        barman.firstName = this.firstName;
-        barman.lastName = this.lastName;
-        barman.nickname = this.nickname;
-        barman.username = this.username;
-        barman.dateOfBirth = this.dateOfBirth;
-        barman.flow = this.flow;
-        barman.facebook = this.facebook;
+        const barman = this.barman;
 
         this.barmanService.create(barman).subscribe(() => {
             this.toasterService.showToaster('Barman créé', 'Fermer');
