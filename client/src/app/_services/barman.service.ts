@@ -28,7 +28,7 @@ export class BarmanService {
         return this.http.put('/api/barmen/' + barman.id, barman).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete('/api/barmen/' + id).catch(this.handleError);
     }
 
