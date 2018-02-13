@@ -89,9 +89,16 @@ export class BarmanNewComponent implements OnInit {
 
     prepareSaving() {
         this.barman._embedded = {};
+        this.barman.connection = {};
         Object.keys(this.barmanForm.controls).forEach(key => {
             let add: Number[] = [];
             switch (key) {
+                case 'username':
+                    this.barman.connection.username = this.barmanForm.controls.username.value;
+                    break;
+                case 'password':
+                    this.barman.connection.password = this.barmanForm.controls.password.value;
+                    break;
                 case 'godFather':
                     this.barman._embedded.godFather = this.selectedGodFather;
                     break;
