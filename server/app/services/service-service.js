@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Service: Service } = require('../models/service');
 const { createUserError } = require('../../utils');
@@ -5,12 +6,23 @@ const { createUserError } = require('../../utils');
 /**
  * Return all services of the app.
  *
+ * @param start {Date} start time
+ * @param end {Date} end time
  * @returns {Promise<Array>} Services
  */
-async function getAllServices() {
+async function getAllServices(start, end) {
 
     logger.verbose('Service service: get all services');
-    return await Service.findAll();
+    return await Service.findAll({
+        where: {
+            [Op.and]: [
+                {
+                    startAt: { [Op.gte]: start },
+                    endAt: { [Op.lte]: end }
+                }
+            ]
+        }
+    });
 }
 
 /**
