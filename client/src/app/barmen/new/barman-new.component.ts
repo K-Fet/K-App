@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
-import { Barman, Kommission, Role } from '../../_models/index';
+import { Barman, Kommission, Role, AssociationChanges } from '../../_models/index';
 
 @Component({
   templateUrl: './barman-new.component.html'
@@ -17,6 +17,10 @@ export class BarmanNewComponent implements OnInit {
     barmen: Barman[] = new Array<Barman>();
 
     barmanForm: FormGroup;
+
+    selectedGodFather: Number;
+    selectedKommissions: Number[];
+    selectedRoles: Number[];
 
     constructor(
         private barmanService: BarmanService,
@@ -36,6 +40,7 @@ export class BarmanNewComponent implements OnInit {
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required]),
+            password: new FormControl('', [Validators.required]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl('', [Validators.required]),
@@ -72,14 +77,42 @@ export class BarmanNewComponent implements OnInit {
     }
 
     add() {
-        const barman = this.barman;
-
-        this.barmanService.create(barman).subscribe(() => {
+        this.prepareSaving();
+        this.barmanService.create(this.barman).subscribe(() => {
             this.toasterService.showToaster('Barman créé', 'Fermer');
             this.router.navigate(['/barmen'] );
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');
+        });
+    }
+
+    prepareSaving() {
+        this.barman._embedded = {};
+        Object.keys(this.barmanForm.controls).forEach(key => {
+            let add: Number[] = [];
+            switch (key) {
+                case 'godFather':
+                    this.barman._embedded.godFather = this.selectedGodFather;
+                    break;
+                case 'kommissions':
+                    add = [];
+                    this.barmanForm.controls.kommissions.value.forEach(idKommission => {
+                        add.push(idKommission);
+                    });
+                    this.barman._embedded.kommissions = { add: add };
+                    break;
+                case 'roles':
+                    add = [];
+                    this.barmanForm.controls.roles.value.forEach(idRole => {
+                        add.push(idRole);
+                    });
+                    this.barman._embedded.roles = { add: add };
+                    break;
+                default:
+                    this.barman[key] = this.barmanForm.controls[key].value;
+                    break;
+            }
         });
     }
 }

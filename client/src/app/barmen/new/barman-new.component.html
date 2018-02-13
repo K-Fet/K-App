@@ -22,6 +22,9 @@
                     <input matInput placeholder="Username (adresse email)" formControlName="username">
                 </mat-form-field>
                 <mat-form-field>
+                    <input matInput type="password" placeholder="Mot de passe" formControlName="password">
+                </mat-form-field>
+                <mat-form-field>
                     <input matInput placeholder="Facebook" formControlName="facebook">
                 </mat-form-field>
                 <mat-form-field>
@@ -49,8 +52,8 @@
                 </mat-form-field>
                 <mat-checkbox formControlName="active">Actif</mat-checkbox>
                 <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="edit()" 
-                    [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
+                    <button fxFlex="50" mat-button type="button" (click)="add()" 
+                    [disabled]="!barmanForm.valid">Ajouter</button>
                 </div>
             </form>
         </mat-card-content>
