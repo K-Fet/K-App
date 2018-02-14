@@ -1,6 +1,8 @@
+const Joi = require('joi');
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
-const { checkStructure, createUserError } = require('../../utils');
+const { ServiceSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the services from the database.
@@ -23,24 +25,22 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
+    const schema = Joi.array().items(ServiceSchema.requiredKeys(
+        'startingDate',
+        'endingDate',
+        'nbMax',
+        '_embedded.category' // If _embedded exist, there must be a category field
+    )).min(1);
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
-        name: req.body.name,
-        startAt: req.body.startAt,
-        endAt: req.body.endAt,
-        nbMax: req.body.nbMax,
-        category: req.body.category,
+        ...req.body,
+        _embedded: undefined // Remove the only external object
     });
 
-    newService = await serviceService.createService(newService);
+    newService = await serviceService.createService(newService, req.body._embedded);
 
     res.json(newService);
 }
@@ -70,26 +70,19 @@ async function getServiceById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateService(req, res) {
+    const schema = ServiceSchema.min(1);
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
-        name: req.body.name,
-        startAt: req.body.startAt,
-        endAt: req.body.endAt,
-        nbMax: req.body.nbMax,
-        category: req.body.category,
+        ...req.body,
+        _embedded: undefined  // Remove the only external object
     });
 
     const serviceId = req.params.id;
 
-    newService = await serviceService.updateService(serviceId, newService);
+    newService = await serviceService.updateService(serviceId, newService, req.body._embedded);
 
     res.json(newService);
 }

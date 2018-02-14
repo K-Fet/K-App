@@ -1,8 +1,7 @@
-const Joi = require('joi');
 const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
-const { checkStructure, createUserError } = require('../../utils');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the barmen from the database.
@@ -25,13 +24,18 @@ async function getAllBarmen(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createBarman(req, res) {
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
-        );
-    }
+    const schema = BarmanSchema.requiredKeys(
+        'firstName',
+        'lastName',
+        'connection',
+        'connection.username',
+        'nickname',
+        'dateOfBirth',
+        'flow'
+    );
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newBarman = new Barman({
         firstName: req.body.firstName,

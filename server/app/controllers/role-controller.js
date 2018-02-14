@@ -1,6 +1,7 @@
 const roleService = require('../services/role-service');
-const { Role } = require('../models/role');
-const { checkStructure, createUserError } = require('../../utils');
+const { Role } = require('../models');
+const { RoleSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the roles from the database.
@@ -23,21 +24,21 @@ async function getAllRoles(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createRole(req, res) {
+    const schema = RoleSchema.requiredKeys(
+        'name',
+        'description'
+    );
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
 
     let newRole = new Role({
-        name: req.body.name,
-        description: req.body.description,
+        ...req.body,
+        _embedded: undefined // Remove the only external object
     });
 
-    newRole = await roleService.createRole(newRole);
+    newRole = await roleService.createRole(newRole, req.body._embedded);
 
     res.json(newRole);
 }
@@ -67,23 +68,20 @@ async function getRoleById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateRole(req, res) {
+    const schema = RoleSchema.min(1);
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
 
     let newRole = new Role({
-        name: req.body.name,
-        description: req.body.description,
+        ...req.body,
+        _embedded: undefined // Remove the only external object
     });
 
     const roleId = req.params.id;
 
-    newRole = await roleService.updateRole(roleId, newRole);
+    newRole = await roleService.updateRole(roleId, newRole, req.body._embedded);
 
     res.json(newRole);
 }
