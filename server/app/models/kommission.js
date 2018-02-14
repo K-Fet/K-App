@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const Joi = require('joi');
-const { AssociationChangesSchema } = require('./schemas');
+const { AssociationChangesSchema } = require('./association-changes');
 
 /**
  * This class represent a Kommission.

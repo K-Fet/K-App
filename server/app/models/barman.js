@@ -1,6 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const Joi = require('joi');
-const { AssociationChangesSchema, ConnectionInformationSchema } = require('./schemas');
+const { AssociationChangesSchema } = require('./association-changes');
+const { ConnectionInformationSchema } = require('./connection-information');
 
 /**
  * This class represents a barman.
