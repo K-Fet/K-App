@@ -75,13 +75,11 @@
     },
     "jest": {
         "collectCoverageFrom": [
-            "**/__tests__/**/*.js"
+            "<rootDir>/server/**/*.js"
         ],
         "coveragePathIgnorePatterns": [
-            "<rootDir>/node_modules/",
-            "<rootDir>/client/",
-            "<rootDir>/server/app/routes/",
-            "<rootDir>/server/app/models/"
+            "app/routes/",
+            "app/models/"
         ]
     }
 }
