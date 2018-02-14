@@ -167,5 +167,17 @@
             }
         ]
     },
-    "root": true
+    "root": true,
+    "overrides": [
+        {
+            "files": [
+                "**/__tests__/**/*.js"
+            ],
+            "rules": {
+                "no-unused-vars": "off",
+                "no-undef": "off",
+                "require-jsdoc": "off"
+            }
+        }
+    ]
 }
