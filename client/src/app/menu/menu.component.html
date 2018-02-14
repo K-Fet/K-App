@@ -3,9 +3,11 @@
 		<button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
 		<h1 class="app-name">K-App</h1>
 		<span class="spacer"></span>
-		<mat-icon class="example-icon">person</mat-icon>
+		<button type="button" mat-icon-button (click)="openUserInformation()">
+			<mat-icon class="example-icon">person</mat-icon>
+		</button>
 		<button type="button" mat-icon-button (click)="logout()">
-		<mat-icon>power_settings_new</mat-icon>
+			<mat-icon>power_settings_new</mat-icon>
 		</button>
 	</mat-toolbar>
 	<mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">

@@ -36,6 +36,7 @@ import { CategoryNewComponent } from './categories/new/category-new.component';
 import { CategoryEditComponent } from './categories/edit/category-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
+import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -77,10 +78,12 @@ import { MaterialModule } from './_helpers/material.module';
         CategoryNewComponent,
         CategoriesListComponent,
         CodeDialogComponent,
-        NotFoundComponent
+        NotFoundComponent,
+        ConnectedUserDialogComponent
     ],
     entryComponents: [
-        CodeDialogComponent
+        CodeDialogComponent,
+        ConnectedUserDialogComponent
     ],
     imports: [
         CommonModule,
