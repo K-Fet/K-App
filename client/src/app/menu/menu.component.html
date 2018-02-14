@@ -1,44 +1,45 @@
 <div class="body-container" [class.is-mobile]="mobileQuery.matches">
-  <mat-toolbar color="primary" class="toolbar">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="app-name">K-App</h1>
-    <span class="spacer"></span>
-    <button type="button" mat-icon-button (click)="logout()">
-      <mat-icon>power_settings_new</mat-icon>
-    </button>
-  </mat-toolbar>
-  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
-    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
-      <mat-nav-list>
-          <mat-list>
-            <a mat-list-item routerLink="/dashboard">Dashboard</a>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Adhérents</h3>
-            <a mat-list-item routerLink="/members">Liste</a>
-            <a mat-list-item routerLink="/members/new">Nouveau</a>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Barmen</h3>
-            <a mat-list-item routerLink="/barmen">Liste</a>
-            <a mat-list-item routerLink="/barmen/new">Nouveau</a>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Kommissions</h3>
-            <a mat-list-item routerLink="/kommissions">Liste</a>
-            <a mat-list-item routerLink="/kommissions/new">Nouveau</a>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Rôles</h3>
-            <a mat-list-item routerLink="/roles">Liste</a>
-            <a mat-list-item routerLink="/roles/new">Nouveau</a>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Catégories de service</h3>
-            <a mat-list-item routerLink="/categories">Liste</a>
-            <a mat-list-item routerLink="/categories/new">Nouveau</a>
-            <mat-divider></mat-divider>
-          </mat-list>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content class="components-container">
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+	<mat-toolbar color="primary" class="toolbar">
+		<button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+		<h1 class="app-name">K-App</h1>
+		<span class="spacer"></span>
+		<mat-icon class="example-icon">person</mat-icon>
+		<button type="button" mat-icon-button (click)="logout()">
+		<mat-icon>power_settings_new</mat-icon>
+		</button>
+	</mat-toolbar>
+	<mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+		<mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
+		[fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
+		<mat-nav-list>
+			<mat-list>
+				<a mat-list-item routerLink="/dashboard">Dashboard</a>
+				<mat-divider></mat-divider>
+				<h3 mat-subheader>Adhérents</h3>
+				<a mat-list-item routerLink="/members">Liste</a>
+				<a mat-list-item routerLink="/members/new">Nouveau</a>
+				<mat-divider></mat-divider>
+				<h3 mat-subheader>Barmen</h3>
+				<a mat-list-item routerLink="/barmen">Liste</a>
+				<a mat-list-item routerLink="/barmen/new">Nouveau</a>
+				<mat-divider></mat-divider>
+				<h3 mat-subheader>Kommissions</h3>
+				<a mat-list-item routerLink="/kommissions">Liste</a>
+				<a mat-list-item routerLink="/kommissions/new">Nouveau</a>
+				<mat-divider></mat-divider>
+				<h3 mat-subheader>Rôles</h3>
+				<a mat-list-item routerLink="/roles">Liste</a>
+				<a mat-list-item routerLink="/roles/new">Nouveau</a>
+				<mat-divider></mat-divider>
+				<h3 mat-subheader>Catégories de service</h3>
+				<a mat-list-item routerLink="/categories">Liste</a>
+				<a mat-list-item routerLink="/categories/new">Nouveau</a>
+				<mat-divider></mat-divider>
+			</mat-list>
+		</mat-nav-list>
+		</mat-sidenav>
+		<mat-sidenav-content class="components-container">
+		<router-outlet></router-outlet>
+		</mat-sidenav-content>
+	</mat-sidenav-container>
 </div>

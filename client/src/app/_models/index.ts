@@ -6,3 +6,4 @@ export * from './Role';
 export * from './Category';
 export * from './ConnectionInformation';
 export * from './AssociationChanges';
+export * from './SpecialAccount';
