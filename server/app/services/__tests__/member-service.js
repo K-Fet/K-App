@@ -10,7 +10,7 @@ describe('Member service Test', () => {
     beforeEach(async () => {
         mockedInstance = await SequelizeMocking.createAndLoadFixtureFile(
             sequelize,
-            path.resolve(path.join(__dirname, './resources/fake-members-database.json'))
+            path.resolve(path.join(__dirname, '../../tests/resources/fake-members-database.json'))
         );
     });
 
