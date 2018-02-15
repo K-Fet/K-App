@@ -31,8 +31,7 @@ async function createService(req, res) {
         .items(ServiceSchema.requiredKeys(
             'startingDate',
             'endingDate',
-            'nbMax',
-            '_embedded.category', // If _embedded exist, there must be a category field
+            'nbMax'
         ))
         .min(1);
 
@@ -40,11 +39,10 @@ async function createService(req, res) {
     if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
-        ...req.body,
-        _embedded: undefined, // Remove the only external object
+        ...req.body
     });
 
-    newService = await serviceService.createService(newService, req.body._embedded);
+    newService = await serviceService.createService(newService, req.body);
 
     res.json(newService);
 }
@@ -80,13 +78,12 @@ async function updateService(req, res) {
     if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
-        ...req.body,
-        _embedded: undefined,  // Remove the only external object
+        ...req.body
     });
 
     const serviceId = req.params.id;
 
-    newService = await serviceService.updateService(serviceId, newService, req.body._embedded);
+    newService = await serviceService.updateService(serviceId, newService, req.body);
 
     res.json(newService);
 }
