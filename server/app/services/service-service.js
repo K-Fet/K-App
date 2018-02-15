@@ -1,16 +1,25 @@
 const logger = require('../../logger');
-const { Service: Service } = require('../models/service');
-const { createUserError } = require('../../utils');
+const sequelize = require('../../db');
+const Op = sequelize.Op;
+const { Service, Category } = require('../models');
+const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
+
+
 
 /**
  * Return all services of the app.
  *
  * @returns {Promise<Array>} Services
  */
-async function getAllServices() {
+async function getAllServices(start, end) {
 
     logger.verbose('Service service: get all services');
-    return await Service.findAll();
+    return await Service.findAll({
+        where: {
+            startAt: { [Op.gte]: start, },
+            endAt: { [Op.lte]: end, }
+        }
+    });
 }
 
 /**
@@ -36,13 +45,18 @@ async function getServiceById(serviceId) {
 
     logger.verbose('Service service: get service by id %d', serviceId);
 
-    const service = await Service.findById(serviceId);
+    const service = await Service.findById(serviceId, {
+        include: [
+            {
+                model: Category,
+            },
+        ]
+    });
 
     if (!service) throw createUserError('UnknownService', 'This service does not exist');
 
     return service;
 }
-
 
 /**
  * Update a service.
@@ -55,22 +69,59 @@ async function getServiceById(serviceId) {
  * @param updatedService {Service} Updated service, constructed from the request.
  * @return {Promise<Service>} The updated service
  */
-async function updateService(serviceId, updatedService) {
+async function updateService(serviceId, updatedService, _embedded) {
+    const currentService = await Service.findById(serviceId, {
+        include: [
+            {
+                model: Category,
+            },
+        ]
+    });
 
-    const currentService = await Service.findById(serviceId);
-
-    if (!currentService) throw createUserError('UnknownService', 'This service does not exist');
+    if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
     logger.verbose('Service service: updating service named %s', currentService.name);
 
-    return await currentService.update({
-        name: updatedService.name,
-        startAt: updatedService.startAt,
-        endAt: updatedService.endAt,
-        nbMax: updatedService.nbMax,
-        category: updatedService.category
-    });
+    const transaction = await sequelize.transaction();
+
+    try {
+        await currentService.update(cleanObject({
+            name: updatedService.name,
+            startAt: updatedService.startAt,
+            endAt: updatedService.endAt,
+            nbMax: updatedService.nbMax,
+            category: updatedService.category
+        }), { transaction });
+
+    } catch (err) {
+        logger.warn('Service service: Error while updating service', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating service');
+    }
+
+    // Associations
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            if (associationKey === 'Category') {
+                const wantedCategory = await Category.findById(value);
+
+                if (!wantedCategory) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownService', `Unable to find category with id ${wantedCategory}`);
+                }
+                await currentService.setCategory(wantedCategory, { transaction });
+            } else {
+                await transaction.rollback();
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+            }
+        }
+    }
+    await transaction.commit();
+    return currentService;
 }
+
 
 /**
  * Delete a service.

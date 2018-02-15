@@ -20,7 +20,7 @@ module.exports = {
      *
      * @default ''
      */
-    password: process.env.DB_PWD || '',
+    password: process.env.DB_PWD || 'password',
 
     /**
      * Name of the database where to save data.

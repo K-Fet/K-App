@@ -12,7 +12,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllServices(req, res) {
-    const services = await serviceService.getAllServices();
+    const start = req.query.start;
+    const end = req.query.end;
+    const services = await serviceService.getAllServices(start, end);
 
     res.json(services);
 }
