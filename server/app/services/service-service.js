@@ -55,7 +55,6 @@ async function getServiceById(serviceId) {
     return service;
 }
 
-
 /**
  * Update a service.
  * This will copy only the allowed changes from the `updatedService`
@@ -68,10 +67,9 @@ async function getServiceById(serviceId) {
  * @return {Promise<Service>} The updated service
  */
 async function updateService(serviceId, updatedService) {
-
     const currentService = await Service.findById(serviceId);
 
-    if (!currentService) throw createUserError('UnknownService', 'This service does not exist');
+    if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
     logger.verbose('Service service: updating service named %s', currentService.name);
 
@@ -82,6 +80,7 @@ async function updateService(serviceId, updatedService) {
         nbMax: updatedService.nbMax
     });
 }
+
 
 /**
  * Delete a service.
