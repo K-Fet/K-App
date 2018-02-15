@@ -106,13 +106,12 @@ async function updateService(req, res) {
     if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
-        ...req.body,
-        _embedded: undefined,  // Remove the only external object
+        ...req.body
     });
 
     const serviceId = req.params.id;
 
-    newService = await serviceService.updateService(serviceId, newService, req.body._embedded);
+    newService = await serviceService.updateService(serviceId, newService, req.body);
 
     res.json(newService);
 }

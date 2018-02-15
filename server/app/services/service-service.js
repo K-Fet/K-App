@@ -1,7 +1,9 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
+const sequelize = require('../../db');
 const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
-const { createUserError, getDefaultTemplate } = require('../../utils');
+const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
+
 
 /**
  * Return all services of the app.
@@ -72,13 +74,22 @@ async function updateService(serviceId, updatedService) {
     if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
     logger.verbose('Service service: updating service named %s', currentService.name);
+    const transaction = await sequelize.transaction();
+    try {
+        await currentService.update(cleanObject({
+            name: updatedService.name,
+            startAt: updatedService.startAt,
+            endAt: updatedService.endAt,
+            nbMax: updatedService.nbMax
+        }), { transaction });
 
-    return currentService.update({
-        name: updatedService.name,
-        startAt: updatedService.startAt,
-        endAt: updatedService.endAt,
-        nbMax: updatedService.nbMax
-    });
+    } catch (err) {
+        logger.warn('Service service: Error while updating service', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating service');
+    }
+    await transaction.commit();
+    return currentService;
 }
 
 
