@@ -1,4 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
+const Joi = require('joi');
+const { AssociationChangesSchema } = require('./association-changes');
 
 /**
  * This class represent a Kommission.
@@ -41,6 +43,15 @@ class Kommission extends Model {
     }
 }
 
+const KommissionSchema = Joi.object().keys({
+    name: Joi.string(),
+    description: Joi.string(),
+    _embedded: Joi.object().keys({
+        barmen: AssociationChangesSchema
+    })
+});
+
 module.exports = {
-    Kommission
+    Kommission,
+    KommissionSchema
 };

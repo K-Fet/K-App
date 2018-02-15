@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const Joi = require('joi');
 
 /**
  * This class represents a member.
@@ -54,6 +55,14 @@ class Member extends Model {
     }
 }
 
+const MemberSchema = Joi.object().keys({
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    school: Joi.string(),
+    active: Joi.boolean()
+});
+
 module.exports = {
-    Member
+    Member,
+    MemberSchema
 };

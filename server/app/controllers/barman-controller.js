@@ -1,6 +1,7 @@
 const barmanService = require('../services/barman-service');
-const { Barman } = require('../models/barman');
-const { checkStructure, createUserError } = require('../../utils');
+const { Barman } = require('../models');
+const { BarmanSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the barmen from the database.
@@ -23,13 +24,18 @@ async function getAllBarmen(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createBarman(req, res) {
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['firstName', 'lastName', 'nickname', 'dateOfBirth', 'flow'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'nickname\', \'dateOfBirth\', \'flow\']'
-        );
-    }
+    const schema = BarmanSchema.requiredKeys(
+        'firstName',
+        'lastName',
+        'connection',
+        'connection.username',
+        'nickname',
+        'dateOfBirth',
+        'flow'
+    );
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newBarman = new Barman({
         firstName: req.body.firstName,
@@ -68,19 +74,15 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
+    const schema = BarmanSchema.min(1);
     const newUser = req.body;
 
-    if (!newUser) throw createUserError('BadRequest', 'Missing body');
+    const { error } = schema.validate(newUser);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
     let newBarman = new Barman({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        connection: newUser.connection,
-        nickname: newUser.nickname,
-        facebook: newUser.facebook,
-        dateOfBirth: newUser.dateOfBirth,
-        flow: newUser.flow,
-        active: newUser.active
+        ...newUser,
+        _embedded: undefined // Remove the only external object
     });
 
     const barmanId = req.params.id;

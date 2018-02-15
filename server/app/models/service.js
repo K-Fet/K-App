@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const Joi = require('joi');
 
 /**
  * This class represent a Service.
@@ -58,6 +59,18 @@ class Service extends Model {
     }
 }
 
+const ServiceSchema = Joi.object().keys({
+    name: Joi.string(),
+    startingDate: Joi.string().isoDate(),
+    endingDate: Joi.string().isoDate(),
+    nbMax: Joi.number().integer(),
+
+    _embedded: Joi.object().keys({
+        category: Joi.number().integer()
+    })
+});
+
 module.exports = {
-    Service
+    Service,
+    ServiceSchema
 };

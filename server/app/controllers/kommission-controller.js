@@ -1,6 +1,7 @@
 const kommissionService = require('../services/kommission-service');
-const { Kommission } = require('../models/kommission');
-const { checkStructure, createUserError } = require('../../utils');
+const { Kommission } = require('../models');
+const { KommissionSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the kommissions from the database.
@@ -23,83 +24,79 @@ async function getAllKommissions(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createKommission(req, res) {
-    
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
-    
+    const schema = KommissionSchema.requiredKeys(
+        'name',
+        'description'
+    );
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
+
     let newKommission = new Kommission({
-        name: req.body.name,
-        description: req.body.description,
+        ...req.body,
+        _embedded: undefined // Remove the only external object
     });
-    
-    newKommission = await kommissionService.createKommission(newKommission);
-    
+
+    newKommission = await kommissionService.createKommission(newKommission, req.body._embedded);
+
     res.json(newKommission);
 }
-    
-    
+
+
 /**
-     * Get a kommission by its id.
-     *
-     * @param req Request
-     * @param res Response
-     * @return {Promise.<void>} Nothing
-     */
+ * Get a kommission by its id.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function getKommissionById(req, res) {
     const kommissionId = req.params.id;
-    
+
     const kommission = await kommissionService.getKommissionById(kommissionId);
-    
+
     res.json(kommission);
 }
-    
-    
+
+
 /**
-     * Update a kommission.
-     *
-     * @param req Request
-     * @param res Response
-     * @return {Promise.<void>} Nothing
-     */
+ * Update a kommission.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function updateKommission(req, res) {
-    
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
-    
+    const schema = KommissionSchema.min(1);
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
     let newKommission = new Kommission({
-        name: req.body.name,
-        description: req.body.description,
+        ...req.body,
+        _embedded: undefined // Remove the only external object
     });
-    
+
     const kommissionId = req.params.id;
-    
-    newKommission = await kommissionService.updateKommission(kommissionId, newKommission);
-    
+
+    newKommission = await kommissionService.updateKommission(kommissionId, newKommission, req.body._embedded);
+
     res.json(newKommission);
 }
-    
+
 /**
-     * Delete a kommission.
-     *
-     * @param req Request
-     * @param res Response
-     * @return {Promise.<void>} Nothing
-     */
+ * Delete a kommission.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function deleteKommission(req, res) {
     const kommissionId = req.params.id;
-    
+
     const kommission = await kommissionService.deleteKommission(kommissionId);
-    
+
     res.json(kommission);
 }
 

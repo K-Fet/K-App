@@ -1,6 +1,7 @@
 const memberService = require('../services/member-service');
-const { Member } = require('../models/member');
-const { checkStructure, createUserError } = require('../../utils');
+const { Member } = require('../models');
+const { MemberSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the members from the database.
@@ -24,21 +25,15 @@ async function getAllMembers(req, res) {
  */
 async function createMember(req, res) {
     const reqMember = req.body.member;
+    const schema = MemberSchema.requiredKeys(
+        'firstName',
+        'lastName'
+    );
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(reqMember, ['firstName', 'lastName', 'school'])) {
-        throw createUserError(
-            'BadRequest',
-            'body.member has missing properties, needed: [\'firstName\', \'lastName\', \'school\']'
-        );
-    }
+    const { error } = schema.validate(reqMember);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
-    let newMember = new Member({
-        firstName: reqMember.firstName,
-        lastName: reqMember.lastName,
-        school: reqMember.school,
-        active: reqMember.active,
-    });
+    let newMember = new Member(reqMember);
 
     newMember = await memberService.createMember(newMember);
 
@@ -71,21 +66,12 @@ async function getMemberById(req, res) {
  */
 async function updateMember(req, res) {
     const reqMember = req.body.member;
+    const schema = MemberSchema.min(1);
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(reqMember, ['firstName', 'lastName', 'school'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'firstName\', \'lastName\', \'school\']'
-        );
-    }
+    const { error } = schema.validate(reqMember);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
-    let newMember = new Member({
-        firstName: reqMember.firstName,
-        lastName: reqMember.lastName,
-        school: reqMember.school,
-        active: reqMember.active,
-    });
+    let newMember = new Member(reqMember);
 
     const memberId = req.params.id;
 

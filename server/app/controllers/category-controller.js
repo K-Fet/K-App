@@ -1,6 +1,7 @@
 const categoryService = require('../services/category-service');
-const { Category } = require('../models/category');
-const { checkStructure, createUserError } = require('../../utils');
+const { Category } = require('../models');
+const { CategorySchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the categories from the database.
@@ -24,18 +25,14 @@ async function getAllCategories(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createCategory(req, res) {
+    const schema = CategorySchema.requiredKeys(
+        'name'
+    );
 
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
-    let newCategory = new Category({
-        name: req.body.name,
-        description: req.body.description,
-    });
+    let newCategory = new Category(req.body);
 
     newCategory = await categoryService.createCategory(newCategory);
 
@@ -67,19 +64,12 @@ async function getCategoryById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateCategory(req, res) {
+    const schema = CategorySchema.min(1);
 
-    // FIXME We should check the type of each provided field, instead of just the presence
-    if (!checkStructure(req.body, ['name', 'description'])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [\'name\', \'description\']'
-        );
-    }
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
 
-    let newCategory = new Category({
-        name: req.body.name,
-        description: req.body.description,
-    });
+    let newCategory = new Category(req.body);
 
     const categoryId = req.params.id;
 
