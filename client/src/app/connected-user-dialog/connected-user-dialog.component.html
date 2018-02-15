@@ -1,7 +1,6 @@
 <mat-dialog-content fxLayout="column">
-	<p>Informations ...</p>
     <div *ngIf="user?.barman">
-		<p>Barman {{user.barman.nickname}}</p>
+		<p>Compte Barman {{user.barman.nickname}}</p>
 		<!-- TODO add more information -->
     </div>
     <div *ngIf="user?.specialAccount">
@@ -9,6 +8,3 @@
 		<!-- TODO add more information -->
     </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-	<button mat-button mat-dialog-close>Close</button>
-</mat-dialog-actions>

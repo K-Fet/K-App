@@ -4,21 +4,27 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import { Barman, SpecialAccount } from '../_models/index';
+import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
+import { connect } from 'tls';
 
 @Injectable()
 export class LoginService {
 
     currentUser: {
         username: String,
+        createdAt: Date,
         accountType: String,
-        id: Number
+        barman?: Barman,
+        specialAccount?: SpecialAccount
     };
+
+    isAuthenticated: Boolean;
 
     constructor(private http: HttpClient) { }
 
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
+            .do(jwt => { this.me(); })
             .catch(this.handleError);
     }
 
@@ -30,15 +36,24 @@ export class LoginService {
         if (this.currentUser) {
             return Observable.of(this.currentUser);
         } else {
-            return this.http.get<UserData>('/api/auth/me')
-            .do(userData => {
-                if (userData.barman) {
-                    this.currentUser.accountType = 'Barman';
-                    this.currentUser.username = userData.barman.connection.username;
-                } else if (userData.specialAccount) {
-                    this.currentUser.accountType = 'Special';
-                    this.currentUser.username = userData.specialAccount.connection.username;
+            return this.http.get<ConnectedUser>('/api/auth/me')
+            .do(connectedUser => {
+                if (connectedUser.barman) {
+                    this.currentUser = {
+                        accountType: 'Barman',
+                        username:  connectedUser.barman.connection.username,
+                        createdAt: connectedUser.barman.createdAt,
+                        barman: connectedUser.barman,
+                    };
+                } else if (connectedUser.specialAccount) {
+                    this.currentUser = {
+                        accountType: 'SpeacialAccount',
+                        username:  connectedUser.specialAccount.connection.username,
+                        createdAt: connectedUser.specialAccount.createdAt,
+                        specialAccount: connectedUser.specialAccount,
+                    };
                 }
+                return connectedUser;
             })
             .catch(this.handleError);
         }
@@ -69,9 +84,4 @@ export class LoginService {
         }
         return Observable.throw(errorMessage);
     }
-}
-
-interface UserData {
-    barman: Barman;
-    specialAccount: SpecialAccount;
 }
