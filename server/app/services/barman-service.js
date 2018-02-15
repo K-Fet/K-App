@@ -31,21 +31,17 @@ async function createBarman(newBarman, _embedded) {
 
         // If connection information is changed
         if (newBarman.connection) {
-            const co = await newBarman.getConnection();
+            await newBarman.getConnection();
 
             const coData = {
                 username: newBarman.connection.username,
                 password: hash(newBarman.connection.password)
             };
 
-            // If there is no connection yet, create one
-            if (!co) {
-                await newBarman.createConnection(cleanObject(coData), { transaction });
-            } else {
-                await co.update(cleanObject(coData), { transaction });
-            }
+            await newBarman.createConnection(cleanObject(coData), { transaction });
+
         }
-    }catch (err) {
+    } catch (err) {
         logger.warn('Barman service: Error while creating barman', err);
         await transaction.rollback();
         throw createServerError('ServerError', 'Error while creating barman');
@@ -67,28 +63,28 @@ async function createBarman(newBarman, _embedded) {
                 await newBarman.setGodFather(wantedGodFather, { transaction });
 
             } else if (associationKey === 'kommissions') {
-                try {
-                    if (value.add && value.add.length > 0) {
+                if (value.add && value.add.length > 0) {
+                    try {
                         await newBarman.addKommissions(value.add, { transaction });
+                    } catch (err) {
+                        await transaction.rollback();
+                        throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
                     }
-                    if (value.remove && value.remove.length > 0) {
-                        throw createUserError('No Removed value allowed', 'When creating a barman, impossible to add removed value');
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+                }
+                if (value.remove && value.remove.length > 0) {
+                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
                 }
             } else if (associationKey === 'roles') {
-                try {
-                    if (value.add && value.add.length > 0) {
+                if (value.add && value.add.length > 0) {
+                    try {
                         await newBarman.addRoles(value.add, { transaction });
+                    } catch (err) {
+                        await transaction.rollback();
+                        throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
                     }
-                    if (value.remove && value.remove.length > 0) {
-                        throw createUserError('No Removed value allowed', 'When creating a barman, impossible to add removed value');
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+                }
+                if (value.remove && value.remove.length > 0) {
+                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
                 }
             } else {
                 throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
@@ -275,17 +271,29 @@ async function deleteBarmanById(barmanId) {
  * Get the services of a barman
  *
  * @param barmanId {number} barman id
+ * @param startDate {Date} starting date for services
+ * @param endDate {Date} ending date for services
  * @returns {Promise<Array>} Barmen's services
  */
-async function getBarmanServices(barmanId) {
+async function getBarmanServices(barmanId, startDate, endDate) {
 
     logger.verbose('Barman service: retreive services of the barman ', barmanId );
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+    const Op = sequelize.Op;
+    const services = await barman.getServices({
+        where: {
+            startAt : {
+                [Op.gte]: startDate,
+            }, endAt : {
+                [Op.lte]: endDate
+            }
+        }
+    });
 
-    return await barman.getServices();
+    return services;
 }
 
 /**
@@ -293,7 +301,7 @@ async function getBarmanServices(barmanId) {
 *
 * @param barmanID {number} barman id
 * @param serviceId {number<Array>} service ids
-* @returns {Promise<Service|Errors.ValidationError>} The created service
+* @returns {Promise<Errors.ValidationError>} an error or nothing
 */
 async function createServiceBarman(barmanId, servicesId) {
 
@@ -303,12 +311,11 @@ async function createServiceBarman(barmanId, servicesId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    for (const Id of servicesId) {
-        const service = await Service.findById(Id);
+    for (const id of servicesId) {
+        const service = await Service.findById(id);
         if (!service) throw createUserError('UnknownService', 'This service does not exist');
         await barman.addService(servicesId);
     }
-    return 200;
 }
 
 /**
@@ -317,7 +324,7 @@ async function createServiceBarman(barmanId, servicesId) {
 * @param barmanId {number} barman id
 * @param serviceId {number} service id
 *
-* @returns {Promise<Service>} The deleted service
+* @returns {Promise<Errors.ValidationError>} an error or nothing
 */
 async function deleteServiceBarman(barmanId, servicesId) {
 
@@ -325,8 +332,8 @@ async function deleteServiceBarman(barmanId, servicesId) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    for (const Id of servicesId) {
-        const service = await Service.findById(Id);
+    for (const id of servicesId) {
+        const service = await Service.findById(id);
         if (!service) throw createUserError('UnknownService', 'This service does not exist');
         await service.destroy({
             include: [{
@@ -335,8 +342,6 @@ async function deleteServiceBarman(barmanId, servicesId) {
             }]
         });
     }
-
-    return 200;
 }
 
 module.exports = {

@@ -121,7 +121,14 @@ async function deleteBarman(req, res) {
 async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
-    const services = await barmanService.getBarmanServices(barmanId);
+    // Le passage en format ISO est en UTC donc on rajoute une heure pour être en UTC+1
+    var startDate = new Date(req.query.start*1000 + (1 * 60 * 60 * 1000));
+    var endDate = new Date(req.query.end*1000 + (1 * 60 * 60 * 1000));
+
+    startDate = startDate.toISOString();
+    endDate = endDate.toISOString();
+
+    const services = await barmanService.getBarmanServices(barmanId, startDate, endDate);
 
     res.json(services);
 }
