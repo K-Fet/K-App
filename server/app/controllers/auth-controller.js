@@ -58,8 +58,22 @@ async function logout(req, res) {
     res.send({});
 }
 
+/**
+ * Send information about the connected user.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<{ barman: Barman, specialAccount: SpecialAccount}>} The connected user's information
+ */
+async function me(req, res) {
+    const user = await authService.me(req.user.jit);
+
+    res.send(user);
+}
+
 module.exports = {
     login,
     logout,
-    refresh
+    refresh,
+    me
 };

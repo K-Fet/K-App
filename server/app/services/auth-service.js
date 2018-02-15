@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 const { jwtSecret, expirationDuration } = require('../../config/jwt');
 const { verify, createUserError } = require('../../utils');
 
-const { ConnectionInformation, JWT } = require('../models');
+const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role } = require('../models');
 
 /**
  * Check if a token is revoked or not.
@@ -110,10 +110,59 @@ async function logout(tokenId) {
     return token;
 }
 
+/**
+ * Logout a member by revoking his token.
+ *
+ * @param tokenId Token's JIT
+ * @return {Promise.<JWT>} The deleted token
+ * @throws An error if the token could not be find.
+ */
+async function me(tokenId) {
+    const token = await JWT.findById(tokenId);
+
+    const barman = await Barman.findOne({
+        include: [{
+            model: ConnectionInformation,
+            as: 'connection',
+            include: [{
+                model: JWT,
+                as: 'jwt',
+                where: {id: token.id},
+                attributes: []
+            }],
+            attributes: ['username']
+        }, {
+            model: Kommission,
+            as: 'kommissions'
+        }, {
+            model: Role,
+            as: 'roles'
+        }]
+    });
+
+    const specialAccount = await SpecialAccount.findOne({
+        include: [{
+            model: ConnectionInformation,
+            as: 'connection',
+            include: [{
+                model: JWT,
+                as: 'jwt',
+                where: {id: token.id},
+                attributes: []
+            }],
+            attributes: ['username'],
+        }],
+        attributes: ['id', 'createdAt', 'description', 'updatedAt']
+    });
+
+    return { barman: barman, specialAccount: specialAccount };
+}
+
 
 module.exports = {
     isTokenRevoked,
     login,
     refresh,
-    logout
+    logout,
+    me
 };
