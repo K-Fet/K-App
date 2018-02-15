@@ -74,9 +74,20 @@ async function getServiceById(req, res) {
 async function updateService(req, res) {
     const schema = ServiceSchema.min(1);
 
+<<<<<<< HEAD
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details.message);
 
+=======
+    // FIXME We should check the type of each provided field, instead of just the presence
+    /*if (!checkStructure(req.body, ['startAt', 'endAt', 'nbMax', 'category'])) {
+        throw createUserError(
+            'BadRequest',
+            'The body has missing properties, needed: [\'startAt\', \'endAt\', \'nbMax\', \'category\']'
+        );
+    }
+*/
+>>>>>>> ajout de CREATE et DELETE Services
     let newService = new Service({
         ...req.body,
         _embedded: undefined  // Remove the only external object
