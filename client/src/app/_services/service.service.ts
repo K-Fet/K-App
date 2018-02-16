@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Service } from '../_models/index';
+import { Service, Barman } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
@@ -19,8 +19,12 @@ export class ServiceService {
             }}).catch(this.handleError);
     }
 
-    getById(id: number) {
+    getById(id: Number) {
         return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
+    }
+
+    getBarmen(id: Number) {
+        return this.http.get<Barman[]>('/api/services/' + id + '/barmen').catch(this.handleError);
     }
 
     create(services: Service[]) {
@@ -31,7 +35,7 @@ export class ServiceService {
         return this.http.put('/api/services/' + service.id, service).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete('/api/services/' + id).catch(this.handleError);
     }
 
