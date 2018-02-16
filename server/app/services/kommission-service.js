@@ -38,17 +38,19 @@ async function getKommissionById(kommissionId) {
     
     logger.verbose('Kommission service: get kommission by id %d', kommissionId);
     
-    const kommission = await Kommission.findOne({where: {id: kommissionId}, 
-        include: [{
-            model: Barman, through: {
-                attributes:['id', 'firstname', 'lastname', 'nickname', 'facebook', 'dateofBirth', 'flow']
+    const kommission = await Kommission.findbyId(kommissionId, {
+        include: [
+            {
+                model: Barman,
+                as: 'barmen'
             }
-        }]
+        ]
     });
+    
     
     if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
-    return kommission;
+    return await kommission;
 }
     
     
@@ -61,21 +63,66 @@ async function getKommissionById(kommissionId) {
      *
      * @param kommissionId {number} kommission id
      * @param updatedKommission {Kommission} Updated kommission, constructed from the request.
+     * @param _embedded {Object} Object containing associations to update, see swagger for more information.
      * @return {Promise<Kommission>} The updated kommission
      */
-async function updateKommission(kommissionId, updatedKommission) {
+async function updateKommission(kommissionId, updatedKommission, _embedded) {
     
-    const currentKommission = await Kommission.findById(kommissionId);
+    const currentKommission = await Kommission.findById(kommissionId, {
+        include: [
+            {
+                model: Barman,
+                as: 'barmen'
+            }
+        ]
+    });
     
     if (!currentKommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
-    logger.verbose('Kommission service: updating kommission named %s %s', currentKommission.firstName, currentKommission.lastName);
+    logger.verbose('Kommission service: updating kommission named %s %s', currentKommission.id, currentKommission.name);
     
-    return await currentKommission.update({
-        name: updatedKommission.name,
-        description: updatedKommission.description,
+    const transaction = await sequelize.transaction();
+
+    try{
+        await currentKommission.update(cleanObject({
+            name: updatedKommission.name,
+            description: description.name
+        }), { transaction });
+    } catch (err) {
+        logger.warn('Kommission Service : error while updating a kommission', err);
+        await transaction.rollback();
+        throw createServerError('Server Error', 'Error while updating a kommission');
+    };
+
+    //Associations
+
+    if(_embedded){
+        for( const associationKey of Object.keys(_embedded)){
+
+            const value = _embedded[associationKey];
             
-    });
+            if(value === 'barmen'){
+                try{
+                    if(value.add && value.add.length > 0){
+                        await currentKommission.addBarmans(value.add, { transaction });
+                    }
+                    if(value.remove && value.remove.length >0){
+                        await currentKommission.removeBarmans(value.remove, { transaction });
+                    }
+                } catch ( err ){
+                    await transaction.rollback();
+                    throw createUserError('UnknownBarman','Unable to associate kommission with provided barman')
+                }
+            }
+            else{
+                await transaction.rollback();
+                throw createUserError('BadRequest',`Unknown association '${associationKey}, aborting!`);
+            }
+        }  
+    }
+
+    await transaction.commit();
+    return currentKommission;
 }
     
 /**
