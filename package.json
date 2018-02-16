@@ -79,6 +79,7 @@
         "collectCoverageFrom": [
             "<rootDir>/server/**/*.js"
         ],
+        "testRegex": "(/__tests__/.*|/server/tests/.*)\\.jsx?$",
         "coveragePathIgnorePatterns": [
             "app/routes/",
             "app/models/"

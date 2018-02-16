@@ -1,20 +1,12 @@
 const path = require('path');
-const { SequelizeMocking } = require('sequelize-mocking');
-const sequelize = require('../../../db');
-
+const { sequelizeMock } = require('../../tests/int/utils/sequelize-mock');
 const { getAllMembers } = require('../member-service');
 
-describe('Member service Test', () => {
-    let mockedInstance = null;
+describe('Member service Test', async () => {
 
-    beforeEach(async () => {
-        mockedInstance = await SequelizeMocking.createAndLoadFixtureFile(
-            sequelize,
-            path.resolve(path.join(__dirname, '../../tests/resources/fake-members-database.json'))
-        );
-    });
-
-    afterEach(() => SequelizeMocking.restore(mockedInstance));
+    await sequelizeMock(
+        path.resolve(path.join(__dirname, '../../../tests/resources/fake-members-database.json'))
+    );
 
 
     test('should return members in array', async () => {
