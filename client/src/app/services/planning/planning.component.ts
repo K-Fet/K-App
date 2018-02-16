@@ -31,8 +31,9 @@ export class PlanningComponent implements OnInit {
         const end = new Date(day.date.setHours(23, 59, 0, 0));
         this.serviceService.get(start, end).subscribe(services => {
             this.services = services.map(service => {
-                return this.serviceService.getById(service.id).subscribe(serviceExtended => {
-                    return serviceExtended;
+                return this.serviceService.getBarmen(service.id).subscribe(barmen => {
+                    service.barmen = barmen;
+                    return service;
                 });
             });
         });
