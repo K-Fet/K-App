@@ -19,12 +19,47 @@ async function getAllKommissions() {
  * Create a kommission.
  *
  * @param newKommission {Kommission} partial kommission
+ * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Kommission|Errors.ValidationError>} The created kommission with its id
  */
-async function createKommission(newKommission) {
+async function createKommission(newKommission, _embedded) {
     
-    logger.verbose('Kommission service: creating a new kommission named %s %s', newKommission.firstName, newKommission.lastName);
-    return await newKommission.save();
+    logger.verbose('Kommission service: creating a new kommission named %s', newKommission.name);
+  
+    const transaction = await sequelize.transaction();
+    try {
+        await newKommission.save({ transaction })
+    } catch ( err ) {
+        logger.warn('Barman service: Error while creating barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError','Error while creating barman');
+    }
+
+    //Associations
+    if(_embedded){
+        for(const associationKey of Object.keys(_embedded)){
+            const value = _embedded[associationKey];
+
+            if(associationKey === 'barmen'){
+                if(value.add && value.add.length >0 ){
+                    try{
+                        await newKommission.addBarmans(value.add, { transaction });
+                    } catch (err) {
+                        await transaction.rollback();
+                        throw createUserError('UnknownKommission','Unable to associate barman with provided kommissions');
+                    }
+                }
+                if(value.remove && value.remove.length >0 ) {
+                    throw createUserError('RemovedValueProhibited','When creating a kommission, impossible to add removed value');
+                }
+            } else {
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+            }
+        }
+    }
+
+    await transaction.commit();
+    return newKommission;
 }
     
 
@@ -38,7 +73,7 @@ async function getKommissionById(kommissionId) {
     
     logger.verbose('Kommission service: get kommission by id %d', kommissionId);
     
-    const kommission = await Kommission.findbyId(kommissionId, {
+    const kommission = await Kommission.findById(kommissionId, {
         include: [
             {
                 model: Barman,
@@ -50,7 +85,7 @@ async function getKommissionById(kommissionId) {
     
     if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
     
-    return await kommission;
+    return kommission;
 }
     
     
