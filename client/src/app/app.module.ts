@@ -52,6 +52,13 @@ import { AuthGuard } from './_guards/auth.guard';
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 
+// Date
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr, 'fr');
+
 // Modules
 import { MaterialModule } from './_helpers/material.module';
 
