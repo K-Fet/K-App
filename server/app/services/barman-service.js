@@ -1,6 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { ConnectionInformation, Barman, Kommission, Role, Service } = require('../models');
+const { Op } = require('sequelize');
+const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
 const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
 
 /**
@@ -282,7 +283,6 @@ async function getBarmanServices(barmanId, startDate, endDate) {
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
-    const Op = sequelize.Op;
     const services = await barman.getServices({
         where: {
             startAt : {
@@ -307,15 +307,20 @@ async function createServiceBarman(barmanId, servicesId) {
 
     logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
 
+    const transaction = await sequelize.transaction();
+
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    for (const id of servicesId) {
-        const service = await Service.findById(id);
-        if (!service) throw createUserError('UnknownService', 'This service does not exist');
-        await barman.addService(servicesId);
+    try {
+        await barman.addService(servicesId, {transaction});
+    } catch (err) {
+        await transaction.rollback();
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
     }
+
+    await transaction.commit();
 }
 
 /**
@@ -328,20 +333,22 @@ async function createServiceBarman(barmanId, servicesId) {
 */
 async function deleteServiceBarman(barmanId, servicesId) {
 
+    logger.verbose('Barman service: delete a Service for the barman ', barmanId, servicesId);
+
+    const transaction = await sequelize.transaction();
+
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    for (const id of servicesId) {
-        const service = await Service.findById(id);
-        if (!service) throw createUserError('UnknownService', 'This service does not exist');
-        await service.destroy({
-            include: [{
-                model: Barman,
-                where: {id: barmanId}
-            }]
-        });
+    try {
+        await barman.removeServices(servicesId, {transaction});
+    } catch (err) {
+        await transaction.rollback();
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
     }
+
+    await transaction.commit();
 }
 
 module.exports = {
