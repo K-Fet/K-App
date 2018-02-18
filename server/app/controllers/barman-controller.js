@@ -1,7 +1,8 @@
 const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
-const { BarmanSchema } = require('../models/schemas');
-const { checkStructure, createUserError } = require('../../utils');
+const { BarmanSchema, AssociationChangesSchema } = require('../models/schemas');
+const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all the barmen from the database.
@@ -36,7 +37,7 @@ async function createBarman(req, res) {
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details.message);
-    
+
     const newUser = req.body;
 
     let newBarman = new Barman({
@@ -120,10 +121,10 @@ async function deleteBarman(req, res) {
 async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
-    // Le passage en format ISO est en UTC donc on rajoute une heure pour être en UTC+1
-    let startDate = new Date(req.query.start + (1 * 60 * 60 * 1000));
-    let endDate = new Date(req.query.end + (1 * 60 * 60 * 1000));
-
+    // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
+    // I use a + to convert the param from string to int
+    let startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
+    let endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
     startDate = startDate.toISOString();
     endDate = endDate.toISOString();
 
@@ -142,12 +143,10 @@ async function getServicesBarman(req, res) {
 async function createServiceBarman(req, res) {
     const barmanId = req.params.id;
 
-    if (!checkStructure(req.body, [ ])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [ ]'
-        );
-    }
+    const schema = Joi.array().items(Joi.number().integer().required()).required();
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', 'The body is missing properties');
 
     const servicesId = req.body;
 
@@ -167,12 +166,10 @@ async function deleteServiceBarman(req, res) {
 
     const barmanId = req.params.id;
 
-    if (!checkStructure(req.body, [ ])) {
-        throw createUserError(
-            'BadRequest',
-            'The body has missing properties, needed: [ ]'
-        );
-    }
+    const schema = Joi.array().items(Joi.number().integer().required()).required();
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', 'The body is missing properties');
 
     const servicesId = req.body;
 
