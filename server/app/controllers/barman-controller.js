@@ -42,7 +42,6 @@ async function createBarman(req, res) {
     let newBarman = new Barman({
         firstName: newUser.firstName,
         lastName: newUser.lastName,
-        connection: newUser.connection,
         nickname: newUser.nickname,
         facebook: newUser.facebook,
         dateOfBirth: newUser.dateOfBirth,
@@ -50,7 +49,7 @@ async function createBarman(req, res) {
         active: newUser.active
     });
 
-    newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
+    newBarman = await barmanService.createBarman(newBarman, newUser.connection, newUser._embedded);
 
     res.json(newBarman);
 }
@@ -122,8 +121,8 @@ async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
     // Le passage en format ISO est en UTC donc on rajoute une heure pour être en UTC+1
-    var startDate = new Date(req.query.start*1000 + (1 * 60 * 60 * 1000));
-    var endDate = new Date(req.query.end*1000 + (1 * 60 * 60 * 1000));
+    let startDate = new Date(req.query.start + (1 * 60 * 60 * 1000));
+    let endDate = new Date(req.query.end + (1 * 60 * 60 * 1000));
 
     startDate = startDate.toISOString();
     endDate = endDate.toISOString();

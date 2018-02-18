@@ -22,7 +22,7 @@ async function getAllBarmen() {
  * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Barman>} The created barman with its id
  */
-async function createBarman(newBarman, _embedded) {
+async function createBarman(newBarman, connection, _embedded) {
 
     logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
 
@@ -30,18 +30,11 @@ async function createBarman(newBarman, _embedded) {
     try {
         await newBarman.save({ transaction });
 
-        // If connection information is changed
-        if (newBarman.connection) {
-            await newBarman.getConnection();
-
-            const coData = {
-                username: newBarman.connection.username,
-                password: hash(newBarman.connection.password)
-            };
-
-            await newBarman.createConnection(cleanObject(coData), { transaction });
-
-        }
+        const coData = {
+            username: connection.username,
+            password: await hash(connection.password)
+        };
+        await newBarman.createConnection(cleanObject(coData), { transaction });
     } catch (err) {
         logger.warn('Barman service: Error while creating barman', err);
         await transaction.rollback();
@@ -183,7 +176,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
             const coData = {
                 username: updatedBarman.connection.username,
-                password: hash(updatedBarman.connection.password)
+                password: await hash(updatedBarman.connection.password)
             };
 
             // If there is no connection yet, create one
