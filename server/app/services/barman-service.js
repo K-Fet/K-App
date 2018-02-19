@@ -1,5 +1,6 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
+const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
 const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
 
@@ -18,12 +19,75 @@ async function getAllBarmen() {
  * Create a Barman.
  *
  * @param newBarman {Barman} partial member
- * @return {Promise<Barman|Errors.ValidationError>} The created barman with its id
+ * @param _embedded {Object} Object containing associations to update, see swagger for more information.
+ * @return {Promise<Barman>} The created barman with its id
  */
-async function createBarman(newBarman) {
+async function createBarman(newBarman, connection, _embedded) {
 
     logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
-    return await newBarman.save();
+
+    const transaction = await sequelize.transaction();
+    try {
+        await newBarman.save({ transaction });
+
+        const coData = {
+            username: connection.username,
+            password: await hash(connection.password)
+        };
+        await newBarman.createConnection(cleanObject(coData), { transaction });
+    } catch (err) {
+        logger.warn('Barman service: Error while creating barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while creating barman');
+    }
+
+    // Associations
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            if (associationKey === 'godFather') {
+                const wantedGodFather = await Barman.findById(value);
+
+                if (!wantedGodFather) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                }
+
+                await newBarman.setGodFather(wantedGodFather, { transaction });
+
+            } else if (associationKey === 'kommissions') {
+                if (value.add && value.add.length > 0) {
+                    try {
+                        await newBarman.addKommissions(value.add, { transaction });
+                    } catch (err) {
+                        await transaction.rollback();
+                        throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
+                    }
+                }
+                if (value.remove && value.remove.length > 0) {
+                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
+                }
+            } else if (associationKey === 'roles') {
+                if (value.add && value.add.length > 0) {
+                    try {
+                        await newBarman.addRoles(value.add, { transaction });
+                    } catch (err) {
+                        await transaction.rollback();
+                        throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
+                    }
+                }
+                if (value.remove && value.remove.length > 0) {
+                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
+                }
+            } else {
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+            }
+        }
+    }
+
+    await transaction.commit();
+    return newBarman;
 }
 
 /**
@@ -112,7 +176,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
             const coData = {
                 username: updatedBarman.connection.username,
-                password: hash(updatedBarman.connection.password)
+                password: await hash(updatedBarman.connection.password)
             };
 
             // If there is no connection yet, create one
@@ -197,10 +261,96 @@ async function deleteBarmanById(barmanId) {
     return barman;
 }
 
+/**
+ * Get the services of a barman
+ *
+ * @param barmanId {number} barman id
+ * @param startDate {Date} starting date for services
+ * @param endDate {Date} ending date for services
+ * @returns {Promise<Array>} Barmen's services
+ */
+async function getBarmanServices(barmanId, startDate, endDate) {
+
+    logger.verbose('Barman service: retreive services of the barman ', barmanId );
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+    const services = await barman.getServices({
+        where: {
+            startAt : {
+                [Op.gte]: startDate,
+            }, endAt : {
+                [Op.lte]: endDate
+            }
+        }
+    });
+
+    return services;
+}
+
+/**
+* Create a service for a barman
+*
+* @param barmanID {number} barman id
+* @param serviceId {number<Array>} service ids
+* @returns {Promise<Errors.ValidationError>} an error or nothing
+*/
+async function createServiceBarman(barmanId, servicesId) {
+
+    logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
+
+    const transaction = await sequelize.transaction();
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    try {
+        await barman.addService(servicesId, {transaction});
+    } catch (err) {
+        await transaction.rollback();
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+    }
+
+    await transaction.commit();
+}
+
+/**
+* Delete a Service of a barman
+*
+* @param barmanId {number} barman id
+* @param serviceId {number} service id
+*
+* @returns {Promise<Errors.ValidationError>} an error or nothing
+*/
+async function deleteServiceBarman(barmanId, servicesId) {
+
+    logger.verbose('Barman service: delete a Service for the barman ', barmanId, servicesId);
+
+    const transaction = await sequelize.transaction();
+
+    const barman = await Barman.findById(barmanId);
+
+    if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    try {
+        await barman.removeServices(servicesId, {transaction});
+    } catch (err) {
+        await transaction.rollback();
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+    }
+
+    await transaction.commit();
+}
+
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     deleteBarmanById,
     updateBarmanById,
+    getBarmanServices,
+    createServiceBarman,
+    deleteServiceBarman
 };

@@ -2,6 +2,7 @@ const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all the barmen from the database.
@@ -29,25 +30,28 @@ async function createBarman(req, res) {
         'lastName',
         'connection',
         'connection.username',
+        'connection.password',
         'nickname',
         'dateOfBirth',
         'flow'
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
+
+    const newUser = req.body;
 
     let newBarman = new Barman({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        nickname: req.body.nickname,
-        facebook: req.body.facebook,
-        dateOfBirth: req.body.dateOfBirth,
-        flow: req.body.flow,
-        active: req.body.active
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        nickname: newUser.nickname,
+        facebook: newUser.facebook,
+        dateOfBirth: newUser.dateOfBirth,
+        flow: newUser.flow,
+        active: newUser.active
     });
 
-    newBarman = await barmanService.createBarman(newBarman);
+    newBarman = await barmanService.createBarman(newBarman, newUser.connection, newUser._embedded);
 
     res.json(newBarman);
 }
@@ -78,7 +82,7 @@ async function updateBarman(req, res) {
     const newUser = req.body;
 
     const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newBarman = new Barman({
         ...newUser,
@@ -108,10 +112,87 @@ async function deleteBarman(req, res) {
 
 }
 
+/**
+ * Get the services of a barman
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function getServicesBarman(req, res) {
+    const barmanId = req.params.id;
+
+    let startDate;
+    let endDate;
+
+    if (req.query.start && req.query.end) {
+        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
+        // I use a + to convert the param from string to int
+        startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
+        endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
+        startDate = startDate.toISOString();
+        endDate = endDate.toISOString();
+    } else {
+        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
+    }
+
+    const services = await barmanService.getBarmanServices(barmanId, startDate, endDate);
+
+    res.json(services);
+}
+
+/**
+* Create a Service
+*
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function createServiceBarman(req, res) {
+    const barmanId = req.params.id;
+
+    const schema = Joi.array().items(Joi.number().integer().required()).required();
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+
+    const servicesId = req.body;
+
+    await barmanService.createServiceBarman(barmanId, servicesId);
+
+    res.sendStatus(200);
+}
+
+/**
+* Delete a Service of a barman
+*
+* @param req Request
+* @param res Response
+* @return {Promise.<void>} Nothing
+*/
+async function deleteServiceBarman(req, res) {
+
+    const barmanId = req.params.id;
+
+    const schema = Joi.array().items(Joi.number().integer().required()).required();
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+
+    const servicesId = req.body;
+
+    await barmanService.deleteServiceBarman(barmanId, servicesId);
+
+    res.sendStatus(200);
+}
+
 module.exports = {
     getAllBarmen,
     createBarman,
     getBarmanById,
     updateBarman,
-    deleteBarman
+    deleteBarman,
+    getServicesBarman,
+    createServiceBarman,
+    deleteServiceBarman
 };
