@@ -31,7 +31,7 @@ export class RoleService {
         return this.http.put('/api/roles/' + role.id, role).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete('/api/roles/' + id).catch(this.handleError);
     }
 

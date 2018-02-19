@@ -28,7 +28,7 @@ export class MemberService {
         return this.http.put('/api/members/' + member.id, {code: code, member: member}).catch(this.handleError);
     }
 
-    delete(id: number, code: Number) {
+    delete(id: Number, code: Number) {
         return this.http.delete('/api/members/' + id).catch(this.handleError);
     }
 

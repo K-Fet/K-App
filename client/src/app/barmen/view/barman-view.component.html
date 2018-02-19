@@ -43,12 +43,12 @@
                     <p mat-line>{{barman?.godFather?.nickname}}</p>
                 </mat-list-item>
                 <mat-divider></mat-divider>
-                <h3 mat-subheader>Kommission</h3>
+                <h3 mat-subheader>Kommission(s)</h3>
                 <mat-list-item *ngFor="let kommission of barman.kommissions">
                     <p mat-line>{{kommission.name}} depuis le {{kommission.KommissionWrapper.createdAt |  date:'d MMM y'}}</p>
                 </mat-list-item>
                 <mat-divider></mat-divider>
-                <h3 mat-subheader>Roles</h3>
+                <h3 mat-subheader>Role(s)</h3>
                 <mat-list-item *ngFor="let role of barman.roles">
                     <p mat-line>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
                 </mat-list-item>
