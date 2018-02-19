@@ -81,7 +81,7 @@ class Barman extends Model {
 }
 
 const BarmanSchema = Joi.object().keys({
-    firstname: Joi.string(),
+    firstName: Joi.string(),
     lastName: Joi.string(),
     connection: ConnectionInformationSchema,
     active: Joi.boolean(),

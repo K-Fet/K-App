@@ -54,7 +54,7 @@ router.use((err, req, res, next) => {
         });
     }
 
-    logger.error('Server error for the request %s %s', req.method, req.path, err);
+    logger.error('Server error for the request %s %s %s', req.method, req.path, err);
     return res.status(500).json({
         error: 'ServerError',
         message: 'A problem has occurred, try again later'

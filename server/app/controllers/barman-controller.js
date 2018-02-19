@@ -1,6 +1,6 @@
 const barmanService = require('../services/barman-service');
 const { Barman } = require('../models');
-const { BarmanSchema, AssociationChangesSchema } = require('../models/schemas');
+const { BarmanSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
 const Joi = require('joi');
 
@@ -30,13 +30,14 @@ async function createBarman(req, res) {
         'lastName',
         'connection',
         'connection.username',
+        'connection.password',
         'nickname',
         'dateOfBirth',
         'flow'
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     const newUser = req.body;
 
@@ -81,7 +82,7 @@ async function updateBarman(req, res) {
     const newUser = req.body;
 
     const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newBarman = new Barman({
         ...newUser,
@@ -121,12 +122,19 @@ async function deleteBarman(req, res) {
 async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
-    // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
-    // I use a + to convert the param from string to int
-    let startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
-    let endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
-    startDate = startDate.toISOString();
-    endDate = endDate.toISOString();
+    let startDate;
+    let endDate;
+
+    if (req.query.start && req.query.end) {
+        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
+        // I use a + to convert the param from string to int
+        startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
+        endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
+        startDate = startDate.toISOString();
+        endDate = endDate.toISOString();
+    } else {
+        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
+    }
 
     const services = await barmanService.getBarmanServices(barmanId, startDate, endDate);
 
