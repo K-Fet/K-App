@@ -92,33 +92,35 @@ export class BarmanNewComponent implements OnInit {
         this.barman.connection = {};
         Object.keys(this.barmanForm.controls).forEach(key => {
             let add: Number[] = [];
-            switch (key) {
-                case 'username':
-                    this.barman.connection.username = this.barmanForm.controls.username.value;
-                    break;
-                case 'password':
-                    this.barman.connection.password = this.barmanForm.controls.password.value;
-                    break;
-                case 'godFather':
-                    this.barman._embedded.godFather = this.selectedGodFather;
-                    break;
-                case 'kommissions':
-                    add = [];
-                    this.barmanForm.controls.kommissions.value.forEach(idKommission => {
-                        add.push(idKommission);
-                    });
-                    this.barman._embedded.kommissions = { add: add };
-                    break;
-                case 'roles':
-                    add = [];
-                    this.barmanForm.controls.roles.value.forEach(idRole => {
-                        add.push(idRole);
-                    });
-                    this.barman._embedded.roles = { add: add };
-                    break;
-                default:
-                    this.barman[key] = this.barmanForm.controls[key].value;
-                    break;
+            if (this.barmanForm.controls[key].value) {
+                switch (key) {
+                    case 'username':
+                        this.barman.connection.username = this.barmanForm.controls.username.value;
+                        break;
+                    case 'password':
+                        this.barman.connection.password = this.barmanForm.controls.password.value;
+                        break;
+                    case 'godFather':
+                        this.barman._embedded.godFather = this.selectedGodFather;
+                        break;
+                    case 'kommissions':
+                        add = [];
+                        this.barmanForm.controls.kommissions.value.forEach(idKommission => {
+                            add.push(idKommission);
+                        });
+                        this.barman._embedded.kommissions = { add: add };
+                        break;
+                    case 'roles':
+                        add = [];
+                        this.barmanForm.controls.roles.value.forEach(idRole => {
+                            add.push(idRole);
+                        });
+                        this.barman._embedded.roles = { add: add };
+                        break;
+                    default:
+                        this.barman[key] = this.barmanForm.controls[key].value;
+                        break;
+                }
             }
         });
     }

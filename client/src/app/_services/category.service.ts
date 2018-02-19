@@ -31,7 +31,7 @@ export class CategoryService {
         return this.http.put('/api/categories/' + category.id, category).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete('/api/categories/' + id).catch(this.handleError);
     }
 
