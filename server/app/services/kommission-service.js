@@ -1,7 +1,8 @@
 const logger = require('../../logger');
 const { Kommission } = require('../models/kommission');
 const { Barman } = require('../models/barman');
-const { createUserError } = require('../../utils');
+const { createUserError, createServerError, cleanObject } = require('../../utils');
+const sequelize = require('../../db');
 
 /**
  * Return all kommissions of the app.
@@ -28,29 +29,29 @@ async function createKommission(newKommission, _embedded) {
   
     const transaction = await sequelize.transaction();
     try {
-        await newKommission.save({ transaction })
+        await newKommission.save({ transaction });
     } catch ( err ) {
-        logger.warn('Barman service: Error while creating barman', err);
+        logger.warn('Kommission service: Error while creating kommission', err);
         await transaction.rollback();
-        throw createServerError('ServerError','Error while creating barman');
+        throw createServerError('ServerError', 'Error while creating kommission');
     }
 
     //Associations
-    if(_embedded){
-        for(const associationKey of Object.keys(_embedded)){
+    if(_embedded) {
+        for(const associationKey of Object.keys(_embedded)) {
             const value = _embedded[associationKey];
 
-            if(associationKey === 'barmen'){
-                if(value.add && value.add.length >0 ){
+            if(associationKey === 'barmen') {
+                if(value.add && value.add.length >0 ) {
                     try{
-                        await newKommission.addBarmans(value.add, { transaction });
+                        await newKommission.addBarmen(value.add, { transaction });
                     } catch (err) {
                         await transaction.rollback();
-                        throw createUserError('UnknownKommission','Unable to associate barman with provided kommissions');
+                        throw createUserError('UnknownBarman', 'Unable to associate kommission with provided barmen');
                     }
                 }
                 if(value.remove && value.remove.length >0 ) {
-                    throw createUserError('RemovedValueProhibited','When creating a kommission, impossible to add removed value');
+                    throw createUserError('RemovedValueProhibited', 'When creating a kommission, impossible to add removed value');
                 }
             } else {
                 throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
@@ -121,37 +122,37 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
     try{
         await currentKommission.update(cleanObject({
             name: updatedKommission.name,
-            description: description.name
+            description: updatedKommission.description
         }), { transaction });
     } catch (err) {
         logger.warn('Kommission Service : error while updating a kommission', err);
         await transaction.rollback();
         throw createServerError('Server Error', 'Error while updating a kommission');
-    };
+    }
 
     //Associations
 
-    if(_embedded){
-        for( const associationKey of Object.keys(_embedded)){
+    if(_embedded) {
+        for( const associationKey of Object.keys(_embedded)) {
 
             const value = _embedded[associationKey];
             
-            if(value === 'barmen'){
+            if(associationKey === 'barmen') {
                 try{
-                    if(value.add && value.add.length > 0){
-                        await currentKommission.addBarmans(value.add, { transaction });
+                    if(value.add && value.add.length > 0) {
+                        await currentKommission.addBarmen(value.add, { transaction });
                     }
-                    if(value.remove && value.remove.length >0){
-                        await currentKommission.removeBarmans(value.remove, { transaction });
+                    if(value.remove && value.remove.length >0) {
+                        await currentKommission.removeBarmen(value.remove, { transaction });
                     }
-                } catch ( err ){
+                } catch ( err ) {
                     await transaction.rollback();
-                    throw createUserError('UnknownBarman','Unable to associate kommission with provided barman')
+                    throw createUserError('UnknownBarman', 'Unable to associate kommission with provided barmen');
                 }
             }
             else{
                 await transaction.rollback();
-                throw createUserError('BadRequest',`Unknown association '${associationKey}, aborting!`);
+                throw createUserError('BadRequest', `Unknown association '${associationKey}, aborting!`);
             }
         }  
     }
