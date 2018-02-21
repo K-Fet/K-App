@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Barman } from '../_models/index';
+import { Barman, Service } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
@@ -18,6 +18,14 @@ export class BarmanService {
 
     getById(id: number) {
         return this.http.get<Barman>('/api/barmen/' + id).catch(this.handleError);
+    }
+
+    getServices(id: Number, start: Date, end: Date) {
+        return this.http.get<Service[]>('/api/barmen/' + id + '/services', {
+            params: {
+                start: start.getTime().toString(),
+                end: end.getTime().toString()
+            }}).catch(this.handleError);
     }
 
     create(barman: Barman) {
