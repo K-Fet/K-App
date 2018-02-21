@@ -24,6 +24,24 @@
             <section class="mat-typography">
                 <h3>Ajouter mes services ...</h3>
             </section>
+            <div>
+                <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
+                    <button mat-fab color="primary" (click)="day.active ? null : updateServicesDetails(day)"
+                    [color]="day.active ? 'accent' : 'primary'">
+                        {{day.name}}
+                    </button>
+                </div>
+            </div>
+            <div>
+                <mat-list>
+                    <mat-list-item *ngFor="let service of services">
+                        <h4 matLine>{{service.category.name}}</h4>
+                        <p matLine>
+                            <span *ngFor="let barman of service.barmen">{{barman.surname}}</span>
+                        </p>
+                    </mat-list-item>
+                </mat-list>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>
