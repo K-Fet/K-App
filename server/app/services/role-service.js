@@ -76,8 +76,7 @@ async function getRoleById(roleId) {
         include : [
             {
                 model : Barman,
-                as: 'barman'
-
+                as: 'barmen'
             }
         ]
     });
