@@ -104,7 +104,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
         include: [
             {
                 model : Barman,
-                as: 'barman'
+                as: 'barmen'
             }
         ]
     });
