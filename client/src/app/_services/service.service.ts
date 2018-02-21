@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Service } from '../_models/index';
+import { Service, Barman } from '../_models/index';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
@@ -11,8 +11,20 @@ export class ServiceService {
 
     constructor(private http: HttpClient) { }
 
-    getById(id: number) {
+    get(start: Date, end: Date) {
+        return this.http.get<Service[]>('/api/services', {
+            params: {
+              start: start.getTime().toString(),
+              end: end.getTime().toString()
+            }}).catch(this.handleError);
+    }
+
+    getById(id: Number) {
         return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
+    }
+
+    getBarmen(id: Number) {
+        return this.http.get<Barman[]>('/api/services/' + id + '/barmen').catch(this.handleError);
     }
 
     create(service: Service) {
@@ -23,7 +35,7 @@ export class ServiceService {
         return this.http.put('/api/services/' + service.id, service).catch(this.handleError);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete('/api/services/' + id).catch(this.handleError);
     }
 
@@ -32,7 +44,6 @@ export class ServiceService {
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
-            console.log(err);
             switch (err.error) {
                 case 'Not Found':
                     errorMessage = `Erreur, impossible d'ajouter un service`;
