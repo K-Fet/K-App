@@ -39,7 +39,7 @@ class Role extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Barman, { through: models.RoleWrapper, as: 'barman' });
+        this.belongsToMany(models.Barman, { through: models.RoleWrapper, as: 'barmen' });
     }
 }
 

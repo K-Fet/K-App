@@ -30,7 +30,7 @@ async function createRole(req, res) {
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
 
     let newRole = new Role({
