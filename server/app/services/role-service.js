@@ -28,7 +28,7 @@ async function createRole(newRole, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
-        await newRole.save({transaction});
+        await newRole.save({ transaction });
     } catch (err) {
         logger.warn('Role service: Error while creating role', err);
         await transaction.rollback();
