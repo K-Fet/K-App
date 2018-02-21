@@ -1,3 +1,29 @@
-<p>
-    Intial commit
-</p>
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="550px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Fixer mes services</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <section class="mat-typography">
+                <h3>Actuellement ...</h3>
+            </section>
+            <mat-list *ngIf="categories">
+                <mat-list-item *ngFor="let category of categories">
+                    <h4 matLine>{{category.name}}</h4>
+                    <p matLine *ngFor="let service of category.services">{{service.startingDate | date:'EEEE d LLLL':'':'fr'}} de 
+                        {{service.startingDate | date:'H'}}h à {{service.endingDate | date:'H'}}h
+                    </p>
+                </mat-list-item>
+            </mat-list>
+            <p *ngIf="!categories">Aucun service fixé pour la semaine ...</p>
+            <mat-divider></mat-divider>
+            <section class="mat-typography">
+                <h3>Ajouter mes services ...</h3>
+            </section>
+        </mat-card-content>
+    </mat-card>
+</div>
