@@ -43,7 +43,7 @@ async function createRole(newRole, _embedded) {
             if (associationKey === 'barmen') {
                 if (value.add && value.add.length > 0) {
                     try {
-                        await newRole.addBarman(value.add, { transaction });
+                        await newRole.addBarmen(value.add, { transaction });
                     } catch (err) {
                         await transaction.rollback();
                         throw createUserError('UnknownBarman', 'Unable to associate roles with provided barmen');
@@ -135,10 +135,10 @@ async function updateRole(roleId, updatedRole, _embedded) {
             if (associationKey === 'barmen') {
                 try {
                     if (value.add && value.add.length > 0) {
-                        await currentRole.addBarman(value.add, { transaction });
+                        await currentRole.addBarmen(value.add, { transaction });
                     }
                     if (value.remove && value.remove.length > 0) {
-                        await currentRole.removeBarman(value.remove, { transaction });
+                        await currentRole.removeBarmen(value.remove, { transaction });
                     }
                 } catch (err) {
                     await transaction.rollback();
