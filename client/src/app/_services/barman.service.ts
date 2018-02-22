@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Categories } from './index';
 
 @Injectable()
 export class BarmanService {
@@ -20,12 +21,49 @@ export class BarmanService {
         return this.http.get<Barman>('/api/barmen/' + id).catch(this.handleError);
     }
 
-    getServices(id: Number, start: Date, end: Date) {
+    getServicesOfCurrentWeek(id: Number, start: Number, end: Number) {
         return this.http.get<Service[]>('/api/barmen/' + id + '/services', {
             params: {
-                start: start.getTime().toString(),
-                end: end.getTime().toString()
+                start: start.toString(),
+                end: end.toString()
             }}).catch(this.handleError);
+    }
+
+    getServicesOfCurrentWeekByCat(id: Number, start: Number, end: Number) {
+        return Observable.create(observer => {
+            const categories = new Array<Categories>();
+
+            this.getServicesOfCurrentWeek(id, start, end).subscribe(services => {
+                services.forEach(service => {
+                    if (service.category) {
+                        const index = categories.map(category => category.name).indexOf(service.category.name);
+                        if (index === -1) {
+                            categories.push(
+                                {
+                                    name: service.category.name,
+                                    services: [service]
+                                }
+                            );
+                        } else {
+                            categories[index].services.push(service);
+                        }
+                    } else {
+                        const index = categories.map(category => category.name).indexOf('Sans categorie');
+                        if (index === -1) {
+                            categories.push({
+                                name: 'Sans categorie',
+                                services: [service]
+                            });
+                        } else {
+                            categories[index].services.push(service);
+                        }
+                    }
+                });
+                observer.next(categories);
+            }, error => {
+                observer.error(error);
+            });
+        });
     }
 
     create(barman: Barman) {

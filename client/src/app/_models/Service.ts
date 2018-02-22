@@ -2,8 +2,8 @@ export class Service {
 
     id: Number;
     name: String;
-    startingDate: Date;
-    endingDate: Date;
+    startAt: Date;
+    endAt: Date;
     nbMax: Number;
 
     constructor(values: Object = {}) {

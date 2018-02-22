@@ -9,18 +9,18 @@
     <mat-card-content>
         <div>
             <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
-                <button mat-fab color="primary" (click)="day.active ? null : updateServicesDetails(day)"
+                <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)"
                 [color]="day.active ? 'accent' : 'primary'">
                     {{day.name}}
                 </button>
             </div>
         </div>
         <div>
-            <mat-list>
-                <mat-list-item *ngFor="let service of services">
-                    <h4 matLine>{{service.category.name}}</h4>
-                    <p matLine>
-                        <span *ngFor="let barman of service.barmen">{{barman.surname}}</span>
+            <mat-list *ngIf="categories">
+                <mat-list-item *ngFor="let category of categories">
+                    <h4 matLine>{{category.name}}</h4>
+                    <p matLine *ngFor="let service of category.services">{{service.startAt | date:'EEEE d LLLL':'':'fr'}} de 
+                        {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                     </p>
                 </mat-list-item>
             </mat-list>
