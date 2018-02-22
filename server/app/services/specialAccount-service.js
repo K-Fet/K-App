@@ -23,7 +23,7 @@ async function getAllSpecialAccounts() {
  */
 async function createSpecialAccount(newSpecialAccount, connection) {
 
-    logger.verbose('SpecialAccount service: creating a new SpecialAccount id: %s ', newSpecialAccount.id);
+    logger.verbose('SpecialAccount service: creating a new SpecialAccount code: %s ', newSpecialAccount.code);
 
     const transaction = await sequelize.transaction();
     try {

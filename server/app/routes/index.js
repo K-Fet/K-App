@@ -23,6 +23,8 @@ router.use('/barmen', require('./barmen'));
 router.use('/kommissions', require('./kommissions'));
 router.use('/roles', require('./roles'));
 router.use('/services', require('./services'));
+router.use('/categories', require('./categories'));
+router.use('/specialaccount', require('./special-account'));
 
 // Error handling
 
