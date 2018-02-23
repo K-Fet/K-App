@@ -7,15 +7,15 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-list *ngIf="categories">
-            <mat-list-item *ngFor="let category of categories">
+        <mat-list *ngIf="myServices">
+            <mat-list-item *ngFor="let category of myServices">
                 <h4 matLine>{{category.name}}</h4>
                 <p matLine *ngFor="let service of category.services">{{service.startingDate | date:'EEEE d LLLL':'':'fr'}} de 
                     {{service.startingDate | date:'H'}}h à {{service.endingDate | date:'H'}}h
                 </p>
             </mat-list-item>
         </mat-list>
-        <p *ngIf="!categories">Aucun service fixé pour la semaine ...</p>
+        <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
         <div fxLayoutAlign="center">
             <button mat-raised-button color="primary" routerLink="/services/plan-my-services">Fixer mes services</button>
         </div>

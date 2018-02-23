@@ -19,8 +19,9 @@
             <mat-list *ngIf="categories">
                 <mat-list-item *ngFor="let category of categories">
                     <h4 matLine>{{category.name}}</h4>
-                    <p matLine *ngFor="let service of category.services">{{service.startAt | date:'EEEE d LLLL':'':'fr'}} de 
-                        {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                    <p fxFlexOffset="5px" matLine *ngFor="let service of category.services">
+                        De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h<br />
+                        <span *ngIf="service.barmen" class="mat-caption">Avec <span ngFor="let barman of service.barmen">{{barman.nickname}}</span></span>
                     </p>
                 </mat-list-item>
             </mat-list>

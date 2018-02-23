@@ -10,7 +10,7 @@ import { Category } from '../../_models/index';
 
 export class MyServicesComponent implements OnInit {
 
-    categories: Categories[];
+    myServices: Categories[];
 
     constructor(private loginService: LoginService,
         private barmanService: BarmanService,
@@ -24,7 +24,7 @@ export class MyServicesComponent implements OnInit {
             this.serviceService.getStartOfCurrentWeek(),
             this.serviceService.getEndOfCurrentWeek())
         .subscribe(categories => {
-            categories.map(category => {
+            this.myServices = categories.map(category => {
                 return category.services.map(service => {
                     this.serviceService.getBarmen(service.id).subscribe(barmen => {
                         service.barmen = barmen;

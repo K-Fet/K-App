@@ -70,6 +70,15 @@ export class BarmanService {
         return this.http.post('/api/barmen', barman).catch(this.handleError);
     }
 
+    addService(id: Number, services: Number[]) {
+        return this.http.post('/api/barmen' + id + '/services', services).catch(this.handleError);
+    }
+
+    removeService(id: Number, services: Number[]) {
+        // TODO Fix DELETE body issue
+        return this.http.delete('/api/barmen' + id + '/services' /*, [service] */).catch(this.handleError);
+    }
+
     update(barman: Barman) {
         return this.http.put('/api/barmen/' + barman.id, barman).catch(this.handleError);
     }
