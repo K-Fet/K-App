@@ -1,6 +1,7 @@
 const logger = require('../../logger');
+const sequelize = require('../../db');
 const { Category } = require('../models/');
-const { createUserError } = require('../../utils');
+const { createUserError, createServerError, cleanObject } = require('../../utils');
 
 /**
  * Return all categories of the app.
@@ -22,7 +23,19 @@ async function getAllCategories() {
 async function createCategory(newCategory) {
 
     logger.verbose('Categroy service: creating a new categroy named %s', newCategory.name);
-    return await newCategory.save();
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        await newCategory.save({ transaction });
+    } catch (err) {
+        logger.warn('Category service: Error while creating category', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while creating category');
+    }
+
+    await transaction.commit();
+    return newCategory;
 }
 
 
@@ -63,10 +76,21 @@ async function updateCategory(categoryId, updatedCategory) {
 
     logger.verbose('Category service: updating categroy named %s', currentCategory.name);
 
-    return await currentCategory.update({
-        name: updatedCategory.name,
-        description: updatedCategory.description,
-    });
+    const transaction = await sequelize.transaction();
+
+    try {
+        await currentCategory.update(cleanObject({
+            name: updatedCategory.name,
+            description: updatedCategory.description
+        }), { transaction });
+    } catch (err) {
+        logger.warn('Category service: Error while updating category', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating category');
+    }
+
+    await transaction.commit();
+    return currentCategory;
 }
 
 /**

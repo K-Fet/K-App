@@ -71,7 +71,7 @@ async function updateRole(req, res) {
     const schema = RoleSchema.min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
 
     let newRole = new Role({

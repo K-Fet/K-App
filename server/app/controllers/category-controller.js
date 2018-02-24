@@ -30,7 +30,7 @@ async function createCategory(req, res) {
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newCategory = new Category(req.body);
 
@@ -67,7 +67,7 @@ async function updateCategory(req, res) {
     const schema = CategorySchema.min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newCategory = new Category(req.body);
 
