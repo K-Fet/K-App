@@ -34,6 +34,7 @@ import { RoleEditComponent } from './roles/edit/role-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
+import { OpenServicesComponent } from './services/open-services/open-services.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -73,7 +74,8 @@ import { MaterialModule } from './_helpers/material.module';
         RolesListComponent,
         CodeDialogComponent,
         NotFoundComponent,
-        ConnectedUserDialogComponent
+        ConnectedUserDialogComponent,
+        OpenServicesComponent
     ],
     entryComponents: [
         CodeDialogComponent,
