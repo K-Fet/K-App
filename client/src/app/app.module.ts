@@ -38,7 +38,8 @@ import { OpenServicesComponent } from './services/open-services/open-services.co
 
 // Services
 import { ToasterService, LoginService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService } from './_services/index';
+    BarmanService, ServiceService, KommissionService, RoleService,
+    TemplateService } from './_services/index';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -101,6 +102,7 @@ import { MaterialModule } from './_helpers/material.module';
         RoleService,
         AuthGuard,
         ToasterService,
+        TemplateService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,

@@ -15,8 +15,8 @@ export class ServiceService {
         return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
     }
 
-    create(service: Service) {
-        return this.http.post('/api/services', service).catch(this.handleError);
+    create(services: Service[]) {
+        return this.http.post('/api/services', services).catch(this.handleError);
     }
 
     update(service: Service) {
@@ -32,10 +32,9 @@ export class ServiceService {
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
-            console.log(err);
             switch (err.error) {
                 case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter un service`;
+                    errorMessage = `Erreur, appel du serveur impossible`;
                     break;
                 case 'ServerError':
                     errorMessage = `Erreur serveur`;
