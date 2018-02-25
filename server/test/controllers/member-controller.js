@@ -8,7 +8,7 @@ const httpMocks = require('node-mocks-http');
 // Mock Service
 const mockObj = {
     getAllMembers() {
-        return Promise.resolve(['item 1', 'item 2']);
+        return Promise.resolve([ 'item 1', 'item 2' ]);
     }
 };
 
@@ -16,8 +16,8 @@ const memberController = proxyquire('../../app/controllers/member-controller', {
     '../services/member-service': mockObj
 });
 
-describe('Member controller tests', function () {
-    it('should not fail and send a JSON parsed data', async function () {
+describe('Member controller tests', () => {
+    it('should not fail and send a JSON parsed data', async () => {
         // Given
 
         const res = httpMocks.createResponse();

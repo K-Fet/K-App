@@ -15,10 +15,10 @@ require('./db');
 if (process.env.NODE_ENV === 'production') {
     app.use(compression());
     app.disable('x-powered-by');
-    
+
     // Prevent click jacking
     app.use((req, res, next) => {
-        res.setHeader('X-Frame-Options', 'DENY'); 
+        res.setHeader('X-Frame-Options', 'DENY');
         res.setHeader('X-XSS-Protection', '1; mode=block');
         return next();
     });
@@ -34,7 +34,7 @@ app.use('/api/', routes);
 app.use(express.static(WEB_CONFIG.publicFolder));
 
 // Otherwise send index.html
-app.get('*', (req, res) => res.sendFile(WEB_CONFIG.publicFolder + '/index.html'));
+app.get('*', (req, res) => res.sendFile(`${WEB_CONFIG.publicFolder }/index.html`));
 
 
 //
@@ -59,8 +59,8 @@ if (!WEB_CONFIG.ssl) {
 server.on('error', onError);
 server.on('listening', () => {
     const addr = server.address();
-    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    logger.info('Listening on ' + bind);
+    const bind = typeof addr === 'string' ? `pipe ${ addr}` : `port ${ addr.port}`;
+    logger.info(`Listening on ${ bind}`);
 });
 
 
@@ -78,7 +78,7 @@ function onError(error) {
         throw error;
     }
 
-    const bind = typeof WEB_CONFIG.port === 'string' ? 'Pipe ' + WEB_CONFIG.port : 'Port ' + WEB_CONFIG.port;
+    const bind = typeof WEB_CONFIG.port === 'string' ? `Pipe ${ WEB_CONFIG.port}` : `Port ${ WEB_CONFIG.port}`;
 
     // Handle specific listen errors with friendly messages.
     switch (error.code) {

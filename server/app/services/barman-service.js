@@ -271,16 +271,16 @@ async function deleteBarmanById(barmanId) {
  */
 async function getBarmanServices(barmanId, startDate, endDate) {
 
-    logger.verbose('Barman service: retreive services of the barman ', barmanId );
+    logger.verbose('Barman service: retreive services of the barman ', barmanId);
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
     const services = await barman.getServices({
         where: {
-            startAt : {
+            startAt: {
                 [Op.gte]: startDate,
-            }, endAt : {
+            }, endAt: {
                 [Op.lte]: endDate
             }
         }
@@ -307,7 +307,7 @@ async function createServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.addService(servicesId, {transaction});
+        await barman.addService(servicesId, { transaction });
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
@@ -335,7 +335,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.removeServices(servicesId, {transaction});
+        await barman.removeServices(servicesId, { transaction });
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
