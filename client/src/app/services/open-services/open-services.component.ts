@@ -54,6 +54,10 @@ export class OpenServicesComponent implements OnInit {
         this.servicesFormArray.push(serviceFormGroup);
     }
 
+    removeServiceForm(fromGroupId: Number) {
+        this.servicesFormArray.removeAt(+fromGroupId);
+    }
+
     getControls() {
         return (<FormArray>this.generalFormArray.get([1])).controls;
     }
@@ -106,10 +110,17 @@ export class OpenServicesComponent implements OnInit {
             }
         });
     }
+
+    getCategoryNameByFormId(categoryId: Number): String {
+        const category = this.categories.filter(cat => {
+            return cat.id === categoryId;
+        })[0];
+        return category.name;
+    }
+
     createServices() {
-        const services: Service[] = new Array<Service>();
-        this.selectedTemplate.services.forEach(serviceTemplate => {
-            services.push(this.prepareService(serviceTemplate));
+        const services: Service[] = this.servicesFormArray.controls.map(formGroup => {
+            return this.prepareService((<FormGroup>formGroup).controls);
         });
         this.serviceService.create(services).subscribe(() => {
             this.toasterService.showToaster('Nouveaux services enregistrés', 'Fermer');
@@ -118,11 +129,12 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    prepareService(serviceTemplate): Service {
-        const service = new Service();
-        Object.keys(serviceTemplate).forEach(key => {
-            service[key] = serviceTemplate[key];
-        });
-        return service;
+    prepareService(controls): Service {
+        return {
+            categoryId: controls.categoryFormControl.value,
+            startAt: controls.startAtFormControl.value,
+            endAt: controls.endAtFormControl.value,
+            nbMax: controls.nbMaxFormControl.value,
+        };
     }
 }
