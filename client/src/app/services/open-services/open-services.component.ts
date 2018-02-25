@@ -5,7 +5,7 @@ import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-open-services',
-    templateUrl: './open-services.component.html',
+    templateUrl: './open-services.component.html'
 })
 
 export class OpenServicesComponent implements OnInit {
@@ -44,7 +44,6 @@ export class OpenServicesComponent implements OnInit {
 
     addServiceForm(name: String, nbMax: Number, startAt: Date, endAt: Date) {
         const serviceFormGroup = this.formBuilder.group({
-            nameFormControl: [name],
             nbMaxFormControl: [nbMax, Validators.required],
             categoryFormControl: ['', Validators.required],
             startAtFormControl: [startAt, Validators.required],

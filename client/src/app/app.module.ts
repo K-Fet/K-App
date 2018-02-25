@@ -6,6 +6,11 @@ import { CommonModule } from '@angular/common';
 
 // Forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    MatDatetimepickerModule,
+    MatNativeDatetimeModule,
+    MAT_DATETIME_FORMATS
+  } from '@mat-datetimepicker/core';
 
 // Routes
 import { routing } from './app.routing';
@@ -90,7 +95,9 @@ import { MaterialModule } from './_helpers/material.module';
         HttpClientModule,
         routing,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatNativeDatetimeModule,
+        MatDatetimepickerModule
     ],
     bootstrap: [AppComponent],
     providers: [
