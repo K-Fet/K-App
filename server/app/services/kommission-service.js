@@ -12,7 +12,7 @@ const sequelize = require('../../db');
 async function getAllKommissions() {
 
     logger.verbose('Kommission service: get all kommissions');
-    return await Kommission.findAll();
+    return Kommission.findAll();
 }
 
 

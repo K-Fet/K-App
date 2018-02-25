@@ -13,7 +13,7 @@ const { createUserError } = require('../../utils');
 async function getAllServices(start, end) {
 
     logger.verbose('Service service: get all services');
-    return await Service.findAll({
+    return Service.findAll({
         where: {
             [Op.and]: [
                 {
@@ -34,7 +34,7 @@ async function getAllServices(start, end) {
 async function createService(newService) {
 
     logger.verbose('Service service: creating a new service named %s', newService.name);
-    return await newService.save();
+    return newService.save();
 }
 
 
@@ -75,7 +75,7 @@ async function updateService(serviceId, updatedService) {
 
     logger.verbose('Service service: updating service named %s', currentService.name);
 
-    return await currentService.update({
+    return currentService.update({
         name: updatedService.name,
         startAt: updatedService.startAt,
         endAt: updatedService.endAt,

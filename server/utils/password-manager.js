@@ -8,7 +8,7 @@ const argon2 = require('argon2');
  * @returns {Promise<boolean>} If the password matches the hash
  */
 async function verify(hash, password) {
-    return await argon2.verify(hash, password);
+    return argon2.verify(hash, password);
 }
 
 /**
@@ -18,7 +18,7 @@ async function verify(hash, password) {
  * @return {Promise<string>}
  */
 async function hash(password) {
-    return await argon2.hash(password);
+    return argon2.hash(password);
 }
 
 module.exports = {

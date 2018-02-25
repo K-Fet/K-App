@@ -11,7 +11,7 @@ const { createUserError, createServerError, cleanObject } = require('../../utils
 async function getAllCategories() {
 
     logger.verbose('Categroy service: get all categroies');
-    return await Category.findAll();
+    return Category.findAll();
 }
 
 /**
@@ -65,7 +65,7 @@ async function getCategroyById(categoryId) {
  * the `createdAt` field or others.
  *
  * @param categoryId {number} categroy id
- * @param updatedCategory {Categroy} Updated categroy, constructed from the request.
+ * @param updatedCategory {Category} Updated categroy, constructed from the request.
  * @return {Promise<Category>} The updated categroy
  */
 async function updateCategory(categoryId, updatedCategory) {

@@ -11,7 +11,7 @@ const { createUserError, createServerError, cleanObject } = require('../../utils
 async function getAllRoles() {
 
     logger.verbose('Role service: get all roles');
-    return await Role.findAll();
+    return Role.findAll();
 }
 
 /**

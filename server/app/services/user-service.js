@@ -18,7 +18,7 @@ async function checkCode(userId, code) {
         throw createUserError('NotSpecialAccount', 'Only special accounts with permissions can do this action');
     }
 
-    return await verify(account.code, code.toString());
+    return verify(account.code, code.toString());
 }
 
 module.exports = {

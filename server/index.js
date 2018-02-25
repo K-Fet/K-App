@@ -51,7 +51,9 @@ if (!WEB_CONFIG.ssl) {
     server = require('http').createServer(app);
 } else {
     server = require('https').createServer({
+        // eslint-disable-next-line
         key: fs.readFileSync(WEB_CONFIG.ssl.key),
+        // eslint-disable-next-line
         cert: fs.readFileSync(WEB_CONFIG.ssl.cert)
     }, app);
 }
