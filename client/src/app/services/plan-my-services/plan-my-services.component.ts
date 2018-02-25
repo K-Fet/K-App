@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/index';
-import { Day, ServiceService, Categories, ToasterService, BarmanService } from '../../_services/index';
+import { Day, ServiceService, Categories, ToasterService, BarmanService, DEFAULT_WEEK } from '../../_services/index';
 
 @Component({
     selector: 'app-plan-my-services',
@@ -51,8 +51,8 @@ export class PlanMyServicesComponent implements OnInit {
 
     updateMyServices() {
         this.barmanService.getServicesOfCurrentWeekByCat(12,
-            this.serviceService.getStartOfCurrentWeek(),
-            this.serviceService.getEndOfCurrentWeek())
+            this.serviceService.getStartEnd().start,
+            this.serviceService.getStartEnd().end)
         .subscribe(categories => {
             this.myServices = categories.map(category => {
                 return category.services.map(service => {

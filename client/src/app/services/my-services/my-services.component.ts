@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/Service';
-import { BarmanService, ToasterService, LoginService, ServiceService, Categories } from '../../_services/';
+import { BarmanService, ToasterService, LoginService, ServiceService, Categories, DEFAULT_WEEK } from '../../_services/';
 import { Category } from '../../_models/index';
 
 @Component({
@@ -21,8 +21,8 @@ export class MyServicesComponent implements OnInit {
     ngOnInit() {
         // TODO /me to get the id of the connected barman
         this.barmanService.getServicesOfCurrentWeekByCat(12,
-            this.serviceService.getStartOfCurrentWeek(),
-            this.serviceService.getEndOfCurrentWeek())
+            this.serviceService.getStartEnd().start,
+            this.serviceService.getStartEnd().end)
         .subscribe(categories => {
             this.myServices = categories.map(category => {
                 return category.services.map(service => {

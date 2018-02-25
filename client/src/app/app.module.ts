@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -61,6 +61,7 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { MAT_DATE_LOCALE } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -117,6 +118,9 @@ import { MaterialModule } from './_helpers/material.module';
         AuthGuard,
         ToasterService,
         TemplateService,
+        {
+            provide: LOCALE_ID, useValue: 'fr'
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,

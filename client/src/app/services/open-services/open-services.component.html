@@ -23,33 +23,45 @@
                         </div>
                     </mat-step>
                     <mat-step formArrayName="1" [stepControl]="generalFormArray.get([1])" label="Services">
-                        <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i">
-                            <section class="mat-typography">
-                                <h3>Service {{i +1}}</h3>
-                            </section>
-                            <div fxLayout="column" fxLayoutAlign="center">
-                                <mat-form-field>
-                                    <input matInput placeholder="Categorie de service" formControlName="categoryFormControl" required>
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <input type="number" matInput placeholder="Nombre maximum" formControlName="nbMaxFormControl" required>
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <mat-placeholder>Début du service</mat-placeholder>
-                                    <mat-datetimepicker-toggle [for]="startDatetimePicker" matSuffix></mat-datetimepicker-toggle>
-                                    <mat-datetimepicker #startDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
-                                    <input matInput formControlName="startAtFormControl" [matDatetimepicker]="startDatetimePicker" required autocomplete="false">
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <mat-placeholder>Fin du service</mat-placeholder>
-                                    <mat-datetimepicker-toggle [for]="endDatetimePicker" matSuffix></mat-datetimepicker-toggle>
-                                    <mat-datetimepicker #endDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
-                                    <input matInput formControlName="endAtFormControl" [matDatetimepicker]="endDatetimePicker" required autocomplete="false">
-                                </mat-form-field>
+                        <mat-accordion>
+                            <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i">
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            Service {{i +1}}
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <div fxLayout="column" fxLayoutAlign="center">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Catégorie de service" formControlName="categoryFormControl" name="role">
+                                                <mat-option *ngFor="let category of categories" [value]="category.id">{{category.name}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input type="number" matInput placeholder="Nombre maximum" formControlName="nbMaxFormControl" required>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <mat-placeholder>Début du service</mat-placeholder>
+                                            <mat-datetimepicker-toggle [for]="startDatetimePicker" matSuffix></mat-datetimepicker-toggle>
+                                            <mat-datetimepicker #startDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+                                            <input matInput formControlName="startAtFormControl" [matDatetimepicker]="startDatetimePicker" required autocomplete="false">
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <mat-placeholder>Fin du service</mat-placeholder>
+                                            <mat-datetimepicker-toggle [for]="endDatetimePicker" matSuffix></mat-datetimepicker-toggle>
+                                            <mat-datetimepicker #endDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+                                            <input matInput formControlName="endAtFormControl" [matDatetimepicker]="endDatetimePicker" required autocomplete="false">
+                                        </mat-form-field>
+                                    </div>
+                                </mat-expansion-panel>
                             </div>
-                        </div>
+                        </mat-accordion>
                     </mat-step>
                 </mat-vertical-stepper>
+                <button fxFlex="50" mat-button type="button" (click)="addServiceForm(null, null, null, null)" >
+                        <mat-icon>add</mat-icon>
+                </button>
+                <mat-divider></mat-divider>
                 <button fxFlex="50" mat-button type="button" (click)="createServices()" 
                 [disabled]="!generalFormGroup.valid">Créer les services</button>
             </form>

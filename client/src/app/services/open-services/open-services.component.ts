@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplateService, ToasterService, ServiceService } from '../../_services/index';
-import { Template, Service } from '../../_models/index';
+import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK, CategoryService } from '../../_services/index';
+import { Template, Service, Category } from '../../_models/index';
 import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
+
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 @Component({
     selector: 'app-open-services',
@@ -11,6 +14,7 @@ import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class OpenServicesComponent implements OnInit {
 
     templates: Template[] = new Array<Template>();
+    categories: Category[] = new Array<Category>();
     selectedTemplate: Template;
 
     templateSelectorFormGroup: FormGroup;
@@ -21,6 +25,7 @@ export class OpenServicesComponent implements OnInit {
     constructor (private templateService: TemplateService,
         private toasterService: ToasterService,
         private serviceService: ServiceService,
+        private categoryService: CategoryService,
         private formBuilder: FormBuilder) {
         this.createForms();
     }
@@ -39,12 +44,12 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    addServiceForm(nbMax: Number, startAt: Date, endAt: Date) {
+    addServiceForm(categoryId: Number, nbMax: Number, startAt: Moment, endAt: Moment) {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
-            categoryFormControl: ['', Validators.required],
-            startAtFormControl: [startAt, Validators.required],
-            endAtFormControl: [endAt, Validators.required]
+            categoryFormControl: [categoryId, Validators.required],
+            startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
+            endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required]
         });
         this.servicesFormArray.push(serviceFormGroup);
     }
@@ -54,21 +59,49 @@ export class OpenServicesComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Get templates
         this.templateService.getAll().subscribe(templates => {
             this.templates = templates;
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
         this.onFormChanges();
+
+        // Get categories
+        this.categoryService.getAll().subscribe(categories => {
+            this.categories = categories;
+        },
+        error => {
+            this.toasterService.showToaster(error, 'Fermer');
+        });
     }
 
     onFormChanges() {
         this.templateSelectorFormGroup.valueChanges.subscribe(val => {
             if (val.templateSelectorFormControl) {
-                val.templateSelectorFormControl.services.forEach(service => {
-                    const startAt = new Date();
-                    const endAt = new Date();
-                    this.addServiceForm(service.nbMax, startAt, endAt);
+                (<Template>val.templateSelectorFormControl).services.forEach(service => {
+                    let startAt: Moment;
+                    let endAt: Moment;
+                    if (moment().weekday() >= DEFAULT_WEEK.start) {
+                        startAt = moment().add(1, 'week').weekday(+service.startAt.day);
+                        endAt = moment().add(1, 'week').weekday(+service.endAt.day);
+                    } else {
+                        startAt = moment().weekday(+service.startAt.day);
+                        endAt = moment().weekday(+service.endAt.day);
+                    }
+                    startAt.set({
+                        'hour': +service.startAt.hour,
+                        'minute': +service.startAt.minute,
+                        'second': 0,
+                        'millisecond': 0
+                    });
+                    endAt.set({
+                        'hour': +service.endAt.hour,
+                        'minute': +service.endAt.minute,
+                        'second': 0,
+                        'millisecond': 0
+                    });
+                    this.addServiceForm(service.categoryId, service.nbMax, startAt, endAt);
                 });
             }
         });
