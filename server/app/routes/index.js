@@ -17,6 +17,64 @@ router.use('/auth', require('./auth'));
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
+router.get('/templates', (req, res) => {
+    res.json([
+        {
+            name: 'Semaine standard',
+            createdAt: '',
+            updatedAt: '',
+            deletedAt: '',
+            services: [
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 5,
+                        hour: 12,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 5,
+                        hour: 14,
+                        minute: 0
+                    }
+                },
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 5,
+                        hour: 18,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 5,
+                        hour: 22,
+                        minute: 0
+                    }
+                },
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 5,
+                        hour: 22,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 6,
+                        hour: 1,
+                        minute: 0
+                    }
+                }
+            ]
+        }
+    ]);
+});
+
 // Dispatch to child routes
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));

@@ -37,12 +37,9 @@ export class OpenServicesComponent implements OnInit {
         this.generalFormGroup = this.formBuilder.group({
             generalFormArray: this.generalFormArray
         });
-        this.addServiceForm(null, null, null, null);
-        this.addServiceForm(null, null, null, null);
-        this.addServiceForm(null, null, null, null);
     }
 
-    addServiceForm(name: String, nbMax: Number, startAt: Date, endAt: Date) {
+    addServiceForm(nbMax: Number, startAt: Date, endAt: Date) {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
             categoryFormControl: ['', Validators.required],
@@ -62,8 +59,20 @@ export class OpenServicesComponent implements OnInit {
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
+        this.onFormChanges();
     }
 
+    onFormChanges() {
+        this.templateSelectorFormGroup.valueChanges.subscribe(val => {
+            if (val.templateSelectorFormControl) {
+                val.templateSelectorFormControl.services.forEach(service => {
+                    const startAt = new Date();
+                    const endAt = new Date();
+                    this.addServiceForm(service.nbMax, startAt, endAt);
+                });
+            }
+        });
+    }
     createServices() {
         const services: Service[] = new Array<Service>();
         this.selectedTemplate.services.forEach(serviceTemplate => {
@@ -79,19 +88,7 @@ export class OpenServicesComponent implements OnInit {
     prepareService(serviceTemplate): Service {
         const service = new Service();
         Object.keys(serviceTemplate).forEach(key => {
-            switch (key) {
-                // TODO test Date generation
-                case 'startAt':
-                    service[key] = new Date(serviceTemplate[key].day);
-                    break;
-                case 'endAt':
-                    service[key] = new Date(serviceTemplate[key].day);
-                    break;
-                default:
-                    service[key] = serviceTemplate[key];
-                    break;
-            }
-
+            service[key] = serviceTemplate[key];
         });
         return service;
     }
