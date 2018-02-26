@@ -30,12 +30,12 @@ router.get('/templates', (req, res) => {
                     name: '',
                     categoryId: 1,
                     startAt: {
-                        day: 5,
+                        day: 1,
                         hour: 12,
                         minute: 0
                     },
                     endAt:{
-                        day: 5,
+                        day: 1,
                         hour: 14,
                         minute: 0
                     }
@@ -45,12 +45,12 @@ router.get('/templates', (req, res) => {
                     name: '',
                     categoryId: 1,
                     startAt: {
-                        day: 5,
+                        day: 1,
                         hour: 18,
                         minute: 0
                     },
                     endAt:{
-                        day: 5,
+                        day: 1,
                         hour: 22,
                         minute: 0
                     }
@@ -60,12 +60,57 @@ router.get('/templates', (req, res) => {
                     name: '',
                     categoryId: 1,
                     startAt: {
-                        day: 5,
+                        day: 1,
                         hour: 22,
                         minute: 0
                     },
                     endAt:{
-                        day: 6,
+                        day: 2,
+                        hour: 1,
+                        minute: 0
+                    }
+                },
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 2,
+                        hour: 12,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 2,
+                        hour: 14,
+                        minute: 0
+                    }
+                },
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 2,
+                        hour: 18,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 2,
+                        hour: 22,
+                        minute: 0
+                    }
+                },
+                {
+                    nbMax: 5,
+                    name: '',
+                    categoryId: 1,
+                    startAt: {
+                        day: 2,
+                        hour: 22,
+                        minute: 0
+                    },
+                    endAt:{
+                        day: 3,
                         hour: 1,
                         minute: 0
                     }

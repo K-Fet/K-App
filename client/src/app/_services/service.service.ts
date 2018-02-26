@@ -198,7 +198,7 @@ export interface Categories {
     services?: Service[];
 }
 
-export const DEFAULT_WEEK: { start: Number, end: number } = { start: 7 /* Dimanche */, end: 6 /* Samedi */ };
+export const DEFAULT_WEEK: { start: Number, end: number } = { start: 1 /* Dimanche */, end: 7 /* Samedi */ };
 
 const WEEK_DAY_LONG: Array<String> = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 

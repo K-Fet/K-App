@@ -51,7 +51,23 @@ export class OpenServicesComponent implements OnInit {
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
             endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required]
         });
+        serviceFormGroup.valueChanges.subscribe(val => {
+            this.sortServiceForm();
+        });
         this.servicesFormArray.push(serviceFormGroup);
+    }
+
+    sortServiceForm() {
+        this.servicesFormArray.controls.sort((a, b) => {
+            const aStartAt = (<FormGroup>a).controls.startAtFormControl.value;
+            const bStartAt = (<FormGroup>b).controls.startAtFormControl.value;
+            if (aStartAt < bStartAt) {
+                return -1;
+            } else if (aStartAt > bStartAt) {
+                return 1;
+            }
+            return 0;
+        });
     }
 
     removeServiceForm(fromGroupId: Number) {
@@ -86,7 +102,7 @@ export class OpenServicesComponent implements OnInit {
                 (<Template>val.templateSelectorFormControl).services.forEach(service => {
                     let startAt: Moment;
                     let endAt: Moment;
-                    if (moment().weekday() >= DEFAULT_WEEK.start) {
+                    if (moment().weekday() >= DEFAULT_WEEK.start && service.startAt.day === DEFAULT_WEEK.start) {
                         startAt = moment().add(1, 'week').weekday(+service.startAt.day);
                         endAt = moment().add(1, 'week').weekday(+service.endAt.day);
                     } else {
@@ -108,6 +124,7 @@ export class OpenServicesComponent implements OnInit {
                     this.addServiceForm(service.categoryId, service.nbMax, startAt, endAt);
                 });
             }
+            this.sortServiceForm();
         });
     }
 
