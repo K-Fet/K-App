@@ -55,13 +55,17 @@ class Service extends Model {
      */
     static associate(models) {
         this.belongsToMany(models.Barman, { through: models.ServiceWrapper, as: 'barmen' });
+<<<<<<< HEAD
+=======
+        this.belongsTo(models.Category, {as: 'category'});
+>>>>>>> CRUD totalement fonctionnel
     }
 }
 
 const ServiceSchema = Joi.object().keys({
     name: Joi.string(),
-    startingDate: Joi.string().isoDate(),
-    endingDate: Joi.string().isoDate(),
+    startAt: Joi.string().isoDate(),
+    endAt: Joi.string().isoDate(),
     nbMax: Joi.number().integer(),
 });
 
