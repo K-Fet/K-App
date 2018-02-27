@@ -83,6 +83,7 @@ async function getServiceById(serviceId) {
         include: [
             {
                 model: Category,
+                as: 'category'
             },
         ]
     });
@@ -108,6 +109,7 @@ async function updateService(serviceId, updatedService, _embedded) {
         include: [
             {
                 model: Category,
+                as: 'category'
             },
         ]
     });
@@ -157,6 +159,7 @@ async function updateService(serviceId, updatedService, _embedded) {
         include: [
             {
                 model: Category,
+                as: 'category'
             },
         ]
     });
@@ -179,7 +182,8 @@ async function deleteService(serviceId) {
         
         include: [
             {
-                model: Category
+                model: Category,
+                as: 'category'
             }
         ]});
 
