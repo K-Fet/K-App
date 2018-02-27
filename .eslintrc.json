@@ -97,7 +97,7 @@
         "newline-per-chained-call": [
             "error",
             {
-                "ignoreChainWithDepth": 3
+                "ignoreChainWithDepth": 4
             }
         ],
         "one-var": [
