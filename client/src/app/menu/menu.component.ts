@@ -51,12 +51,6 @@ export class MenuComponent implements OnDestroy {
                 right: '20px'
             }
         });
-
-        // dialogRef.afterClosed().subscribe(result => {
-        //     if (result) {
-        //         this.delete(this.deletedMember, result);
-        //     }
-        // });
     }
 
     ngOnDestroy(): void {
