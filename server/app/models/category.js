@@ -33,9 +33,9 @@ class Category extends Model {
      * Set associations for the model
      * @param models
      */
-    static associate(models) {
-        this.hasMany(models.Service, { as: 'services' });
-    }
+    /*static associate(models) {
+        //this.hasMany(models.Service, { as: 'services' });
+    }*/
 }
 
 const CategorySchema = Joi.object().keys({

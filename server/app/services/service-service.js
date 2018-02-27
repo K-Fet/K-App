@@ -16,8 +16,11 @@ async function getAllServices(start, end) {
     logger.verbose('Service service: get all services');
     return await Service.findAll({
         where: {
-            startAt: { [Op.gte]: start, },
-            endAt: { [Op.lte]: end, }
+            startAt : { 
+                [Op.gte]: start,
+            }, endAt : { 
+                [Op.lte]: end
+            }
         }
     });
 }
@@ -101,7 +104,7 @@ async function getServiceById(serviceId) {
  * @return {Promise<Service>} The updated service
  */
 async function updateService(serviceId, updatedService, _embedded) {
-    const currentService = await Service.findById(serviceId, {
+    let currentService = await Service.findById(serviceId, {
         include: [
             {
                 model: Category,
@@ -120,8 +123,7 @@ async function updateService(serviceId, updatedService, _embedded) {
             name: updatedService.name,
             startAt: updatedService.startAt,
             endAt: updatedService.endAt,
-            nbMax: updatedService.nbMax,
-            category: updatedService.category
+            nbMax: updatedService.nbMax,    
         }), { transaction });
 
     } catch (err) {
@@ -135,12 +137,12 @@ async function updateService(serviceId, updatedService, _embedded) {
         for (const associationKey of Object.keys(_embedded)) {
             const value = _embedded[associationKey];
 
-            if (associationKey === 'Category') {
+            if (associationKey === 'category') {
                 const wantedCategory = await Category.findById(value);
 
                 if (!wantedCategory) {
                     await transaction.rollback();
-                    throw createUserError('UnknownService', `Unable to find category with id ${wantedCategory}`);
+                    throw createUserError('UnknownService', `Unable to find category with id ${value}`);
                 }
                 await currentService.setCategory(wantedCategory, { transaction });
             } else {
@@ -150,6 +152,15 @@ async function updateService(serviceId, updatedService, _embedded) {
         }
     }
     await transaction.commit();
+
+    currentService = await Service.findById(serviceId, {
+        include: [
+            {
+                model: Category,
+            },
+        ]
+    });
+
     return currentService;
 }
 
