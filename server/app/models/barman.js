@@ -59,7 +59,12 @@ class Barman extends Model {
             sequelize,
 
             // Do not delete row, even when the user delete is account
-            paranoid: true
+            paranoid: true,
+
+            name: {
+                plural: 'barmen',
+                singular: 'barman'
+            }
         });
     }
 
@@ -74,7 +79,7 @@ class Barman extends Model {
         this.belongsToMany(models.Role, { through: models.RoleWrapper, as: 'roles' });
         this.belongsToMany(models.Service, { through: models.ServiceWrapper, as: 'services' });
 
-        this.hasOne(Barman, { as: 'godFather' });
+        this.belongsTo(Barman, { as: 'godFather' });
 
         this.belongsTo(models.ConnectionInformation, { as: 'connection' });
     }
