@@ -1,0 +1,10 @@
+<mat-dialog-content fxLayout="column">
+    <div *ngIf="user?.barman">
+		<p>Compte Barman {{user.barman.nickname}}</p>
+		<!-- TODO add more information -->
+    </div>
+    <div *ngIf="user?.specialAccount">
+		<p>Compte spécial {{user.specialAccount.connection.username}}</p>
+		<!-- TODO add more information -->
+    </div>
+</mat-dialog-content>
