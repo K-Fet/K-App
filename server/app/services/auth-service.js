@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
 const { jwtSecret, expirationDuration } = require('../../config/jwt');
-const { verify, createUserError } = require('../../utils');
+const { verify, createUserError, createServerError } = require('../../utils');
 
 const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role } = require('../models');
 
@@ -97,7 +97,7 @@ async function createJWT(user) {
  * Logout a member by revoking his token.
  *
  * @param tokenId Token's JIT
- * @return {Promise.<JWT>} The deleted token
+ * @return {Promise<JWT>} The deleted token
  * @throws An error if the token could not be find.
  */
 async function logout(tokenId) {
@@ -114,48 +114,53 @@ async function logout(tokenId) {
  * Logout a member by revoking his token.
  *
  * @param tokenId Token's JIT
- * @return {Promise.<JWT>} The deleted token
+ * @return {Promise<Connection>} The deleted token
  * @throws An error if the token could not be find.
  */
 async function me(tokenId) {
     const token = await JWT.findById(tokenId);
+    if (!token) throw createUserError('UnknownUser', 'This token does not exist');
 
-    const barman = await Barman.findOne({
-        include: [{
-            model: ConnectionInformation,
-            as: 'connection',
-            include: [{
-                model: JWT,
-                as: 'jwt',
-                where: {id: token.id},
-                attributes: []
-            }],
-            attributes: ['username']
-        }, {
-            model: Kommission,
-            as: 'kommissions'
-        }, {
-            model: Role,
-            as: 'roles'
-        }]
+    const co = await token.getConnection({
+        attributes: [],
+        include: [
+            {
+                model: Barman,
+                as: 'barman',
+                include: [
+                    {
+                        model: ConnectionInformation,
+                        as: 'connection',
+                        attributes: { exclude: [ 'password' ] },
+                    },
+                    {
+                        model: Kommission,
+                        as: 'kommissions',
+                    },
+                    {
+                        model: Role,
+                        as: 'roles',
+                    },
+                ],
+            },
+            {
+                model: SpecialAccount,
+                as: 'specialAccount',
+                attributes: { exclude: [ 'code' ] },
+                include: [
+                    {
+                        model: ConnectionInformation,
+                        as: 'connection',
+                        attributes: { exclude: [ 'password' ] },
+                    },
+                ],
+            },
+        ],
     });
 
-    const specialAccount = await SpecialAccount.findOne({
-        include: [{
-            model: ConnectionInformation,
-            as: 'connection',
-            include: [{
-                model: JWT,
-                as: 'jwt',
-                where: {id: token.id},
-                attributes: []
-            }],
-            attributes: ['username'],
-        }],
-        attributes: ['id', 'createdAt', 'description', 'updatedAt']
-    });
+    if (!co) throw createServerError('UnknownUser', 'This token has no connection, this should not exist!');
 
-    return { barman: barman, specialAccount: specialAccount };
+    return co;
 }
 
 

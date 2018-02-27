@@ -46,7 +46,7 @@ export class LoginService {
                     };
                 } else if (connectedUser.specialAccount) {
                     this.currentUser = {
-                        accountType: 'SpeacialAccount',
+                        accountType: 'SpecialAccount',
                         username:  connectedUser.specialAccount.connection.username,
                         createdAt: connectedUser.specialAccount.createdAt,
                         specialAccount: connectedUser.specialAccount,
