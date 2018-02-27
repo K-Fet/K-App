@@ -69,7 +69,7 @@ async function getServiceById(serviceId) {
  * @return {Promise<Service>} The updated service
  */
 async function updateService(serviceId, updatedService) {
-    const currentService = await Service.findById(serviceId);
+    let currentService = await Service.findById(serviceId);
 
     if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
@@ -89,6 +89,9 @@ async function updateService(serviceId, updatedService) {
         throw createServerError('ServerError', 'Error while updating service');
     }
     await transaction.commit();
+
+    currentService = await Service.findById(serviceId);
+
     return currentService;
 }
 

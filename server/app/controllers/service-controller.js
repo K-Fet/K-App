@@ -55,11 +55,6 @@ async function createService(req, res) {
     //Créer un tableau de services , a la place de new service etc.... (foreach...)
     const services = new Array();
 
-    /* Req.body.forEach(service => {
-        service = await serviceService.createService(service, service[_embedded]);
-        services.push(service);
-    });*/
-
     for (let service of req.body) {
         const newService = new Service({
             name: service.name,
