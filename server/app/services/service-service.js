@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const sequelize = require('../../db');
 const Op = sequelize.Op;
 const { Service, Category } = require('../models');
-const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
+const { createUserError, createServerError, cleanObject } = require('../../utils');
 
 
 
@@ -28,12 +28,43 @@ async function getAllServices(start, end) {
  * @param newService {Service} partial service
  * @return {Promise<Service|Errors.ValidationError>} The created service with its id
  */
-async function createService(newService) {
+async function createService(newService, _embedded) {
 
     logger.verbose('Service service: creating a new service named %s', newService.name);
-    return await newService.save();
-}
 
+    const transaction = await sequelize.transaction();
+    try {
+        await newService.save({ transaction });
+
+    }catch (err) {
+        logger.warn('Service service: Error while creating service', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while creating service');
+    }
+
+    // Associations
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            if (associationKey === 'category') {
+                const wantedCategory = await Category.findById(value);
+
+                if (!wantedCategory) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownCategory', `Unable to find category with id ${wantedCategory}`);
+                }
+
+                await newService.setCategory(wantedCategory, { transaction });
+
+            } else {
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+            }
+        }
+    }
+    await transaction.commit();
+    return newService;
+}
 
 /**
  * Get a service by its id.
@@ -133,7 +164,13 @@ async function deleteService(serviceId) {
 
     logger.verbose('Service service: deleting service with id %d', serviceId);
 
-    const service = await Service.findById(serviceId);
+    const service = await Service.findById(serviceId, {
+        
+        include: [
+            {
+                model: Category
+            }
+        ]});
 
     if (!service) throw createUserError('UnknownService', 'This service does not exist');
 
