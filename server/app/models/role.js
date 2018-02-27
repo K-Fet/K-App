@@ -38,9 +38,15 @@ class Role extends Model {
      * Set associations for the model
      * @param models
      */
+<<<<<<< HEAD:server/app/models/role.js
     static associate(models) {
         this.belongsToMany(models.Barman, { through: models.RoleWrapper, as: 'barmen' });
     }
+=======
+    /*static associate(models) {
+        //this.hasMany(models.Service, { as: 'services' });
+    }*/
+>>>>>>> CRUD totalement fonctionnel:server/app/models/category.js
 }
 
 
