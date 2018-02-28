@@ -79,8 +79,7 @@ async function updateService(serviceId, updatedService) {
         name: updatedService.name,
         startAt: updatedService.startAt,
         endAt: updatedService.endAt,
-        nbMax: updatedService.nbMax,
-        category: updatedService.category,
+        nbMax: updatedService.nbMax
     });
 }
 

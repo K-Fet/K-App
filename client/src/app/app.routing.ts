@@ -16,9 +16,6 @@ import { KommissionEditComponent } from './kommissions/edit/kommission-edit.comp
 import { RolesListComponent } from './roles/list/roles-list.component';
 import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
-import { CategoriesListComponent } from './categories/list/categories-list.component';
-import { CategoryNewComponent } from './categories/new/category-new.component';
-import { CategoryEditComponent } from './categories/edit/category-edit.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
 import { BarmenListComponent } from './barmen/list/barmen-list.component';
@@ -39,9 +36,6 @@ const routes: Routes = [
     { path: 'roles', component: RolesListComponent, canActivate: [AuthGuard] },
     { path: 'roles/new', component: RoleNewComponent, canActivate: [AuthGuard] },
     { path: 'roles/:id', component: RoleEditComponent, canActivate: [AuthGuard] },
-    { path: 'categories', component: CategoriesListComponent, canActivate: [AuthGuard] },
-    { path: 'categories/new', component: CategoryNewComponent, canActivate: [AuthGuard] },
-    { path: 'categories/:id', component: CategoryEditComponent, canActivate: [AuthGuard] },
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [AuthGuard] },
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
     { path: 'barmen', component: BarmenListComponent, canActivate: [AuthGuard] },

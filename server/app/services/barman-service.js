@@ -44,7 +44,7 @@ async function createBarman(newBarman, connection, _embedded) {
     // Associations
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[ associationKey ];
+            const value = _embedded[associationKey];
 
             if (associationKey === 'godFather') {
                 const wantedGodFather = await Barman.findById(value);
@@ -195,7 +195,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
     // Associations
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[ associationKey ];
+            const value = _embedded[associationKey];
 
             if (associationKey === 'godFather') {
                 const wantedGodFather = await Barman.findById(value);
@@ -280,10 +280,10 @@ async function getBarmanServices(barmanId, startDate, endDate) {
     return barman.getServices({
         where: {
             startAt: {
-                [ Op.gte ]: startDate,
+                [Op.gte]: startDate,
             },
             endAt: {
-                [ Op.lte ]: endDate,
+                [Op.lte]: endDate,
             },
         },
     });

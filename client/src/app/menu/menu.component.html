@@ -11,7 +11,7 @@
 		</button>
 	</mat-toolbar>
 	<mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-		<mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" 
+		<mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
 		[fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
 		<mat-nav-list>
 			<mat-list>
@@ -32,10 +32,6 @@
 				<h3 mat-subheader>Rôles</h3>
 				<a mat-list-item routerLink="/roles">Liste</a>
 				<a mat-list-item routerLink="/roles/new">Nouveau</a>
-				<mat-divider></mat-divider>
-				<h3 mat-subheader>Catégories de service</h3>
-				<a mat-list-item routerLink="/categories">Liste</a>
-				<a mat-list-item routerLink="/categories/new">Nouveau</a>
 				<mat-divider></mat-divider>
 			</mat-list>
 		</mat-nav-list>
