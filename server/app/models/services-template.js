@@ -70,7 +70,7 @@ class ServicesTemplateUnit extends Model {
                     const startAt = this.getDataValue('startAt');
 
                     return {
-                        day: startAt.getDate(),
+                        day: startAt.getDay(),
                         hours: startAt.getHours(),
                         minutes: startAt.getMinutes(),
                     };
@@ -96,7 +96,7 @@ class ServicesTemplateUnit extends Model {
                     const endAt = this.getDataValue('endAt');
 
                     return {
-                        day: endAt.getDate(),
+                        day: endAt.getDay(),
                         hours: endAt.getHours(),
                         minutes: endAt.getMinutes(),
                     };
