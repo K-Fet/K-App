@@ -6,7 +6,7 @@ const { Sequelize } = require('sequelize');
 const models = require('../../server/app/models');
 const mysqlConf = require('../prod-scripts/mysql');
 
-const { Service, Role, Kommission, Category, Barman, Member } = models;
+const { Service, Role, Kommission, Barman, Member } = models;
 
 
 async function ask(conf) {
@@ -98,9 +98,6 @@ async function generateBarmen() {
 
 async function generateServices() {
     try {
-        // Create a category for standard services
-
-        const category = await Category.findOrCreate({ where: { name: 'Services standards' } });
 
         const startDay = new Date();
         startDay.setDate(startDay.getDate() - (startDay.getDay() + 6) % 7);
@@ -120,8 +117,7 @@ async function generateServices() {
                 servicesToCreate.push({
                     startAt: dayNoon,
                     endAt: dayNoonEnd,
-                    nbMax: 4,
-                    category
+                    nbMax: 4
                 });
 
 
@@ -136,8 +132,7 @@ async function generateServices() {
                     servicesToCreate.push({
                         startAt: dayEvening,
                         endAt: dayEveningEnd,
-                        nbMax: 4,
-                        category
+                        nbMax: 4
                     });
                 }
 

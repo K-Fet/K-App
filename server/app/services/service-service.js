@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
-const { Service: Service } = require('../models/service');
-const { createUserError } = require('../../utils');
+const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
+const { createUserError, getDefaultTemplate } = require('../../utils');
 
 /**
  * Return all services of the app.
@@ -18,10 +18,10 @@ async function getAllServices(start, end) {
             [Op.and]: [
                 {
                     startAt: { [Op.gte]: start },
-                    endAt: { [Op.lte]: end }
-                }
-            ]
-        }
+                    endAt: { [Op.lte]: end },
+                },
+            ],
+        },
     });
 }
 
@@ -80,7 +80,7 @@ async function updateService(serviceId, updatedService) {
         startAt: updatedService.startAt,
         endAt: updatedService.endAt,
         nbMax: updatedService.nbMax,
-        category: updatedService.category
+        category: updatedService.category,
     });
 }
 
@@ -103,11 +103,47 @@ async function deleteService(serviceId) {
     return service;
 }
 
+/**
+ * Return a default template for now.
+ * At the end, should return an array of templates.
+ * @return {ServicesTemplate} Services Template
+ */
+async function getServicesTemplate() {
+
+    let template = await ServicesTemplate.findOne({
+        include: [
+            {
+                model: ServicesTemplateUnit,
+                as: 'services',
+            },
+        ],
+    });
+
+    // Temporary workaround
+    // Create a template if no template was found yet.
+    if (!template) {
+        template = await ServicesTemplate.create({
+            name: 'Template par défaut',
+            services: getDefaultTemplate(),
+        }, {
+            include: [
+                {
+                    model: ServicesTemplateUnit,
+                    as: 'services',
+                },
+            ],
+        });
+    }
+
+    return template;
+}
+
 
 module.exports = {
     getAllServices,
     createService,
     updateService,
     getServiceById,
-    deleteService
+    deleteService,
+    getServicesTemplate,
 };

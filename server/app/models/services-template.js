@@ -3,7 +3,7 @@ const { DataTypes, Model } = require('sequelize');
 /**
  * This class represents a template for a list of services for a week.
  */
-class ServiceTemplate extends Model {
+class ServicesTemplate extends Model {
 
     /**
      * Initialization function.
@@ -35,14 +35,14 @@ class ServiceTemplate extends Model {
      * @param models
      */
     static associate(models) {
-        this.hasMany(models.ServiceTemplateUnit, { as: 'services' });
+        this.hasMany(models.ServicesTemplateUnit, { as: 'services' });
     }
 }
 
 /**
  * This class represent an unique service for a template.
  */
-class ServiceTemplateUnit extends Model {
+class ServicesTemplateUnit extends Model {
 
     /**
      * Initialization function.
@@ -129,6 +129,6 @@ class ServiceTemplateUnit extends Model {
 }
 
 module.exports = {
-    ServiceTemplate,
-    ServiceTemplateUnit,
+    ServicesTemplate,
+    ServicesTemplateUnit,
 };
