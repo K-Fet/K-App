@@ -10,7 +10,7 @@ const { createUserError } = require('../../utils');
 async function getAllMembers() {
 
     logger.verbose('Member service: get all members');
-    return await Member.findAll();
+    return Member.findAll();
 }
 
 /**
@@ -22,7 +22,7 @@ async function getAllMembers() {
 async function createMember(newMember) {
 
     logger.verbose('Member service: creating a new member named %s %s', newMember.firstName, newMember.lastName);
-    return await newMember.save();
+    return newMember.save();
 }
 
 
@@ -63,7 +63,7 @@ async function updateMember(memberId, updatedMember) {
 
     logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
 
-    return await currentMember.update({
+    return currentMember.update({
         email: updatedMember.email,
         firstName: updatedMember.firstName,
         lastName: updatedMember.lastName,

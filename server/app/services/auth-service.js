@@ -38,7 +38,7 @@ async function login(username, password) {
         throw createUserError('LoginError', 'Bad username/password combination');
     }
 
-    return await createJWT(user);
+    return createJWT(user);
 }
 
 /**
@@ -56,7 +56,7 @@ async function refresh(currentTokenId) {
     // because current token is already revoked
     const user = token.getConnection();
 
-    return await createJWT(user);
+    return createJWT(user);
 }
 
 

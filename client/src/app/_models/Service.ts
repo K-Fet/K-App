@@ -1,5 +1,3 @@
-import { Category } from './index';
-
 export class Service {
 
     id: Number;
@@ -7,11 +5,6 @@ export class Service {
     startingDate: Date;
     endingDate: Date;
     nbMax: Number;
-    categoryId: Number;
-
-    // Association
-
-    category: Category;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

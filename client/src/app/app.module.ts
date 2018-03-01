@@ -31,16 +31,13 @@ import { KommissionEditComponent } from './kommissions/edit/kommission-edit.comp
 import { RolesListComponent } from './roles/list/roles-list.component';
 import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
-import { CategoriesListComponent } from './categories/list/categories-list.component';
-import { CategoryNewComponent } from './categories/new/category-new.component';
-import { CategoryEditComponent } from './categories/edit/category-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService, CategoryService } from './_services/index';
+    BarmanService, ServiceService, KommissionService, RoleService } from './_services/index';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -74,9 +71,6 @@ import { MaterialModule } from './_helpers/material.module';
         RoleEditComponent,
         RoleNewComponent,
         RolesListComponent,
-        CategoryEditComponent,
-        CategoryNewComponent,
-        CategoriesListComponent,
         CodeDialogComponent,
         NotFoundComponent,
         ConnectedUserDialogComponent
@@ -103,7 +97,6 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceService,
         KommissionService,
         RoleService,
-        CategoryService,
         AuthGuard,
         ToasterService,
         {

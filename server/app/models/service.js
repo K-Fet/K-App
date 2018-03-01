@@ -55,7 +55,6 @@ class Service extends Model {
      */
     static associate(models) {
         this.belongsToMany(models.Barman, { through: models.ServiceWrapper, as: 'barmen' });
-        this.belongsTo(models.Category);
     }
 }
 
@@ -64,10 +63,6 @@ const ServiceSchema = Joi.object().keys({
     startingDate: Joi.string().isoDate(),
     endingDate: Joi.string().isoDate(),
     nbMax: Joi.number().integer(),
-
-    _embedded: Joi.object().keys({
-        category: Joi.number().integer()
-    })
 });
 
 module.exports = {

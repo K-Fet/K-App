@@ -6,16 +6,16 @@ const { sequelizeMockingMocha } = require('sequelize-mocking');
 
 const { getAllMembers } = require('../../app/services/member-service');
 
-describe('Member service Test', function () {
+describe('Member service Test', () => {
 
     // Basic configuration: create a sinon sandbox for testing
     let sandbox = null;
 
-    beforeEach(function () {
+    beforeEach(() => {
         sandbox = sinon.sandbox.create();
     });
 
-    afterEach(function () {
+    afterEach(() => {
         sandbox && sandbox.restore();
     });
 
@@ -25,7 +25,7 @@ describe('Member service Test', function () {
     );
 
 
-    it('should return members in array', async function () {
+    it('should return members in array', async () => {
         // Given
         // When
 

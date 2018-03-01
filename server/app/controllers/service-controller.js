@@ -12,7 +12,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllServices(req, res) {
-    const services = await serviceService.getAllServices();
+    const { start, end } = req.params;
+
+    const services = await serviceService.getAllServices(start, end);
 
     res.json(services);
 }
@@ -25,19 +27,21 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
-    const schema = Joi.array().items(ServiceSchema.requiredKeys(
-        'startingDate',
-        'endingDate',
-        'nbMax',
-        '_embedded.category' // If _embedded exist, there must be a category field
-    )).min(1);
+    const schema = Joi.array()
+        .items(ServiceSchema.requiredKeys(
+            'startingDate',
+            'endingDate',
+            'nbMax',
+            '_embedded.category', // If _embedded exist, there must be a category field
+        ))
+        .min(1);
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details.message);
 
     let newService = new Service({
         ...req.body,
-        _embedded: undefined // Remove the only external object
+        _embedded: undefined, // Remove the only external object
     });
 
     newService = await serviceService.createService(newService, req.body._embedded);
@@ -77,7 +81,7 @@ async function updateService(req, res) {
 
     let newService = new Service({
         ...req.body,
-        _embedded: undefined  // Remove the only external object
+        _embedded: undefined,  // Remove the only external object
     });
 
     const serviceId = req.params.id;
@@ -102,11 +106,27 @@ async function deleteService(req, res) {
     res.json(service);
 }
 
+/**
+ * Return a default template for now.
+ * At the end, should return an array of templates.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
+async function getServicesTemplate(req, res) {
+
+    const template = await serviceService.getServicesTemplate();
+
+    res.json(template);
+}
+
 
 module.exports = {
     getAllServices,
     createService,
     updateService,
     getServiceById,
-    deleteService
+    deleteService,
+    getServicesTemplate,
 };

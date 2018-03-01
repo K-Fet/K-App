@@ -1,13 +1,13 @@
 const { createUserError, createServerError } = require('./errors');
 const { verify, hash } = require('./password-manager');
-const { checkStructure } = require('./query-checker');
 const { cleanObject } = require('./helpers');
+const { getDefaultTemplate } = require('./template-service');
 
 module.exports = {
     createUserError,
     createServerError,
     verify,
     hash,
-    checkStructure,
-    cleanObject
+    cleanObject,
+    getDefaultTemplate,
 };

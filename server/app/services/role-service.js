@@ -11,7 +11,7 @@ const { createUserError, createServerError, cleanObject } = require('../../utils
 async function getAllRoles() {
 
     logger.verbose('Role service: get all roles');
-    return await Role.findAll();
+    return Role.findAll();
 }
 
 /**
@@ -73,9 +73,9 @@ async function getRoleById(roleId) {
     logger.verbose('Role service: get role by id %d', roleId);
 
     const role = await Role.findById(roleId, {
-        include : [
+        include: [
             {
-                model : Barman,
+                model: Barman,
                 as: 'barmen'
             }
         ]
@@ -103,7 +103,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
     const currentRole = await Role.findById(roleId, {
         include: [
             {
-                model : Barman,
+                model: Barman,
                 as: 'barmen'
             }
         ]

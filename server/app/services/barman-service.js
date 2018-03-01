@@ -12,7 +12,7 @@ const { createUserError, createServerError, cleanObject, hash } = require('../..
 async function getAllBarmen() {
 
     logger.verbose('Barman service: get all barmen');
-    return await Barman.findAll();
+    return Barman.findAll();
 }
 
 /**
@@ -32,7 +32,7 @@ async function createBarman(newBarman, connection, _embedded) {
 
         const coData = {
             username: connection.username,
-            password: await hash(connection.password)
+            password: await hash(connection.password),
         };
         await newBarman.createConnection(cleanObject(coData), { transaction });
     } catch (err) {
@@ -104,26 +104,26 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ]
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Barman,
-                as: 'godFather'
+                as: 'godFather',
             },
             {
                 model: Kommission,
-                as: 'kommissions'
+                as: 'kommissions',
             },
             {
                 model: Role,
-                as: 'roles'
-            }
-        ]
+                as: 'roles',
+            },
+        ],
     });
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    return await barman;
+    return barman;
 }
 
 /**
@@ -143,13 +143,13 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
         include: [
             {
                 model: Kommission,
-                as: 'kommissions'
+                as: 'kommissions',
             },
             {
                 model: Role,
-                as: 'roles'
-            }
-        ]
+                as: 'roles',
+            },
+        ],
     });
 
     if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
@@ -166,7 +166,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
             facebook: updatedBarman.facebook,
             dateOfBirth: updatedBarman.dateOfBirth,
             flow: updatedBarman.flow,
-            active: updatedBarman.active
+            active: updatedBarman.active,
         }), { transaction });
 
 
@@ -176,7 +176,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
             const coData = {
                 username: updatedBarman.connection.username,
-                password: await hash(updatedBarman.connection.password)
+                password: await hash(updatedBarman.connection.password),
             };
 
             // If there is no connection yet, create one
@@ -271,31 +271,31 @@ async function deleteBarmanById(barmanId) {
  */
 async function getBarmanServices(barmanId, startDate, endDate) {
 
-    logger.verbose('Barman service: retreive services of the barman ', barmanId );
+    logger.verbose('Barman service: retreive services of the barman ', barmanId);
 
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
-    const services = await barman.getServices({
-        where: {
-            startAt : {
-                [Op.gte]: startDate,
-            }, endAt : {
-                [Op.lte]: endDate
-            }
-        }
-    });
 
-    return services;
+    return barman.getServices({
+        where: {
+            startAt: {
+                [Op.gte]: startDate,
+            },
+            endAt: {
+                [Op.lte]: endDate,
+            },
+        },
+    });
 }
 
 /**
-* Create a service for a barman
-*
-* @param barmanID {number} barman id
-* @param serviceId {number<Array>} service ids
-* @returns {Promise<Errors.ValidationError>} an error or nothing
-*/
+ * Create a service for a barman
+ *
+ * @param barmanID {number} barman id
+ * @param serviceId {number<Array>} service ids
+ * @returns {Promise<Errors.ValidationError>} an error or nothing
+ */
 async function createServiceBarman(barmanId, servicesId) {
 
     logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
@@ -307,7 +307,7 @@ async function createServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.addService(servicesId, {transaction});
+        await barman.addService(servicesId, { transaction });
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
@@ -317,13 +317,13 @@ async function createServiceBarman(barmanId, servicesId) {
 }
 
 /**
-* Delete a Service of a barman
-*
-* @param barmanId {number} barman id
-* @param serviceId {number} service id
-*
-* @returns {Promise<Errors.ValidationError>} an error or nothing
-*/
+ * Delete a Service of a barman
+ *
+ * @param barmanId {number} barman id
+ * @param serviceId {number} service id
+ *
+ * @returns {Promise<Errors.ValidationError>} an error or nothing
+ */
 async function deleteServiceBarman(barmanId, servicesId) {
 
     logger.verbose('Barman service: delete a Service for the barman ', barmanId, servicesId);
@@ -335,7 +335,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.removeServices(servicesId, {transaction});
+        await barman.removeServices(servicesId, { transaction });
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
@@ -352,5 +352,5 @@ module.exports = {
     updateBarmanById,
     getBarmanServices,
     createServiceBarman,
-    deleteServiceBarman
+    deleteServiceBarman,
 };
