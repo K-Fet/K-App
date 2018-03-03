@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Category, DEFAULT_CATEGORIES } from './index';
 
 import * as moment from 'moment';
 import { Moment } from 'moment';
