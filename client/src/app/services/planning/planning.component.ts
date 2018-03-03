@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Day, ServiceService, ToasterService, Categories } from '../../_services/index';
+import { Day, ServiceService, ToasterService, Category } from '../../_services/index';
 import { Service } from '../../_models/index';
 
 @Component({
@@ -10,7 +10,7 @@ import { Service } from '../../_models/index';
 export class PlanningComponent implements OnInit {
 
     days: Day[] = new Array<Day>();
-    categories: Categories[];
+    dayServices: Service[];
 
     constructor(private serviceService: ServiceService, private toasterService: ToasterService) {}
 
@@ -23,8 +23,8 @@ export class PlanningComponent implements OnInit {
             }
             return currentDay;
         });
-        this.serviceService.getDayServiceDetails(day).subscribe(categories => {
-            this.categories = categories;
+        this.serviceService.getDayServiceDetails(day).subscribe(services => {
+            this.dayServices = services;
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
@@ -32,8 +32,10 @@ export class PlanningComponent implements OnInit {
 
     ngOnInit() {
         this.serviceService.getPlanning().subscribe(days => {
-            this.days = days;
-            this.updateDayDetails(this.days[0]);
+            if (days.length > 0) {
+                this.days = days;
+                this.updateDayDetails(this.days[0]);
+            }
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });

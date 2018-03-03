@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/index';
-import { Day, ServiceService, Categories, ToasterService, BarmanService, DEFAULT_WEEK } from '../../_services/index';
+import { Day, ServiceService, ToasterService, BarmanService, DEFAULT_WEEK } from '../../_services/index';
 
 @Component({
     selector: 'app-plan-my-services',
@@ -9,8 +9,8 @@ import { Day, ServiceService, Categories, ToasterService, BarmanService, DEFAULT
 
 export class PlanMyServicesComponent implements OnInit {
 
-    myServices: Categories[];
-    dayServices: Categories[];
+    myServices: Service[];
+    dayServices: Service[];
     days: Day[] = new Array<Day>();
 
     constructor(private serviceService: ServiceService,
@@ -22,14 +22,15 @@ export class PlanMyServicesComponent implements OnInit {
         // Get the planning of the current week
 
         this.serviceService.getPlanning().subscribe(days => {
-            this.days = days;
-            this.updateDayDetails(this.days[0]);
+            if (days.length > 0) {
+                this.days = days;
+                this.updateDayDetails(this.days[0]);
+            }
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get actual services of the connected user
-
         this.updateMyServices();
     }
 
@@ -50,18 +51,16 @@ export class PlanMyServicesComponent implements OnInit {
     }
 
     updateMyServices() {
-        this.barmanService.getServicesOfCurrentWeekByCat(12,
+        this.barmanService.getServicesOfCurrentWeek(12,
             this.serviceService.getStartEnd().start,
             this.serviceService.getStartEnd().end)
-        .subscribe(categories => {
-            this.myServices = categories.map(category => {
-                return category.services.map(service => {
-                    this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                        service.barmen = barmen;
-                        return service;
-                    }, error => {
-                        this.toasterService.showToaster(error, 'Fermer');
-                    });
+        .subscribe(services => {
+            this.myServices = services.map(service => {
+                this.serviceService.getBarmen(service.id).subscribe(barmen => {
+                    service.barmen = barmen;
+                    return service;
+                }, error => {
+                    this.toasterService.showToaster(error, 'Fermer');
                 });
             });
         }, error => {

@@ -106,8 +106,8 @@ export class ServiceService {
         });
     }
 
-    getDayServiceDetails(day: Day): Observable<Array<Categories>> {
-        const categories = new Array<Categories>();
+    getDayServiceDetails(day: Day): Observable<Array<Service>> {
+        const services = new Array<Service>();
 
         const start = day.date.set({
             'hour': 0,
@@ -133,33 +133,8 @@ export class ServiceService {
                         observer.error(error);
                     });
                     return service;
-                }).forEach(service => {
-                    // Sort by category
-                    if (service.category) {
-                        const index = categories.map(category => category.name).indexOf(service.category.name);
-                        if (index === -1) {
-                            categories.push(
-                                {
-                                    name: service.category.name,
-                                    services: [service]
-                                }
-                            );
-                        } else {
-                            categories[index].services.push(service);
-                        }
-                    } else {
-                        const index = categories.map(category => category.name).indexOf('Sans categorie');
-                        if (index === -1) {
-                            categories.push({
-                                name: 'Sans categorie',
-                                services: [service]
-                            });
-                        } else {
-                            categories[index].services.push(service);
-                        }
-                    }
                 });
-                observer.next(categories);
+                observer.next(services);
             }, error => {
                 observer.error(error);
             });
@@ -191,11 +166,6 @@ export interface Day {
     name: String;
     date: Moment;
     active: Boolean;
-}
-
-export interface Categories {
-    name?: String;
-    services?: Service[];
 }
 
 export const DEFAULT_WEEK: { start: Number, end: number } = { start: 1 /* Dimanche */, end: 7 /* Samedi */ };

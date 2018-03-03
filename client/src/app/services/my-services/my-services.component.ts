@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/Service';
-import { BarmanService, ToasterService, LoginService, ServiceService, Categories, DEFAULT_WEEK } from '../../_services/';
-import { Category } from '../../_models/index';
+import { BarmanService, ToasterService, LoginService, ServiceService, DEFAULT_WEEK } from '../../_services/';
 
 @Component({
     selector: 'app-my-services',
@@ -10,7 +9,7 @@ import { Category } from '../../_models/index';
 
 export class MyServicesComponent implements OnInit {
 
-    myServices: Categories[];
+    myServices: Service[];
 
     constructor(private loginService: LoginService,
         private barmanService: BarmanService,
@@ -20,18 +19,16 @@ export class MyServicesComponent implements OnInit {
 
     ngOnInit() {
         // TODO /me to get the id of the connected barman
-        this.barmanService.getServicesOfCurrentWeekByCat(12,
+        this.barmanService.getServicesOfCurrentWeek(12,
             this.serviceService.getStartEnd().start,
             this.serviceService.getStartEnd().end)
-        .subscribe(categories => {
-            this.myServices = categories.map(category => {
-                return category.services.map(service => {
-                    this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                        service.barmen = barmen;
-                        return service;
-                    }, error => {
-                        this.toasterService.showToaster(error, 'Fermer');
-                    });
+        .subscribe(services => {
+            this.myServices = services.map(service => {
+                this.serviceService.getBarmen(service.id).subscribe(barmen => {
+                    service.barmen = barmen;
+                    return service;
+                }, error => {
+                    this.toasterService.showToaster(error, 'Fermer');
                 });
             });
         }, error => {

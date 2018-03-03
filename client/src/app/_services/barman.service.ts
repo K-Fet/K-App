@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Categories } from './index';
+import { Category, DEFAULT_CATEGORIES } from './index';
 
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -30,43 +30,6 @@ export class BarmanService {
                 start: (+start).toString(),
                 end: (+end).toString()
             }}).catch(this.handleError);
-    }
-
-    getServicesOfCurrentWeekByCat(id: Number, start: Moment, end: Moment) {
-        return Observable.create(observer => {
-            const categories = new Array<Categories>();
-
-            this.getServicesOfCurrentWeek(id, start, end).subscribe(services => {
-                services.forEach(service => {
-                    if (service.category) {
-                        const index = categories.map(category => category.name).indexOf(service.category.name);
-                        if (index === -1) {
-                            categories.push(
-                                {
-                                    name: service.category.name,
-                                    services: [service]
-                                }
-                            );
-                        } else {
-                            categories[index].services.push(service);
-                        }
-                    } else {
-                        const index = categories.map(category => category.name).indexOf('Sans categorie');
-                        if (index === -1) {
-                            categories.push({
-                                name: 'Sans categorie',
-                                services: [service]
-                            });
-                        } else {
-                            categories[index].services.push(service);
-                        }
-                    }
-                });
-                observer.next(categories);
-            }, error => {
-                observer.error(error);
-            });
-        });
     }
 
     create(barman: Barman) {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK, CategoryService } from '../../_services/index';
-import { Template, Service, Category } from '../../_models/index';
+import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK } from '../../_services/index';
+import { Template, Service } from '../../_models/index';
 import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import * as moment from 'moment';
@@ -14,7 +14,7 @@ import { Moment } from 'moment';
 export class OpenServicesComponent implements OnInit {
 
     templates: Template[] = new Array<Template>();
-    categories: Category[] = new Array<Category>();
+    services: Service[] = new Array<Service>();
     selectedTemplate: Template;
 
     templateSelectorFormGroup: FormGroup;
@@ -25,7 +25,6 @@ export class OpenServicesComponent implements OnInit {
     constructor (private templateService: TemplateService,
         private toasterService: ToasterService,
         private serviceService: ServiceService,
-        private categoryService: CategoryService,
         private formBuilder: FormBuilder) {
         this.createForms();
     }
@@ -47,7 +46,6 @@ export class OpenServicesComponent implements OnInit {
     addServiceForm(categoryId: Number, nbMax: Number, startAt: Moment, endAt: Moment) {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
-            categoryFormControl: [categoryId, Validators.required],
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
             endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required]
         });
@@ -78,6 +76,23 @@ export class OpenServicesComponent implements OnInit {
         return (<FormArray>this.generalFormArray.get([1])).controls;
     }
 
+    getFirstServiceDate(): Date {
+        if (this.servicesFormArray.controls.length > 0) {
+            return (<FormGroup>this.servicesFormArray.controls[0]).controls.startAtFormControl.value;
+        } else {
+            return null;
+        }
+    }
+
+    getLastServiceDate(): Date {
+        if (this.servicesFormArray.controls.length > 0) {
+            const lastIndex = this.servicesFormArray.controls.length - 1;
+            return (<FormGroup>this.servicesFormArray.controls[lastIndex]).controls.startAtFormControl.value;
+        } else {
+            return null;
+        }
+    }
+
     ngOnInit(): void {
         // Get templates
         this.templateService.getAll().subscribe(templates => {
@@ -86,14 +101,6 @@ export class OpenServicesComponent implements OnInit {
             this.toasterService.showToaster(error, 'Fermer');
         });
         this.onFormChanges();
-
-        // Get categories
-        this.categoryService.getAll().subscribe(categories => {
-            this.categories = categories;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
     }
 
     onFormChanges() {
@@ -128,13 +135,6 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    getCategoryNameByFormId(categoryId: Number): String {
-        const category = this.categories.filter(cat => {
-            return cat.id === categoryId;
-        })[0];
-        return category.name;
-    }
-
     createServices() {
         const services: Service[] = this.servicesFormArray.controls.map(formGroup => {
             return this.prepareService((<FormGroup>formGroup).controls);
@@ -148,7 +148,6 @@ export class OpenServicesComponent implements OnInit {
 
     prepareService(controls): Service {
         return {
-            categoryId: controls.categoryFormControl.value,
             startAt: controls.startAtFormControl.value,
             endAt: controls.endAtFormControl.value,
             nbMax: controls.nbMaxFormControl.value,

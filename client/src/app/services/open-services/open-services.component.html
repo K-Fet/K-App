@@ -23,6 +23,10 @@
                         </div>
                     </mat-step>
                     <mat-step formArrayName="1" [stepControl]="generalFormArray.get([1])" label="Services">
+                        <ng-template matStepLabel>
+                            Services du {{getFirstServiceDate() | date:'EEEE d LLLL':'':'fr'}} 
+                            au {{getLastServiceDate() | date:'EEEE d LLLL':'':'fr'}}
+                        </ng-template>
                         <mat-accordion>
                             <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i">
                                 <mat-expansion-panel>
@@ -31,23 +35,17 @@
                                             <button mat-icon-button (click)="removeServiceForm(i)" >
                                                 <mat-icon fxFlex="10px">remove</mat-icon>
                                             </button>
-                                            <span *ngIf="getControls()[i].controls.categoryFormControl.value; else elseBlock">
-                                                {{getCategoryNameByFormId(getControls()[i].controls.categoryFormControl.value)}}
+                                            <span *ngIf="getControls()[i].controls.startAtFormControl.value">
+                                                {{getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr'}}
+                                                de {{getControls()[i].controls.startAtFormControl.value | date:'H'}}h
+                                                à {{getControls()[i].controls.endAtFormControl.value | date:'H'}}h
                                             </span>
                                             <ng-template #elseBlock>
                                                 Non défini...
                                             </ng-template>
                                         </mat-panel-title>
-                                        <mat-panel-description *ngIf="getControls()[i].controls.startAtFormControl.value">
-                                            {{getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr'}}
-                                        </mat-panel-description>
                                     </mat-expansion-panel-header>
                                     <div fxLayout="column" fxLayoutAlign="center">
-                                        <mat-form-field>
-                                            <mat-select placeholder="Catégorie de service" formControlName="categoryFormControl" name="role">
-                                                <mat-option *ngFor="let category of categories" [value]="category.id">{{category.name}}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
                                         <mat-form-field>
                                             <input type="number" matInput placeholder="Nombre maximum" formControlName="nbMaxFormControl" required>
                                         </mat-form-field>

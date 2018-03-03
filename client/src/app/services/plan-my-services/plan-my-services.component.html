@@ -12,15 +12,12 @@
                 <h2>Actuellement ...</h2>
             </section>
             <mat-list *ngIf="myServices">
-                <mat-list-item *ngFor="let category of myServices">
-                    <h3 matLine>{{category.name}}</h3>
-                    <p matLine *ngFor="let service of category.services">
-                        <button type="button" mat-icon-button (click)="removeService(service)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                        {{service.startingDate | date:'EEEE d LLLL':'':'fr'}} de 
-                        {{service.startingDate | date:'H'}}h à {{service.endingDate | date:'H'}}h
-                    </p>
+                <mat-list-item *ngFor="let service of myServices">
+                    <button type="button" mat-icon-button (click)="removeService(service)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    {{service.startingDate | date:'EEEE d LLLL':'':'fr'}} de 
+                    {{service.startingDate | date:'H'}}h à {{service.endingDate | date:'H'}}h
                 </mat-list-item>
             </mat-list>
             <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
@@ -38,18 +35,21 @@
             </div>
             <div>
                 <mat-list *ngIf="dayServices">
-                    <mat-list-item *ngFor="let category of dayServices">
-                        <h3 matLine>{{category.name}}</h3>
-                        <p matLine *ngFor="let service of category.services">
-                            <button type="button" mat-icon-button (click)="addService(service)">
-                                <mat-icon>add</mat-icon>
-                            </button>
-                            De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h<br />
-                            <span class="mat-caption">Avec <span>La Konchita, La Dèle</span></span>
-                            <span *ngIf="service.barmen" matLine class="mat-caption">Avec <span ngFor="let barman of service.barmen">{{barman.nickname}}</span></span>
-                        </p>
+                    <mat-list-item *ngFor="let service of dayServices">
+                        <button type="button" mat-icon-button (click)="addService(service)">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h<br />
+                        <span class="mat-caption">Avec <span>La Konchita, La Dèle</span></span>
+                        <span *ngIf="service.barmen" matLine class="mat-caption">
+                            Avec <span ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                        </span>
                     </mat-list-item>
                 </mat-list>
+                <p *ngIf="!dayServices">
+                    Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a 
+                    surement pas encore ouvert les services.
+                </p>
             </div>
         </mat-card-content>
     </mat-card>
