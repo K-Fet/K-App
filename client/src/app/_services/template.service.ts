@@ -9,7 +9,7 @@ export class TemplateService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Template[]>('/api/templates').catch(this.handleError);
+        return this.http.get<Template[]>('/api/services/template').catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {

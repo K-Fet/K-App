@@ -11,13 +11,13 @@ export class Template {
         categoryId: Number,
         startAt: {
             day: Number,
-            hour: Number,
-            minute: Number
+            hours: Number,
+            minutes: Number
         },
         endAt: {
             day: Number,
-            hour: Number,
-            minute: Number
+            hours: Number,
+            minutes: Number
         }
     }>;
 

@@ -73,7 +73,7 @@ export class ServiceService {
                     'second': 59,
                     'millisecond': 59
                 });
-                if (moment().weekday() <= DEFAULT_WEEK_SWITCH) {
+                if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
                     start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).subtract(1, 'week');
                     end.isoWeekday(+DEFAULT_WEEK_SWITCH);
                 } else {

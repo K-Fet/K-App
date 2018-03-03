@@ -95,8 +95,10 @@ export class OpenServicesComponent implements OnInit {
 
     ngOnInit(): void {
         // Get templates
-        this.templateService.getAll().subscribe(templates => {
-            this.templates = templates;
+        this.templateService.getAll().subscribe(template => {
+            this.templates = [
+                template
+            ];
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
@@ -107,32 +109,38 @@ export class OpenServicesComponent implements OnInit {
         this.templateSelectorFormGroup.valueChanges.subscribe(val => {
             if (val.templateSelectorFormControl) {
                 (<Template>val.templateSelectorFormControl).services.forEach(service => {
-                    let startAt: Moment;
-                    let endAt: Moment;
-                    if (moment().weekday() >= DEFAULT_WEEK_SWITCH && service.startAt.day === DEFAULT_WEEK_SWITCH) {
-                        startAt = moment().add(1, 'week').weekday(+service.startAt.day);
-                        endAt = moment().add(1, 'week').weekday(+service.endAt.day);
-                    } else {
-                        startAt = moment().weekday(+service.startAt.day);
-                        endAt = moment().weekday(+service.endAt.day);
+                    const startAt: Moment = moment().isoWeekday(+service.startAt.day).set({
+                        'hour': +service.startAt.hours,
+                        'minute': +service.startAt.minutes,
+                        'second': 0,
+                        'millisecond': 0
+                    });
+                    const endAt: Moment = moment().isoWeekday(+service.endAt.day).set({
+                        'hour': +service.endAt.hours,
+                        'minute': +service.endAt.minutes,
+                        'second': 0,
+                        'millisecond': 0
+                    });
+                    const firstDayOfNextWeek = this.getFirstDayOfNextWeek();
+                    while (startAt.isBefore(firstDayOfNextWeek)) {
+                        startAt.add(1, 'week');
+                        endAt.add(1, 'week');
                     }
-                    startAt.set({
-                        'hour': +service.startAt.hour,
-                        'minute': +service.startAt.minute,
-                        'second': 0,
-                        'millisecond': 0
-                    });
-                    endAt.set({
-                        'hour': +service.endAt.hour,
-                        'minute': +service.endAt.minute,
-                        'second': 0,
-                        'millisecond': 0
-                    });
                     this.addServiceForm(service.categoryId, service.nbMax, startAt, endAt);
                 });
             }
             this.sortServiceForm();
         });
+    }
+
+    getFirstDayOfNextWeek(): Moment {
+        const firstDay = moment();
+        if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
+            firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
+        } else {
+            firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).add(1, 'week');
+        }
+        return firstDay;
     }
 
     createServices() {
