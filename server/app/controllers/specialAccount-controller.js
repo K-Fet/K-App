@@ -5,7 +5,7 @@ const { createUserError } = require('../../utils');
 
 /**
  * Fetch all SpecialAccount from the database
- * 
+ *
  * @param req Request
  * @param res Response
  * @return {Promise<void>} Nothing
@@ -18,7 +18,7 @@ async function getAllSpecialAccounts(req, res) {
 
 /**
  * Create a SpecialAccount
- * 
+ *
  * @param req Request
  * @param res Response
  * @return {Promise<void>} Nothing
@@ -49,7 +49,7 @@ async function createSpecialAccount(req, res) {
 
 /**
  * Get a SpecialAccount by its id
- * 
+ *
  * @param req Request
  * @param res Response
  * @return {Promise<void>} Nothing
@@ -64,7 +64,7 @@ async function getSpecialAccountById(req, res) {
 
 /**
  * Update a SpecialAccount.
- * 
+ *
  * @param req Request
  * @param res Response
  * @return {Promise<void>} Nothing
@@ -74,12 +74,12 @@ async function updateSpecialAccount(req, res) {
     const newUser = req.body;
 
     const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.details[0].message );
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newSpecialAccount = new SpecialAccount({
         ...newUser
     });
-    
+
     const specialAccountId = req.param.id;
 
     newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId, newSpecialAccount);
@@ -89,7 +89,7 @@ async function updateSpecialAccount(req, res) {
 
 /**
  * Delete a SpecialAccount
- * 
+ *
  * @param req Request
  * @param res Response
  * @return {Promise<void>} Nothing

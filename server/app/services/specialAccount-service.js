@@ -5,35 +5,49 @@ const { createUserError, createServerError, cleanObject, hash } = require('../..
 
 /**
  * Return all specialAccounts of the app
- * 
+ *
  * @returns {Promise<Array>} SpecialAccount
  */
 async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
-    return await SpecialAccount.findAll();
+    return SpecialAccount.findAll();
 }
 
 /**
  * Create a SpecialAccount.
- * 
+ *
  * @param newSpecialAccount {SpecialAccount} partial specialAccount
  * @param connection {Object} Object containing connection informations.
  * @return {Promise<SpecialAccount} The created SpecialAccount with its id
  */
 async function createSpecialAccount(newSpecialAccount, connection) {
 
-    logger.verbose('SpecialAccount service: creating a new SpecialAccount code: %s ', newSpecialAccount.code);
+    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username ', connection.username);
 
     const transaction = await sequelize.transaction();
+
+    const currentSpecialAccount = SpecialAccount.findAll({
+        where: {
+            username: connection.username
+        }
+    });
+
+    if (currentSpecialAccount) throw createUserError('UsedUsername', 'This username is already used !');
+
     try {
-        await newSpecialAccount.save({ transaction });
 
         const coData = {
             username: connection.username,
             password: await hash(connection.password)
         };
-        await newSpecialAccount.createConnection(cleanObject(coData), { transaction });
+
+        await coData.save({ transaction });
+
+        await newSpecialAccount.setConnection(coData, { transaction });
+
+        await newSpecialAccount.save({ transaction });
+
     } catch (err) {
         logger.warn('SpecialAccount service: Error while creating specialAccount', err);
         await transaction.rollback();
@@ -54,7 +68,7 @@ async function getSpecialAccountById(specialAccountId) {
     logger.verbose('specialAccount service: get a specialAccount by his id %d', specialAccountId);
 
     const specialAccount = await SpecialAccount.findById(specialAccountId, {
-        include: [ 
+        include: [
             {
                 model: ConnectionInformation,
                 as: 'connection',
@@ -63,13 +77,13 @@ async function getSpecialAccountById(specialAccountId) {
         ]
     });
 
-    if(!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
+    if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
     return specialAccount;
 }
 
 /**
  * Update a specialAccount
- * 
+ *
  * @param specialAccountId {number} specialAccount id
  * @param updatedSpecialAccount {SpecialAccount} Updated SpecialAccount, constructed from the request.
  * @return {Promise<SpecialAccount>} the updated special account
@@ -98,7 +112,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount)
                 username: updatedSpecialAccount.connection.username,
                 password: await hash(updatedSpecialAccount.connection.password)
             };
-            
+
             // If there is no connection yet, create one
             if (!co) {
                 await currentSpecialAccount.createConnection(cleanObject(coData), { transaction });
@@ -118,7 +132,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount)
 
 /**
  * Delete a SpecialAccount
- * 
+ *
  * @param specialAccountId {number} SpecialAccount id
  * @return {Promise<SpecialAccount>} The deleted SpecialAccount
  */
@@ -128,7 +142,7 @@ async function deleteSpecialAccountById(specialAccountId) {
 
     const specialAccount = await SpecialAccount.findById(specialAccountId);
 
-    if(!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
+    if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
     await specialAccount.destroy();
 
