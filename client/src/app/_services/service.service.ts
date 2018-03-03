@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Service, Barman } from '../_models/index';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
@@ -11,8 +12,11 @@ import { ToasterService } from './index';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
+
+
 @Injectable()
 export class ServiceService {
+    $weekInterval: BehaviorSubject<Number> = new BehaviorSubject<Number>(0);
 
     constructor(private http: HttpClient) { }
 
@@ -44,51 +48,54 @@ export class ServiceService {
         return this.http.delete('/api/services/' + id).catch(this.handleError);
     }
 
-    // dayNumber: 0 = sunday, 1 = monday ...
+    // dayNumber: 7 = sunday, 1 = monday, 2 = thuesday ...
     // Examples:
     // - getLast(0, 0) will return yesterday, if today is monday
     // - getLast(0, 1) will return the sunday a week before yesterday, if today is monday
     // - getLast(1, 0) will return the ultimate monday, if today is monday
-    getLast(dayNumber: Number, weekInterval?: Number): Moment {
-        weekInterval = weekInterval ? weekInterval : 0;
-        return moment().weekday(-dayNumber - 7 * +weekInterval);
-    }
-
-    // dayNumber: 1 = monday, 2 = thuesday ...
-    // Examples:
+    //
     // - getNext(2, 0) will return the next thuesday, if today is monday (tomorrow)
     // - getNext(2, 1) will return the thuesday a week after tomorrow, if today is monday
     // - getNext(1, 0) will return today, if today is monday (/!\ not today)
-    getNext(dayNumber: Number, weekInterval?: Number): Moment {
-        weekInterval = weekInterval ? weekInterval : 0;
-        return moment().weekday(+dayNumber + 7 * (+weekInterval - 1));
+
+    getWeek(): Observable<{start: Moment, end: Moment}> {
+        return new Observable(week => {
+            this.$weekInterval.subscribe(weekInterval => {
+                const start: Moment = moment().set({
+                    'hour': 0,
+                    'minute': 0,
+                    'second': 0,
+                    'millisecond': 0
+                });
+                const end: Moment = moment().set({
+                    'hour': 23,
+                    'minute': 59,
+                    'second': 59,
+                    'millisecond': 59
+                });
+                if (moment().weekday() <= DEFAULT_WEEK_SWITCH) {
+                    start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).subtract(1, 'week');
+                    end.isoWeekday(+DEFAULT_WEEK_SWITCH);
+                } else {
+                    start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
+                    end.isoWeekday(+DEFAULT_WEEK_SWITCH).add(1, 'week');
+                }
+                if (weekInterval < 0) {
+                    start.subtract(Math.abs(+weekInterval), 'week');
+                    end.subtract(Math.abs(+weekInterval), 'week');
+                } else if (weekInterval > 0) {
+                    start.add(Math.abs(+weekInterval), 'week');
+                    end.add(Math.abs(+weekInterval), 'week');
+                }
+                week.next({ start: start, end: end});
+            });
+        });
     }
 
-    getStartEnd(weekInterval?: Number): { start: Moment, end: Moment } {
-        // TODO Implement weekInterval
-        const start: Moment =  this.getLast(DEFAULT_WEEK.start).set({
-            'hour': 0,
-            'minute': 0,
-            'second': 0,
-            'millisecond': 0
-        });
-
-        const end: Moment =  this.getNext(DEFAULT_WEEK.start).set({
-            'hour': 23,
-            'minute': 59,
-            'second': 59,
-            'millisecond': 99
-        });
-
-        return { start: start, end: end};
-    }
-
-    getPlanning(weekInterval?: Number): Observable<Array<Day>> {
-        // TODO Implement weekInterval
+    getPlanning(start: Moment, end: Moment): Observable<Array<Day>> {
         const days: Array<Day> = new Array<Day>();
-
         return Observable.create((observer) => {
-            this.get(this.getStartEnd().start, this.getStartEnd().end).subscribe(services => {
+            this.get(start, end).subscribe(services => {
                 services.forEach(service => {
                     const day = {
                         name: WEEK_DAY_SHORT[moment(service.startAt).isoWeekday() - 1],
@@ -168,7 +175,7 @@ export interface Day {
     active: Boolean;
 }
 
-export const DEFAULT_WEEK: { start: Number, end: number } = { start: 1 /* Dimanche */, end: 7 /* Samedi */ };
+export const DEFAULT_WEEK_SWITCH: Number = 4;
 
 const WEEK_DAY_LONG: Array<String> = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 

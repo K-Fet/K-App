@@ -8,7 +8,7 @@ import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import * as moment from 'moment';
-import { Moment } from 'moment';
+import { Moment, weekdays } from 'moment';
 
 @Injectable()
 export class BarmanService {
@@ -23,7 +23,7 @@ export class BarmanService {
         return this.http.get<Barman>('/api/barmen/' + id).catch(this.handleError);
     }
 
-    getServicesOfCurrentWeek(id: Number, start: Moment, end: Moment) {
+    getServices(id: Number, start: Moment, end: Moment) {
         return this.http.get<Service[]>('/api/barmen/' + id + '/services', {
             params: {
                 start: (+start).toString(),

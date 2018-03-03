@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK } from '../../_services/index';
+import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK_SWITCH } from '../../_services/index';
 import { Template, Service } from '../../_models/index';
 import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -109,7 +109,7 @@ export class OpenServicesComponent implements OnInit {
                 (<Template>val.templateSelectorFormControl).services.forEach(service => {
                     let startAt: Moment;
                     let endAt: Moment;
-                    if (moment().weekday() >= DEFAULT_WEEK.start && service.startAt.day === DEFAULT_WEEK.start) {
+                    if (moment().weekday() >= DEFAULT_WEEK_SWITCH && service.startAt.day === DEFAULT_WEEK_SWITCH) {
                         startAt = moment().add(1, 'week').weekday(+service.startAt.day);
                         endAt = moment().add(1, 'week').weekday(+service.endAt.day);
                     } else {

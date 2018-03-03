@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Service } from '../../_models/Service';
-import { BarmanService, ToasterService, LoginService, ServiceService, DEFAULT_WEEK } from '../../_services/';
+import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
+import { Moment } from 'moment';
 
 @Component({
     selector: 'app-my-services',
@@ -19,20 +20,19 @@ export class MyServicesComponent implements OnInit {
 
     ngOnInit() {
         // TODO /me to get the id of the connected barman
-        this.barmanService.getServicesOfCurrentWeek(12,
-            this.serviceService.getStartEnd().start,
-            this.serviceService.getStartEnd().end)
-        .subscribe(services => {
-            this.myServices = services.map(service => {
-                this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                    service.barmen = barmen;
-                    return service;
-                }, error => {
-                    this.toasterService.showToaster(error, 'Fermer');
+        this.serviceService.getWeek().subscribe(week => {
+            this.barmanService.getServices(12, week.start, week.end).subscribe(services => {
+                this.myServices = services.map(service => {
+                    this.serviceService.getBarmen(service.id).subscribe(barmen => {
+                        service.barmen = barmen;
+                        return service;
+                    }, error => {
+                        this.toasterService.showToaster(error, 'Fermer');
+                    });
                 });
+            }, error => {
+                this.toasterService.showToaster(error, 'Fermer');
             });
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

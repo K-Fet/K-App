@@ -31,13 +31,15 @@ export class PlanningComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.serviceService.getPlanning().subscribe(days => {
-            if (days.length > 0) {
-                this.days = days;
-                this.updateDayDetails(this.days[0]);
-            }
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
+        this.serviceService.getWeek().subscribe(week => {
+            this.serviceService.getPlanning(week.start, week.end).subscribe(days => {
+                if (days.length > 0) {
+                    this.days = days;
+                    this.updateDayDetails(this.days[0]);
+                }
+            }, error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
         });
     }
 }

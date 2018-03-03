@@ -40,6 +40,7 @@ import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
+import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -89,7 +90,8 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         CodeDialogComponent,
         NotFoundComponent,
         ConnectedUserDialogComponent,
-        OpenServicesComponent
+        OpenServicesComponent,
+        WeekPickerComponent
     ],
     entryComponents: [
         CodeDialogComponent,

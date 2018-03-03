@@ -31,7 +31,7 @@
                             <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i">
                                 <mat-expansion-panel>
                                     <mat-expansion-panel-header>
-                                        <mat-panel-title>
+                                        <mat-panel-title fxLayoutAlign="start center">
                                             <button mat-icon-button (click)="removeServiceForm(i)" >
                                                 <mat-icon fxFlex="10px">remove</mat-icon>
                                             </button>
