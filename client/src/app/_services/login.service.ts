@@ -19,19 +19,18 @@ export class LoginService {
     };
 
     constructor(private http: HttpClient) {
-        if (localStorage.getItem('currentUser')) {
-
-            // Refresh the token after 50ms to prevent other call.
-            setTimeout(() => {
+        setTimeout(() => {
+            if (localStorage.getItem('currentUser')) {
+                // Refresh the token after 50ms to prevent other call.
                 this.refresh().subscribe();
-            }, 50);
 
-            // Refresh token every 45 minutes
-            Observable.interval(45 * 60 * 1000)
-            .timeInterval()
-            .flatMap(() => this.refresh())
-            .subscribe();
-        }
+                // Refresh token every 45 minutes
+                Observable.interval(45 * 60 * 1000)
+                .timeInterval()
+                .flatMap(() => this.refresh())
+                .subscribe();
+            }
+        }, 50);
     }
 
     login(username: string, password: string) {
