@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
@@ -7,6 +7,7 @@ import 'rxjs/add/observable/of';
 import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { setTimeout } from 'timers';
 
 @Injectable()
 export class LoginService {
@@ -20,23 +21,57 @@ export class LoginService {
         permissions?: Array<string>
     };
 
-    isAuthenticated: Boolean;
+    constructor(private http: HttpClient, private permissionsService: NgxPermissionsService) {
+        setTimeout(() => {
+            if (localStorage.getItem('currentUser')) {
+                // Refresh the token after 50ms to prevent other call.
+                this.refresh().subscribe();
 
-    constructor(private http: HttpClient, private permissionsService: NgxPermissionsService) { }
+                // Refresh token every 45 minutes
+                Observable.interval(45 * 60 * 1000)
+                .timeInterval()
+                .flatMap(() => this.refresh())
+                .subscribe();
+            }
+        }, 50);
+    }
 
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
             .do((jwt: { jwt: String }) => {
+                if (jwt) {
+                    localStorage.setItem('currentUser', JSON.stringify(jwt));
+                }
                 this.me();
                 const jwtDecoded = jwt_decode(jwt.jwt);
-                console.log(jwtDecoded);
                 this.permissionsService.addPermission(jwt_decode.permissions);
+
+                // Refresh token every 45 minutes
+                Observable.interval(45 * 60 * 1000)
+                .timeInterval()
+                .flatMap(() => this.refresh())
+                .subscribe();
             })
             .catch(this.handleError);
     }
 
     logout() {
-        return this.http.get('/api/auth/logout').catch(this.handleError);
+        return this.http.get('/api/auth/logout').do(() => {
+            if (localStorage.getItem('currentUser')) {
+                localStorage.removeItem('currentUser');
+            }
+            this.currentUser = undefined;
+        }).catch(this.handleError);
+    }
+
+    refresh() {
+        return this.http.get('/api/auth/refresh').do(newJWT => {
+            if (newJWT) {
+                localStorage.setItem('currentUser', JSON.stringify(newJWT));
+            }
+        }, err => {
+            console.log(err);
+        });
     }
 
     me() {
