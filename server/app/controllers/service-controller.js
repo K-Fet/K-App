@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
 const { ServiceSchema } = require('../models/schemas');
@@ -41,30 +40,10 @@ async function getAllServices(req, res) {
  */
 async function createService(req, res) {
 
-
-    const schema = Joi.array().items(ServiceSchema.requiredKeys(
-        'startAt',
-        'endAt',
-        'nbMax',
-        '_embedded.category' // If _embedded exist, there must be a category field
-    )).min(1);
-
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
-
     //Créer un tableau de services , a la place de new service etc.... (foreach...)
-    const services = new Array();
+    let services = new Array();
 
-    for (let service of req.body) {
-        const newService = new Service({
-            name: service.name,
-            startAt: service.startAt,
-            endAt: service.endAt,
-            nbMax: service.nbMax
-        });
-        service = serviceService.createService(newService);
-        services.push(Promise.all(service));
-    }
+    services = await serviceService.createService(req);
 
     return res.json(services);
 }

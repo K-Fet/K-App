@@ -38,9 +38,9 @@ class Role extends Model {
      * Set associations for the model
      * @param models
      */
-    static associate(models) {
+    /*static associate(models) {
         this.hasMany(models.Service, { as: 'services' });
-    }
+    }*/
 }
 
 
