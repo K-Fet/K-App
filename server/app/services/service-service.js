@@ -39,6 +39,39 @@ async function createService(newService) {
     return newService.save();
 }
 
+/*Const transaction = await sequelize.transaction();
+    try {
+        await newService.save({ transaction });
+
+    }catch (err) {
+        logger.warn('Service service: Error while creating service', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while creating service');
+    }
+
+    // Associations
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            if (associationKey === 'category') {
+                const wantedCategory = await Category.findById(value);
+
+                if (!wantedCategory) {
+                    await transaction.rollback();
+                    throw createUserError('UnknownCategory', `Unable to find category with id ${wantedCategory}`);
+                }
+
+                await newService.setCategory(wantedCategory, { transaction });
+
+            } else {
+                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+            }
+        }
+    }
+    await transaction.commit();
+    return newService;
+}*/
 
 /**
  * Get a service by its id.

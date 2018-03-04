@@ -62,7 +62,7 @@ async function createService(req, res) {
             endAt: service.endAt,
             nbMax: service.nbMax
         });
-        service = await serviceService.createService(newService, service._embedded);
+        service = await serviceService.createService(newService);
         services.push(service);
     }
 
