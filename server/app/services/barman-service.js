@@ -252,12 +252,29 @@ async function deleteBarmanById(barmanId) {
 
     logger.verbose('Barman service: deleting member with id %d', barmanId);
 
-    const barman = await Barman.findById(barmanId);
+    const barman = await Barman.findById(barmanId, {
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection',
+                attributes: [ 'id', 'username' ]
+            }
+        ]
+    });
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    await barman.destroy();
+    const transaction = await sequelize.transaction();
 
+    try {
+        await barman.destroy({ transaction });
+        await barman.connection.destroy({ transaction });
+    } catch (err) {
+        logger.warn('Barman service: Error while deleting barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while deleting barman');
+    }
+    await transaction.commit();
     return barman;
 }
 
