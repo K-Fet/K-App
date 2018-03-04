@@ -37,7 +37,6 @@ export class MemberService {
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
-            console.log(err);
             switch (err.error.error) {
                 case 'Not Found':
                     errorMessage = `Erreur, impossible d'ajouter un adhérent`;

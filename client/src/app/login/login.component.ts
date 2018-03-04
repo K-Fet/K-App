@@ -35,7 +35,6 @@ export class LoginComponent implements OnInit {
         .subscribe(jwt => {
             if (jwt) {
                 localStorage.setItem('currentUser', JSON.stringify(jwt));
-                this.loginService.me().subscribe(data => {console.log(data); });
             }
             this.router.navigate([this.returnUrl]);
         },

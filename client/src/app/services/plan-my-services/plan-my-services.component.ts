@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import { Service } from '../../_models/index';
-import { Day, ServiceService, ToasterService, BarmanService } from '../../_services/index';
+import { Service, ConnectedUser } from '../../_models/index';
+import { Day, ServiceService, ToasterService, BarmanService, LoginService } from '../../_services/index';
 
 @Component({
     selector: 'app-plan-my-services',
@@ -12,12 +12,18 @@ export class PlanMyServicesComponent implements OnInit {
     myServices: Service[];
     dayServices: Service[];
     days: Day[] = new Array<Day>();
+    user: ConnectedUser;
 
     constructor(private serviceService: ServiceService,
+        private loginService: LoginService,
         private barmanService: BarmanService,
         private toasterService: ToasterService) {}
 
     ngOnInit() {
+        // Get connected user
+        this.loginService.me().subscribe(user => {
+            this.user = user;
+        });
 
         // Get the planning of the current week
         this.serviceService.getWeek().subscribe(week => {
@@ -52,30 +58,33 @@ export class PlanMyServicesComponent implements OnInit {
     }
 
     updateMyServices() {
-        this.serviceService.getWeek().subscribe(week => {
-            this.barmanService.getServices(12, week.start, week.end).subscribe(services => {
-                this.myServices = services.map(service => {
-                    this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                        service.barmen = barmen;
-                        return service;
-                    }, error => {
-                        this.toasterService.showToaster(error, 'Fermer');
+        if (this.user.barman) {
+            this.serviceService.getWeek().subscribe(week => {
+                this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
+                    this.myServices = services.map(service => {
+                        this.serviceService.getBarmen(service.id).subscribe(barmen => {
+                            service.barmen = barmen;
+                            return service;
+                        }, error => {
+                            this.toasterService.showToaster(error, 'Fermer');
+                        });
                     });
+                }, error => {
+                    this.toasterService.showToaster(error, 'Fermer');
                 });
-            }, error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
-        });
+        }
     }
 
     addService(service: Service) {
-        // TODO /me
-        this.barmanService.addService(12, [service.id]).subscribe(() => {
-            this.toasterService.showToaster('Service enregistré', 'Fermer');
-            this.updateMyServices();
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        if (this.user.barman) {
+            this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
+                this.toasterService.showToaster('Service enregistré', 'Fermer');
+                this.updateMyServices();
+            }, error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        }
     }
 
     removeService(service: Service) {
