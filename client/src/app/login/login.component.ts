@@ -32,11 +32,7 @@ export class LoginComponent implements OnInit {
         const username: string = this.username;
         const password: string = this.password;
         this.loginService.login(username, password)
-        .subscribe(jwt => {
-            if (jwt) {
-                localStorage.setItem('currentUser', JSON.stringify(jwt));
-                this.loginService.me().subscribe(data => {console.log(data); });
-            }
+        .subscribe(() => {
             this.router.navigate([this.returnUrl]);
         },
         error => {
