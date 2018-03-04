@@ -5,6 +5,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
+import * as jwt_decode from 'jwt-decode';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Injectable()
 export class LoginService {
@@ -15,15 +17,21 @@ export class LoginService {
         accountType: String,
         barman?: Barman,
         specialAccount?: SpecialAccount
+        permissions?: Array<string>
     };
 
     isAuthenticated: Boolean;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private permissionsService: NgxPermissionsService) { }
 
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
-            .do(jwt => { this.me(); })
+            .do((jwt: { jwt: String }) => {
+                this.me();
+                const jwtDecoded = jwt_decode(jwt.jwt);
+                console.log(jwtDecoded);
+                this.permissionsService.addPermission(jwt_decode.permissions);
+            })
             .catch(this.handleError);
     }
 

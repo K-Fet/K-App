@@ -18,8 +18,8 @@
 				<a mat-list-item routerLink="/dashboard">Dashboard</a>
 				<mat-divider></mat-divider>
 				<h3 mat-subheader>Adhérents</h3>
-				<a mat-list-item routerLink="/members">Liste</a>
-				<a mat-list-item routerLink="/members/new">Nouveau</a>
+				<a mat-list-item routerLink="/members" (permissionsAuthorized)="isAuthorized()">Liste</a>
+				<a mat-list-item routerLink="/members/new" *ngxPermissionsOnly="['member:write']">Nouveau</a>
 				<mat-divider></mat-divider>
 				<h3 mat-subheader>Barmen</h3>
 				<a mat-list-item routerLink="/barmen">Liste</a>

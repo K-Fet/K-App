@@ -3,7 +3,6 @@ import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms'
 import { LoginService } from '../_services/login.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService } from '../_services/toaster.service';
-import * as jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +33,6 @@ export class LoginComponent implements OnInit {
         const password: string = this.password;
         this.loginService.login(username, password)
         .subscribe(jwt => {
-            console.log(jwt_decode(jwt.jwt));
             if (jwt) {
                 localStorage.setItem('currentUser', JSON.stringify(jwt));
                 this.loginService.me().subscribe(data => {console.log(data); });
