@@ -16,23 +16,26 @@
 		<mat-nav-list>
 			<mat-list>
 				<a mat-list-item routerLink="/dashboard">Dashboard</a>
-				<mat-divider></mat-divider>
-				<h3 mat-subheader>Adhérents</h3>
-				<a mat-list-item routerLink="/members" (permissionsAuthorized)="isAuthorized()">Liste</a>
-				<a mat-list-item routerLink="/members/new" *ngxPermissionsOnly="['member:write']">Nouveau</a>
-				<mat-divider></mat-divider>
-				<h3 mat-subheader>Barmen</h3>
-				<a mat-list-item routerLink="/barmen">Liste</a>
-				<a mat-list-item routerLink="/barmen/new">Nouveau</a>
-				<mat-divider></mat-divider>
-				<h3 mat-subheader>Kommissions</h3>
-				<a mat-list-item routerLink="/kommissions">Liste</a>
-				<a mat-list-item routerLink="/kommissions/new">Nouveau</a>
-				<mat-divider></mat-divider>
-				<h3 mat-subheader>Rôles</h3>
-				<a mat-list-item routerLink="/roles">Liste</a>
-				<a mat-list-item routerLink="/roles/new">Nouveau</a>
-				<mat-divider></mat-divider>
+
+				<mat-divider *ngxPermissionsOnly="['member:read','member:write']"></mat-divider>
+				<h3 mat-subheader *ngxPermissionsOnly="['member:read','member:write']">Adhérents</h3>
+				<a mat-list-item routerLink="/members" *ngxPermissionsOnly="'member:read'">Liste</a>
+				<a mat-list-item routerLink="/members/new" *ngxPermissionsOnly="'member:write'">Nouveau</a>
+
+				<mat-divider *ngxPermissionsOnly="['barman:read','barman:write']"></mat-divider>
+				<h3 mat-subheader *ngxPermissionsOnly="['barman:read','barman:write']">Barmen</h3>
+				<a mat-list-item routerLink="/barmen" *ngxPermissionsOnly="'barman:read'">Liste</a>
+				<a mat-list-item routerLink="/barmen/new" *ngxPermissionsOnly="'barman:write'">Nouveau</a>
+
+				<mat-divider *ngxPermissionsOnly="['kommission:read','kommission:write']"></mat-divider>
+				<h3 mat-subheader *ngxPermissionsOnly="['kommission:read','kommission:write']">>Kommissions</h3>
+				<a mat-list-item routerLink="/kommissions" *ngxPermissionsOnly="'kommission:read'">Liste</a>
+				<a mat-list-item routerLink="/kommissions/new" *ngxPermissionsOnly="'kommission:write'">Nouveau</a>
+
+				<mat-divider *ngxPermissionsOnly="['role:read','role:write']"></mat-divider>
+				<h3 mat-subheader *ngxPermissionsOnly="['role:read','role:write']">Rôles</h3>
+				<a mat-list-item routerLink="/roles" *ngxPermissionsOnly="'role:read'">Liste</a>
+				<a mat-list-item routerLink="/roles/new" *ngxPermissionsOnly="'role:write'">Nouveau</a>
 			</mat-list>
 		</mat-nav-list>
 		</mat-sidenav>

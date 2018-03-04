@@ -18,10 +18,12 @@ export class LoginService {
         accountType: String,
         barman?: Barman,
         specialAccount?: SpecialAccount
-        permissions?: Array<string>
     };
 
     constructor(private http: HttpClient, private permissionsService: NgxPermissionsService) {
+        // Update /me
+        this.me().subscribe();
+
         setTimeout(() => {
             if (localStorage.getItem('currentUser')) {
                 // Refresh the token after 50ms to prevent other call.
@@ -44,7 +46,7 @@ export class LoginService {
                 }
                 this.me();
                 const jwtDecoded = jwt_decode(jwt.jwt);
-                this.permissionsService.addPermission(jwt_decode.permissions);
+                this.permissionsService.addPermission(jwtDecoded.permissions);
 
                 // Refresh token every 45 minutes
                 Observable.interval(45 * 60 * 1000)
@@ -60,6 +62,7 @@ export class LoginService {
             if (localStorage.getItem('currentUser')) {
                 localStorage.removeItem('currentUser');
             }
+            this.permissionsService.flushPermissions();
             this.currentUser = undefined;
         }).catch(this.handleError);
     }
@@ -95,6 +98,7 @@ export class LoginService {
                         specialAccount: connectedUser.specialAccount,
                     };
                 }
+                // WAIT FOR BACK: this.permissionsService.addPermission(connectedUser.permissions);
                 return connectedUser;
             })
             .catch(this.handleError);
