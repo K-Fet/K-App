@@ -1,11 +1,8 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const Joi = require('joi');
-const { ServiceSchema } = require('../models/schemas');
 const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
 const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
-
 
 /**
  * Return all services of the app.
@@ -37,20 +34,10 @@ async function getAllServices(start, end) {
  */
 async function createService(req) {
 
-    const schema = Joi.array().items(ServiceSchema.requiredKeys(
-        'startAt',
-        'endAt',
-        'nbMax'
-    )).min(1);
-
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
-
     const services = Array();
 
     for (const service of req.body) {
         const newService = new Service({
-            name: service.name,
             startAt: service.startAt,
             endAt: service.endAt,
             nbMax: service.nbMax
@@ -101,7 +88,6 @@ async function updateService(serviceId, updatedService) {
     const transaction = await sequelize.transaction();
     try {
         await currentService.update(cleanObject({
-            name: updatedService.name,
             startAt: updatedService.startAt,
             endAt: updatedService.endAt,
             nbMax: updatedService.nbMax
@@ -118,7 +104,6 @@ async function updateService(serviceId, updatedService) {
 
     return currentService;
 }
-
 
 /**
  * Delete a service.
@@ -173,7 +158,6 @@ async function getServicesTemplate() {
 
     return template;
 }
-
 
 module.exports = {
     getAllServices,

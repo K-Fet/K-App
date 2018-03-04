@@ -2,6 +2,7 @@ const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
 const { ServiceSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all the services from the database.
@@ -39,6 +40,14 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
+    const schema = Joi.array().items(ServiceSchema.requiredKeys(
+        'startAt',
+        'endAt',
+        'nbMax'
+    )).min(1);
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     //Créer un tableau de services , a la place de new service etc.... (foreach...)
     let services = new Array();
