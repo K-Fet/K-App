@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
+import { setTimeout } from 'timers';
 
 @Injectable()
 export class LoginService {
@@ -17,18 +18,55 @@ export class LoginService {
         specialAccount?: SpecialAccount
     };
 
-    isAuthenticated: Boolean;
+    constructor(private http: HttpClient) {
+        setTimeout(() => {
+            if (localStorage.getItem('currentUser')) {
+                // Refresh the token after 50ms to prevent other call.
+                this.refresh().subscribe();
 
-    constructor(private http: HttpClient) { }
+                // Refresh token every 45 minutes
+                Observable.interval(45 * 60 * 1000)
+                .timeInterval()
+                .flatMap(() => this.refresh())
+                .subscribe();
+            }
+        }, 50);
+    }
 
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
-            .do(jwt => { this.me(); })
+            .do(jwt => {
+                if (jwt) {
+                    localStorage.setItem('currentUser', JSON.stringify(jwt));
+                }
+                this.me();
+
+                // Refresh token every 45 minutes
+                Observable.interval(45 * 60 * 1000)
+                .timeInterval()
+                .flatMap(() => this.refresh())
+                .subscribe();
+            })
             .catch(this.handleError);
     }
 
     logout() {
-        return this.http.get('/api/auth/logout').catch(this.handleError);
+        return this.http.get('/api/auth/logout').do(() => {
+            if (localStorage.getItem('currentUser')) {
+                localStorage.removeItem('currentUser');
+            }
+            this.currentUser = undefined;
+        }).catch(this.handleError);
+    }
+
+    refresh() {
+        return this.http.get('/api/auth/refresh').do(newJWT => {
+            if (newJWT) {
+                localStorage.setItem('currentUser', JSON.stringify(newJWT));
+            }
+        }, err => {
+            console.log(err);
+        });
     }
 
     me() {
