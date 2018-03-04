@@ -28,7 +28,7 @@
 				<a mat-list-item routerLink="/barmen/new" *ngxPermissionsOnly="'barman:write'">Nouveau</a>
 
 				<mat-divider *ngxPermissionsOnly="['kommission:read','kommission:write']"></mat-divider>
-				<h3 mat-subheader *ngxPermissionsOnly="['kommission:read','kommission:write']">>Kommissions</h3>
+				<h3 mat-subheader *ngxPermissionsOnly="['kommission:read','kommission:write']">Kommissions</h3>
 				<a mat-list-item routerLink="/kommissions" *ngxPermissionsOnly="'kommission:read'">Liste</a>
 				<a mat-list-item routerLink="/kommissions/new" *ngxPermissionsOnly="'kommission:write'">Nouveau</a>
 

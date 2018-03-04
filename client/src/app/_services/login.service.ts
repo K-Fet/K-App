@@ -8,6 +8,7 @@ import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { setTimeout } from 'timers';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService {
@@ -20,7 +21,9 @@ export class LoginService {
         specialAccount?: SpecialAccount
     };
 
-    constructor(private http: HttpClient, private permissionsService: NgxPermissionsService) {
+    constructor(private http: HttpClient,
+        private permissionsService: NgxPermissionsService,
+        private router: Router) {
         // Update /me
         this.me().subscribe();
 
@@ -68,12 +71,14 @@ export class LoginService {
     }
 
     refresh() {
-        return this.http.get('/api/auth/refresh').do(newJWT => {
+        return this.http.get('/api/auth/refresh').do((newJWT: { jwt: String }) => {
             if (newJWT) {
                 localStorage.setItem('currentUser', JSON.stringify(newJWT));
+                const jwtDecoded = jwt_decode(newJWT.jwt);
+                this.permissionsService.addPermission(jwtDecoded.permissions);
             }
         }, err => {
-            console.log(err);
+            this.router.navigate(['/login']);
         });
     }
 
@@ -98,7 +103,6 @@ export class LoginService {
                         specialAccount: connectedUser.specialAccount,
                     };
                 }
-                // WAIT FOR BACK: this.permissionsService.addPermission(connectedUser.permissions);
                 return connectedUser;
             })
             .catch(this.handleError);
