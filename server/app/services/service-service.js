@@ -12,7 +12,6 @@ const { createUserError, createServerError, cleanObject, getDefaultTemplate } = 
  * @returns {Promise<Array>} Services
  */
 async function getAllServices(start, end) {
-
     logger.verbose('Service service: get all services');
     return Service.findAll({
         where: {
@@ -42,7 +41,7 @@ async function createService(req) {
             endAt: service.endAt,
             nbMax: service.nbMax
         });
-        logger.verbose('Service service: creating a new service named %s', newService.name);
+        logger.verbose('Service service: creating a new service');
         newService.save();
         services.push(newService);
     }
