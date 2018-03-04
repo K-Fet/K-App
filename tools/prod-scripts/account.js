@@ -4,7 +4,7 @@ const inquirer = require('inquirer');
 const crypto = require('crypto');
 const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
-const { ConnectionInformation, SpecialAccount } = require('../../server/app/models');
+const { ConnectionInformation, SpecialAccount, Permission } = require('../../server/app/models');
 const mysqlConf = require('./mysql');
 
 const isCLI = require.main === module;
@@ -22,25 +22,25 @@ async function askQuestions(configObj) {
             name: 'createAdmin',
             message: 'Do you want to create an admin account?',
             default: false,
-            when: !isCLI
+            when: !isCLI,
         },
         {
             type: 'input',
             name: 'adminUsername',
             message: 'Username for admin (used to connect)?',
-            default: 'admin'
+            default: 'admin',
         },
         {
             type: 'password',
             name: 'adminPassword',
-            message: 'Password for admin, leave blank to generate one (recommended on prod)?'
+            message: 'Password for admin, leave blank to generate one (recommended on prod)?',
         },
         {
             type: 'input',
             name: 'adminCode',
             message: 'Code used to do operations (not the password)?',
-            valid: input => !!input
-        }
+            valid: input => !!input,
+        },
     ];
 
     console.log('Configuring Account:');
@@ -50,10 +50,11 @@ async function askQuestions(configObj) {
 
     configObj.account = {
         admin: {
-            password: answers.adminPassword || crypto.randomBytes(20).toString('hex'),
+            password: answers.adminPassword || crypto.randomBytes(20)
+                .toString('hex'),
             code: answers.adminCode,
-            username: answers.adminUsername
-        }
+            username: answers.adminUsername,
+        },
     };
 }
 
@@ -91,29 +92,42 @@ async function configure(config) {
         logging: false,
         define: {
             charset: 'utf8',
-            collate: 'utf8_general_ci'
+            collate: 'utf8_general_ci',
         },
     });
 
     ConnectionInformation.init(sequelize);
     SpecialAccount.init(sequelize);
-    SpecialAccount.associate({ ConnectionInformation });
+    Permission.init(sequelize);
+    SpecialAccount.associate({
+        ConnectionInformation,
+        Permission,
+    });
 
     await sequelize.sync();
 
-    await SpecialAccount.create({
-        code: await hash(config.account.admin.code),
-        description: 'Administrator',
-        connection: {
-            password: await hash(config.account.admin.password),
-            username: config.account.admin.username
-        }
-    }, {
-        include: [{
-            model: ConnectionInformation,
-            as: 'connection'
-        }]
-    });
+    const admin = await SpecialAccount.create(
+        {
+            code: await hash(config.account.admin.code),
+            description: 'Administrator',
+            connection: {
+                password: await hash(config.account.admin.password),
+                username: config.account.admin.username,
+            },
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                },
+            ],
+        },
+    );
+
+    const allPerms = await Permission.findAll();
+
+    await admin.setPermissions(allPerms);
 
     console.log('Administrator created! Here is the password to connect', config.account.admin.password);
 }
@@ -134,5 +148,5 @@ if (isCLI) {
 module.exports = {
     askQuestions,
     confirmConfig,
-    configure
+    configure,
 };
