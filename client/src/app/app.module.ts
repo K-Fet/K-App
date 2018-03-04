@@ -7,6 +7,9 @@ import { CommonModule } from '@angular/common';
 // Forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// Libraries
+import { NgxPermissionsModule } from 'ngx-permissions';
+
 // Routes
 import { routing } from './app.routing';
 
@@ -87,7 +90,8 @@ import { MaterialModule } from './_helpers/material.module';
         HttpClientModule,
         routing,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgxPermissionsModule.forRoot()
     ],
     bootstrap: [AppComponent],
     providers: [
