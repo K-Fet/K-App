@@ -62,8 +62,8 @@ async function createService(req, res) {
             endAt: service.endAt,
             nbMax: service.nbMax
         });
-        service = await serviceService.createService(newService, service._embedded);
-        services.push(service);
+        service = serviceService.createService(newService);
+        services.push(Promise.all(service));
     }
 
     return res.json(services);
