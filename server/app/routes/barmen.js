@@ -11,8 +11,8 @@ router.get('/:id(\\d+)', guard.check('barman:read'), am(barmanController.getBarm
 router.put('/:id(\\d+)', guard.check('barman:write'), am(barmanController.updateBarman));
 router.delete('/:id(\\d+)', guard.check('barman:write'), am(barmanController.deleteBarman));
 
-router.get('/:id(\\d+)/services', /*guard.check('barman:read', 'service:read'),*/ am(barmanController.getServicesBarman));
-router.post('/:id(\\d+)/services', /*guard.check('barman:read', 'service:write'),*/ am(barmanController.createServiceBarman));
-router.delete('/:id(\\d+)/services', /*guard.check('barman:read', 'service:write'),*/ am(barmanController.deleteServiceBarman));
+router.get('/:id(\\d+)/services', guard.check('barman:read', 'service:read'), am(barmanController.getServicesBarman));
+router.post('/:id(\\d+)/services', guard.check('barman:read', 'service:read'), am(barmanController.createServiceBarman));
+router.delete('/:id(\\d+)/services', guard.check('barman:read', 'service:read'), am(barmanController.deleteServiceBarman));
 
 module.exports = router;

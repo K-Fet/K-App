@@ -104,8 +104,8 @@ async function createJWT(user) {
             ],
         });
         if (!specialAccount) {
-            throw createServerError(
-                'UnknownUser', 'This user has no barman or special account linked, this should not exist!');
+            throw createServerError('UnknownUser',
+                'This user has no barman or special account linked, this should not exist!');
         }
 
         permissions = specialAccount.permissions.map(p => p.name);
