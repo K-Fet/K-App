@@ -5,8 +5,9 @@ const inquirer = require('inquirer');
 const { Sequelize } = require('sequelize');
 const models = require('../../server/app/models');
 const mysqlConf = require('../prod-scripts/mysql');
+const { syncPermissions } = require('../../server/permissions-init');
 
-const { Service, Role, Kommission, Barman, Member } = models;
+const { Service, Role, Kommission, Barman, Member, Permission } = models;
 
 
 async function ask(conf) {
@@ -20,27 +21,27 @@ async function ask(conf) {
             choices: [
                 {
                     name: 'Members',
-                    checked: true
+                    checked: true,
                 },
                 {
                     name: 'Barmen',
-                    checked: true
+                    checked: true,
                 },
                 {
                     name: 'Kommissions',
-                    checked: true
+                    checked: true,
                 },
                 {
                     name: 'Roles',
-                    checked: true
+                    checked: true,
                 },
                 {
                     name: 'Services',
-                    checked: true
-                }
+                    checked: true,
+                },
             ],
-            validate: answer => answer.length < 1 ? 'You must choose at least one topping.' : true
-        }
+            validate: answer => answer.length < 1 ? 'You must choose at least one topping.' : true,
+        },
     ]);
 
     // TODO Search for a way to create ConnectionInformation for each barman
@@ -50,12 +51,18 @@ async function ask(conf) {
 async function generateKommissions() {
     try {
         await Kommission.bulkCreate([
-            { name: 'Kom Son', description: 'Équipe qui gère la technique du son à la K-Fêt' },
-            { name: 'Kom Light', description: 'Équipe qui gère la technique de la lumière à la K-Fêt' },
+            {
+                name: 'Kom Son',
+                description: 'Équipe qui gère la technique du son à la K-Fêt',
+            },
+            {
+                name: 'Kom Light',
+                description: 'Équipe qui gère la technique de la lumière à la K-Fêt',
+            },
             {
                 name: 'Kom Kom',
-                description: 'Équipe qui gère la communication de la K-Fêt (affiches, page facebook, …)'
-            }
+                description: 'Équipe qui gère la communication de la K-Fêt (affiches, page facebook, …)',
+            },
         ]);
         console.log('Kommissions generated!');
     } catch (e) {
@@ -63,13 +70,43 @@ async function generateKommissions() {
     }
 }
 
+
+async function bulkCreateRole(role) {
+    const roleInstance = await Role.create(role);
+
+    await roleInstance.setPermissions(role.permissions);
+}
+
 async function generateRoles() {
     try {
-        await Role.bulkCreate([
-            { name: 'Président', description: 'Le meilleur en tout genre, le plus beau' },
-            { name: 'Trésorier', description: 'Celui qui gère la thune de la K-Fêt' },
-            { name: 'Barman', description: 'Servir sans faillir: serviam indeclinabilem' }
-        ]);
+        await syncPermissions();
+
+        const data = [
+            {
+                name: 'Président',
+                description: 'Le meilleur en tout genre, le plus beau',
+                permissions: [
+                    'service:read',
+                ],
+            },
+            {
+                name: 'Trésorier',
+                description: 'Celui qui gère la thune de la K-Fêt',
+                permissions: [
+                    'service:read',
+                ],
+            },
+            {
+                name: 'Barman',
+                description: 'Servir sans faillir: serviam indeclinabilem',
+                permissions: [
+                    'service:read',
+                ],
+            },
+        ];
+
+        await Promise.all(data.map(r => bulkCreateRole(r)));
+
         console.log('Roles generated!');
     } catch (e) {
         console.error('Error while generating roles', e);
@@ -117,7 +154,7 @@ async function generateServices() {
                 servicesToCreate.push({
                     startAt: dayNoon,
                     endAt: dayNoonEnd,
-                    nbMax: 4
+                    nbMax: 4,
                 });
 
 
@@ -132,7 +169,7 @@ async function generateServices() {
                     servicesToCreate.push({
                         startAt: dayEvening,
                         endAt: dayEveningEnd,
-                        nbMax: 4
+                        nbMax: 4,
                     });
                 }
 
@@ -163,7 +200,7 @@ async function generate(config) {
         logging: false,
         define: {
             charset: 'utf8',
-            collate: 'utf8_general_ci'
+            collate: 'utf8_general_ci',
         },
     });
 
