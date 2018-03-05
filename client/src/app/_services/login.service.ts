@@ -24,19 +24,23 @@ export class LoginService {
     constructor(private http: HttpClient,
         private permissionsService: NgxPermissionsService,
         private router: Router) {
+
         // Update /me
         this.me().subscribe();
 
+        // Refresh permission
+        if (localStorage.getItem('currentUser')) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.jwt) {
+                const jwtDecoded = jwt_decode(currentUser.jwt);
+                this.permissionsService.addPermission(jwtDecoded.permissions);
+            }
+        }
+
+        // Refresh the token after 50ms to prevent other call.
         setTimeout(() => {
             if (localStorage.getItem('currentUser')) {
-                // Refresh the token after 50ms to prevent other call.
                 this.refresh().subscribe();
-
-                // Refresh token every 45 minutes
-                Observable.interval(45 * 60 * 1000)
-                .timeInterval()
-                .flatMap(() => this.refresh())
-                .subscribe();
             }
         }, 50);
     }
@@ -52,10 +56,9 @@ export class LoginService {
                 this.permissionsService.addPermission(jwtDecoded.permissions);
 
                 // Refresh token every 45 minutes
-                Observable.interval(45 * 60 * 1000)
-                .timeInterval()
-                .flatMap(() => this.refresh())
-                .subscribe();
+                setTimeout(() => {
+                    this.refresh().subscribe();
+                }, 45 * 60 * 60);
             })
             .catch(this.handleError);
     }
@@ -76,6 +79,11 @@ export class LoginService {
                 localStorage.setItem('currentUser', JSON.stringify(newJWT));
                 const jwtDecoded = jwt_decode(newJWT.jwt);
                 this.permissionsService.addPermission(jwtDecoded.permissions);
+
+                // Refresh token every 45 minutes
+                setTimeout(() => {
+                    this.refresh().subscribe();
+                }, 45 * 60 * 60);
             }
         }, err => {
             this.router.navigate(['/login']);
