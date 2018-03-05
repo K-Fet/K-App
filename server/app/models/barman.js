@@ -81,7 +81,10 @@ class Barman extends Model {
 
         this.belongsTo(Barman, { as: 'godFather' });
 
-        this.belongsTo(models.ConnectionInformation, { as: 'connection' });
+        this.belongsTo(models.ConnectionInformation, {
+            onDelete: 'CASCADE',
+            as: 'connection'
+        });
     }
 }
 

@@ -268,7 +268,6 @@ async function deleteBarmanById(barmanId) {
 
     try {
         await barman.destroy({ transaction });
-        await barman.connection.destroy({ transaction });
     } catch (err) {
         logger.warn('Barman service: Error while deleting barman', err);
         await transaction.rollback();
