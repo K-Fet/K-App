@@ -16,19 +16,19 @@ class SpecialAccount extends Model {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
-                autoIncrement: true
+                autoIncrement: true,
             },
 
             code: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
             },
 
             description: {
-                type: DataTypes.TEXT
-            }
+                type: DataTypes.TEXT,
+            },
         }, {
-            sequelize
+            sequelize,
         });
     }
 
@@ -40,9 +40,14 @@ class SpecialAccount extends Model {
      */
     static associate(models) {
         this.belongsTo(models.ConnectionInformation, { as: 'connection' });
+
+        this.belongsToMany(models.Permission, {
+            through: 'SpecialAccountPermissions',
+            as: 'permissions',
+        });
     }
 }
 
 module.exports = {
-    SpecialAccount
+    SpecialAccount,
 };

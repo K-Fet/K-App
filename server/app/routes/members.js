@@ -6,11 +6,11 @@ const memberController = require('../controllers/member-controller');
 
 router.get('/', guard.check('member:read'), am(memberController.getAllMembers));
 
-router.post('/', am(codeGuard), am(memberController.createMember));
+router.post('/', guard.check('member:write'), am(codeGuard), am(memberController.createMember));
 
-router.get('/:id(\\d+)', am(memberController.getMemberById));
+router.get('/:id(\\d+)', guard.check('member:read'), am(memberController.getMemberById));
 
-router.put('/:id(\\d+)', am(codeGuard), am(memberController.updateMember));
-router.delete('/:id(\\d+)', am(codeGuard), am(memberController.deleteMember));
+router.put('/:id(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.updateMember));
+router.delete('/:id(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.deleteMember));
 
 module.exports = router;

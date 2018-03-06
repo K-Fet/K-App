@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
+import * as jwt_decode from 'jwt-decode';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService {
@@ -17,18 +20,79 @@ export class LoginService {
         specialAccount?: SpecialAccount
     };
 
-    isAuthenticated: Boolean;
+    constructor(private http: HttpClient,
+        private permissionsService: NgxPermissionsService,
+        private router: Router) {
 
-    constructor(private http: HttpClient) { }
+        if (localStorage.getItem('currentUser')) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser.jwt) {
+                const jwtDecoded = jwt_decode(currentUser.jwt);
+                if (Date.now() < jwtDecoded.exp * 1000) {
+                    this.permissionsService.addPermission(jwtDecoded.permissions);
+                    // Update /me
+                    this.me().subscribe();
+
+                    // Refresh the token after 50ms to prevent other call.
+                    setTimeout(() => {
+                        this.refresh().subscribe();
+                    }, 50);
+                } else {
+                    localStorage.removeItem('currentUser');
+                    router.navigate(['/login']);
+                }
+            }
+        }
+    }
 
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
-            .do(jwt => { this.me(); })
+            .do((jwt: { jwt: String }) => {
+                if (jwt) {
+                    localStorage.setItem('currentUser', JSON.stringify(jwt));
+                }
+                this.me();
+                const jwtDecoded = jwt_decode(jwt.jwt);
+                this.permissionsService.addPermission(jwtDecoded.permissions);
+
+                // Refresh token every 45 minutes
+                setTimeout(() => {
+                    this.refresh().subscribe();
+                }, 45 * 60 * 60 * 1000);
+            })
             .catch(this.handleError);
     }
 
     logout() {
-        return this.http.get('/api/auth/logout').catch(this.handleError);
+        return this.http.get('/api/auth/logout').do(() => {
+            if (localStorage.getItem('currentUser')) {
+                localStorage.removeItem('currentUser');
+            }
+            this.permissionsService.flushPermissions();
+            this.currentUser = undefined;
+        }).catch(this.handleError);
+    }
+
+    refresh() {
+        return this.http.get('/api/auth/refresh').do((newJWT: { jwt: String }) => {
+            if (newJWT) {
+                localStorage.setItem('currentUser', JSON.stringify(newJWT));
+                const jwtDecoded = jwt_decode(newJWT.jwt);
+                this.permissionsService.addPermission(jwtDecoded.permissions);
+
+                // Refresh token every 45 minutes
+                setTimeout(() => {
+                    this.refresh().subscribe();
+                }, 45 * 60 * 60 * 1000);
+            }
+        }, err => {
+            if (localStorage.getItem('currentUser')) {
+                localStorage.removeItem('currentUser');
+            }
+            this.permissionsService.flushPermissions();
+            this.currentUser = undefined;
+            this.router.navigate(['/login']);
+        });
     }
 
     me() {
