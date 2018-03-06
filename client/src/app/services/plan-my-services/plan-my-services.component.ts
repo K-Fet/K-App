@@ -45,14 +45,9 @@ export class PlanMyServicesComponent implements OnInit {
             }, error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
-
-            // Get connected user
-            this.loginService.me().subscribe(user => {
-                // Get actual services of the connected user
-                this.updateMyServices();
-            });
         });
     }
+
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {
             if (currentDay === day) {
@@ -96,23 +91,23 @@ export class PlanMyServicesComponent implements OnInit {
             this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
                 this.toasterService.showToaster('Service enregistré', 'Fermer');
                 this.updateMyServices();
-                const dayNumber = this.days.indexOf(this.days.filter(day => {
-                    const sId = day.services.filter(s => {
-                        return s.id === service.id;
-                    })[0];
-                    return sId;
-                })[0]);
+                const dayNumber = this.getCurrentDayIndex();
                 this.updatePlanning(dayNumber);
             }, error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
         }
     }
+    getCurrentDayIndex(): Number {
+        return this.days.indexOf(this.days.filter(day => day.active === true)[0]);
+    }
 
     removeService(service: Service) {
         this.barmanService.removeService(this.user.barman.id, [service.id]).subscribe(() => {
             this.toasterService.showToaster('Service supprimé', 'Fermer');
             this.updateMyServices();
+            const dayNumber = this.getCurrentDayIndex();
+            this.updatePlanning(dayNumber);
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });

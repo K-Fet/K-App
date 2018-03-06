@@ -28,6 +28,8 @@ export class MyServicesComponent implements OnInit {
                     this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
                         if (services.length > 0) {
                             this.myServices = services;
+                        } else {
+                            this.myServices = undefined;
                         }
                     }, error => {
                         this.toasterService.showToaster(error, 'Fermer');

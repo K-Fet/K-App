@@ -40,8 +40,10 @@ export class BarmanService {
     }
 
     removeService(id: Number, services: Number[]) {
-        // TODO Fix DELETE body issue
-        return this.http.delete('/api/barmen/' + id + '/services' /*, [service] */).catch(this.handleError);
+        const options = {
+            body: services
+        };
+        return this.http.request('DELETE', '/api/barmen/' + id + '/services' , options).catch(this.handleError);
     }
 
     update(barman: Barman) {
