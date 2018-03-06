@@ -37,12 +37,7 @@ async function createSpecialAccount(req, res) {
 
     const newUser = req.body;
 
-    let newSpecialAccount = new SpecialAccount({
-        code: newUser.code,
-        description: newUser.description
-    });
-
-    newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, newUser.connection);
+    const newSpecialAccount = await specialAccountService.createSpecialAccount(newUser);
 
     res.json(newSpecialAccount);
 }

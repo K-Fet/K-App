@@ -18,38 +18,39 @@ async function getAllSpecialAccounts() {
  * Create a SpecialAccount.
  *
  * @param newSpecialAccount {SpecialAccount} partial specialAccount
- * @param connection {Object} Object containing connection informations.
  * @return {Promise<SpecialAccount} The created SpecialAccount with its id
  */
-async function createSpecialAccount(newSpecialAccount, connection) {
+async function createSpecialAccount(newUser) {
 
-    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username ', connection.username);
+    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username ', newUser.connection.username);
 
     const transaction = await sequelize.transaction();
 
-    const currentSpecialAccount = SpecialAccount.findAll({
-        where: {
-            username: connection.username
-        }
-    });
-
-    if (currentSpecialAccount) throw createUserError('UsedUsername', 'This username is already used !');
+    let newSpecialAccount;
 
     try {
 
-        const coData = {
-            username: connection.username,
-            password: await hash(connection.password)
-        };
+        newSpecialAccount = await SpecialAccount.create({
+            code: newUser.code,
+            description: newUser.description,
+            connection: {
+                username: newUser.connection.username,
+                password: newUser.connection.password,
+            }
+        }, {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ],
+            transaction,
+        });
 
-        await coData.save({ transaction });
-
-        await newSpecialAccount.setConnection(coData, { transaction });
-
-        await newSpecialAccount.save({ transaction });
 
     } catch (err) {
-        logger.warn('SpecialAccount service: Error while creating specialAccount', err);
+        logger.verbose('SpecialAccount service: Error while creating specialAccount', err);
+        console.error(err);
         await transaction.rollback();
         throw createServerError('ServerError', 'Error while creating a specialAccount');
     }
@@ -93,7 +94,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount)
 
     if (!currentSpecialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
-    logger.verbose('SpecialAccount service: updating specialAccount named %s', currentSpecialAccount.name);
+    logger.verbose('SpecialAccount service: updating specialAccount named %s', currentSpecialAccount.connection.username);
 
     const transaction = await sequelize.transaction();
 
