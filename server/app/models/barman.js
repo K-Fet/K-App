@@ -58,9 +58,6 @@ class Barman extends Model {
         }, {
             sequelize,
 
-            // Do not delete row, even when the user delete is account
-            paranoid: true,
-
             name: {
                 plural: 'barmen',
                 singular: 'barman'

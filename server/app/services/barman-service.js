@@ -265,9 +265,13 @@ async function deleteBarmanById(barmanId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     const transaction = await sequelize.transaction();
-
+    // FIXME even wih paranoid = false it doesn't work normally with CASCADE DELETE
+    // because it should be the other way, here when we delete a connection information,
+    // it deletes on cascade a barman. But when we delete a barman it doesn't delete a connection information on cascade
+    // I try to use a hook (like a trigger) to delete but too complicated, i didn't manage to do it
     try {
         await barman.destroy({ transaction });
+        await barman.connection.destroy({ transaction });
     } catch (err) {
         logger.warn('Barman service: Error while deleting barman', err);
         await transaction.rollback();
