@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 const { jwtSecret, expirationDuration } = require('../../config/jwt');
 const { verify, createUserError, createServerError } = require('../../utils');
 
-const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role } = require('../models');
+const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission } = require('../models');
 
 /**
  * Check if a token is revoked or not.
@@ -72,20 +72,44 @@ async function createJWT(user) {
     const id = uuidv4();
 
     await user.createJwt({
-        id
+        id,
     });
 
-    // TODO Add permissions in a better way
-    const permissions = [
-        'barman:read',
-        'barman:write',
-        'member:read',
-        'member:write',
-        'kommission:read',
-        'kommission:write',
-        'role:read',
-        'role:write',
-    ];
+    const barman = await user.getBarman({
+        include: [
+            {
+                model: Role,
+                as: 'roles',
+                include: [
+                    {
+                        model: Permission,
+                        as: 'permissions',
+                    },
+                ],
+            },
+        ],
+    });
+
+    let permissions = [];
+
+    if (barman) {
+        permissions = barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)));
+    } else {
+        const specialAccount = await user.getSpecialAccount({
+            include: [
+                {
+                    model: Permission,
+                    as: 'permissions',
+                },
+            ],
+        });
+        if (!specialAccount) {
+            throw createServerError('UnknownUser',
+                'This user has no barman or special account linked, this should not exist!');
+        }
+
+        permissions = specialAccount.permissions.map(p => p.name);
+    }
 
     logger.info(`Creating a new JWT ${user.id}, with permissions : ${permissions.join(', ')}`);
 
@@ -93,7 +117,7 @@ async function createJWT(user) {
         jit: id,
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration),
         permissions,
-        userId: user.id
+        userId: user.id,
     }, jwtSecret);
 }
 
@@ -174,5 +198,5 @@ module.exports = {
     login,
     refresh,
     logout,
-    me
+    me,
 };

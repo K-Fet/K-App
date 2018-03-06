@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const logger = require('./logger');
 const DB_CONFIG = require('./config/db');
 const models = require('./app/models/index');
+const { syncPermissions } = require('./permissions-init');
 
 const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.password, {
     host: DB_CONFIG.host,
@@ -9,7 +10,7 @@ const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.pa
 
     define: {
         charset: 'utf8',
-        collate: 'utf8_general_ci'
+        collate: 'utf8_general_ci',
     },
 
     logging: DB_CONFIG.debug,
@@ -18,7 +19,7 @@ const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.pa
         max: 5,
         min: 0,
         acquire: 30000,
-        idle: 10000
+        idle: 10000,
     },
 });
 
@@ -42,7 +43,9 @@ for (const m of Object.values(models)) {
     }
 }
 
-const modelNameList = Object.values(models).map(m => m.name).join(', ');
+const modelNameList = Object.values(models)
+    .map(m => m.name)
+    .join(', ');
 
 logger.debug('Models loaded: %s', modelNameList);
 
@@ -55,9 +58,20 @@ logger.debug('Models loaded: %s', modelNameList);
 if (process.env.NODE_ENV !== 'test') {
     logger.debug('Synchronising the database...');
 
-    sequelize.sync().then(() => {
-        logger.debug('Database is synchronised with sequelize');
-    });
+    sequelize
+        .sync()
+        .then(() => {
+            logger.debug('Database is synchronised with sequelize, synchronising permissions');
+            return syncPermissions();
+        })
+        .then(() => {
+            logger.debug('Permissions are synchronised with database');
+        })
+        .catch(err => {
+            logger.error('Error while synchronising sequelize and permissions:', err);
+            logger.error('Exiting for safety');
+            process.exit(1);
+        });
 } else {
     logger.debug('[TEST] Skip synchronisation');
 }
