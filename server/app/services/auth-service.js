@@ -54,7 +54,7 @@ async function refresh(currentTokenId) {
     // Get user to create a new token.
     // Here we don't really need transaction
     // because current token is already revoked
-    const user = token.getConnection();
+    const user = await token.getConnection();
 
     return createJWT(user);
 }
