@@ -7,8 +7,8 @@ import 'rxjs/add/observable/of';
 import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { setTimeout } from 'timers';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Injectable()
 export class LoginService {
@@ -25,24 +25,25 @@ export class LoginService {
         private permissionsService: NgxPermissionsService,
         private router: Router) {
 
-        // Update /me
-        this.me().subscribe();
-
-        // Refresh permission
         if (localStorage.getItem('currentUser')) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser && currentUser.jwt) {
+            if (currentUser.jwt) {
                 const jwtDecoded = jwt_decode(currentUser.jwt);
-                this.permissionsService.addPermission(jwtDecoded.permissions);
+                if (+moment() < jwtDecoded.exp * 1000) {
+                    this.permissionsService.addPermission(jwtDecoded.permissions);
+                    // Update /me
+                    this.me().subscribe();
+
+                    // Refresh the token after 50ms to prevent other call.
+                    setTimeout(() => {
+                        this.refresh().subscribe();
+                    }, 50);
+                } else {
+                    localStorage.removeItem('currentUser');
+                    router.navigate(['/login']);
+                }
             }
         }
-
-        // Refresh the token after 50ms to prevent other call.
-        setTimeout(() => {
-            if (localStorage.getItem('currentUser')) {
-                this.refresh().subscribe();
-            }
-        }, 50);
     }
 
     login(username: string, password: string) {
@@ -58,7 +59,7 @@ export class LoginService {
                 // Refresh token every 45 minutes
                 setTimeout(() => {
                     this.refresh().subscribe();
-                }, 45 * 60 * 60);
+                }, 45 * 60 * 60 * 1000);
             })
             .catch(this.handleError);
     }
@@ -83,9 +84,14 @@ export class LoginService {
                 // Refresh token every 45 minutes
                 setTimeout(() => {
                     this.refresh().subscribe();
-                }, 45 * 60 * 60);
+                }, 45 * 60 * 60 * 1000);
             }
         }, err => {
+            if (localStorage.getItem('currentUser')) {
+                localStorage.removeItem('currentUser');
+            }
+            this.permissionsService.flushPermissions();
+            this.currentUser = undefined;
             this.router.navigate(['/login']);
         });
     }
