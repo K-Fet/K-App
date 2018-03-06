@@ -8,7 +8,6 @@ import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
 
 @Injectable()
 export class LoginService {
@@ -29,7 +28,7 @@ export class LoginService {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser.jwt) {
                 const jwtDecoded = jwt_decode(currentUser.jwt);
-                if (+moment() < jwtDecoded.exp * 1000) {
+                if (Date.now() < jwtDecoded.exp * 1000) {
                     this.permissionsService.addPermission(jwtDecoded.permissions);
                     // Update /me
                     this.me().subscribe();
