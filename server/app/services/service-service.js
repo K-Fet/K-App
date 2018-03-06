@@ -15,13 +15,13 @@ async function getAllServices(start, end) {
     logger.verbose('Service service: get all services');
     return Service.findAll({
         where: {
-            [Op.and]: [
-                {
-                    startAt: { [Op.gte]: start },
-                    endAt: { [Op.lte]: end },
-                },
-            ],
-        },
+            startAt: {
+                [Op.and]: [
+                    { [Op.gte]: start },
+                    { [Op.lte]: end }
+                ]
+            }
+        }
     });
 }
 
@@ -31,21 +31,18 @@ async function getAllServices(start, end) {
  * @param newService {Service} partial service
  * @return {Promise<Service|Errors.ValidationError>} The created service with its id
  */
-async function createService(req) {
+async function createService(ServiceArray) {
 
-    const services = Array();
-
-    for (const service of req.body) {
+    const services = new Array();
+    for (const service of ServiceArray) {
         const newService = new Service({
             startAt: service.startAt,
             endAt: service.endAt,
             nbMax: service.nbMax
         });
         logger.verbose('Service service: creating a new service');
-        newService.save();
-        services.push(newService);
+        services.push(newService.save());
     }
-
     return Promise.all(services);
 }
 

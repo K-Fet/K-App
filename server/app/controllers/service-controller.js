@@ -19,8 +19,8 @@ async function getAllServices(req, res) {
     if (req.query.start && req.query.end) {
         // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
         // I use a + to convert the param from string to int
-        start = new Date(+req.query.start + (1 * 60 * 60 * 1000));
-        end = new Date(+req.query.end + (1 * 60 * 60 * 1000));
+        start = new Date(+req.query.start);
+        end = new Date(+req.query.end);
         start = start.toISOString();
         end = end.toISOString();
     } else {
@@ -50,9 +50,8 @@ async function createService(req, res) {
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
     //Créer un tableau de services , a la place de new service etc.... (foreach...)
-    let services = new Array();
 
-    services = await serviceService.createService(req);
+    const services = await serviceService.createService(req.body);
 
     return res.json(services);
 }
