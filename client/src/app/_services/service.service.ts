@@ -61,13 +61,13 @@ export class ServiceService {
     getWeek(): Observable<{start: Moment, end: Moment}> {
         return new Observable(week => {
             this.$weekInterval.subscribe(weekInterval => {
-                const start: Moment = moment().set({
+                const start: Moment = moment.utc().set({
                     'hour': 0,
                     'minute': 0,
                     'second': 0,
                     'millisecond': 0
                 });
-                const end: Moment = moment().set({
+                const end: Moment = moment.utc().set({
                     'hour': 23,
                     'minute': 59,
                     'second': 59,
@@ -97,51 +97,22 @@ export class ServiceService {
         return Observable.create((observer) => {
             this.get(start, end).subscribe(services => {
                 services.forEach(service => {
-                    const day = {
-                        name: WEEK_DAY_SHORT[moment(service.startAt).isoWeekday() - 1],
-                        date: moment(service.startAt),
-                        active: false
-                    };
-                    if (days.map(currentDay => currentDay.name).indexOf(day.name) === -1) {
+                    const name = WEEK_DAY_SHORT[moment(service.startAt).isoWeekday()];
+                    const index = days.map(currentDay => currentDay.name).indexOf(name);
+                    if (index === -1) {
+                        const day = {
+                            name: WEEK_DAY_SHORT[moment(service.startAt).isoWeekday()],
+                            date: moment.utc(service.startAt),
+                            active: false,
+                            services: []
+                        };
+                        day.services.push(service);
                         days.push(day);
+                    } else {
+                        days[index].services.push(service);
                     }
                 });
                 observer.next(days);
-            }, error => {
-                observer.error(error);
-            });
-        });
-    }
-
-    getDayServiceDetails(day: Day): Observable<Array<Service>> {
-        const services = new Array<Service>();
-
-        const start = day.date.set({
-            'hour': 0,
-            'minute': 0,
-            'second': 0,
-            'millisecond': 0
-        });
-        const end = day.date.set({
-            'hour': 23,
-            'minute': 59,
-            'second': 59,
-            'millisecond': 99
-        });
-
-        return Observable.create((observer) => {
-            this.get(start, end).subscribe(servicesFetched => {
-                servicesFetched.map(service => {
-                    // For each service of the day, we fetch associated barmen
-                    this.getBarmen(service.id).subscribe(barmen => {
-                        service.barmen = barmen;
-                        return service;
-                    }, error => {
-                        observer.error(error);
-                    });
-                    return service;
-                });
-                observer.next(services);
             }, error => {
                 observer.error(error);
             });
@@ -173,6 +144,7 @@ export interface Day {
     name: String;
     date: Moment;
     active: Boolean;
+    services: Service[];
 }
 
 export const DEFAULT_WEEK_SWITCH: Number = 4;

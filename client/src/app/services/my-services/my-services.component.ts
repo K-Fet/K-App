@@ -26,15 +26,9 @@ export class MyServicesComponent implements OnInit {
             if (this.user.barman) {
                 this.serviceService.getWeek().subscribe(week => {
                     this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                        console.log(services);
-                        this.myServices = services.map(service => {
-                            this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                                service.barmen = barmen;
-                                return service;
-                            }, error => {
-                                this.toasterService.showToaster(error, 'Fermer');
-                            });
-                        });
+                        if (services.length > 0) {
+                            this.myServices = services;
+                        }
                     }, error => {
                         this.toasterService.showToaster(error, 'Fermer');
                     });

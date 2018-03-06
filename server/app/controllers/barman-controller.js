@@ -160,7 +160,7 @@ async function createServiceBarman(req, res) {
 
     await barmanService.createServiceBarman(barmanId, servicesId);
 
-    res.sendStatus(200);
+    res.send();
 }
 
 /**
@@ -183,7 +183,7 @@ async function deleteServiceBarman(req, res) {
 
     await barmanService.deleteServiceBarman(barmanId, servicesId);
 
-    res.sendStatus(200);
+    res.send();
 }
 
 module.exports = {

@@ -23,11 +23,17 @@ export class PlanningComponent implements OnInit {
             }
             return currentDay;
         });
-        this.serviceService.getDayServiceDetails(day).subscribe(services => {
-            this.dayServices = services;
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        this.dayServices = this.days.filter(currentDay => {
+            return currentDay.active === true;
+        }).map(currentDay => {
+            currentDay.services.map(service => {
+                if (service.barmen && service.barmen.length === 0) {
+                    service.barmen = undefined;
+                }
+                return service;
+            });
+            return currentDay.services;
+        })[0];
     }
 
     ngOnInit() {
@@ -36,6 +42,9 @@ export class PlanningComponent implements OnInit {
                 if (days.length > 0) {
                     this.days = days;
                     this.updateDayDetails(this.days[0]);
+                } else {
+                    this.days = undefined;
+                    this.dayServices = undefined;
                 }
             }, error => {
                 this.toasterService.showToaster(error, 'Fermer');

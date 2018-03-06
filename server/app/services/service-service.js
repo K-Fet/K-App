@@ -1,11 +1,11 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
+const { Service, ServicesTemplate, ServicesTemplateUnit, Barman } = require('../models');
 const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
 
 /**
- * Return all services of the app.
+ * Return all services of the app between start and end. Include associated barmen.
  *
  * @param start {Date} start time
  * @param end {Date} end time
@@ -13,7 +13,7 @@ const { createUserError, createServerError, cleanObject, getDefaultTemplate } = 
  */
 async function getAllServices(start, end) {
     logger.verbose('Service service: get all services');
-    return Service.findAll({
+    const services = await Service.findAll({
         where: {
             startAt: {
                 [Op.and]: [
@@ -21,7 +21,18 @@ async function getAllServices(start, end) {
                     { [Op.lte]: end }
                 ]
             }
-        }
+        },
+        include: [
+            {
+                model: Barman,
+                as: 'barmen',
+            }
+        ]
+    });
+    return services.map(service => {
+        service.startAt = new Date(service.startAt);
+        service.endAt = new Date(service.endAt);
+        return service;
     });
 }
 
@@ -38,9 +49,9 @@ async function createService(ServiceArray) {
         const newService = new Service({
             startAt: service.startAt,
             endAt: service.endAt,
-            nbMax: service.nbMax
+            nbMax: service.nbMax,
         });
-        logger.verbose('Service service: creating a new service');
+        logger.verbose('Service service: creating a new service, start: \'%s\', end \'%s\'.', newService.startAt.toString(), newService.endAt.toString());
         services.push(newService.save());
     }
     return Promise.all(services);

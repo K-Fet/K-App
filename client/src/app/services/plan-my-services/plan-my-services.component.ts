@@ -28,19 +28,31 @@ export class PlanMyServicesComponent implements OnInit {
             this.updateMyServices();
         });
 
-        // Get the planning of the current week
-        this.serviceService.getWeek().subscribe(week => {
+        this.updatePlanning(0);
+    }
+
+    updatePlanning(dayNumber: Number): void {
+         // Get the planning of the current week
+         this.serviceService.getWeek().subscribe(week => {
             this.serviceService.getPlanning(week.start, week.end).subscribe(days => {
                 if (days.length > 0) {
                     this.days = days;
-                    this.updateDayDetails(this.days[0]);
+                    this.updateDayDetails(this.days[+dayNumber]);
+                } else {
+                    this.days = undefined;
+                    this.dayServices = undefined;
                 }
             }, error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
+
+            // Get connected user
+            this.loginService.me().subscribe(user => {
+                // Get actual services of the connected user
+                this.updateMyServices();
+            });
         });
     }
-
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {
             if (currentDay === day) {
@@ -50,25 +62,28 @@ export class PlanMyServicesComponent implements OnInit {
             }
             return currentDay;
         });
-        this.serviceService.getDayServiceDetails(day).subscribe(dayServices => {
-            this.dayServices = dayServices;
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        this.dayServices = this.days.filter(currentDay => {
+            return currentDay.active === true;
+        }).map(currentDay => {
+            currentDay.services.map(service => {
+                if  (service.barmen && service.barmen.length === 0) {
+                    service.barmen = undefined;
+                }
+                return service;
+            });
+            return currentDay.services;
+        })[0];
     }
 
     updateMyServices() {
         if (this.user.barman) {
             this.serviceService.getWeek().subscribe(week => {
                 this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                    this.myServices = services.map(service => {
-                        this.serviceService.getBarmen(service.id).subscribe(barmen => {
-                            service.barmen = barmen;
-                            return service;
-                        }, error => {
-                            this.toasterService.showToaster(error, 'Fermer');
-                        });
-                    });
+                    if (services.length > 0) {
+                        this.myServices = services;
+                    } else {
+                        this.myServices = undefined;
+                    }
                 }, error => {
                     this.toasterService.showToaster(error, 'Fermer');
                 });
@@ -81,6 +96,13 @@ export class PlanMyServicesComponent implements OnInit {
             this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
                 this.toasterService.showToaster('Service enregistré', 'Fermer');
                 this.updateMyServices();
+                const dayNumber = this.days.indexOf(this.days.filter(day => {
+                    const sId = day.services.filter(s => {
+                        return s.id === service.id;
+                    })[0];
+                    return sId;
+                })[0]);
+                this.updatePlanning(dayNumber);
             }, error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
@@ -88,7 +110,7 @@ export class PlanMyServicesComponent implements OnInit {
     }
 
     removeService(service: Service) {
-        this.barmanService.removeService(12, [service.id]).subscribe(() => {
+        this.barmanService.removeService(this.user.barman.id, [service.id]).subscribe(() => {
             this.toasterService.showToaster('Service supprimé', 'Fermer');
             this.updateMyServices();
         }, error => {

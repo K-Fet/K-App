@@ -18,9 +18,14 @@
         <div>
             <mat-list *ngIf="dayServices">
                 <mat-list-item *ngFor="let service of dayServices">
-                    De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h<br />
-                    <span *ngIf="service.barmen" class="mat-caption">
-                        Avec <span ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                    <span mat-line>
+                        De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                    </span>
+                    <span mat-line *ngIf="service.barmen" class="mat-caption">
+                        Avec <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                    </span>
+                    <span mat-line *ngIf="!service.barmen" class="mat-caption">
+                        Aucun barmen pour le moment...
                     </span>
                 </mat-list-item>
             </mat-list>

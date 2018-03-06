@@ -36,12 +36,12 @@ export class BarmanService {
     }
 
     addService(id: Number, services: Number[]) {
-        return this.http.post('/api/barmen' + id + '/services', services).catch(this.handleError);
+        return this.http.post('/api/barmen/' + id + '/services', services).catch(this.handleError);
     }
 
     removeService(id: Number, services: Number[]) {
         // TODO Fix DELETE body issue
-        return this.http.delete('/api/barmen' + id + '/services' /*, [service] */).catch(this.handleError);
+        return this.http.delete('/api/barmen/' + id + '/services' /*, [service] */).catch(this.handleError);
     }
 
     update(barman: Barman) {
