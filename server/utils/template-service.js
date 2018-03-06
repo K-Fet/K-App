@@ -32,6 +32,19 @@ function getDefaultTemplate() {
                 minutes: 0,
             },
             endAt: {
+                day: 1,
+                hours: 22,
+                minutes: 0,
+            },
+        },
+        {
+            nbMax: DEFAULT_NB_MAX,
+            startAt: {
+                day: 1,
+                hours: 22,
+                minutes: 0,
+            },
+            endAt: {
                 day: 2,
                 hours: 1,
                 minutes: 0,
@@ -56,6 +69,19 @@ function getDefaultTemplate() {
             startAt: {
                 day: 2,
                 hours: 18,
+                minutes: 0,
+            },
+            endAt: {
+                day: 2,
+                hours: 22,
+                minutes: 0,
+            },
+        },
+        {
+            nbMax: DEFAULT_NB_MAX,
+            startAt: {
+                day: 2,
+                hours: 22,
                 minutes: 0,
             },
             endAt: {
@@ -86,6 +112,19 @@ function getDefaultTemplate() {
                 minutes: 0,
             },
             endAt: {
+                day: 3,
+                hours: 22,
+                minutes: 0,
+            },
+        },
+        {
+            nbMax: DEFAULT_NB_MAX,
+            startAt: {
+                day: 3,
+                hours: 22,
+                minutes: 0,
+            },
+            endAt: {
                 day: 4,
                 hours: 1,
                 minutes: 0,
@@ -113,6 +152,19 @@ function getDefaultTemplate() {
                 minutes: 0,
             },
             endAt: {
+                day: 4,
+                hours: 22,
+                minutes: 0,
+            },
+        },
+        {
+            nbMax: DEFAULT_NB_MAX,
+            startAt: {
+                day: 4,
+                hours: 22,
+                minutes: 0,
+            },
+            endAt: {
                 day: 5,
                 hours: 1,
                 minutes: 0,
@@ -137,6 +189,19 @@ function getDefaultTemplate() {
             startAt: {
                 day: 5,
                 hours: 18,
+                minutes: 0,
+            },
+            endAt: {
+                day: 5,
+                hours: 22,
+                minutes: 0,
+            },
+        },
+        {
+            nbMax: DEFAULT_NB_MAX,
+            startAt: {
+                day: 5,
+                hours: 22,
                 minutes: 0,
             },
             endAt: {

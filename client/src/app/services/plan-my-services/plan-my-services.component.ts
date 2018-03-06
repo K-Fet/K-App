@@ -23,6 +23,9 @@ export class PlanMyServicesComponent implements OnInit {
         // Get connected user
         this.loginService.me().subscribe(user => {
             this.user = user;
+
+            // Get actual services of the connected user
+            this.updateMyServices();
         });
 
         // Get the planning of the current week
@@ -36,9 +39,6 @@ export class PlanMyServicesComponent implements OnInit {
                 this.toasterService.showToaster(error, 'Fermer');
             });
         });
-
-        // Get actual services of the connected user
-        this.updateMyServices();
     }
 
     updateDayDetails(day: Day): void {

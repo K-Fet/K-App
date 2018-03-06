@@ -110,7 +110,7 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         FormsModule,
         ReactiveFormsModule,
         MatNativeDatetimeModule,
-        MatDatetimepickerModule
+        MatDatetimepickerModule,
         NgxPermissionsModule.forRoot()
     ],
     bootstrap: [AppComponent],

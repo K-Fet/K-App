@@ -5,6 +5,7 @@ import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import * as moment from 'moment';
 import { Moment } from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-open-services',
@@ -25,7 +26,8 @@ export class OpenServicesComponent implements OnInit {
     constructor (private templateService: TemplateService,
         private toasterService: ToasterService,
         private serviceService: ServiceService,
-        private formBuilder: FormBuilder) {
+        private formBuilder: FormBuilder,
+        private router: Router) {
         this.createForms();
     }
 
@@ -134,7 +136,12 @@ export class OpenServicesComponent implements OnInit {
     }
 
     getFirstDayOfNextWeek(): Moment {
-        const firstDay = moment();
+        const firstDay = moment().set({
+            'hour': 0,
+            'minute': 0,
+            'second': 0,
+            'millisecond': 0
+        });
         if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
             firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
         } else {
@@ -147,8 +154,10 @@ export class OpenServicesComponent implements OnInit {
         const services: Service[] = this.servicesFormArray.controls.map(formGroup => {
             return this.prepareService((<FormGroup>formGroup).controls);
         });
+        console.log(services);
         this.serviceService.create(services).subscribe(() => {
             this.toasterService.showToaster('Nouveaux services enregistrés', 'Fermer');
+            this.router.navigate(['/dashboard']);
         }, error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
