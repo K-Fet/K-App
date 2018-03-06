@@ -60,8 +60,8 @@ class Service extends Model {
 
 const ServiceSchema = Joi.object().keys({
     name: Joi.string(),
-    startAt: Joi.string().isoDate(),
-    endAt: Joi.string().isoDate(),
+    startAt: Joi.date().iso(),
+    endAt: Joi.date().iso().min(Joi.ref('startAt')),
     nbMax: Joi.number().integer(),
 });
 

@@ -26,6 +26,9 @@ async function getAllServices(req, res) {
     } else {
         throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
     }
+    if (start > end) {
+        throw createUserError('BadRequest', '\'start\' parameter must be inferior at \'end\' parameter');
+    }
 
     const services = await serviceService.getAllServices(start, end);
 
