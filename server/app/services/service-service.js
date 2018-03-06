@@ -1,7 +1,8 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
+const sequelize = require('../../db');
 const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
-const { createUserError, getDefaultTemplate } = require('../../utils');
+const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
 
 /**
  * Return all services of the app.
@@ -11,17 +12,16 @@ const { createUserError, getDefaultTemplate } = require('../../utils');
  * @returns {Promise<Array>} Services
  */
 async function getAllServices(start, end) {
-
     logger.verbose('Service service: get all services');
     return Service.findAll({
         where: {
-            [Op.and]: [
-                {
-                    startAt: { [Op.gte]: start },
-                    endAt: { [Op.lte]: end },
-                },
-            ],
-        },
+            startAt: {
+                [Op.and]: [
+                    { [Op.gte]: start },
+                    { [Op.lte]: end }
+                ]
+            }
+        }
     });
 }
 
@@ -31,12 +31,20 @@ async function getAllServices(start, end) {
  * @param newService {Service} partial service
  * @return {Promise<Service|Errors.ValidationError>} The created service with its id
  */
-async function createService(newService) {
+async function createService(ServiceArray) {
 
-    logger.verbose('Service service: creating a new service named %s', newService.name);
-    return newService.save();
+    const services = new Array();
+    for (const service of ServiceArray) {
+        const newService = new Service({
+            startAt: service.startAt,
+            endAt: service.endAt,
+            nbMax: service.nbMax
+        });
+        logger.verbose('Service service: creating a new service');
+        services.push(newService.save());
+    }
+    return Promise.all(services);
 }
-
 
 /**
  * Get a service by its id.
@@ -55,7 +63,6 @@ async function getServiceById(serviceId) {
     return service;
 }
 
-
 /**
  * Update a service.
  * This will copy only the allowed changes from the `updatedService`
@@ -69,18 +76,29 @@ async function getServiceById(serviceId) {
  */
 async function updateService(serviceId, updatedService) {
 
-    const currentService = await Service.findById(serviceId);
+    let currentService = await Service.findById(serviceId);
 
-    if (!currentService) throw createUserError('UnknownService', 'This service does not exist');
+    if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
     logger.verbose('Service service: updating service named %s', currentService.name);
+    const transaction = await sequelize.transaction();
+    try {
+        await currentService.update(cleanObject({
+            startAt: updatedService.startAt,
+            endAt: updatedService.endAt,
+            nbMax: updatedService.nbMax
+        }), { transaction });
 
-    return currentService.update({
-        name: updatedService.name,
-        startAt: updatedService.startAt,
-        endAt: updatedService.endAt,
-        nbMax: updatedService.nbMax
-    });
+    } catch (err) {
+        logger.warn('Service service: Error while updating service', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating service');
+    }
+    await transaction.commit();
+
+    currentService = await Service.findById(serviceId);
+
+    return currentService;
 }
 
 /**
@@ -136,7 +154,6 @@ async function getServicesTemplate() {
 
     return template;
 }
-
 
 module.exports = {
     getAllServices,

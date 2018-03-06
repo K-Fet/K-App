@@ -48,14 +48,16 @@ if (WEB_CONFIG.ssl && (!WEB_CONFIG.ssl.cert || !WEB_CONFIG.ssl.key)) {
 // Create HTTP or HTTPS server.
 let server;
 if (!WEB_CONFIG.ssl) {
-    server = require('http').createServer(app);
+    server = require('http')
+        .createServer(app);
 } else {
-    server = require('https').createServer({
-        // eslint-disable-next-line
-        key: fs.readFileSync(WEB_CONFIG.ssl.key),
-        // eslint-disable-next-line
-        cert: fs.readFileSync(WEB_CONFIG.ssl.cert)
-    }, app);
+    server = require('https')
+        .createServer({
+            // eslint-disable-next-line
+            key: fs.readFileSync(WEB_CONFIG.ssl.key),
+            // eslint-disable-next-line
+            cert: fs.readFileSync(WEB_CONFIG.ssl.cert),
+        }, app);
 }
 
 server.on('error', onError);

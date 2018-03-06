@@ -12,6 +12,9 @@ import {
     MAT_DATETIME_FORMATS
   } from '@mat-datetimepicker/core';
 
+// Libraries
+import { NgxPermissionsModule } from 'ngx-permissions';
+
 // Routes
 import { routing } from './app.routing';
 
@@ -108,6 +111,7 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         ReactiveFormsModule,
         MatNativeDatetimeModule,
         MatDatetimepickerModule
+        NgxPermissionsModule.forRoot()
     ],
     bootstrap: [AppComponent],
     providers: [

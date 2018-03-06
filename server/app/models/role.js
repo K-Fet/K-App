@@ -18,18 +18,18 @@ class Role extends Model {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
-                autoIncrement: true
+                autoIncrement: true,
             },
 
             name: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
             },
 
             description: DataTypes.STRING,
         }, {
             sequelize,
-            updatedAt: false
+            updatedAt: false,
         });
     }
 
@@ -39,20 +39,30 @@ class Role extends Model {
      * @param models
      */
     static associate(models) {
-        this.belongsToMany(models.Barman, { through: models.RoleWrapper, as: 'barmen' });
+        this.belongsToMany(models.Barman, {
+            through: models.RoleWrapper,
+            as: 'barmen',
+        });
+
+        this.belongsToMany(models.Permission, {
+            through: 'RolePermissions',
+            as: 'permissions',
+        });
     }
 }
 
 
-const RoleSchema = Joi.object().keys({
-    name: Joi.string(),
-    description: Joi.string(),
-    _embedded: Joi.object().keys({
-        barmen: AssociationChangesSchema
-    })
-});
+const RoleSchema = Joi.object()
+    .keys({
+        name: Joi.string(),
+        description: Joi.string(),
+        _embedded: Joi.object()
+            .keys({
+                barmen: AssociationChangesSchema,
+            }),
+    });
 
 module.exports = {
     Role,
-    RoleSchema
+    RoleSchema,
 };

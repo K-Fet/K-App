@@ -1,8 +1,8 @@
-const Joi = require('joi');
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
 const { ServiceSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all the services from the database.
@@ -12,7 +12,23 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllServices(req, res) {
-    const { start, end } = req.params;
+
+    let start;
+    let end;
+
+    if (req.query.start && req.query.end) {
+        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
+        // I use a + to convert the param from string to int
+        start = new Date(+req.query.start);
+        end = new Date(+req.query.end);
+        start = start.toISOString();
+        end = end.toISOString();
+    } else {
+        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
+    }
+    if (start > end) {
+        throw createUserError('BadRequest', '\'start\' parameter must be inferior to \'end\' parameter');
+    }
 
     const services = await serviceService.getAllServices(start, end);
 
@@ -27,27 +43,22 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
-    const schema = Joi.array()
-        .items(ServiceSchema.requiredKeys(
-            'startingDate',
-            'endingDate',
-            'nbMax',
-            '_embedded.category', // If _embedded exist, there must be a category field
-        ))
-        .min(1);
+    const schema = Joi.array().items(ServiceSchema.requiredKeys(
+        'startAt',
+        'endAt',
+        'nbMax'
+    )).min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newService = new Service({
-        ...req.body,
-        _embedded: undefined, // Remove the only external object
-    });
+    //Créer un tableau de services , a la place de new service etc.... (foreach...)
 
-    newService = await serviceService.createService(newService, req.body._embedded);
+    const services = await serviceService.createService(req.body);
 
-    res.json(newService);
+    return res.json(services);
 }
+
 
 
 /**
@@ -74,19 +85,18 @@ async function getServiceById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateService(req, res) {
+
     const schema = ServiceSchema.min(1);
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details.message);
-
     let newService = new Service({
-        ...req.body,
-        _embedded: undefined,  // Remove the only external object
+        ...req.body
     });
 
     const serviceId = req.params.id;
 
-    newService = await serviceService.updateService(serviceId, newService, req.body._embedded);
+    newService = await serviceService.updateService(serviceId, newService);
 
     res.json(newService);
 }
