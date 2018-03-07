@@ -3,6 +3,7 @@ import { Member, ConnectedUser } from '../_models/index';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { LoginService } from '../_services/index';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'app-connected-user-dialog',
@@ -17,7 +18,7 @@ export class ConnectedUserDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loginService.me().subscribe(user => {
+        this.loginService.currentUser.subscribe(user => {
             this.user = user;
         });
     }

@@ -28,7 +28,9 @@ export class RoleService {
     }
 
     update(role: Role) {
-        return this.http.put('/api/roles/' + role.id, role).catch(this.handleError);
+        const id = role.id;
+        delete role.id;
+        return this.http.put('/api/roles/' + id, role).catch(this.handleError);
     }
 
     delete(id: Number) {

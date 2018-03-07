@@ -69,7 +69,7 @@ async function updateMember(req, res) {
     const schema = MemberSchema.min(1);
 
     const { error } = schema.validate(reqMember);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newMember = new Member(reqMember);
 

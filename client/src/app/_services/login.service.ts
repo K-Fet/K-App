@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable, BehaviorSubject } from 'rxjs/Rx';
 import { catchError, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
@@ -12,13 +12,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class LoginService {
 
-    currentUser: {
-        username: String,
-        createdAt: Date,
-        accountType: String,
-        barman?: Barman,
-        specialAccount?: SpecialAccount
-    };
+    currentUser: BehaviorSubject<ConnectedUser> = new BehaviorSubject<ConnectedUser>(undefined);
 
     constructor(private http: HttpClient,
         private permissionsService: NgxPermissionsService,
@@ -51,7 +45,7 @@ export class LoginService {
                 if (jwt) {
                     localStorage.setItem('currentUser', JSON.stringify(jwt));
                 }
-                this.me();
+                this.me().subscribe();
                 const jwtDecoded = jwt_decode(jwt.jwt);
                 this.permissionsService.addPermission(jwtDecoded.permissions);
 
@@ -69,7 +63,7 @@ export class LoginService {
                 localStorage.removeItem('currentUser');
             }
             this.permissionsService.flushPermissions();
-            this.currentUser = undefined;
+            this.currentUser.next(null);
         }).catch(this.handleError);
     }
 
@@ -90,36 +84,31 @@ export class LoginService {
                 localStorage.removeItem('currentUser');
             }
             this.permissionsService.flushPermissions();
-            this.currentUser = undefined;
+            this.currentUser.next(null);
             this.router.navigate(['/login']);
         });
     }
 
     me() {
-        if (this.currentUser) {
-            return Observable.of(this.currentUser);
-        } else {
-            return this.http.get<ConnectedUser>('/api/auth/me')
-            .do(connectedUser => {
-                if (connectedUser.barman) {
-                    this.currentUser = {
-                        accountType: 'Barman',
-                        username:  connectedUser.barman.connection.username,
-                        createdAt: connectedUser.barman.createdAt,
-                        barman: connectedUser.barman,
-                    };
-                } else if (connectedUser.specialAccount) {
-                    this.currentUser = {
-                        accountType: 'SpecialAccount',
-                        username:  connectedUser.specialAccount.connection.username,
-                        createdAt: connectedUser.specialAccount.createdAt,
-                        specialAccount: connectedUser.specialAccount,
-                    };
-                }
-                return connectedUser;
-            })
-            .catch(this.handleError);
-        }
+        return this.http.get<ConnectedUser>('/api/auth/me')
+        .do(connectedUser => {
+            if (connectedUser.barman) {
+                this.currentUser.next({
+                    accountType: 'Barman',
+                    username:  connectedUser.barman.connection.username,
+                    createdAt: connectedUser.barman.createdAt,
+                    barman: connectedUser.barman,
+                });
+            } else if (connectedUser.specialAccount) {
+                this.currentUser.next({
+                    accountType: 'SpecialAccount',
+                    username:  connectedUser.specialAccount.connection.username,
+                    createdAt: connectedUser.specialAccount.createdAt,
+                    specialAccount: connectedUser.specialAccount,
+                });
+            }
+        })
+        .catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {
@@ -127,6 +116,7 @@ export class LoginService {
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
+            console.log(err);
             switch (err.error.error) {
                 case 'LoginError':
                     errorMessage = `Erreur: username ou mot de passe invalide`;
