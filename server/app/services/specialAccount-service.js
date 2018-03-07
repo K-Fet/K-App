@@ -11,7 +11,9 @@ const { createUserError, createServerError, cleanObject, hash } = require('../..
 async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
-    return SpecialAccount.findAll();
+    return SpecialAccount.findAll({
+        attributes: { exclude: [ 'code' ] },
+    });
 }
 
 /**
@@ -20,34 +22,14 @@ async function getAllSpecialAccounts() {
  * @param newSpecialAccount {SpecialAccount} partial specialAccount
  * @return {Promise<SpecialAccount} The created SpecialAccount with its id
  */
-async function createSpecialAccount(newUser) {
+async function createSpecialAccount(newSpecialAccount, connection) {
 
-    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username ', newUser.connection.username);
+    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username %s', connection.username);
 
     const transaction = await sequelize.transaction();
 
-    let newSpecialAccount;
-
     try {
-
-        newSpecialAccount = await SpecialAccount.create({
-            code: newUser.code,
-            description: newUser.description,
-            connection: {
-                username: newUser.connection.username,
-                password: newUser.connection.password,
-            }
-        }, {
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                }
-            ],
-            transaction,
-        });
-
-
+        await newSpecialAccount.save({ transaction });
     } catch (err) {
         logger.verbose('SpecialAccount service: Error while creating specialAccount', err);
         console.error(err);
@@ -75,7 +57,8 @@ async function getSpecialAccountById(specialAccountId) {
                 as: 'connection',
                 attributes: [ 'id', 'username' ]
             }
-        ]
+        ],
+        attributes: { exclude: [ 'code' ] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');

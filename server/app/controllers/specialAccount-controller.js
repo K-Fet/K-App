@@ -31,13 +31,15 @@ async function createSpecialAccount(req, res) {
         'connection.password'
     );
 
-
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    const newUser = req.body;
+    let newSpecialAccount = new SpecialAccount({
+        description: req.body.description,
+        code: req.body.code,
+    });
 
-    const newSpecialAccount = await specialAccountService.createSpecialAccount(newUser);
+    newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, req.body.connection);
 
     res.json(newSpecialAccount);
 }
