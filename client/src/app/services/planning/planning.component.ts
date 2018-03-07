@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Day, ServiceService, ToasterService } from '../../_services/index';
-import { Service } from '../../_models/index';
+import { ServiceService, ToasterService } from '../../_services/index';
+import { Day, Service } from '../../_models/index';
 
 @Component({
     selector: 'app-planning',

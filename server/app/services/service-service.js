@@ -67,7 +67,14 @@ async function getServiceById(serviceId) {
 
     logger.verbose('Service service: get service by id %d', serviceId);
 
-    const service = await Service.findById(serviceId);
+    const service = await Service.findById(serviceId, {
+        include: [
+            {
+                model: Barman,
+                as: 'barmen',
+            }
+        ]
+    });
 
     if (!service) throw createUserError('UnknownService', 'This service does not exist');
 

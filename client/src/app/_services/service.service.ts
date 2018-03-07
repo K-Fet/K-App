@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Service, Barman } from '../_models/index';
+import { Service, Barman, Day } from '../_models/index';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/throw';
@@ -11,8 +11,6 @@ import { ToasterService } from './index';
 
 import * as moment from 'moment';
 import { Moment } from 'moment';
-
-
 
 @Injectable()
 export class ServiceService {
@@ -47,16 +45,6 @@ export class ServiceService {
     delete(id: Number) {
         return this.http.delete('/api/services/' + id).catch(this.handleError);
     }
-
-    // dayNumber: 7 = sunday, 1 = monday, 2 = thuesday ...
-    // Examples:
-    // - getLast(0, 0) will return yesterday, if today is monday
-    // - getLast(0, 1) will return the sunday a week before yesterday, if today is monday
-    // - getLast(1, 0) will return the ultimate monday, if today is monday
-    //
-    // - getNext(2, 0) will return the next thuesday, if today is monday (tomorrow)
-    // - getNext(2, 1) will return the thuesday a week after tomorrow, if today is monday
-    // - getNext(1, 0) will return today, if today is monday (/!\ not today)
 
     getWeek(): Observable<{start: Moment, end: Moment}> {
         return new Observable(week => {
@@ -140,13 +128,7 @@ export class ServiceService {
     }
 }
 
-export interface Day {
-    name: String;
-    date: Moment;
-    active: Boolean;
-    services: Service[];
-}
-
+// The K-Fêt week change every thusday ( = 4 )
 export const DEFAULT_WEEK_SWITCH: Number = 4;
 
 const WEEK_DAY_LONG: Array<String> = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];

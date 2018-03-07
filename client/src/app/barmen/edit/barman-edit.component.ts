@@ -44,7 +44,7 @@ export class BarmanEditComponent implements OnInit {
             username: new FormControl('', [Validators.required]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
-            godFather: new FormControl('', [Validators.required]),
+            godFather: new FormControl(''),
             roles: new FormControl(''),
             kommissions: new FormControl(''),
             active: new FormControl('')

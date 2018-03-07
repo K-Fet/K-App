@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { Service } from '../../_models/Service';
 import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
 import { Moment } from 'moment';
-import { ConnectedUser } from '../../_models/index';
+import { Service, ConnectedUser } from '../../_models/index';
 
 @Component({
     selector: 'app-my-services',

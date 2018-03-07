@@ -8,3 +8,4 @@ export * from './AssociationChanges';
 export * from './SpecialAccount';
 export * from './ConnectedUser';
 export * from './Template';
+export * from './Day';

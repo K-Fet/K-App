@@ -3,7 +3,6 @@ import { Barman } from './index';
 export class Service {
 
     id?: Number;
-    name?: String;
     startAt: Date;
     endAt: Date;
     nbMax: Number;
