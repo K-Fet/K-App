@@ -58,9 +58,6 @@ class Barman extends Model {
         }, {
             sequelize,
 
-            // Do not delete row, even when the user delete is account
-            paranoid: true,
-
             name: {
                 plural: 'barmen',
                 singular: 'barman'
@@ -81,7 +78,10 @@ class Barman extends Model {
 
         this.belongsTo(Barman, { as: 'godFather' });
 
-        this.belongsTo(models.ConnectionInformation, { as: 'connection' });
+        this.belongsTo(models.ConnectionInformation, {
+            onDelete: 'CASCADE',
+            as: 'connection'
+        });
     }
 }
 
