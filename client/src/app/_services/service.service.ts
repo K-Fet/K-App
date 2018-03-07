@@ -12,6 +12,8 @@ import { ToasterService } from './index';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
+const WEEK_DAY_SHORT: Array<String> = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+
 @Injectable()
 export class ServiceService {
     $weekInterval: BehaviorSubject<Number> = new BehaviorSubject<Number>(0);
@@ -130,7 +132,3 @@ export class ServiceService {
 
 // The K-Fêt week change every thusday ( = 4 )
 export const DEFAULT_WEEK_SWITCH: Number = 4;
-
-const WEEK_DAY_LONG: Array<String> = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-
-const WEEK_DAY_SHORT: Array<String> = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
