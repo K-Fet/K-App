@@ -69,7 +69,7 @@ export class BarmanEditComponent implements OnInit {
                 this.barmanForm.controls.flow.setValue(barman.flow);
                 this.barmanForm.controls.active.setValue(barman.active);
 
-                this.selectedGodFather = barman.godFather.id;
+                this.selectedGodFather = barman.godFather ? barman.godFather.id : undefined;
                 this.selectedKommissions = barman.kommissions.map(k => k.id);
                 this.selectedRoles = barman.roles.map(r => r.id);
             },
