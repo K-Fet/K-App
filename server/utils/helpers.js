@@ -48,7 +48,7 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
         } catch (err) {
             await transaction.rollback();
             throw createUserError(`Unknown${upperKey}`,
-                `Unable to associate ${instance.name} with provided kommissions`);
+                `Unable to associate ${instance.name} with provided ${upperKey}`);
         }
     }
 }
