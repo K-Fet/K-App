@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
@@ -10,25 +10,32 @@ import { SpecialAccountService } from '../../_services/index';
 })
 
 export class SpecialAccountEditComponent implements OnInit {
-    id: string;
-    code: string;
-    description: string;
+    // TODO add reset password option
 
-    codeFormControl: FormControl = new FormControl('', [Validators.required]);
-    descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
+    specialAccountForm: FormGroup;
 
     constructor(
         private specialAccountService: SpecialAccountService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
-        private router: Router
-    ) {}
+        private router: Router,
+        private fb: FormBuilder
+    ) {
+        this.createForm();
+    }
+
+    createForm() {
+        this.specialAccountForm = this.fb.group({
+            username: new FormControl('', [Validators.required]),
+            description: new FormControl('')
+        });
+    }
 
     ngOnInit() {
         this.route.params.subscribe(params => {
-            this.id = params['id'];
-            this.specialAccountService.getById(+this.id).subscribe(role => {
-                this.description = role.description;
+            this.specialAccountService.getById(params['id']).subscribe((specialAccount: SpecialAccount) => {
+                this.specialAccountForm.controls.username.setValue(specialAccount.connection.username);
+                this.specialAccountForm.controls.description.setValue(specialAccount.description);
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -38,8 +45,11 @@ export class SpecialAccountEditComponent implements OnInit {
 
     edit() {
         const specialAccount = new SpecialAccount();
-        specialAccount.id = +this.id;
-        specialAccount.description = this.description;
+        Object.keys(this.specialAccountForm.controls).forEach(key => {
+            if (this.specialAccountForm.get(key).dirty) {
+                specialAccount[key] = this.specialAccountForm.get(key).value;
+            }
+        });
         // TODO implement code dialog
         const code = null;
         this.specialAccountService.update(specialAccount, code).subscribe(() => {
