@@ -12,6 +12,8 @@ import { ToasterService } from './index';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
+// The K-Fêt week change every thusday ( = 4 )
+export const DEFAULT_WEEK_SWITCH: Number = 4;
 const WEEK_DAY_SHORT: Array<String> = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Injectable()
@@ -129,6 +131,3 @@ export class ServiceService {
         return Observable.throw(errorMessage);
     }
 }
-
-// The K-Fêt week change every thusday ( = 4 )
-export const DEFAULT_WEEK_SWITCH: Number = 4;
