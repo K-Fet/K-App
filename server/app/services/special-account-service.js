@@ -12,7 +12,7 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
     });
 }
 
@@ -75,14 +75,14 @@ async function getSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username']
+                attributes: [ 'id', 'username' ]
             },
             {
                 model: Permission,
                 as: 'permissions',
             }
         ],
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');

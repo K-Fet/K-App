@@ -81,7 +81,7 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Barman,
@@ -209,7 +209,7 @@ async function deleteBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username']
+                attributes: [ 'id', 'username' ]
             }
         ]
     });
