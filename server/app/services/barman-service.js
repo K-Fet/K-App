@@ -30,15 +30,12 @@ async function createBarman(newBarman, _embedded) {
     try {
         newBarman.connection.password = await hash(newBarman.connection.password);
 
-        await newBarman.save({
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                }
-            ],
-            transaction
-        });
+        const co = await newBarman.connection.save({ transaction });
+        newBarman.connectionId = co.id;
+        await newBarman.save({ transaction });
+
+        // Remove critic fields
+        co.password = undefined;
     } catch (err) {
         logger.warn('Barman service: Error while creating barman', err);
         await transaction.rollback();
@@ -84,7 +81,7 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ],
+                attributes: ['id', 'username'],
             },
             {
                 model: Barman,
@@ -212,7 +209,7 @@ async function deleteBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ]
+                attributes: ['id', 'username']
             }
         ]
     });
@@ -225,8 +222,8 @@ async function deleteBarmanById(barmanId) {
     // it deletes on cascade a barman. But when we delete a barman it doesn't delete a connection information on cascade
     // I try to use a hook (like a trigger) to delete but too complicated, i didn't manage to do it
     try {
-        await barman.destroy({ transaction });
         await barman.connection.destroy({ transaction });
+        await barman.destroy({ transaction });
     } catch (err) {
         logger.warn('Barman service: Error while deleting barman', err);
         await transaction.rollback();

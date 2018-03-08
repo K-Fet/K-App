@@ -1,5 +1,5 @@
 const barmanService = require('../services/barman-service');
-const { Barman } = require('../models');
+const { Barman, ConnectionInformation } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
 const Joi = require('joi');
@@ -41,10 +41,20 @@ async function createBarman(req, res) {
 
     const newUser = req.body;
 
-    let newBarman = new Barman({
-        ...newUser,
-        _embedded: undefined, // Remove the only external object
-    });
+    let newBarman = new Barman(
+        {
+            ...newUser,
+            _embedded: undefined, // Remove the only external object
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ]
+        }
+    );
 
     newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
 
