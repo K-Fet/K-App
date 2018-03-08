@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const { Kommission } = require('../models/kommission');
 const { Barman } = require('../models/barman');
-const { createUserError, createServerError, cleanObject } = require('../../utils');
+const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 const sequelize = require('../../db');
 
 /**
@@ -41,21 +41,7 @@ async function createKommission(newKommission, _embedded) {
         for (const associationKey of Object.keys(_embedded)) {
             const value = _embedded[associationKey];
 
-            if (associationKey === 'barmen') {
-                if (value.add && value.add.length >0) {
-                    try {
-                        await newKommission.addBarmen(value.add, { transaction });
-                    } catch (err) {
-                        await transaction.rollback();
-                        throw createUserError('UnknownBarman', 'Unable to associate kommission with provided barmen');
-                    }
-                }
-                if (value.remove && value.remove.length >0) {
-                    throw createUserError('RemovedValueProhibited', 'When creating a kommission, impossible to add removed value');
-                }
-            } else {
-                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
-            }
+            await setEmbeddedAssociations(associationKey, value, newKommission, transaction, true);
         }
     }
 
@@ -65,11 +51,11 @@ async function createKommission(newKommission, _embedded) {
 
 
 /**
-     * Get a kommission by its id.
-     *
-     * @param kommissionId {number} Kommission id
-     * @return {Promise<Kommission>} The wanted kommission.
-     */
+ * Get a kommission by its id.
+ *
+ * @param kommissionId {number} Kommission id
+ * @return {Promise<Kommission>} The wanted kommission.
+ */
 async function getKommissionById(kommissionId) {
 
     logger.verbose('Kommission service: get kommission by id %d', kommissionId);
@@ -91,17 +77,17 @@ async function getKommissionById(kommissionId) {
 
 
 /**
-     * Update an kommission.
-     * This will copy only the allowed changes from the `updatedKommission`
-     * into the current kommission.
-     * This means, with this function, you can not change everything like
-     * the `createdAt` field or others.
-     *
-     * @param kommissionId {number} kommission id
-     * @param updatedKommission {Kommission} Updated kommission, constructed from the request.
-     * @param _embedded {Object} Object containing associations to update, see swagger for more information.
-     * @return {Promise<Kommission>} The updated kommission
-     */
+ * Update an kommission.
+ * This will copy only the allowed changes from the `updatedKommission`
+ * into the current kommission.
+ * This means, with this function, you can not change everything like
+ * the `createdAt` field or others.
+ *
+ * @param kommissionId {number} kommission id
+ * @param updatedKommission {Kommission} Updated kommission, constructed from the request.
+ * @param _embedded {Object} Object containing associations to update, see swagger for more information.
+ * @return {Promise<Kommission>} The updated kommission
+ */
 async function updateKommission(kommissionId, updatedKommission, _embedded) {
 
     const currentKommission = await Kommission.findById(kommissionId, {
@@ -137,22 +123,7 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
 
             const value = _embedded[associationKey];
 
-            if (associationKey === 'barmen') {
-                try {
-                    if (value.add && value.add.length > 0) {
-                        await currentKommission.addBarmen(value.add, { transaction });
-                    }
-                    if (value.remove && value.remove.length >0) {
-                        await currentKommission.removeBarmen(value.remove, { transaction });
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownBarman', 'Unable to associate kommission with provided barmen');
-                }
-            } else {
-                await transaction.rollback();
-                throw createUserError('BadRequest', `Unknown association '${associationKey}, aborting!`);
-            }
+            await setEmbeddedAssociations(associationKey, value, currentKommission, transaction);
         }
     }
 
@@ -161,11 +132,11 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
 }
 
 /**
-     * Delete an kommission.
-     *
-     * @param kommissionId {number} kommission id.
-     * @return {Promise<Kommission>} The deleted kommission
-     */
+ * Delete an kommission.
+ *
+ * @param kommissionId {number} kommission id.
+ * @return {Promise<Kommission>} The deleted kommission
+ */
 async function deleteKommission(kommissionId) {
 
     logger.verbose('Kommission service: deleting kommission with id %d', kommissionId);
