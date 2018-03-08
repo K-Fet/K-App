@@ -1,6 +1,6 @@
 const { createUserError, createServerError } = require('./errors');
 const { verify, hash } = require('./password-manager');
-const { cleanObject } = require('./helpers');
+const { cleanObject, setEmbeddedAssociations } = require('./helpers');
 const { getDefaultTemplate } = require('./template-service');
 
 module.exports = {
@@ -10,4 +10,5 @@ module.exports = {
     hash,
     cleanObject,
     getDefaultTemplate,
+    setEmbeddedAssociations,
 };

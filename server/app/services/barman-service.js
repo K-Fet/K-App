@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
-const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
+const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
 /**
  * Return all barmen of the app.
@@ -22,19 +22,23 @@ async function getAllBarmen() {
  * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Barman>} The created barman with its id
  */
-async function createBarman(newBarman, connection, _embedded) {
+async function createBarman(newBarman, _embedded) {
 
     logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
 
     const transaction = await sequelize.transaction();
     try {
-        await newBarman.save({ transaction });
+        newBarman.connection.password = await hash(newBarman.connection.password);
 
-        const coData = {
-            username: connection.username,
-            password: await hash(connection.password),
-        };
-        await newBarman.createConnection(cleanObject(coData), { transaction });
+        await newBarman.save({
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ],
+            transaction
+        });
     } catch (err) {
         logger.warn('Barman service: Error while creating barman', err);
         await transaction.rollback();
@@ -56,32 +60,8 @@ async function createBarman(newBarman, connection, _embedded) {
 
                 await newBarman.setGodFather(wantedGodFather, { transaction });
 
-            } else if (associationKey === 'kommissions') {
-                if (value.add && value.add.length > 0) {
-                    try {
-                        await newBarman.addKommissions(value.add, { transaction });
-                    } catch (err) {
-                        await transaction.rollback();
-                        throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
-                    }
-                }
-                if (value.remove && value.remove.length > 0) {
-                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
-                }
-            } else if (associationKey === 'roles') {
-                if (value.add && value.add.length > 0) {
-                    try {
-                        await newBarman.addRoles(value.add, { transaction });
-                    } catch (err) {
-                        await transaction.rollback();
-                        throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
-                    }
-                }
-                if (value.remove && value.remove.length > 0) {
-                    throw createUserError('RemovedValueProhibited', 'When creating a barman, impossible to add removed value');
-                }
             } else {
-                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+                await setEmbeddedAssociations(associationKey, value, newBarman, transaction, true);
             }
         }
     }
@@ -207,33 +187,8 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
                 await currentBarman.setGodFather(wantedGodFather, { transaction });
 
-            } else if (associationKey === 'kommissions') {
-                try {
-                    if (value.add && value.add.length > 0) {
-                        await currentBarman.addKommissions(value.add, { transaction });
-                    }
-                    if (value.remove && value.remove.length > 0) {
-                        await currentBarman.removeKommissions(value.remove, { transaction });
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownKommission', 'Unable to associate barman with provided kommissions');
-                }
-            } else if (associationKey === 'roles') {
-                try {
-                    if (value.add && value.add.length > 0) {
-                        await currentBarman.addRoles(value.add, { transaction });
-                    }
-                    if (value.remove && value.remove.length > 0) {
-                        await currentBarman.removeRoles(value.remove, { transaction });
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownRole', 'Unable to associate barman with provided roles');
-                }
             } else {
-                await transaction.rollback();
-                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
+                await setEmbeddedAssociations(associationKey, value, currentBarman, transaction);
             }
         }
     }

@@ -41,17 +41,9 @@ async function createBarman(req, res) {
 
     const newUser = req.body;
 
-    let newBarman = new Barman({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        nickname: newUser.nickname,
-        facebook: newUser.facebook,
-        dateOfBirth: newUser.dateOfBirth,
-        flow: newUser.flow,
-        active: newUser.active
-    });
+    let newBarman = new Barman(newUser);
 
-    newBarman = await barmanService.createBarman(newBarman, newUser.connection, newUser._embedded);
+    newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
 
     res.json(newBarman);
 }
