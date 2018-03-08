@@ -6,3 +6,4 @@ export * from './service.service';
 export * from './kommission.service';
 export * from './role.service';
 export * from './template.service';
+export * from './special-account.service';

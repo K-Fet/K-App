@@ -44,6 +44,9 @@ import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
+import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
+import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
+import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
@@ -94,7 +97,10 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         NotFoundComponent,
         ConnectedUserDialogComponent,
         OpenServicesComponent,
-        WeekPickerComponent
+        WeekPickerComponent,
+        SpecialAccountListComponent,
+        SpecialAccountNewComponent,
+        SpecialAccountEditComponent,
     ],
     entryComponents: [
         CodeDialogComponent,

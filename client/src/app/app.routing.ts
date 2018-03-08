@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 // Guards
+import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard } from './_guards/auth.guard';
 
 // Components
@@ -24,7 +25,9 @@ import { BarmanViewComponent } from './barmen/view/barman-view.component';
 import { BarmanEditComponent } from './barmen/edit/barman-edit.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
-import { NgxPermissionsGuard } from 'ngx-permissions';
+import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
+import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
+import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -69,6 +72,12 @@ const routes: Routes = [
         data: generateData(['barman:read']) },
     { path: 'open-services', component: OpenServicesComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['service:write']) },
+    { path: 'specialaccounts', component: SpecialAccountListComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
+        data: generateData(['specialaccount:read']) },
+    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
+        data: generateData(['specialaccount:write']) },
+    { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
+        data: generateData(['specialaccount:write']) },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' }
 ];
