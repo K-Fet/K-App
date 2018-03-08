@@ -41,7 +41,10 @@ async function createBarman(req, res) {
 
     const newUser = req.body;
 
-    let newBarman = new Barman(newUser);
+    let newBarman = new Barman({
+        ...newUser,
+        _embedded: undefined, // Remove the only external object
+    });
 
     newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
 
@@ -78,7 +81,7 @@ async function updateBarman(req, res) {
 
     let newBarman = new Barman({
         ...newUser,
-        _embedded: undefined // Remove the only external object
+        _embedded: undefined, // Remove the only external object
     });
 
     const barmanId = req.params.id;
@@ -134,12 +137,12 @@ async function getServicesBarman(req, res) {
 }
 
 /**
-* Create a Service
-*
-* @param req Request
-* @param res Response
-* @return {Promise.<void>} Nothing
-*/
+ * Create a Service
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function createServiceBarman(req, res) {
     const barmanId = req.params.id;
 
@@ -156,12 +159,12 @@ async function createServiceBarman(req, res) {
 }
 
 /**
-* Delete a Service of a barman
-*
-* @param req Request
-* @param res Response
-* @return {Promise.<void>} Nothing
-*/
+ * Delete a Service of a barman
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
 async function deleteServiceBarman(req, res) {
 
     const barmanId = req.params.id;

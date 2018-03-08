@@ -1,5 +1,5 @@
-const specialAccountService = require('../services/specialAccount-service');
-const { SpecialAccount } = require('../models');
+const specialAccountService = require('../services/special-account-service');
+const { SpecialAccount, ConnectionInformation } = require('../models');
 const { SpecialAccountSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
 
@@ -34,12 +34,24 @@ async function createSpecialAccount(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newSpecialAccount = new SpecialAccount({
-        description: req.body.description,
-        code: req.body.code,
-    });
+    const newAccount = req.body;
 
-    newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, req.body.connection);
+    let newSpecialAccount = new SpecialAccount(
+        {
+            ...newAccount,
+            _embedded: undefined,  // Remove the only external object
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection'
+                }
+            ]
+        }
+    );
+
+    newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, newAccount._embedded);
 
     res.json(newSpecialAccount);
 }

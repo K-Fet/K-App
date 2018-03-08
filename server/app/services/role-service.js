@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Role, Barman } = require('../models/');
-const { createUserError, createServerError, cleanObject } = require('../../utils');
+const { Role, Barman, Permission } = require('../models/');
+const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 
 /**
  * Return all roles of the app.
@@ -40,21 +40,7 @@ async function createRole(newRole, _embedded) {
         for (const associationKey of Object.keys(_embedded)) {
             const value = _embedded[associationKey];
 
-            if (associationKey === 'barmen') {
-                if (value.add && value.add.length > 0) {
-                    try {
-                        await newRole.addBarmen(value.add, { transaction });
-                    } catch (err) {
-                        await transaction.rollback();
-                        throw createUserError('UnknownBarman', 'Unable to associate roles with provided barmen');
-                    }
-                }
-                if (value.remove && value.remove.length > 0) {
-                    throw createUserError('RemovedValueProhibited', 'When creating a role, impossible to add removed value');
-                }
-            } else {
-                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
-            }
+            await setEmbeddedAssociations(associationKey, value, newRole, transaction, true);
         }
     }
 
@@ -77,6 +63,10 @@ async function getRoleById(roleId) {
             {
                 model: Barman,
                 as: 'barmen'
+            },
+            {
+                model: Permission,
+                as: 'permissions'
             }
         ]
     });
@@ -100,14 +90,7 @@ async function getRoleById(roleId) {
  */
 async function updateRole(roleId, updatedRole, _embedded) {
 
-    const currentRole = await Role.findById(roleId, {
-        include: [
-            {
-                model: Barman,
-                as: 'barmen'
-            }
-        ]
-    });
+    const currentRole = await Role.findById(roleId);
 
     if (!currentRole) throw createUserError('UnknownRole', 'This role does not exist');
 
@@ -132,22 +115,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
         for (const associationKey of Object.keys(_embedded)) {
             const value = _embedded[associationKey];
 
-            if (associationKey === 'barmen') {
-                try {
-                    if (value.add && value.add.length > 0) {
-                        await currentRole.addBarmen(value.add, { transaction });
-                    }
-                    if (value.remove && value.remove.length > 0) {
-                        await currentRole.removeBarmen(value.remove, { transaction });
-                    }
-                } catch (err) {
-                    await transaction.rollback();
-                    throw createUserError('UnknownBarman', 'Unable to associate role with provided barmen');
-                }
-            } else {
-                await transaction.rollback();
-                throw createUserError('BadRequest', `Unknown association '${associationKey}', aborting!`);
-            }
+            await setEmbeddedAssociations(associationKey, value, currentRole, transaction);
         }
     }
     await transaction.commit();

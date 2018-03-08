@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { ConnectionInformation, SpecialAccount } = require('../models');
-const { createUserError, createServerError, cleanObject, hash } = require('../../utils');
+const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
+const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
 /**
  * Return all specialAccounts of the app
@@ -12,7 +12,7 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: { exclude: [ 'code' ] },
+        attributes: { exclude: ['code'] },
     });
 }
 
@@ -20,21 +20,41 @@ async function getAllSpecialAccounts() {
  * Create a SpecialAccount.
  *
  * @param newSpecialAccount {SpecialAccount} partial specialAccount
- * @return {Promise<SpecialAccount} The created SpecialAccount with its id
+ * @param _embedded Embedded associations of a special account
+ * @return {Promise<SpecialAccount>} The created SpecialAccount with its id
  */
-async function createSpecialAccount(newSpecialAccount, connection) {
+async function createSpecialAccount(newSpecialAccount, _embedded) {
 
-    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username %s', connection.username);
+    logger.verbose('SpecialAccount service: creating a new SpecialAccount with username %s',
+        newSpecialAccount.connection.username);
 
     const transaction = await sequelize.transaction();
 
     try {
+        newSpecialAccount.connection.password = await hash(newSpecialAccount.connection.password);
+        newSpecialAccount.code = await hash(newSpecialAccount.code);
+
+
+        const co = await newSpecialAccount.connection.save({ transaction });
+        newSpecialAccount.connectionId = co.id;
         await newSpecialAccount.save({ transaction });
+
+        // Remove critic fields
+        newSpecialAccount.code = undefined;
+        co.password = undefined;
+
     } catch (err) {
-        logger.verbose('SpecialAccount service: Error while creating specialAccount', err);
-        console.error(err);
+        logger.verbose('SpecialAccount service: Error while creating specialAccount %o', err);
         await transaction.rollback();
         throw createServerError('ServerError', 'Error while creating a specialAccount');
+    }
+
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
+        }
     }
 
     await transaction.commit();
@@ -55,10 +75,14 @@ async function getSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ]
+                attributes: ['id', 'username']
+            },
+            {
+                model: Permission,
+                as: 'permissions',
             }
         ],
-        attributes: { exclude: [ 'code' ] },
+        attributes: { exclude: ['code'] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -70,9 +94,10 @@ async function getSpecialAccountById(specialAccountId) {
  *
  * @param specialAccountId {number} specialAccount id
  * @param updatedSpecialAccount {SpecialAccount} Updated SpecialAccount, constructed from the request.
+ * @param _embedded Associations links to update
  * @return {Promise<SpecialAccount>} the updated special account
  */
-async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount) {
+async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount, _embedded) {
     const currentSpecialAccount = await SpecialAccount.findById(specialAccountId);
 
     if (!currentSpecialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -84,30 +109,35 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount)
     try {
         await currentSpecialAccount.update(cleanObject({
             id: updatedSpecialAccount.id,
-            code: updatedSpecialAccount.code,
+            code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
             description: updatedSpecialAccount.description
         }), { transaction });
 
+        const updateCo = updatedSpecialAccount.connection;
+
         // If connection information is changed
-        if (updatedSpecialAccount.connection) {
+        if (updateCo) {
             const co = await currentSpecialAccount.getConnection();
-
-            const coData = {
-                username: updatedSpecialAccount.connection.username,
-                password: await hash(updatedSpecialAccount.connection.password)
-            };
-
-            // If there is no connection yet, create one
-            if (!co) {
-                await currentSpecialAccount.createConnection(cleanObject(coData), { transaction });
-            } else {
-                await co.update(cleanObject(coData), { transaction });
-            }
+            await co.update(
+                cleanObject({
+                    username: updateCo.username,
+                    password: await hash(updateCo.password)
+                }),
+                { transaction }
+            );
         }
     } catch (err) {
         logger.warn('SpecialAccount service: Error while updating SpecialAccount', err);
         await transaction.rollback();
         throw createServerError('ServerError', 'Error while updating SpecialAccount');
+    }
+
+    if (_embedded) {
+        for (const associationKey of Object.keys(_embedded)) {
+            const value = _embedded[associationKey];
+
+            await setEmbeddedAssociations(associationKey, value, currentSpecialAccount, transaction);
+        }
     }
 
     await transaction.commit();
@@ -124,11 +154,25 @@ async function deleteSpecialAccountById(specialAccountId) {
 
     logger.verbose('SpecialAccount service: deleting SpecialAccount with id %d', specialAccountId);
 
-    const specialAccount = await SpecialAccount.findById(specialAccountId);
+    const specialAccount = await SpecialAccount.findById(specialAccountId, {
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection',
+            }
+        ]
+    });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
-    await specialAccount.destroy();
+    const transaction = sequelize.transaction();
+
+    try {
+        await specialAccount.connection.destroy();
+        await specialAccount.destroy();
+    } catch (err) {
+        await transaction.rollback();
+    }
 
     return specialAccount;
 }

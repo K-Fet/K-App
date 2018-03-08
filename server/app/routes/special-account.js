@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
-const specialAccountController = require('../controllers/specialAccount-controller');
+const specialAccountController = require('../controllers/special-account-controller');
 
 router.get('/', am(specialAccountController.getAllSpecialAccounts));
 router.post('/', am(specialAccountController.createSpecialAccount));
