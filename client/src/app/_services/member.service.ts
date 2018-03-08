@@ -25,11 +25,18 @@ export class MemberService {
     }
 
     update(member: Member, code: Number) {
-        return this.http.put('/api/members/' + member.id, {code: code, member: member}).catch(this.handleError);
+        const id = member.id;
+        delete member.id;
+        return this.http.put('/api/members/' + id, {code: code, member: member}).catch(this.handleError);
     }
 
     delete(id: Number, code: Number) {
-        return this.http.delete('/api/members/' + id).catch(this.handleError);
+        const options = {
+            body: {
+                code: code,
+            }
+        };
+        return this.http.request('DELETE', '/api/members/' + id, options).catch(this.handleError);
     }
 
     private handleError(err: HttpErrorResponse) {
@@ -37,7 +44,6 @@ export class MemberService {
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
         } else {
-            console.log(err);
             switch (err.error.error) {
                 case 'Not Found':
                     errorMessage = `Erreur, impossible d'ajouter un adhérent`;

@@ -1,28 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { catchError, map, tap } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable, BehaviorSubject} from 'rxjs/Rx';
+import {catchError, map, tap} from 'rxjs/operators';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import { Barman, SpecialAccount, ConnectedUser } from '../_models/index';
+import {Barman, SpecialAccount, ConnectedUser} from '../_models/index';
 import * as jwt_decode from 'jwt-decode';
-import { NgxPermissionsService } from 'ngx-permissions';
-import { Router } from '@angular/router';
+import {NgxPermissionsService} from 'ngx-permissions';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class LoginService {
 
-    currentUser: {
-        username: String,
-        createdAt: Date,
-        accountType: String,
-        barman?: Barman,
-        specialAccount?: SpecialAccount
-    };
+    $currentUser: BehaviorSubject<ConnectedUser> = new BehaviorSubject<ConnectedUser>(undefined);
 
     constructor(private http: HttpClient,
-        private permissionsService: NgxPermissionsService,
-        private router: Router) {
+                private permissionsService: NgxPermissionsService,
+                private router: Router) {
 
         if (localStorage.getItem('currentUser')) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -38,8 +32,7 @@ export class LoginService {
                         this.refresh().subscribe();
                     }, 50);
                 } else {
-                    localStorage.removeItem('currentUser');
-                    router.navigate(['/login']);
+                    this.clearUser();
                 }
             }
         }
@@ -48,10 +41,8 @@ export class LoginService {
     login(username: string, password: string) {
         return this.http.post('/api/auth/login', {username, password})
             .do((jwt: { jwt: String }) => {
-                if (jwt) {
-                    localStorage.setItem('currentUser', JSON.stringify(jwt));
-                }
-                this.me();
+                this.saveUser(jwt);
+                this.me().subscribe();
                 const jwtDecoded = jwt_decode(jwt.jwt);
                 this.permissionsService.addPermission(jwtDecoded.permissions);
 
@@ -64,19 +55,15 @@ export class LoginService {
     }
 
     logout() {
-        return this.http.get('/api/auth/logout').do(() => {
-            if (localStorage.getItem('currentUser')) {
-                localStorage.removeItem('currentUser');
-            }
-            this.permissionsService.flushPermissions();
-            this.currentUser = undefined;
-        }).catch(this.handleError);
+        return this.http.get('/api/auth/logout')
+            .do(this.clearUser)
+            .catch(this.handleError);
     }
 
     refresh() {
         return this.http.get('/api/auth/refresh').do((newJWT: { jwt: String }) => {
             if (newJWT) {
-                localStorage.setItem('currentUser', JSON.stringify(newJWT));
+                this.saveUser(newJWT);
                 const jwtDecoded = jwt_decode(newJWT.jwt);
                 this.permissionsService.addPermission(jwtDecoded.permissions);
 
@@ -85,41 +72,45 @@ export class LoginService {
                     this.refresh().subscribe();
                 }, 45 * 60 * 60 * 1000);
             }
-        }, err => {
-            if (localStorage.getItem('currentUser')) {
-                localStorage.removeItem('currentUser');
-            }
-            this.permissionsService.flushPermissions();
-            this.currentUser = undefined;
-            this.router.navigate(['/login']);
+        }).catch(err => {
+            this.clearUser();
+            return Observable.throw(err);
         });
     }
 
+    private clearUser() {
+        this.$currentUser.next(null);
+        this.permissionsService.flushPermissions();
+        if (localStorage.getItem('currentUser')) {
+            localStorage.removeItem('currentUser');
+        }
+        this.router.navigate(['/login']);
+    }
+
+    private saveUser(jwt) {
+        localStorage.setItem('currentUser', JSON.stringify(jwt));
+    }
+
     me() {
-        if (this.currentUser) {
-            return Observable.of(this.currentUser);
-        } else {
-            return this.http.get<ConnectedUser>('/api/auth/me')
+        return this.http.get<ConnectedUser>('/api/auth/me')
             .do(connectedUser => {
                 if (connectedUser.barman) {
-                    this.currentUser = {
+                    this.$currentUser.next({
                         accountType: 'Barman',
-                        username:  connectedUser.barman.connection.username,
+                        username: connectedUser.barman.connection.username,
                         createdAt: connectedUser.barman.createdAt,
                         barman: connectedUser.barman,
-                    };
+                    });
                 } else if (connectedUser.specialAccount) {
-                    this.currentUser = {
+                    this.$currentUser.next({
                         accountType: 'SpecialAccount',
-                        username:  connectedUser.specialAccount.connection.username,
+                        username: connectedUser.specialAccount.connection.username,
                         createdAt: connectedUser.specialAccount.createdAt,
                         specialAccount: connectedUser.specialAccount,
-                    };
+                    });
                 }
-                return connectedUser;
             })
             .catch(this.handleError);
-        }
     }
 
     private handleError(err: HttpErrorResponse) {

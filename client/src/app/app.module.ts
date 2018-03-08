@@ -1,11 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 // Forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    MatDatetimepickerModule,
+    MatNativeDatetimeModule,
+    MAT_DATETIME_FORMATS
+  } from '@mat-datetimepicker/core';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
@@ -37,10 +42,13 @@ import { RoleEditComponent } from './roles/edit/role-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
+import { OpenServicesComponent } from './services/open-services/open-services.component';
+import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService } from './_services/index';
+    BarmanService, ServiceService, KommissionService, RoleService,
+    TemplateService } from './_services/index';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -48,8 +56,16 @@ import { AuthGuard } from './_guards/auth.guard';
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
 
+// Date
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr, 'fr');
+
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { MAT_DATE_LOCALE } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -76,7 +92,9 @@ import { MaterialModule } from './_helpers/material.module';
         RolesListComponent,
         CodeDialogComponent,
         NotFoundComponent,
-        ConnectedUserDialogComponent
+        ConnectedUserDialogComponent,
+        OpenServicesComponent,
+        WeekPickerComponent
     ],
     entryComponents: [
         CodeDialogComponent,
@@ -91,6 +109,8 @@ import { MaterialModule } from './_helpers/material.module';
         routing,
         FormsModule,
         ReactiveFormsModule,
+        MatNativeDatetimeModule,
+        MatDatetimepickerModule,
         NgxPermissionsModule.forRoot()
     ],
     bootstrap: [AppComponent],
@@ -103,6 +123,10 @@ import { MaterialModule } from './_helpers/material.module';
         RoleService,
         AuthGuard,
         ToasterService,
+        TemplateService,
+        {
+            provide: LOCALE_ID, useValue: 'fr'
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,

@@ -1,11 +1,11 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Service, ServicesTemplate, ServicesTemplateUnit } = require('../models');
+const { Service, ServicesTemplate, ServicesTemplateUnit, Barman } = require('../models');
 const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
 
 /**
- * Return all services of the app.
+ * Return all services of the app between start and end. Include associated barmen.
  *
  * @param start {Date} start time
  * @param end {Date} end time
@@ -21,26 +21,32 @@ async function getAllServices(start, end) {
                     { [Op.lte]: end }
                 ]
             }
-        }
+        },
+        include: [
+            {
+                model: Barman,
+                as: 'barmen',
+            }
+        ]
     });
 }
 
 /**
  * Create a service.
  *
- * @param newService {Service} partial service
+ * @param serviceArray {Array<Service>} service list
  * @return {Promise<Service|Errors.ValidationError>} The created service with its id
  */
-async function createService(ServiceArray) {
+async function createService(serviceArray) {
 
-    const services = new Array();
-    for (const service of ServiceArray) {
+    const services = [];
+    for (const service of serviceArray) {
         const newService = new Service({
             startAt: service.startAt,
             endAt: service.endAt,
-            nbMax: service.nbMax
+            nbMax: service.nbMax,
         });
-        logger.verbose('Service service: creating a new service');
+        logger.verbose('Service service: creating a new service, start: \'%s\', end \'%s\'.', newService.startAt.toString(), newService.endAt.toString());
         services.push(newService.save());
     }
     return Promise.all(services);
@@ -56,7 +62,14 @@ async function getServiceById(serviceId) {
 
     logger.verbose('Service service: get service by id %d', serviceId);
 
-    const service = await Service.findById(serviceId);
+    const service = await Service.findById(serviceId, {
+        include: [
+            {
+                model: Barman,
+                as: 'barmen',
+            }
+        ]
+    });
 
     if (!service) throw createUserError('UnknownService', 'This service does not exist');
 

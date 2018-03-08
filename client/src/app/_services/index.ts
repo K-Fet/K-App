@@ -5,3 +5,4 @@ export * from './login.service';
 export * from './service.service';
 export * from './kommission.service';
 export * from './role.service';
+export * from './template.service';

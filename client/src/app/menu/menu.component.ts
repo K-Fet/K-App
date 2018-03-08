@@ -1,5 +1,5 @@
 import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, OnDestroy, Component} from '@angular/core';
+import {ChangeDetectorRef, OnDestroy, Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from '../_services/login.service';
 import { ToasterService } from '../_services/toaster.service';
@@ -7,6 +7,8 @@ import { ConnectedUser } from '../_models/index';
 import { error } from 'selenium-webdriver';
 import { MatDialog } from '@angular/material';
 import { ConnectedUserDialogComponent } from '../connected-user-dialog/connected-user-dialog.component';
+import { share } from 'rxjs/operator/share';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'app-menu',
@@ -14,10 +16,11 @@ import { ConnectedUserDialogComponent } from '../connected-user-dialog/connected
     styleUrls: ['./menu.component.scss']
 })
 
-export class MenuComponent implements OnDestroy {
+export class MenuComponent implements OnDestroy, OnInit {
 
     mobileQuery: MediaQueryList;
     router: Router;
+    user: ConnectedUser;
 
     private _mobileQueryListener: () => void;
 
@@ -34,13 +37,12 @@ export class MenuComponent implements OnDestroy {
         this.router = router;
     }
 
+
     logout() {
         this.loginService.logout().subscribe(res => {
-        this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
-        localStorage.removeItem('currentUser');
-        this.router.navigate(['/login']);
+            this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
         }, err => {
-        this.toasterService.showToaster(err, 'Fermer');
+            this.toasterService.showToaster(err, 'Fermer');
         });
     }
 
@@ -50,6 +52,12 @@ export class MenuComponent implements OnDestroy {
                 top: '60px',
                 right: '20px'
             }
+        });
+    }
+
+    ngOnInit(): void {
+        this.loginService.$currentUser.subscribe(user => {
+            this.user = user;
         });
     }
 

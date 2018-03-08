@@ -17,7 +17,7 @@ export class ConnectedUserDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loginService.me().subscribe(user => {
+        this.loginService.$currentUser.subscribe(user => {
             this.user = user;
         });
     }

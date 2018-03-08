@@ -44,7 +44,7 @@ export class BarmanEditComponent implements OnInit {
             username: new FormControl('', [Validators.required]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
-            godFather: new FormControl('', [Validators.required]),
+            godFather: new FormControl(''),
             roles: new FormControl(''),
             kommissions: new FormControl(''),
             active: new FormControl('')
@@ -69,7 +69,7 @@ export class BarmanEditComponent implements OnInit {
                 this.barmanForm.controls.flow.setValue(barman.flow);
                 this.barmanForm.controls.active.setValue(barman.active);
 
-                this.selectedGodFather = barman.godFather.id;
+                this.selectedGodFather = barman.godFather ? barman.godFather.id : undefined;
                 this.selectedKommissions = barman.kommissions.map(k => k.id);
                 this.selectedRoles = barman.roles.map(r => r.id);
             },

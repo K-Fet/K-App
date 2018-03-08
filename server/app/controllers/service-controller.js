@@ -5,7 +5,7 @@ const { createUserError } = require('../../utils');
 const Joi = require('joi');
 
 /**
- * Fetch all the services from the database.
+ * Fetch all the services from the database. Include associated barmen.
  *
  * @param req Request
  * @param res Response
@@ -17,8 +17,6 @@ async function getAllServices(req, res) {
     let end;
 
     if (req.query.start && req.query.end) {
-        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
-        // I use a + to convert the param from string to int
         start = new Date(+req.query.start);
         end = new Date(+req.query.end);
         start = start.toISOString();
@@ -51,8 +49,6 @@ async function createService(req, res) {
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details[0].message);
-
-    //Créer un tableau de services , a la place de new service etc.... (foreach...)
 
     const services = await serviceService.createService(req.body);
 
@@ -130,7 +126,6 @@ async function getServicesTemplate(req, res) {
 
     res.json(template);
 }
-
 
 module.exports = {
     getAllServices,

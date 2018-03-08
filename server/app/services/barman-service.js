@@ -306,6 +306,12 @@ async function getBarmanServices(barmanId, startDate, endDate) {
                 [Op.lte]: endDate,
             },
         },
+        include: [
+            {
+                model: Barman,
+                as: 'barmen',
+            }
+        ],
     });
 }
 

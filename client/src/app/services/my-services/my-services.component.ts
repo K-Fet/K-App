@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { Service } from '../../_models/Service';
-import { ServiceService } from '../../_services/service.service';
-import { ToasterService } from '../../_services/toaster.service';
-
+import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
+import { Moment } from 'moment';
+import { Service, ConnectedUser } from '../../_models/index';
 
 @Component({
     selector: 'app-my-services',
@@ -11,11 +10,31 @@ import { ToasterService } from '../../_services/toaster.service';
 
 export class MyServicesComponent implements OnInit {
 
-    services: Service[];
+    myServices: Service[];
+    user: ConnectedUser;
 
-    constructor(private serviceService: ServiceService, private toasterService: ToasterService) {
+    constructor(private loginService: LoginService,
+        private barmanService: BarmanService,
+        private serviceService: ServiceService,
+        private toasterService: ToasterService) {
     }
 
     ngOnInit() {
+        this.loginService.me().subscribe(user => {
+            this.user = user;
+            if (this.user.barman) {
+                this.serviceService.getWeek().subscribe(week => {
+                    this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
+                        if (services.length > 0) {
+                            this.myServices = services;
+                        } else {
+                            this.myServices = undefined;
+                        }
+                    }, error => {
+                        this.toasterService.showToaster(error, 'Fermer');
+                    });
+                });
+            }
+        });
     }
 }

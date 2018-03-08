@@ -23,6 +23,7 @@ import { BarmanNewComponent } from './barmen/new/barman-new.component';
 import { BarmanViewComponent } from './barmen/view/barman-view.component';
 import { BarmanEditComponent } from './barmen/edit/barman-edit.component';
 import { NotFoundComponent } from './404/not-found.component';
+import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const generateData = (permissions: Array<String>) => {
@@ -66,6 +67,8 @@ const routes: Routes = [
         data: generateData(['barman:write']) },
     { path: 'barmen/:id', component: BarmanViewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['barman:read']) },
+    { path: 'open-services', component: OpenServicesComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
+        data: generateData(['service:write']) },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' }
 ];

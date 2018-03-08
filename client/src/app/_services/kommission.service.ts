@@ -28,7 +28,9 @@ export class KommissionService {
     }
 
     update(kommission: Kommission) {
-        return this.http.put('/api/kommissions/' + kommission.id, kommission).catch(this.handleError);
+        const id = kommission.id;
+        delete kommission.id;
+        return this.http.put('/api/kommissions/' + id, kommission).catch(this.handleError);
     }
 
     delete(id: Number) {
