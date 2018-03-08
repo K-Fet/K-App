@@ -13,7 +13,7 @@ const { createUserError, createServerError, cleanObject, getDefaultTemplate } = 
  */
 async function getAllServices(start, end) {
     logger.verbose('Service service: get all services');
-    const services = await Service.findAll({
+    return Service.findAll({
         where: {
             startAt: {
                 [Op.and]: [
@@ -29,23 +29,18 @@ async function getAllServices(start, end) {
             }
         ]
     });
-    return services.map(service => {
-        service.startAt = new Date(service.startAt);
-        service.endAt = new Date(service.endAt);
-        return service;
-    });
 }
 
 /**
  * Create a service.
  *
- * @param newService {Service} partial service
+ * @param serviceArray {Array<Service>} service list
  * @return {Promise<Service|Errors.ValidationError>} The created service with its id
  */
-async function createService(ServiceArray) {
+async function createService(serviceArray) {
 
-    const services = new Array();
-    for (const service of ServiceArray) {
+    const services = [];
+    for (const service of serviceArray) {
         const newService = new Service({
             startAt: service.startAt,
             endAt: service.endAt,

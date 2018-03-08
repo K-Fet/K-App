@@ -40,11 +40,9 @@ export class MenuComponent implements OnDestroy, OnInit {
 
     logout() {
         this.loginService.logout().subscribe(res => {
-        this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
-        localStorage.removeItem('currentUser');
-        this.router.navigate(['/login']);
+            this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
         }, err => {
-        this.toasterService.showToaster(err, 'Fermer');
+            this.toasterService.showToaster(err, 'Fermer');
         });
     }
 
@@ -58,7 +56,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     }
 
     ngOnInit(): void {
-        this.loginService.currentUser.subscribe(user => {
+        this.loginService.$currentUser.subscribe(user => {
             this.user = user;
         });
     }

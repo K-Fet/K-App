@@ -31,7 +31,7 @@ export class LoginComponent {
         const password: string = this.password;
         this.loginService.login(username, password)
         .subscribe(() => {
-            this.loginService.currentUser.subscribe(user => {
+            this.loginService.$currentUser.subscribe(user => {
                 this.user = user;
                 if (user && user.barman) {
                     this.router.navigate(['/dashboard']);
