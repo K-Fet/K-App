@@ -270,8 +270,8 @@ async function getBarmanServices(barmanId, startDate, endDate) {
 /**
  * Create a service for a barman
  *
- * @param barmanID {number} barman id
- * @param serviceId {number<Array>} service ids
+ * @param barmanId {number} barman id
+ * @param servicesId {number<Array>} service ids
  * @returns {Promise<Errors.ValidationError>} an error or nothing
  */
 async function createServiceBarman(barmanId, servicesId) {
@@ -298,7 +298,7 @@ async function createServiceBarman(barmanId, servicesId) {
  * Delete a Service of a barman
  *
  * @param barmanId {number} barman id
- * @param serviceId {number} service id
+ * @param servicesId {number} service id
  *
  * @returns {Promise<Errors.ValidationError>} an error or nothing
  */
