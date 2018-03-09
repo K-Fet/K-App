@@ -16,25 +16,8 @@
                     <input matInput placeholder="Username (must be an email)" formControlName="username">
                 </mat-form-field>
                 <mat-form-field *ngFor="let permission of permissions">
-                    <mat-select placeholder="Permissions" formControlName="permissions" [(ngModel)]="selectedPermissions" name="godFather">
-                        <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
-                    </mat-select>
+                    <mat-checkbox [(ngModel)]="permission.isChecked">{{permission.permission.name}}</mat-checkbox>
                 </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
-                        <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
-                        <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-checkbox formControlName="active">Actif</mat-checkbox>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="add()" 
-                    [disabled]="!barmanForm.valid">Ajouter</button>
-                </div>
             </form>
         </mat-card-content>
     </mat-card>

@@ -12,8 +12,7 @@ import { SpecialAccountService, PermissionService } from '../../_services/index'
 export class SpecialAccountEditComponent implements OnInit {
     // TODO add reset password option
 
-    specialAccountForm: FormArray;
-    detailsForm: FormGroup;
+    specialAccountForm: FormGroup;
     permissionFormArray: FormArray;
 
     permissions: Array<{
@@ -33,22 +32,12 @@ export class SpecialAccountEditComponent implements OnInit {
     }
 
     createForms() {
-        this.detailsForm = this.fb.group({
+        this.permissionFormArray = this.fb.array([]);
+        this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required]),
             description: new FormControl(''),
+            permissions: this.permissionFormArray,
         });
-        this.permissionFormArray = this.fb.array([]);
-        this.specialAccountForm = this.fb.array([
-            this.detailsForm,
-            this.permissionFormArray,
-        ]);
-    }
-
-    addPermissionForm(permission: Permission): void {
-        const permissionForm = new FormGroup({
-            name: new FormControl(permission.name)
-        });
-        this.permissionFormArray.push(permissionForm);
     }
 
     ngOnInit() {
@@ -63,13 +52,17 @@ export class SpecialAccountEditComponent implements OnInit {
         });
         this.route.params.subscribe(params => {
             this.specialAccountService.getById(params['id']).subscribe((specialAccount: SpecialAccount) => {
-                this.detailsForm.controls.username.setValue(specialAccount.connection.username);
-                this.detailsForm.controls.description.setValue(specialAccount.description ? specialAccount.description : '');
+                this.specialAccountForm.controls.username.setValue(specialAccount.connection.username);
+                this.specialAccountForm.controls.description.setValue(specialAccount.description ? specialAccount.description : '');
                 if (specialAccount.permissions) {
                     specialAccount.permissions.forEach(specialAccountPermission => {
-                        this.permissions.find(permission => {
-                            return specialAccountPermission === permission.permission;
-                        });
+                        if (this.permissions) {
+                            this.permissions.filter(permission => {
+                                return specialAccountPermission === permission.permission;
+                            }).forEach(permission => {
+                                permission.isChecked = true;
+                            });
+                        }
                     });
                 }
             },
@@ -77,6 +70,13 @@ export class SpecialAccountEditComponent implements OnInit {
                 this.toasterService.showToaster(error, 'Fermer');
             });
         });
+    }
+
+    addPermissionForm(permission: Permission): void {
+        const permissionForm = new FormGroup({
+            name: new FormControl(permission.name)
+        });
+        this.permissionFormArray.push(permissionForm);
     }
 
     edit() {

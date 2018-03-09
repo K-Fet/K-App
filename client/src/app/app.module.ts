@@ -51,7 +51,7 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService } from './_services/index';
+    TemplateService, SpecialAccountService, PermissionService} from './_services/index';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -130,6 +130,8 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         AuthGuard,
         ToasterService,
         TemplateService,
+        SpecialAccountService,
+        PermissionService,
         {
             provide: LOCALE_ID, useValue: 'fr'
         },
