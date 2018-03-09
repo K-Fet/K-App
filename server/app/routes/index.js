@@ -21,6 +21,7 @@ router.use(require('../middlewares/auth-guard'));
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
 router.use('/kommissions', require('./kommissions'));
+router.use('/permissions', require('./permissions'));
 router.use('/roles', require('./roles'));
 router.use('/services', require('./services'));
 router.use('/specialaccounts', require('./special-account'));
