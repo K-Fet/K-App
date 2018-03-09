@@ -1,7 +1,7 @@
 const barmanService = require('../services/barman-service');
 const { Barman, ConnectionInformation } = require('../models');
 const { BarmanSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
+const { createUserError, parseStartAndEnd } = require('../../utils');
 const Joi = require('joi');
 
 /**
@@ -89,10 +89,20 @@ async function updateBarman(req, res) {
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newBarman = new Barman({
-        ...newUser,
-        _embedded: undefined, // Remove the only external object
-    });
+    let newBarman = new Barman(
+        {
+            ...newUser,
+            _embedded: undefined, // Remove the only external object
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ]
+        }
+    );
 
     const barmanId = req.params.id;
 
@@ -127,21 +137,8 @@ async function deleteBarman(req, res) {
 async function getServicesBarman(req, res) {
     const barmanId = req.params.id;
 
-    let startDate;
-    let endDate;
-
-    if (req.query.start && req.query.end) {
-        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
-        // I use a + to convert the param from string to int
-        startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
-        endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
-        startDate = startDate.toISOString();
-        endDate = endDate.toISOString();
-    } else {
-        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
-    }
-
-    const services = await barmanService.getBarmanServices(barmanId, startDate, endDate);
+    const { start, end } = parseStartAndEnd(req.query);
+    const services = await barmanService.getBarmanServices(barmanId, start, end);
 
     res.json(services);
 }

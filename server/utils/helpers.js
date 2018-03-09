@@ -53,8 +53,31 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
     }
 }
 
+/**
+ * Parse start and end date from query.
+ *
+ * Will throw if one is missing and if start > end
+ *
+ * @param query
+ * @returns {{start: Date, end: Date}}
+ */
+function parseStartAndEnd(query) {
+    if (!query.start || !query.end) {
+        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
+    }
+
+    const start = new Date(+query.start);
+    const end = new Date(+query.end);
+
+    if (start > end) {
+        throw createUserError('BadRequest', '\'start\' parameter must be inferior to \'end\' parameter');
+    }
+
+    return { start, end };
+}
 
 module.exports = {
     cleanObject,
     setEmbeddedAssociations,
+    parseStartAndEnd,
 };
