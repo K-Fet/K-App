@@ -92,7 +92,7 @@ export class LoginService {
     }
 
     me() {
-        return this.http.get<ConnectedUser>('/api/auth/me')
+        return this.http.get<ConnectedUser>('/api/me')
             .do(connectedUser => {
                 if (connectedUser.barman) {
                     this.$currentUser.next({

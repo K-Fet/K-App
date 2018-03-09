@@ -18,6 +18,7 @@ router.use('/auth', require('./auth'));
 router.use(require('../middlewares/auth-guard'));
 
 // Dispatch to child routes
+router.use('/me', require('./me'));
 router.use('/members', require('./members'));
 router.use('/barmen', require('./barmen'));
 router.use('/kommissions', require('./kommissions'));

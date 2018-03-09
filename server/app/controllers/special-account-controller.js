@@ -85,13 +85,25 @@ async function updateSpecialAccount(req, res) {
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newSpecialAccount = new SpecialAccount({
-        ...newUser
-    });
+    let newSpecialAccount = new SpecialAccount(
+        {
+            ...newUser,
+            _embedded: undefined
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ]
+        }
+    );
 
     const specialAccountId = req.param.id;
 
-    newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId, newSpecialAccount);
+    newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId,
+        newSpecialAccount, newUser._embedded);
 
     res.json(newSpecialAccount);
 }

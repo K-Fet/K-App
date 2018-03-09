@@ -7,7 +7,6 @@ router.post('/login', am(authController.login));
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
-router.get('/me', am(authController.me));
 router.get('/refresh', am(authController.refresh));
 router.get('/logout', am(authController.logout));
 
