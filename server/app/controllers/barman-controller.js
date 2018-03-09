@@ -89,10 +89,20 @@ async function updateBarman(req, res) {
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newBarman = new Barman({
-        ...newUser,
-        _embedded: undefined, // Remove the only external object
-    });
+    let newBarman = new Barman(
+        {
+            ...newUser,
+            _embedded: undefined, // Remove the only external object
+        },
+        {
+            include: [
+                {
+                    model: ConnectionInformation,
+                    as: 'connection',
+                }
+            ]
+        }
+    );
 
     const barmanId = req.params.id;
 
