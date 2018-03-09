@@ -1,7 +1,7 @@
 const authService = require('../services/auth-service');
 const barmanService = require('../services/barman-service');
 const specialAccountService = require('../services/special-account-service');
-const { createUserError } = require('../../utils');
+const { createUserError, parseStartAndEnd } = require('../../utils');
 const { Barman, SpecialAccount, ConnectionInformation } = require('../models');
 const { BarmanSchema, SpecialAccountSchema } = require('../models/schemas');
 const Joi = require('joi');
@@ -50,8 +50,8 @@ async function updateMe(req, res) {
             }
         );
 
-        newSpecialAccount = await specialAccountService.updateSpecialAccountById(user.specialAccount.id,
-            newSpecialAccount, newSA._embedded);
+        newSpecialAccount = await specialAccountService
+            .updateSpecialAccountById(user.specialAccount.id, newSpecialAccount);
 
         res.json(newSpecialAccount);
     }
@@ -77,7 +77,7 @@ async function updateMe(req, res) {
             }
         );
 
-        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman, newUser._embedded);
+        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman);
 
         res.json(newBarman);
     }
@@ -91,21 +91,9 @@ async function updateMe(req, res) {
  */
 async function getBarmanService(req, res) {
 
-    let startDate;
-    let endDate;
 
-    if (req.query.start && req.query.end) {
-        // The transformation of the DATE in ISO format is in UTC hence we add one hour to correspond to UTC+1
-        // I use a + to convert the param from string to int
-        startDate = new Date(+req.query.start + (1 * 60 * 60 * 1000));
-        endDate = new Date(+req.query.end + (1 * 60 * 60 * 1000));
-        startDate = startDate.toISOString();
-        endDate = endDate.toISOString();
-    } else {
-        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
-    }
-
-    const services = await barmanService.getBarmanServices(req.barman.id, startDate, endDate);
+    const { start, end } = parseStartAndEnd(req.query);
+    const services = await barmanService.getBarmanServices(req.barman.id, start, end);
 
     res.json(services);
 }

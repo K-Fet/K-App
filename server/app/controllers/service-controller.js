@@ -1,7 +1,7 @@
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
 const { ServiceSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
+const { createUserError, parseStartAndEnd } = require('../../utils');
 const Joi = require('joi');
 
 /**
@@ -13,21 +13,7 @@ const Joi = require('joi');
  */
 async function getAllServices(req, res) {
 
-    let start;
-    let end;
-
-    if (req.query.start && req.query.end) {
-        start = new Date(+req.query.start);
-        end = new Date(+req.query.end);
-        start = start.toISOString();
-        end = end.toISOString();
-    } else {
-        throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
-    }
-    if (start > end) {
-        throw createUserError('BadRequest', '\'start\' parameter must be inferior to \'end\' parameter');
-    }
-
+    const { start, end } = parseStartAndEnd(req.query);
     const services = await serviceService.getAllServices(start, end);
 
     res.json(services);
@@ -54,7 +40,6 @@ async function createService(req, res) {
 
     return res.json(services);
 }
-
 
 
 /**
