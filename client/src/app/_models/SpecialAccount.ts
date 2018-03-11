@@ -5,6 +5,7 @@ export class SpecialAccount {
     id: Number;
     description: String;
     createdAt: Date;
+    code: Number;
 
     // Association
     connection: ConnectionInformation;

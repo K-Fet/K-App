@@ -8,13 +8,15 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <h3>Mise à jour des informations</h3>
+            <h4>Mise à jour des informations</h4>
+            <p>Les informations sensibles (mot de passe & code) ne peuvent être mise à jour que par l'utilisateur en question.</p>
             <form [formGroup]="specialAccountForm" fxLayout="column">
                 <mat-form-field>
-                    <input matInput placeholder="Description" formControlName="description">
+                    <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                    <mat-hint align="start">Un email de vérification sera envoyé.</mat-hint>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Username (must be an email)" formControlName="username">
+                    <input matInput placeholder="Description" formControlName="description">
                 </mat-form-field>
                 <h4>Permissions</h4>
                 <div *ngFor="let permission of permissions">

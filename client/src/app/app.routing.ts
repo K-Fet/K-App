@@ -1,5 +1,3 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 // Guards
@@ -74,9 +72,9 @@ const routes: Routes = [
         data: generateData(['service:write']) },
     { path: 'specialaccounts', component: SpecialAccountListComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['specialaccount:read']) },
-    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard] },
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['specialaccount:write']) },
+    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard] },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' }
 ];

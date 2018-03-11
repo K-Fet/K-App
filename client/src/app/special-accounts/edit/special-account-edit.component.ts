@@ -70,6 +70,7 @@ export class SpecialAccountEditComponent implements OnInit {
                     });
                 }
                 this.currentSpecialAccount = specialAccount;
+                console.log(this.currentSpecialAccount);
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -103,8 +104,9 @@ export class SpecialAccountEditComponent implements OnInit {
     }
 
     prepareEditing(): SpecialAccount {
-        const specialAccount = new SpecialAccount();
-
+        const specialAccount = new SpecialAccount({
+            id: this.currentSpecialAccount.id,
+        });
         if (this.currentSpecialAccount.description !== this.specialAccountForm.get('description').value) {
             specialAccount.description = this.specialAccountForm.get('description').value;
         }

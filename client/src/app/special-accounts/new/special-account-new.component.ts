@@ -1,41 +1,120 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount } from '../../_models/index';
-import { ToasterService } from '../../_services/toaster.service';
-import { SpecialAccountService } from '../../_services/index';
+import { SpecialAccount, Permission } from '../../_models';
+import { ToasterService } from '../../_services';
+import { SpecialAccountService, PermissionService } from '../../_services';
+import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
-  templateUrl: './special-account-new.component.html',
+    templateUrl: './special-account-new.component.html',
 })
 
 export class SpecialAccountNewComponent implements OnInit {
-    username: string;
-    password: string;
-    description: string;
 
-    usernameFormControl: FormControl = new FormControl('', [Validators.required]);
-    passwordFormControl: FormControl = new FormControl('', [Validators.required]);
-    descriptionFormControl: FormControl = new FormControl('');
+    specialAccountForm: FormGroup;
 
-    constructor(private specialAccountService: SpecialAccountService,
+    permissions: Array<{
+        permission: Permission,
+        isChecked: Boolean,
+    }> = [];
+
+    constructor(
+        private specialAccountService: SpecialAccountService,
+        private permissionService: PermissionService,
         private toasterService: ToasterService,
-        private router: Router) {}
-
-    ngOnInit(): void {
+        private route: ActivatedRoute,
+        private router: Router,
+        private fb: FormBuilder,
+        public dialog: MatDialog
+    ) {
+        this.createForms();
     }
 
-    add() {
-        const specialAccount = new SpecialAccount();
-        specialAccount.description = this.description;
-        // TODO implement code dialog
-        const code = null;
-        this.specialAccountService.create(specialAccount, code).subscribe(() => {
-            this.toasterService.showToaster('Compte spécial créé', 'Fermer');
-            this.router.navigate(['/specialaccounts'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
+    createForms() {
+        this.specialAccountForm = this.fb.group({
+            username: new FormControl('', [Validators.required]),
+            code: new FormControl('', [Validators.required]),
+            codeConfirmation: new FormControl('', [Validators.required]),
+            description: new FormControl(''),
         });
+    }
+
+    ngOnInit() {
+        this.permissionService.getAll().subscribe(permissions => {
+            permissions.forEach(permission => {
+                this.permissions.push({
+                    permission: permission,
+                    isChecked: false,
+                });
+            });
+        });
+    }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(CodeDialogComponent, {
+            width: '350px',
+            data: { message: 'Ajout d\'un compte special' }
+        });
+
+        dialogRef.afterClosed().subscribe(code => {
+            if (code) {
+                this.add(code);
+            }
+        });
+    }
+
+    add(code: Number) {
+        const specialAccount = this.prepareEditing();
+
+        this.specialAccountService.create(specialAccount, code).subscribe(() => {
+                this.toasterService.showToaster('Compte special modifié', 'Fermer');
+                this.router.navigate(['/specialaccounts']);
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+    }
+
+    prepareEditing(): SpecialAccount {
+        const specialAccount = new SpecialAccount();
+
+        specialAccount.code = this.specialAccountForm.get('code').value;
+
+        if (this.specialAccountForm.get('description').value !== '') {
+            specialAccount.description = this.specialAccountForm.get('description').value;
+        }
+
+        specialAccount.connection = {
+            username: this.specialAccountForm.get('username').value
+        };
+
+        // Associations
+        const add = this.permissions.filter(permission => {
+            return permission.isChecked === true;
+        });
+        if (add.length > 0) {
+            specialAccount._embedded = {
+                permissions: {
+                    add: add.map(perm => perm.permission.id),
+                }
+            };
+        }
+        return specialAccount;
+    }
+
+    disable (): Boolean {
+        const add = this.permissions.filter(permission => {
+            return permission.isChecked === true;
+        });
+
+        return this.specialAccountForm.get('username').value === ''
+            || this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value
+            || add.length === 0;
+    }
+
+    codeMatch(): Boolean {
+        return this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value;
     }
 }
