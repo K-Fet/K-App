@@ -3,11 +3,12 @@
         <mat-card-header>
             <mat-card-title>
                 <section class="mat-typography">
-                    <h1>Ajouter un compte spécial</h1>
+                    <h1>Modifier un compte spécial</h1>
                 </section>
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
+            <h3>Mise à jour des informations</h3>
             <form [formGroup]="specialAccountForm" fxLayout="column">
                 <mat-form-field>
                     <input matInput placeholder="Description" formControlName="description">
@@ -15,13 +16,14 @@
                 <mat-form-field>
                     <input matInput placeholder="Username (must be an email)" formControlName="username">
                 </mat-form-field>
+                <h4>Permissions</h4>
                 <div *ngFor="let permission of permissions">
                     <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
                         {{permission.permission.name}}
                     </mat-checkbox>
                 </div>
                 <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="edit()"
+                    <button fxFlex="50" mat-button type="button" (click)="openDialog()"
                             [disabled]="disable()">Modifier</button>
                 </div>
             </form>

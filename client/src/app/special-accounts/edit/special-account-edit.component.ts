@@ -4,13 +4,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';
 import { SpecialAccountService, PermissionService } from '../../_services';
+import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   templateUrl: './special-account-edit.component.html',
 })
 
 export class SpecialAccountEditComponent implements OnInit {
-    // TODO add reset password option
 
     currentSpecialAccount: SpecialAccount = new SpecialAccount({
         connection: {}
@@ -29,7 +30,8 @@ export class SpecialAccountEditComponent implements OnInit {
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        public dialog: MatDialog
     ) {
         this.createForms();
     }
@@ -75,11 +77,22 @@ export class SpecialAccountEditComponent implements OnInit {
         });
     }
 
-    edit() {
+    openDialog(): void {
+        const dialogRef = this.dialog.open(CodeDialogComponent, {
+            width: '350px',
+            data: { message: 'Edition d\'un compte special' }
+        });
+
+        dialogRef.afterClosed().subscribe(code => {
+            if (code) {
+                this.edit(code);
+            }
+        });
+    }
+
+    edit(code: Number) {
         const specialAccount = this.prepareEditing();
-        console.log(specialAccount);
-        // TODO implement code dialog
-        const code = null;
+
         this.specialAccountService.update(specialAccount, code).subscribe(() => {
             this.toasterService.showToaster('Compte special modifié', 'Fermer');
             this.router.navigate(['/specialaccounts']);

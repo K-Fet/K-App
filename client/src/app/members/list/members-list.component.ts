@@ -1,9 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
-import { Member } from '../../_models/index';
-import { MemberService } from '../../_services/member.service';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Member } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
-import { ToasterService } from '../../_services/toaster.service';
+import { ToasterService, MemberService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
 
@@ -64,7 +62,7 @@ export class MembersListComponent implements OnInit {
         this.deletedMember = member;
         const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
-            data: { member }
+            data: { message: 'Suppression de' + member.firstName + ' ' + member.lastName }
         });
 
         dialogRef.afterClosed().subscribe(result => {
