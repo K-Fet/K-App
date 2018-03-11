@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup, AbstractControl, FormArray } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount, Permission } from '../../_models/index';
-import { ToasterService } from '../../_services/toaster.service';
-import { SpecialAccountService, PermissionService } from '../../_services/index';
+import { SpecialAccount, Permission } from '../../_models';
+import { ToasterService } from '../../_services';
+import { SpecialAccountService, PermissionService } from '../../_services';
 
 @Component({
   templateUrl: './special-account-edit.component.html',
@@ -12,13 +12,16 @@ import { SpecialAccountService, PermissionService } from '../../_services/index'
 export class SpecialAccountEditComponent implements OnInit {
     // TODO add reset password option
 
+    currentSpecialAccount: SpecialAccount = new SpecialAccount({
+        connection: {}
+    });
     specialAccountForm: FormGroup;
-    permissionFormArray: FormArray;
 
     permissions: Array<{
         permission: Permission,
         isChecked: Boolean,
-    }>;
+        initial: Boolean,
+    }> = [];
 
     constructor(
         private specialAccountService: SpecialAccountService,
@@ -32,11 +35,9 @@ export class SpecialAccountEditComponent implements OnInit {
     }
 
     createForms() {
-        this.permissionFormArray = this.fb.array([]);
         this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required]),
             description: new FormControl(''),
-            permissions: this.permissionFormArray,
         });
     }
 
@@ -46,25 +47,27 @@ export class SpecialAccountEditComponent implements OnInit {
                 this.permissions.push({
                     permission: permission,
                     isChecked: false,
+                    initial: false,
                 });
-                this.addPermissionForm(permission);
             });
         });
         this.route.params.subscribe(params => {
             this.specialAccountService.getById(params['id']).subscribe((specialAccount: SpecialAccount) => {
-                this.specialAccountForm.controls.username.setValue(specialAccount.connection.username);
-                this.specialAccountForm.controls.description.setValue(specialAccount.description ? specialAccount.description : '');
+                this.specialAccountForm.get('username').setValue(specialAccount.connection.username);
+                this.specialAccountForm.get('description').setValue(specialAccount.description ? specialAccount.description : '');
                 if (specialAccount.permissions) {
                     specialAccount.permissions.forEach(specialAccountPermission => {
                         if (this.permissions) {
                             this.permissions.filter(permission => {
-                                return specialAccountPermission === permission.permission;
+                                return specialAccountPermission.id === permission.permission.id;
                             }).forEach(permission => {
                                 permission.isChecked = true;
+                                permission.initial = true;
                             });
                         }
                     });
                 }
+                this.currentSpecialAccount = specialAccount;
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
@@ -72,27 +75,9 @@ export class SpecialAccountEditComponent implements OnInit {
         });
     }
 
-    addPermissionForm(permission: Permission): void {
-        const permissionForm = new FormGroup({
-            name: new FormControl(permission.name)
-        });
-        this.permissionFormArray.push(permissionForm);
-    }
-
     edit() {
-        const specialAccount = new SpecialAccount();
-        Object.keys(this.specialAccountForm.controls).forEach(key => {
-            if (this.specialAccountForm.get(key).dirty) {
-                switch (key) {
-                    case 'username':
-                        specialAccount.connection.username = this.specialAccountForm.get(key).value;
-                        break;
-                    default:
-                        specialAccount[key] = this.specialAccountForm.get(key).value;
-                        break;
-                }
-            }
-        });
+        const specialAccount = this.prepareEditing();
+        console.log(specialAccount);
         // TODO implement code dialog
         const code = null;
         this.specialAccountService.update(specialAccount, code).subscribe(() => {
@@ -102,5 +87,58 @@ export class SpecialAccountEditComponent implements OnInit {
         error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
+    }
+
+    prepareEditing(): SpecialAccount {
+        const specialAccount = new SpecialAccount();
+
+        if (this.currentSpecialAccount.description !== this.specialAccountForm.get('description').value) {
+            specialAccount.description = this.specialAccountForm.get('description').value;
+        }
+        if (this.currentSpecialAccount.connection.username !== this.specialAccountForm.get('username').value) {
+            specialAccount.connection = {
+                username: this.specialAccountForm.get('username').value
+            };
+        }
+
+        // Associations
+        const add = this.permissions.filter(permission => {
+            return permission.isChecked === true && permission.initial !== permission.isChecked;
+        });
+        const remove = this.permissions.filter(permission => {
+            return permission.isChecked === false && permission.initial !== permission.isChecked;
+        });
+        if (add.length > 0) {
+            specialAccount._embedded = {
+                permissions: {
+                    add: add.map(perm => perm.permission.id),
+                }
+            };
+        }
+        if (remove.length > 0) {
+            if (specialAccount._embedded) {
+                specialAccount._embedded.permissions.remove = remove.map(perm => perm.permission.id);
+            } else {
+                specialAccount._embedded = {
+                    permissions: {
+                        remove: remove.map(perm => perm.permission.id),
+                    }
+                };
+            }
+        }
+        return specialAccount;
+    }
+
+    disable (): Boolean {
+        const add = this.permissions.filter(permission => {
+            return permission.isChecked === true && permission.initial !== permission.isChecked;
+        });
+        const remove = this.permissions.filter(permission => {
+            return permission.isChecked === false && permission.initial !== permission.isChecked;
+        });
+        return this.currentSpecialAccount.connection.username === this.specialAccountForm.get('username').value
+            && this.currentSpecialAccount.description === this.specialAccountForm.get('description').value
+            && add.length === 0
+            && remove.length === 0;
     }
 }

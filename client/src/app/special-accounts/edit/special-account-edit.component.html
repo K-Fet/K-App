@@ -15,9 +15,15 @@
                 <mat-form-field>
                     <input matInput placeholder="Username (must be an email)" formControlName="username">
                 </mat-form-field>
-                <mat-form-field *ngFor="let permission of permissions">
-                    <mat-checkbox [(ngModel)]="permission.isChecked">{{permission.permission.name}}</mat-checkbox>
-                </mat-form-field>
+                <div *ngFor="let permission of permissions">
+                    <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                        {{permission.permission.name}}
+                    </mat-checkbox>
+                </div>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="button" (click)="edit()"
+                            [disabled]="disable()">Modifier</button>
+                </div>
             </form>
         </mat-card-content>
     </mat-card>
