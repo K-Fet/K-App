@@ -13,6 +13,13 @@ async function getAllSpecialAccounts() {
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
         attributes: { exclude: [ 'code' ] },
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection',
+                attributes: [ 'id', 'username' ],
+            }
+        ]
     });
 }
 
