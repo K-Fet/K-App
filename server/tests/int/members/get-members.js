@@ -1,5 +1,8 @@
-const { BASE_URL, baseRequest } = require('../utils/setup');
+const { site, initDatabase, clearDatabase } = require('../../utils/setup-teardown-common');
 const { Member } = require('../../../app/models');
+
+beforeEach(initDatabase);
+afterEach(clearDatabase);
 
 describe('Integration::Members::GetMembers', () => {
 
@@ -12,23 +15,24 @@ describe('Integration::Members::GetMembers', () => {
                 lastName: 'Smith',
                 school: 'INSA',
                 // TODO test active filter
-            }
+            },
         ]);
 
         // When
 
-        const members = await baseRequest.get(BASE_URL + '/members');
+        const members = await site.baseRequest.get(`${site.BASE_URL }/members`);
 
         // Then
 
-        expect(members).toEqual([
+        expect(members).toEqual(
+            [
                 expect.objectContaining({
                     firstName: 'John',
                     lastName: 'Smith',
                     school: 'INSA',
-                    active: true
-                })
-            ]
+                    active: true,
+                }),
+            ],
         );
     });
 });

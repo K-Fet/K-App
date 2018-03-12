@@ -1,13 +1,6 @@
-const path = require('path');
-const { sequelizeMock } = require('../../tests/int/utils/sequelize-mock');
 const { getAllMembers } = require('../member-service');
 
 describe('Member service Test', async () => {
-
-    await sequelizeMock(
-        path.resolve(path.join(__dirname, '../../../tests/resources/fake-members-database.json'))
-    );
-
 
     test('should return members in array', async () => {
         // Given
@@ -24,7 +17,7 @@ describe('Member service Test', async () => {
                 'firstName': 'John',
                 'lastName': 'Doe',
                 'school': 'INSA Lyon',
-                'active': false
+                'active': false,
 
             }),
             expect.objectContaining({
@@ -32,9 +25,9 @@ describe('Member service Test', async () => {
                 'firstName': 'John',
                 'lastName': 'Smith',
                 'school': 'MIT',
-                'active': true
+                'active': true,
 
-            })
+            }),
         ]);
     });
 });

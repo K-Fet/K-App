@@ -12,7 +12,7 @@ addons:
     packages:
       - g++-7
 
-script: yarn run ci:test
+script: yarn test && codecov
 
 notifications:
   email: false

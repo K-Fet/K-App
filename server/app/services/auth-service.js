@@ -200,4 +200,5 @@ module.exports = {
     refresh,
     logout,
     me,
+    createJWT,
 };

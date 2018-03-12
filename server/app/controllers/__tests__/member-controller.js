@@ -3,8 +3,8 @@ const memberController = require('../member-controller');
 
 jest.mock('../../services/member-service', () => ({
     async getAllMembers() {
-        return ['item 1', 'item 2'];
-    }
+        return [ 'item 1', 'item 2' ];
+    },
 }));
 
 
@@ -15,7 +15,7 @@ describe('Member controller tests', () => {
         const req = httpMocks.createRequest({
             method: 'GET',
             url: '/member/',
-            params: {}
+            params: {},
         });
 
         // When
