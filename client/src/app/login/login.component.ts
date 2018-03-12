@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { LoginService } from '../_services/login.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService } from '../_services/toaster.service';
+import { LoginService, ToasterService } from '../_services';
+import { Router } from '@angular/router';
 import { ConnectedUser } from '../_models';
 
 @Component({
@@ -11,25 +10,26 @@ import { ConnectedUser } from '../_models';
 })
 
 export class LoginComponent {
-    username: string;
-    password: string;
-    returnUrl: string;
     user: ConnectedUser;
-
-    usernameFormControl: FormControl = new FormControl('', [Validators.required]);
-    passwordFormControl: FormControl = new FormControl('', [Validators.required]);
+    loginForm: FormGroup;
 
     constructor(
         private loginService: LoginService,
         private toasterService: ToasterService,
         private router: Router,
-        private route: ActivatedRoute) {
+        private fb: FormBuilder) {
+        this.createForm();
+    }
+
+    createForm() {
+        this.loginForm = this.fb.group({
+            username: new FormControl('', [Validators.required]),
+            password: new FormControl('', [Validators.required]),
+        });
     }
 
     login() {
-        const username: string = this.username;
-        const password: string = this.password;
-        this.loginService.login(username, password)
+        this.loginService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
         .subscribe(() => {
             this.loginService.$currentUser.subscribe(user => {
                 this.user = user;
@@ -43,5 +43,11 @@ export class LoginComponent {
         error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
+    }
+
+    keyDownFunction(event) {
+        if (event.keyCode === 13 && this.loginForm.valid) {
+            this.login();
+        }
     }
 }
