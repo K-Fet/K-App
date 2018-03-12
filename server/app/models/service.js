@@ -20,10 +20,6 @@ class Service extends Model {
                 autoIncrement: true
             },
 
-            name: {
-                type: DataTypes.STRING
-            },
-
             startAt: {
                 type: DataTypes.DATE,
                 allowNull: false
@@ -59,7 +55,6 @@ class Service extends Model {
 }
 
 const ServiceSchema = Joi.object().keys({
-    name: Joi.string(),
     startAt: Joi.date().iso(),
     endAt: Joi.date().iso().min(Joi.ref('startAt')),
     nbMax: Joi.number().integer(),
