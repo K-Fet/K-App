@@ -2,7 +2,7 @@ import { Barman, SpecialAccount } from './index';
 
 export class ConnectedUser {
 
-    username: String;
+    username?: String;
     createdAt: Date;
     accountType: String;
     barman?: Barman;

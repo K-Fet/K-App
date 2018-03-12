@@ -1,12 +1,12 @@
 <div class="body-container" [class.is-mobile]="mobileQuery.matches">
 	<mat-toolbar color="primary" class="toolbar">
-		<button mat-icon-button (click)="snav.toggle()" *ngIf="user"><mat-icon>menu</mat-icon></button>
+		<button mat-icon-button (click)="snav.toggle()" *ngIf="user.accountType !== 'Guest'"><mat-icon>menu</mat-icon></button>
 		<h1 class="app-name">K-App</h1>
 		<span class="spacer"></span>
-		<button type="button" *ngIf="user" mat-icon-button (click)="openUserInformation()">
+		<button type="button" *ngIf="user.accountType !== 'Guest'" mat-icon-button (click)="openUserInformation()">
 			<mat-icon class="example-icon">person</mat-icon>
 		</button>
-		<button type="button" mat-icon-button (click)="logout()" *ngIf="user">
+		<button type="button" mat-icon-button (click)="logout()" *ngIf="user.accountType !== 'Guest'">
 			<mat-icon>power_settings_new</mat-icon>
 		</button>
 	</mat-toolbar>
