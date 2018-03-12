@@ -44,10 +44,4 @@ export class LoginComponent {
             this.toasterService.showToaster(error, 'Fermer');
         });
     }
-
-    keyDownFunction(event) {
-        if (event.keyCode === 13 && this.loginForm.valid) {
-            this.login();
-        }
-    }
 }
