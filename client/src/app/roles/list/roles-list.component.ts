@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Role } from '../../_models/index';
-import { RoleService } from '../../_services/role.service';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
-import { ToasterService } from '../../_services/toaster.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Role } from '../../_models';
+import { RoleService, ToasterService } from '../../_services';
+import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
+import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+
 
 @Component({
   templateUrl: './roles-list.component.html',
@@ -21,7 +22,10 @@ export class RolesListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private roleService: RoleService, private toasterService: ToasterService, private router: Router) {
+    constructor(private roleService: RoleService,
+                private toasterService: ToasterService,
+                private router: Router,
+                private dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -55,6 +59,19 @@ export class RolesListComponent implements OnInit {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.rolesData.filter = filterValue;
+    }
+
+    openConfirmationDialog(role: Role): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '350px',
+            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + role.name + ' ?'}
+        });
+
+        dialogRef.afterClosed().subscribe(choice => {
+            if (choice) {
+                this.delete(role);
+            }
+        });
     }
 }
 

@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Kommission } from '../../_models/index';
-import { KommissionService } from '../../_services/kommission.service';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
-import { ToasterService } from '../../_services/toaster.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Kommission } from '../../_models';
+import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+
 
 @Component({
   templateUrl: './kommissions-list.component.html',
@@ -21,7 +22,10 @@ export class KommissionsListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private kommissionService: KommissionService, private toasterService: ToasterService, private router: Router) {
+    constructor(private kommissionService: KommissionService,
+                private toasterService: ToasterService,
+                private router: Router,
+                private dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -48,6 +52,19 @@ export class KommissionsListComponent implements OnInit {
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');
+        });
+    }
+
+    openConfirmationDialog(kommission: Kommission): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '350px',
+            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + kommission.name + ' ?'}
+        });
+
+        dialogRef.afterClosed().subscribe(choice => {
+            if (choice) {
+                this.delete(kommission);
+            }
         });
     }
 

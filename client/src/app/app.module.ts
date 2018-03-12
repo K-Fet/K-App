@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatDatetimepickerModule,
     MatNativeDatetimeModule,
-    MAT_DATETIME_FORMATS
   } from '@mat-datetimepicker/core';
 
 // Libraries
@@ -44,11 +43,12 @@ import { NotFoundComponent } from './404/not-found.component';
 import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService } from './_services/index';
+    TemplateService } from './_services';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -65,7 +65,7 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { MAT_DATE_LOCALE } from '@angular/material';
+
 
 @NgModule({
     declarations: [
@@ -94,11 +94,13 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         NotFoundComponent,
         ConnectedUserDialogComponent,
         OpenServicesComponent,
-        WeekPickerComponent
+        WeekPickerComponent,
+        ConfirmationDialogComponent
     ],
     entryComponents: [
         CodeDialogComponent,
-        ConnectedUserDialogComponent
+        ConnectedUserDialogComponent,
+        ConfirmationDialogComponent,
     ],
     imports: [
         CommonModule,

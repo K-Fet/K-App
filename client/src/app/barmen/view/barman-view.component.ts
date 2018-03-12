@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BarmanService, ToasterService } from '../../_services/index';
+import { BarmanService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Barman } from '../../_models/Barman';
+import { Barman } from '../../_models';
+import { MatDialog } from '@angular/material';
+import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     templateUrl: './barman-view.component.html',
@@ -15,7 +17,8 @@ export class BarmanViewComponent implements OnInit {
         private barmanService: BarmanService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        public dialog: MatDialog
     ) {}
 
     ngOnInit() {
@@ -27,6 +30,19 @@ export class BarmanViewComponent implements OnInit {
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
+        });
+    }
+
+    openConfirmationDialog(): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '350px',
+            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + this.barman.nickname + ' ?'}
+        });
+
+        dialogRef.afterClosed().subscribe(choice => {
+            if (choice) {
+                this.delete();
+            }
         });
     }
 
