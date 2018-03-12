@@ -1,6 +1,6 @@
 <div class="body-container" [class.is-mobile]="mobileQuery.matches">
 	<mat-toolbar color="primary" class="toolbar">
-		<button mat-icon-button (click)="snav.toggle()" *ngIf="isGuest()"><mat-icon>menu</mat-icon></button>
+		<button mat-icon-button (click)="snav.toggle()" *ngIf="!user.isGuest()"><mat-icon>menu</mat-icon></button>
 		<h1 class="app-name">K-App</h1>
 		<span class="spacer"></span>
         <mat-menu #personnalInformation="matMenu" [overlapTrigger]="false">
@@ -13,10 +13,10 @@
 				<!-- TODO add more information -->
 			</div>
         </mat-menu>
-        <button *ngIf="isGuest()" mat-icon-button [matMenuTriggerFor]="personnalInformation">
+        <button *ngIf="!user.isGuest()" mat-icon-button [matMenuTriggerFor]="personnalInformation">
             <mat-icon class="example-icon">person</mat-icon>
         </button>
-		<button type="button" mat-icon-button (click)="logout()" *ngIf="isGuest()">
+		<button type="button" mat-icon-button (click)="logout()" *ngIf="!user.isGuest()">
 			<mat-icon>power_settings_new</mat-icon>
 		</button>
 	</mat-toolbar>

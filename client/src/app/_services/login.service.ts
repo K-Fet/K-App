@@ -16,10 +16,10 @@ export class LoginService {
     constructor(private http: HttpClient,
                 private permissionsService: NgxPermissionsService,
                 private router: Router) {
-        this.$currentUser = new BehaviorSubject<ConnectedUser>({
+        this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
             accountType: 'Guest',
             createdAt: new Date(),
-        });
+        }));
         if (localStorage.getItem('currentUser')) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser.jwt) {
@@ -81,10 +81,10 @@ export class LoginService {
     }
 
     private clearUser() {
-        this.$currentUser.next({
+        this.$currentUser.next(new ConnectedUser({
             accountType: 'Guest',
             createdAt: new Date(),
-        });
+        }));
         this.permissionsService.flushPermissions();
         if (localStorage.getItem('currentUser')) {
             localStorage.removeItem('currentUser');
@@ -100,19 +100,19 @@ export class LoginService {
         return this.http.get<ConnectedUser>('/api/me')
             .do(connectedUser => {
                 if (connectedUser.barman) {
-                    this.$currentUser.next({
+                    this.$currentUser.next(new ConnectedUser({
                         accountType: 'Barman',
                         username: connectedUser.barman.connection.username,
                         createdAt: connectedUser.barman.createdAt,
                         barman: connectedUser.barman,
-                    });
+                    }));
                 } else if (connectedUser.specialAccount) {
-                    this.$currentUser.next({
+                    this.$currentUser.next(new ConnectedUser({
                         accountType: 'SpecialAccount',
                         username: connectedUser.specialAccount.connection.username,
                         createdAt: connectedUser.specialAccount.createdAt,
                         specialAccount: connectedUser.specialAccount,
-                    });
+                    }));
                 }
             })
             .catch(this.handleError.bind(this));

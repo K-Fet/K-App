@@ -39,10 +39,6 @@ export class MenuComponent implements OnDestroy, OnInit {
         });
     }
 
-    isGuest(): Boolean {
-        return this.user.accountType === 'Guest' ? false : true;
-    }
-
     ngOnInit(): void {
         this.loginService.$currentUser.subscribe(user => {
             this.user = user;
