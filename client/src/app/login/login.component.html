@@ -1,7 +1,7 @@
 <div fxLayoutAlign="center">
     <mat-card fxFlex="350px" fxFlex.lt-sm="95">
         <mat-card-content>
-            <form [formGroup]="loginForm" fxLayout="column" (keydown)="keyDownFunction($event)">
+            <form [formGroup]="loginForm" fxLayout="column" (ngSubmit)="login()">
                 <mat-form-field>
                     <input matInput placeholder="Username" autocapitalize="off"
                            autocorrect="off" formControlName="username">
@@ -10,8 +10,8 @@
                     <input matInput type="password" placeholder="Mot de passe"
                            formControlName="password">
                 </mat-form-field>
-                <button mat-button type="button" (click)="login()"
-                        [disabled]="!loginForm.valid">CONNEXION
+                <button mat-button type="submit" [disabled]="!loginForm.valid">
+                    CONNEXION
                 </button>
             </form>
         </mat-card-content>
