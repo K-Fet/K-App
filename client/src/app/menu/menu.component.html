@@ -1,12 +1,22 @@
 <div class="body-container" [class.is-mobile]="mobileQuery.matches">
 	<mat-toolbar color="primary" class="toolbar">
-		<button mat-icon-button (click)="snav.toggle()" *ngIf="user.accountType !== 'Guest'"><mat-icon>menu</mat-icon></button>
+		<button mat-icon-button (click)="snav.toggle()" *ngIf="isGuest()"><mat-icon>menu</mat-icon></button>
 		<h1 class="app-name">K-App</h1>
 		<span class="spacer"></span>
-		<button type="button" *ngIf="user.accountType !== 'Guest'" mat-icon-button (click)="openUserInformation()">
-			<mat-icon class="example-icon">person</mat-icon>
-		</button>
-		<button type="button" mat-icon-button (click)="logout()" *ngIf="user.accountType !== 'Guest'">
+        <mat-menu #personnalInformation="matMenu" [overlapTrigger]="false">
+            <div *ngIf="user?.barman">
+				<p>Compte Barman {{user.barman.nickname}}</p>
+				<!-- TODO add more information -->
+			</div>
+			<div *ngIf="user?.specialAccount">
+				<p>Compte spécial {{user.specialAccount.connection.username}}</p>
+				<!-- TODO add more information -->
+			</div>
+        </mat-menu>
+        <button *ngIf="isGuest()" mat-icon-button [matMenuTriggerFor]="personnalInformation">
+            <mat-icon class="example-icon">person</mat-icon>
+        </button>
+		<button type="button" mat-icon-button (click)="logout()" *ngIf="isGuest()">
 			<mat-icon>power_settings_new</mat-icon>
 		</button>
 	</mat-toolbar>

@@ -1,10 +1,8 @@
-import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, OnDestroy, Component, OnInit} from '@angular/core';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, OnDestroy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
-import { MatDialog } from '@angular/material';
-import { ConnectedUserDialogComponent } from '../connected-user-dialog/connected-user-dialog.component';
 
 @Component({
     selector: 'app-menu',
@@ -23,7 +21,6 @@ export class MenuComponent implements OnDestroy, OnInit {
     constructor(
         private loginService: LoginService,
         private toasterService: ToasterService,
-        public dialog: MatDialog,
         router: Router,
         changeDetectorRef: ChangeDetectorRef,
         media: MediaMatcher) {
@@ -42,13 +39,8 @@ export class MenuComponent implements OnDestroy, OnInit {
         });
     }
 
-    openUserInformation(): void {
-        this.dialog.open(ConnectedUserDialogComponent, {
-            position: {
-                top: '60px',
-                right: '20px'
-            }
-        });
+    isGuest(): Boolean {
+        return this.user.accountType === 'Guest' ? false : true;
     }
 
     ngOnInit(): void {

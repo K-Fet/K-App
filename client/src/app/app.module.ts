@@ -40,7 +40,6 @@ import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
-import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
@@ -92,14 +91,12 @@ import { MaterialModule } from './_helpers/material.module';
         RolesListComponent,
         CodeDialogComponent,
         NotFoundComponent,
-        ConnectedUserDialogComponent,
         OpenServicesComponent,
         WeekPickerComponent,
         ConfirmationDialogComponent
     ],
     entryComponents: [
         CodeDialogComponent,
-        ConnectedUserDialogComponent,
         ConfirmationDialogComponent,
     ],
     imports: [

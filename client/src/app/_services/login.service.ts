@@ -119,7 +119,7 @@ export class LoginService {
     }
 
     private handleError(err: HttpErrorResponse) {
-        console.log(err);
+        console.error(err);
         let errorMessage = '';
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
