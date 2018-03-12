@@ -1,14 +1,8 @@
-import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, OnDestroy, Component, OnInit} from '@angular/core';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, OnDestroy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginService } from '../_services/login.service';
-import { ToasterService } from '../_services/toaster.service';
-import { ConnectedUser } from '../_models/index';
-import { error } from 'selenium-webdriver';
-import { MatDialog } from '@angular/material';
-import { ConnectedUserDialogComponent } from '../connected-user-dialog/connected-user-dialog.component';
-import { share } from 'rxjs/operator/share';
-import { Observable } from 'rxjs/Observable';
+import { LoginService, ToasterService } from '../_services';
+import { ConnectedUser } from '../_models';
 
 @Component({
     selector: 'app-menu',
@@ -27,7 +21,6 @@ export class MenuComponent implements OnDestroy, OnInit {
     constructor(
         private loginService: LoginService,
         private toasterService: ToasterService,
-        public dialog: MatDialog,
         router: Router,
         changeDetectorRef: ChangeDetectorRef,
         media: MediaMatcher) {
@@ -43,15 +36,6 @@ export class MenuComponent implements OnDestroy, OnInit {
             this.toasterService.showToaster('Déconnexion réussie', 'Fermer');
         }, err => {
             this.toasterService.showToaster(err, 'Fermer');
-        });
-    }
-
-    openUserInformation(): void {
-        const dialogRef = this.dialog.open(ConnectedUserDialogComponent, {
-            position: {
-                top: '60px',
-                right: '20px'
-            }
         });
     }
 

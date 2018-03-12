@@ -20,7 +20,7 @@ export class MyServicesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.loginService.me().subscribe(user => {
+        this.loginService.me().subscribe((user: ConnectedUser) => {
             this.user = user;
             if (this.user.barman) {
                 this.serviceService.getWeek().subscribe(week => {

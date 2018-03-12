@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
-import {catchError, map, tap} from 'rxjs/operators';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import {Barman, SpecialAccount, ConnectedUser} from '../_models/index';
+import { SpecialAccount, ConnectedUser} from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import {NgxPermissionsService} from 'ngx-permissions';
 import {Router} from '@angular/router';
@@ -12,12 +11,15 @@ import {Router} from '@angular/router';
 @Injectable()
 export class LoginService {
 
-    $currentUser: BehaviorSubject<ConnectedUser> = new BehaviorSubject<ConnectedUser>(undefined);
+    $currentUser: BehaviorSubject<ConnectedUser>;
 
     constructor(private http: HttpClient,
                 private permissionsService: NgxPermissionsService,
                 private router: Router) {
-
+        this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
+            accountType: 'Guest',
+            createdAt: new Date(),
+        }));
         if (localStorage.getItem('currentUser')) {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser.jwt) {
@@ -51,13 +53,13 @@ export class LoginService {
                     this.refresh().subscribe();
                 }, 45 * 60 * 60 * 1000);
             })
-            .catch(this.handleError);
+            .catch(this.handleError.bind(this));
     }
 
     logout() {
         return this.http.get('/api/auth/logout')
-            .do(this.clearUser)
-            .catch(this.handleError);
+            .do(this.clearUser.bind(this))
+            .catch(this.handleError.bind(this));
     }
 
     refresh() {
@@ -79,7 +81,10 @@ export class LoginService {
     }
 
     private clearUser() {
-        this.$currentUser.next(null);
+        this.$currentUser.next(new ConnectedUser({
+            accountType: 'Guest',
+            createdAt: new Date(),
+        }));
         this.permissionsService.flushPermissions();
         if (localStorage.getItem('currentUser')) {
             localStorage.removeItem('currentUser');
@@ -95,25 +100,26 @@ export class LoginService {
         return this.http.get<ConnectedUser>('/api/me')
             .do(connectedUser => {
                 if (connectedUser.barman) {
-                    this.$currentUser.next({
+                    this.$currentUser.next(new ConnectedUser({
                         accountType: 'Barman',
                         username: connectedUser.barman.connection.username,
                         createdAt: connectedUser.barman.createdAt,
                         barman: connectedUser.barman,
-                    });
+                    }));
                 } else if (connectedUser.specialAccount) {
-                    this.$currentUser.next({
+                    this.$currentUser.next(new ConnectedUser({
                         accountType: 'SpecialAccount',
                         username: connectedUser.specialAccount.connection.username,
                         createdAt: connectedUser.specialAccount.createdAt,
                         specialAccount: connectedUser.specialAccount,
-                    });
+                    }));
                 }
             })
-            .catch(this.handleError);
+            .catch(this.handleError.bind(this));
     }
 
     private handleError(err: HttpErrorResponse) {
+        console.error(err);
         let errorMessage = '';
         if (err.error instanceof Error) {
             errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;

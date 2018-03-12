@@ -2,7 +2,7 @@ import { Barman, SpecialAccount } from './index';
 
 export class ConnectedUser {
 
-    username: String;
+    username?: String;
     createdAt: Date;
     accountType: String;
     barman?: Barman;
@@ -10,5 +10,9 @@ export class ConnectedUser {
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
+    }
+
+    isGuest(): Boolean {
+        return this.accountType === 'Guest' ? true : false;
     }
 }
