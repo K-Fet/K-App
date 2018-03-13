@@ -109,12 +109,16 @@ export class SpecialAccountNewComponent implements OnInit {
             return permission.isChecked === true;
         });
 
+        if (!this.specialAccountForm.valid) {
+            return true;
+        }
+
         return this.specialAccountForm.get('username').value === ''
-            || this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value
+            || !this.codeMatch()
             || add.length === 0;
     }
 
     codeMatch(): Boolean {
-        return this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value;
+        return this.specialAccountForm.get('code').value === this.specialAccountForm.get('codeConfirmation').value;
     }
 }
