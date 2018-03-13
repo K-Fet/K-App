@@ -7,17 +7,33 @@
                 </section>
             </mat-card-title>
         </mat-card-header>
-        <mat-card-content>
-            <h4>Mise à jour des informations</h4>
-            <p>Les informations sensibles (mot de passe & code) ne peuvent être mise à jour que par l'utilisateur en question.</p>
-            <form [formGroup]="specialAccountForm" fxLayout="column">
+        <mat-card-content *ngIf="currentUser">
+            <h4>Mise à jour des informations.</h4>
+            <div *ngIf="!isMe()">
+                <p >Le mot de passe ne peut pas être mis à jour que par l'utilisateur en question.</p>
+                <p *ngxPermissionsExcept="['specialaccount:force-code-reset']">Le code ne peut pas être changer que par l'utilisateur en question ou un administrateur avec la permission
+                    specialaccount:force-code-reset.</p>
+            </div>
+            <form [formGroup]="specialAccountForm" fxLayout="column" (ngSubmit)="openDialog()">
                 <mat-form-field>
                     <input matInput placeholder="Username (doit être un email)" formControlName="username">
-                    <mat-hint align="start">Un email de vérification sera envoyé.</mat-hint>
+                    <mat-hint align="start">Un email de vérification sera envoyé si vous changez ce champ.</mat-hint>
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Description" formControlName="description">
                 </mat-form-field>
+                <div *ngIf="codeFieldEnable()">
+                    <mat-form-field fxFlex="45">
+                        <input matInput type="password" placeholder="Code" formControlName="code">
+                    </mat-form-field>
+                    <div fxFlex></div>
+                    <mat-form-field fxFlex="45">
+                        <input matInput type="password" placeholder="Confirmation du code" formControlName="codeConfirmation">
+                    </mat-form-field>
+                </div>
+                <mat-error *ngIf="!codesMatch()" fxLayoutAlign="center">
+                    Les codes doivent être identiques.
+                </mat-error>
                 <h4>Permissions</h4>
                 <div *ngFor="let permission of permissions">
                     <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
@@ -25,8 +41,7 @@
                     </mat-checkbox>
                 </div>
                 <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="openDialog()"
-                            [disabled]="disable()">Modifier</button>
+                    <button fxFlex="50" mat-button type="submit" [disabled]="disable()">Modifier</button>
                 </div>
             </form>
         </mat-card-content>

@@ -1,3 +1,6 @@
+import { NgxPermissionsService } from 'ngx-permissions';
+import { ConnectedUser } from './../../_models/ConnectedUser';
+import { LoginService } from './../../_services/login.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -16,6 +19,7 @@ export class SpecialAccountEditComponent implements OnInit {
     currentSpecialAccount: SpecialAccount = new SpecialAccount({
         connection: {}
     });
+    currentUser: ConnectedUser = new ConnectedUser();
     specialAccountForm: FormGroup;
 
     permissions: Array<{
@@ -26,7 +30,9 @@ export class SpecialAccountEditComponent implements OnInit {
 
     constructor(
         private specialAccountService: SpecialAccountService,
+        private loginService: LoginService,
         private permissionService: PermissionService,
+        private ngxPermissionsService: NgxPermissionsService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router,
@@ -40,6 +46,8 @@ export class SpecialAccountEditComponent implements OnInit {
         this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required]),
             description: new FormControl(''),
+            code: new FormControl(''),
+            codeConfirmation: new FormControl(''),
         });
     }
 
@@ -70,11 +78,13 @@ export class SpecialAccountEditComponent implements OnInit {
                     });
                 }
                 this.currentSpecialAccount = specialAccount;
-                console.log(this.currentSpecialAccount);
             },
             error => {
                 this.toasterService.showToaster(error, 'Fermer');
             });
+        });
+        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+            this.currentUser = user;
         });
     }
 
@@ -107,13 +117,20 @@ export class SpecialAccountEditComponent implements OnInit {
         const specialAccount = new SpecialAccount({
             id: this.currentSpecialAccount.id,
         });
-        if (this.currentSpecialAccount.description !== this.specialAccountForm.get('description').value) {
-            specialAccount.description = this.specialAccountForm.get('description').value;
+
+        const formValues = this.specialAccountForm.value;
+
+        // Simple field
+        if (this.currentSpecialAccount.description !== formValues.description) {
+            specialAccount.description = formValues.description;
         }
-        if (this.currentSpecialAccount.connection.username !== this.specialAccountForm.get('username').value) {
+        if (this.currentSpecialAccount.connection.username !== formValues.username) {
             specialAccount.connection = {
-                username: this.specialAccountForm.get('username').value
+                username: formValues.username
             };
+        }
+        if (formValues.code) {
+            specialAccount.code = formValues.code;
         }
 
         // Associations
@@ -144,16 +161,39 @@ export class SpecialAccountEditComponent implements OnInit {
         return specialAccount;
     }
 
-    disable (): Boolean {
+    disable(): Boolean {
         const add = this.permissions.filter(permission => {
             return permission.isChecked === true && permission.initial !== permission.isChecked;
         });
         const remove = this.permissions.filter(permission => {
             return permission.isChecked === false && permission.initial !== permission.isChecked;
         });
+        if (!this.specialAccountForm.valid) {
+            return true;
+        }
         return this.currentSpecialAccount.connection.username === this.specialAccountForm.get('username').value
             && this.currentSpecialAccount.description === this.specialAccountForm.get('description').value
             && add.length === 0
-            && remove.length === 0;
+            && remove.length === 0
+            && this.specialAccountForm.get('code').value === '';
+    }
+
+    isMe(): Boolean {
+        return this.currentSpecialAccount.id === this.currentUser.specialAccount.id ? true : false;
+    }
+
+    codeFieldEnable(): Boolean {
+        return (this.isMe() || this.ngxPermissionsService.getPermissions()['specialaccount:force-code-reset']) ? true : false;
+    }
+
+    codesMatch(): Boolean {
+        if (this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value) {
+            this.specialAccountForm.get('code').setErrors({'incorrect': true});
+            this.specialAccountForm.get('codeConfirmation').setErrors({'incorrect': true});
+            return false;
+        }
+        this.specialAccountForm.get('code').setErrors(null);
+        this.specialAccountForm.get('codeConfirmation').setErrors(null);
+        return true;
     }
 }
