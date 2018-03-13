@@ -11,10 +11,12 @@
 					<a mat-raised-button routerLink="/barmen/{{user.barman.id}}/edit">Modifier mes informations</a>
 				</div>
 			</div>
-			<div *ngIf="user?.specialAccount">
-				<h5>Compte spécial {{user.specialAccount.connection.username}}</h5>
+			<div *ngIf="user?.specialAccount" class="connectedUserInformation">
+				<h4>Compte spécial {{user.specialAccount.connection.username}}</h4>
 				<p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
-				<a mat-raised-button routerLink="/specialaccounts/{{user.specialaccount.id}}">Modifier mes informations</a>
+				<div fxLayoutAlign="end">
+					<a mat-raised-button routerLink="/specialaccounts/{{user.specialAccount.id}}">Modifier mes informations</a>
+				</div>
 			</div>
         </mat-menu>
         <button *ngIf="!user.isGuest()" mat-icon-button [matMenuTriggerFor]="personnalInformation">
