@@ -31,7 +31,7 @@
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
                         <mat-cell *matCellDef="let kommission" >
                             <button mat-icon-button (click)="edit(kommission)"><mat-icon>edit</mat-icon></button>
-                            <button mat-icon-button (click)="delete(kommission)"><mat-icon>delete</mat-icon></button>
+                            <button mat-icon-button (click)="openConfirmationDialog(kommission)"><mat-icon>delete</mat-icon></button>
                         </mat-cell>
                     </ng-container>
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

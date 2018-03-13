@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatDatetimepickerModule,
     MatNativeDatetimeModule,
-    MAT_DATETIME_FORMATS
   } from '@mat-datetimepicker/core';
 
 // Libraries
@@ -41,17 +40,17 @@ import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
-import { ConnectedUserDialogComponent } from './connected-user-dialog/connected-user-dialog.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService} from './_services/index';
+    TemplateService, SpecialAccountService, PermissionService} from './_services/';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -68,7 +67,7 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { MAT_DATE_LOCALE } from '@angular/material';
+
 
 @NgModule({
     declarations: [
@@ -95,16 +94,16 @@ import { MAT_DATE_LOCALE } from '@angular/material';
         RolesListComponent,
         CodeDialogComponent,
         NotFoundComponent,
-        ConnectedUserDialogComponent,
         OpenServicesComponent,
         WeekPickerComponent,
         SpecialAccountListComponent,
         SpecialAccountNewComponent,
         SpecialAccountEditComponent,
+        ConfirmationDialogComponent
     ],
     entryComponents: [
         CodeDialogComponent,
-        ConnectedUserDialogComponent
+        ConfirmationDialogComponent,
     ],
     imports: [
         CommonModule,
