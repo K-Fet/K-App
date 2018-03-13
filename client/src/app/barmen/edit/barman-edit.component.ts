@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
-import { Barman, Kommission, Role, AssociationChanges } from '../../_models/index';
+import { ToasterService, BarmanService, KommissionService, RoleService, LoginService } from '../../_services';
+import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
 
 @Component({
   templateUrl: './barman-edit.component.html'
 })
 
 export class BarmanEditComponent implements OnInit {
+
+    connectedUser: ConnectedUser = new ConnectedUser();
 
     currentBarman: Barman = new Barman();
     barman: Barman = new Barman();
@@ -30,7 +32,8 @@ export class BarmanEditComponent implements OnInit {
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private loginService: LoginService,
     ) {
         this.createForm();
     }
@@ -42,6 +45,7 @@ export class BarmanEditComponent implements OnInit {
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required]),
+            password: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),
@@ -100,6 +104,11 @@ export class BarmanEditComponent implements OnInit {
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');
+        });
+
+        // Get connected user
+        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+            this.connectedUser = user;
         });
     }
 
@@ -162,5 +171,12 @@ export class BarmanEditComponent implements OnInit {
             }
         });
         return { add, remove };
+    }
+
+    isMe(): Boolean {
+        if (this.connectedUser && this.connectedUser.barman) {
+            return this.connectedUser.barman.id === this.currentBarman.id ? true : false;
+        }
+        return false;
     }
 }
