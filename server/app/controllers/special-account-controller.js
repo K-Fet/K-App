@@ -2,6 +2,7 @@ const specialAccountService = require('../services/special-account-service');
 const { SpecialAccount, ConnectionInformation } = require('../models');
 const { SpecialAccountSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const { codeGuard } = require('../middlewares/code-guard');
 
 /**
  * Fetch all SpecialAccount from the database
@@ -24,6 +25,9 @@ async function getAllSpecialAccounts(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createSpecialAccount(req, res) {
+
+    await codeGuard(req, res);
+
     const schema = SpecialAccountSchema.requiredKeys(
         'code',
         'connection',
@@ -31,7 +35,7 @@ async function createSpecialAccount(req, res) {
         'connection.password'
     );
 
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body.specialAccount);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
     const newAccount = req.body;
@@ -79,8 +83,10 @@ async function getSpecialAccountById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateSpecialAccount(req, res) {
+    await codeGuard(req, res);
+
     const schema = SpecialAccountSchema.min(1);
-    const newUser = req.body;
+    const newUser = req.body.specialAccount;
 
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.details[0].message);
@@ -116,6 +122,7 @@ async function updateSpecialAccount(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function deleteSpecialAccount(req, res) {
+    await codeGuard(req, res);
     const specialAccountId = req.params.id;
 
     const specialAccount = await specialAccountService.deleteSpecialAccountById(specialAccountId);
