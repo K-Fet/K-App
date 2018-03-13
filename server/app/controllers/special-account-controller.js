@@ -2,7 +2,6 @@ const specialAccountService = require('../services/special-account-service');
 const { SpecialAccount, ConnectionInformation } = require('../models');
 const { SpecialAccountSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
-const { codeGuard } = require('../middlewares/code-guard');
 
 /**
  * Fetch all SpecialAccount from the database
@@ -25,20 +24,16 @@ async function getAllSpecialAccounts(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createSpecialAccount(req, res) {
-
-    await codeGuard(req, res);
-
     const schema = SpecialAccountSchema.requiredKeys(
         'code',
         'connection',
         'connection.username',
-        'connection.password'
     );
 
     const { error } = schema.validate(req.body.specialAccount);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    const newAccount = req.body;
+    const newAccount = req.body.specialAccount;
 
     let newSpecialAccount = new SpecialAccount(
         {
@@ -83,8 +78,6 @@ async function getSpecialAccountById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateSpecialAccount(req, res) {
-    await codeGuard(req, res);
-
     const schema = SpecialAccountSchema.min(1);
     const newUser = req.body.specialAccount;
 
@@ -106,7 +99,7 @@ async function updateSpecialAccount(req, res) {
         }
     );
 
-    const specialAccountId = req.param.id;
+    const specialAccountId = req.params.id;
 
     newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId,
         newSpecialAccount, newUser._embedded);
@@ -122,13 +115,11 @@ async function updateSpecialAccount(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function deleteSpecialAccount(req, res) {
-    await codeGuard(req, res);
     const specialAccountId = req.params.id;
 
     const specialAccount = await specialAccountService.deleteSpecialAccountById(specialAccountId);
 
     res.json(specialAccount);
-
 }
 
 module.exports = {

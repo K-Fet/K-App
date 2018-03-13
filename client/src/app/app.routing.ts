@@ -74,7 +74,8 @@ const routes: Routes = [
         data: generateData(['specialaccount:read']) },
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['specialaccount:write']) },
-    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard] },
+    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
+        data: generateData(['specialaccount:write']) },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' }
 ];

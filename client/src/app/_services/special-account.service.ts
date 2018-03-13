@@ -23,8 +23,10 @@ export class SpecialAccountService {
     }
 
     update(specialAccount: SpecialAccount, code: Number) {
+        const id = specialAccount.id;
+        delete specialAccount.id;
         const body = { specialAccount: specialAccount, code: code };
-        return this.http.put('/api/specialaccounts/' + specialAccount.id, body).catch(this.handleError);
+        return this.http.put('/api/specialaccounts/' + id, body).catch(this.handleError);
     }
 
     delete(id: Number, code: Number) {

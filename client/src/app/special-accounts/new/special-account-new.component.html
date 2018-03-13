@@ -10,10 +10,9 @@
         <mat-card-content>
             <form [formGroup]="specialAccountForm" fxLayout="column">
                 <p>Le nouvel utilisateur sera invité à définir son mot de passe grâce à un email de
-                    vérification envoyé automatiquement sur son username (adresse email).</p>
+                    vérification envoyé automatiquement sur son adresse email (username)).</p>
                 <mat-form-field>
                     <input matInput placeholder="Username (doit être un email)" formControlName="username">
-                    <mat-hint align="start">Un email de vérification sera envoyé.</mat-hint>
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Description" formControlName="description">

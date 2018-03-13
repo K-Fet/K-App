@@ -6,6 +6,7 @@ export class SpecialAccount {
     description: String;
     createdAt: Date;
     code: Number;
+    password: String;
 
     // Association
     connection: ConnectionInformation;

@@ -48,6 +48,7 @@ export class SpecialAccountEditComponent implements OnInit {
             description: new FormControl(''),
             code: new FormControl(''),
             codeConfirmation: new FormControl(''),
+            password: new FormControl(''),
         });
     }
 
@@ -127,6 +128,12 @@ export class SpecialAccountEditComponent implements OnInit {
         if (this.currentSpecialAccount.connection.username !== formValues.username) {
             specialAccount.connection = {
                 username: formValues.username
+            };
+        }
+        if (formValues.password) {
+            specialAccount.connection = {
+                ...specialAccount.connection,
+                password: formValues.password
             };
         }
         if (formValues.code) {
