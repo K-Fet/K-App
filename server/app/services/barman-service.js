@@ -146,14 +146,14 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
             active: updatedBarman.active,
         }), { transaction });
 
-
         // If connection information is changed
         if (updatedBarman.connection) {
+
             const co = await currentBarman.getConnection();
 
             const coData = {
-                username: updatedBarman.connection.username,
-                password: await hash(updatedBarman.connection.password),
+                username: updatedBarman.connection.username ? updatedBarman.connection.username : null,
+                password: updatedBarman.connection.password ? await hash(updatedBarman.connection.password) : null,
             };
 
             // If there is no connection yet, create one

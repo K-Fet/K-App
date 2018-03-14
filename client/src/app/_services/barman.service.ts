@@ -47,7 +47,9 @@ export class BarmanService {
     }
 
     update(barman: Barman) {
-        return this.http.put('/api/barmen/' + barman.id, barman).catch(this.handleError);
+        const id = barman.id;
+        delete barman.id;
+        return this.http.put('/api/barmen/' + id, barman).catch(this.handleError);
     }
 
     delete(id: Number) {

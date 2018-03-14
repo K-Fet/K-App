@@ -124,35 +124,48 @@ export class BarmanEditComponent implements OnInit {
     }
 
     prepareSaving() {
+        const values = this.barmanForm.value;
+        this.currentBarman.connection.password = null;
         Object.keys(this.currentBarman).forEach(key => {
-            if (this.barmanForm.controls[key]) {
-                switch (key) {
-                    case 'godFather':
-                        if (this.barmanForm.controls.godFather.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.godFather = this.selectedGodFather;
-                        }
-                        break;
-                    case 'kommissions':
-                        if (this.barmanForm.controls.kommissions.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.kommissions = this.prepareAssociationChanges(
-                                this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
-                        }
-                        break;
-                    case 'roles':
-                        if (this.barmanForm.controls.roles.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.roles = this.prepareAssociationChanges(
-                                this.currentBarman.roles, this.barmanForm.controls.roles.value);
-                        }
-                        break;
-                    default:
-                        if (this.currentBarman[key] !== this.barmanForm.controls[key].value) {
-                            this.barman[key] = this.barmanForm.controls[key].value;
-                        }
-                        break;
-                }
+            switch (key) {
+                case 'connection':
+                    if (values.username !== this.currentBarman.connection.username) {
+                        this.barman.connection = {
+                            ...this.barman.connection,
+                            username: values.username,
+                        };
+                    } else if (values.password) {
+                        this.barman.connection = {
+                            ...this.barman.connection,
+                            password: values.password,
+                        };
+                    }
+                    break;
+                case 'godFather':
+                    if (this.barmanForm.controls.godFather.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.godFather = this.selectedGodFather;
+                    }
+                    break;
+                case 'kommissions':
+                    if (this.barmanForm.controls.kommissions.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.kommissions = this.prepareAssociationChanges(
+                            this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
+                    }
+                    break;
+                case 'roles':
+                    if (this.barmanForm.controls.roles.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.roles = this.prepareAssociationChanges(
+                            this.currentBarman.roles, this.barmanForm.controls.roles.value);
+                    }
+                    break;
+                default:
+                    if (this.barmanForm.controls[key] && this.currentBarman[key] !== this.barmanForm.controls[key].value) {
+                        this.barman[key] = this.barmanForm.controls[key].value;
+                    }
+                    break;
             }
         });
     }
