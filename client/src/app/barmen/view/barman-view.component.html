@@ -1,10 +1,10 @@
 <div fxLayoutAlign="center">
     <mat-card fxFlex="450px" fxFlex.lt-sm="95">
         <mat-card-header>
-            <mat-card-title>
+            <mat-card-title fxLayout="row">
                 <a mat-button routerLink="/barmen"><mat-icon>arrow_back</mat-icon></a>
                 <section class="mat-typography">
-                    <h1>Détails de {{barman?.nickname}}</h1>
+                    <h1>{{barman?.nickname}}</h1>
                 </section>
             </mat-card-title>
             <div fxFlex></div>
