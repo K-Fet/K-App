@@ -50,7 +50,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService} from './_services/';
+    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -131,6 +131,7 @@ import { MaterialModule } from './_helpers/material.module';
         TemplateService,
         SpecialAccountService,
         PermissionService,
+        MeService,
         {
             provide: LOCALE_ID, useValue: 'fr'
         },

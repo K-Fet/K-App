@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService, KommissionService, RoleService, LoginService } from '../../_services';
+import { ToasterService, BarmanService,
+    KommissionService, RoleService, LoginService, MeService } from '../../_services';
 import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
 
 @Component({
@@ -34,6 +35,7 @@ export class BarmanEditComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         private loginService: LoginService,
+        private meService: MeService
     ) {
         this.createForm();
     }
@@ -114,13 +116,24 @@ export class BarmanEditComponent implements OnInit {
 
     edit() {
         this.prepareSaving();
-        this.barmanService.update(this.barman).subscribe(() => {
-            this.toasterService.showToaster('Barman modifié', 'Fermer');
-            this.router.navigate(['/barmen'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        if (this.isMe()) {
+            this.connectedUser.barman = this.barman;
+            this.meService.put(this.connectedUser).subscribe(() => {
+                this.toasterService.showToaster('Modification(s) enregistrée(s)', 'Fermer');
+                this.router.navigate(['/barmen'] );
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        } else {
+            this.barmanService.update(this.barman).subscribe(() => {
+                this.toasterService.showToaster('Barman modifié', 'Fermer');
+                this.router.navigate(['/barmen'] );
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        }
     }
 
     prepareSaving() {
