@@ -31,7 +31,7 @@
                 <mat-form-field>
                     <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field>
                     <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
@@ -53,7 +53,7 @@
                 </mat-form-field>
                 <mat-checkbox formControlName="active">Actif</mat-checkbox>
                 <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="add()" 
+                    <button fxFlex="50" mat-button type="button" (click)="add()"
                     [disabled]="!barmanForm.valid">Ajouter</button>
                 </div>
             </form>

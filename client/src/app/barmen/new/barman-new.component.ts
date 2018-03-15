@@ -22,6 +22,8 @@ export class BarmanNewComponent implements OnInit {
     selectedKommissions: Number[];
     selectedRoles: Number[];
 
+    startDate = new Date();
+
     constructor(
         private barmanService: BarmanService,
         private kommissionService: KommissionService,
@@ -48,6 +50,7 @@ export class BarmanNewComponent implements OnInit {
             kommissions: new FormControl(''),
             active: new FormControl('')
         });
+        this.startDate.setFullYear(this.startDate.getFullYear() - 20);
     }
 
     ngOnInit(): void {
