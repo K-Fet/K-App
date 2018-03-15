@@ -200,9 +200,7 @@ export class BarmanEditComponent implements OnInit {
     }
 
     isMe(): Boolean {
-        if (this.connectedUser && this.connectedUser.barman) {
-            return this.connectedUser.barman.id === this.currentBarman.id ? true : false;
-        }
-        return false;
+        return this.connectedUser && this.connectedUser.barman
+            && this.connectedUser.barman.id === this.currentBarman.id;
     }
 }
