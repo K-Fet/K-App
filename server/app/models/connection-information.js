@@ -71,7 +71,7 @@ class ConnectionInformation extends Model {
 }
 
 const ConnectionInformationSchema = Joi.object().keys({
-    username: Joi.string(),
+    username: Joi.string().email(),
     password: Joi.string()
 }).min(1);
 
