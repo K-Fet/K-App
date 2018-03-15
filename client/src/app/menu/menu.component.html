@@ -50,6 +50,11 @@
 					<a mat-list-item routerLink="/roles" *ngxPermissionsOnly="'role:read'">Liste</a>
 					<a mat-list-item routerLink="/roles/new" *ngxPermissionsOnly="'role:write'">Nouveau</a>
 
+					<mat-divider *ngxPermissionsOnly="['specialaccount:read','specialaccount:write']"></mat-divider>
+					<h3 mat-subheader *ngxPermissionsOnly="['specialaccount:read','specialaccount:write']">Comptes spéciaux</h3>
+					<a mat-list-item routerLink="/specialaccounts" *ngxPermissionsOnly="'specialaccount:read'">Liste</a>
+					<a mat-list-item routerLink="/specialaccounts/new" *ngxPermissionsOnly="'specialaccount:write'">Nouveau</a>
+
 					<mat-divider *ngxPermissionsOnly="['service:write']"></mat-divider>
         			<a mat-list-item *ngxPermissionsOnly="['service:write']" routerLink="/open-services">Ouvrir les service</a>
 				</div>
