@@ -1,5 +1,6 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
+const authService = require('./auth-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
 const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
@@ -38,16 +39,15 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
-        // TODO implement password generation
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
         const co = await newSpecialAccount.connection.save({ transaction });
         newSpecialAccount.connectionId = co.id;
         await newSpecialAccount.save({ transaction });
 
+        await authService.resetPassword(co.username, transaction);
         // Remove critic fields
         newSpecialAccount.code = undefined;
-        co.password = undefined;
 
     } catch (err) {
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
@@ -63,7 +63,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[associationKey];
+            const value = _embedded[ associationKey ];
 
             await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
         }
@@ -160,7 +160,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
 
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[associationKey];
+            const value = _embedded[ associationKey ];
 
             await setEmbeddedAssociations(associationKey, value, currentSpecialAccount, transaction);
         }

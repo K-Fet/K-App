@@ -3,6 +3,7 @@ const sequelize = require('../../db');
 const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
 const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
+const authService = require('./auth-service');
 
 /**
  * Return all barmen of the app.
@@ -28,14 +29,11 @@ async function createBarman(newBarman, _embedded) {
 
     const transaction = await sequelize.transaction();
     try {
-        newBarman.connection.password = await hash(newBarman.connection.password);
-
         const co = await newBarman.connection.save({ transaction });
         newBarman.connectionId = co.id;
         await newBarman.save({ transaction });
 
-        // Remove critic fields
-        co.password = undefined;
+        await authService.resetPassword(co.username, transaction);
     } catch (err) {
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
             logger.warn('Barman service: Error while creating barman username not unique', err);
