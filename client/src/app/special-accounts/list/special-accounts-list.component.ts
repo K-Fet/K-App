@@ -4,7 +4,7 @@ import { SpecialAccount } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { ToasterService, SpecialAccountService } from '../../_services';
 import { Router } from '@angular/router';
-import {CodeDialogComponent} from '../../code-dialog/code-dialog.component';
+import {CodeDialogComponent} from '../../dialogs/code-dialog/code-dialog.component';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';

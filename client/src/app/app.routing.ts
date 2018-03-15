@@ -5,7 +5,7 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 import { AuthGuard, EditGuard } from './_guards';
 
 // Components
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';

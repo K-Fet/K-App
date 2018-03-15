@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
+import { BarmanService, ToasterService, AuthService, ServiceService } from '../../_services';
 import { Moment } from 'moment';
-import { Service, ConnectedUser } from '../../_models/index';
+import { Service, ConnectedUser } from '../../_models';
 
 @Component({
     selector: 'app-my-services',
@@ -13,14 +13,14 @@ export class MyServicesComponent implements OnInit {
     myServices: Service[];
     user: ConnectedUser;
 
-    constructor(private loginService: LoginService,
+    constructor(private authService: AuthService,
         private barmanService: BarmanService,
         private serviceService: ServiceService,
         private toasterService: ToasterService) {
     }
 
     ngOnInit() {
-        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
             if (this.user.barman) {
                 this.serviceService.getWeek().subscribe(week => {

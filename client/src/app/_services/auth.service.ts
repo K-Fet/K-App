@@ -9,7 +9,7 @@ import {NgxPermissionsService} from 'ngx-permissions';
 import {Router} from '@angular/router';
 
 @Injectable()
-export class LoginService {
+export class AuthService {
 
     $currentUser: BehaviorSubject<ConnectedUser>;
 
@@ -116,6 +116,10 @@ export class LoginService {
                 }
             })
             .catch(this.handleError.bind(this));
+    }
+
+    resetPassword(username: String): Observable<any> {
+        return this.http.post('/api/reset-password', { username: username }).catch(this.handleError.bind(this));
     }
 
     private handleError(err: HttpErrorResponse) {

@@ -3,7 +3,7 @@ import { BarmanService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Barman } from '../../_models';
 import { MatDialog } from '@angular/material';
-import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     templateUrl: './barman-view.component.html',

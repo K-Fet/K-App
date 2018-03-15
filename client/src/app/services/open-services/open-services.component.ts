@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK_SWITCH } from '../../_services/index';
+import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK_SWITCH } from '../../_services';
 import { Template, Service } from '../../_models/index';
 import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
 

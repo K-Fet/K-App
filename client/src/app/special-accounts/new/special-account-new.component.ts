@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';
 import { SpecialAccountService, PermissionService } from '../../_services';
-import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({

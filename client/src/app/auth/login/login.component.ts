@@ -1,8 +1,10 @@
+import { ResetPasswordDialogComponent } from './../../dialogs/reset-password/reset-password.component';
+import { MatDialog } from '@angular/material';
 import { Component } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { LoginService, ToasterService } from '../_services';
+import { AuthService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import { ConnectedUser } from '../_models';
+import { ConnectedUser } from '../../_models';
 
 @Component({
   selector: 'app-login',
@@ -13,11 +15,11 @@ export class LoginComponent {
     user: ConnectedUser;
     loginForm: FormGroup;
 
-    constructor(
-        private loginService: LoginService,
+    constructor (private authService: AuthService,
         private toasterService: ToasterService,
         private router: Router,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        private matDialog: MatDialog) {
         this.createForm();
     }
 
@@ -29,9 +31,9 @@ export class LoginComponent {
     }
 
     login() {
-        this.loginService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
+        this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
         .subscribe(() => {
-            this.loginService.$currentUser.subscribe(user => {
+            this.authService.$currentUser.subscribe(user => {
                 this.user = user;
                 if (user && user.barman) {
                     this.router.navigate(['/dashboard']);
@@ -42,6 +44,19 @@ export class LoginComponent {
         },
         error => {
             this.toasterService.showToaster(error, 'Fermer');
+        });
+    }
+
+    openDialog() {
+        const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
+
+        dialogRef.afterClosed().subscribe(username => {
+            this.authService.resetPassword(username).subscribe(() => {
+                this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail',
+                    'Fermer');
+            }, error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
         });
     }
 }
