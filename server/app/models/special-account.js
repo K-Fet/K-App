@@ -1,6 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const Joi = require('joi');
 const { ConnectionInformationSchema } = require('./connection-information');
+const { AssociationChangesSchema } = require('./association-changes');
 
 /**
  * This class represents a special account (e.g.: admin).
@@ -53,7 +54,11 @@ class SpecialAccount extends Model {
 const SpecialAccountSchema = Joi.object().keys({
     code: Joi.string(),
     description: Joi.string(),
-    connection: ConnectionInformationSchema
+    connection: ConnectionInformationSchema,
+
+    _embedded: Joi.object({
+        permissions: AssociationChangesSchema,
+    }),
 });
 
 module.exports = {

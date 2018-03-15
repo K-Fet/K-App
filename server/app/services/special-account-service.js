@@ -13,6 +13,13 @@ async function getAllSpecialAccounts() {
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
         attributes: { exclude: [ 'code' ] },
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection',
+                attributes: [ 'id', 'username' ],
+            }
+        ]
     });
 }
 
@@ -31,9 +38,8 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
-        newSpecialAccount.connection.password = await hash(newSpecialAccount.connection.password);
+        // TODO implement password generation
         newSpecialAccount.code = await hash(newSpecialAccount.code);
-
 
         const co = await newSpecialAccount.connection.save({ transaction });
         newSpecialAccount.connectionId = co.id;
@@ -98,7 +104,14 @@ async function getSpecialAccountById(specialAccountId) {
  * @return {Promise<SpecialAccount>} the updated special account
  */
 async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount, _embedded) {
-    const currentSpecialAccount = await SpecialAccount.findById(specialAccountId);
+    const currentSpecialAccount = await SpecialAccount.findById(specialAccountId, {
+        include: [
+            {
+                model: ConnectionInformation,
+                as: 'connection'
+            }
+        ]
+    });
 
     if (!currentSpecialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
@@ -116,12 +129,13 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
         const updateCo = updatedSpecialAccount.connection;
 
         // If connection information is changed
+        // TODO implement username update
         if (updateCo) {
             const co = await currentSpecialAccount.getConnection();
             await co.update(
                 cleanObject({
                     username: updateCo.username,
-                    password: await hash(updateCo.password)
+                    password: updateCo.password ? await hash(updateCo.password) : undefined
                 }),
                 { transaction }
             );

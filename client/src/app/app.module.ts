@@ -42,12 +42,15 @@ import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
+import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
+import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
+import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService } from './_services';
+    TemplateService, SpecialAccountService, PermissionService} from './_services/';
 
 // Guards
 import { AuthGuard } from './_guards/auth.guard';
@@ -93,6 +96,9 @@ import { MaterialModule } from './_helpers/material.module';
         NotFoundComponent,
         OpenServicesComponent,
         WeekPickerComponent,
+        SpecialAccountListComponent,
+        SpecialAccountNewComponent,
+        SpecialAccountEditComponent,
         ConfirmationDialogComponent
     ],
     entryComponents: [
@@ -123,6 +129,8 @@ import { MaterialModule } from './_helpers/material.module';
         AuthGuard,
         ToasterService,
         TemplateService,
+        SpecialAccountService,
+        PermissionService,
         {
             provide: LOCALE_ID, useValue: 'fr'
         },

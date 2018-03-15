@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>Supprimer un adhérent</h2>
+<h2 mat-dialog-title>Vérification du code</h2>
 <mat-dialog-content fxLayout="column">
-    <p>Suppression de <strong>{{data.member.firstName}} {{data.member.lastName}}</strong></p>
+    <p>{{data.message}}</p>
     <div [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
         <mat-form-field>
             <input matInput type="password" placeholder="Code" formControlName="codeFormControl" required [(ngModel)]="code">

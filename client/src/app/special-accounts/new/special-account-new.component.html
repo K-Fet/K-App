@@ -1,0 +1,45 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Ajouter un compte spécial</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="specialAccountForm" fxLayout="column">
+                <p>Le nouvel utilisateur sera invité à définir son mot de passe grâce à un email de
+                    vérification envoyé automatiquement sur son adresse email (username)).</p>
+                <mat-form-field>
+                    <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Description" formControlName="description">
+                </mat-form-field>
+                <div>
+                    <mat-form-field fxFlex="45%">
+                        <input matInput type="password" placeholder="Code" formControlName="code">
+                    </mat-form-field>
+                    <div fxFlex></div>
+                    <mat-form-field fxFlex="45%">
+                        <input matInput type="password" placeholder="Confirmation du code" formControlName="codeConfirmation">
+                    </mat-form-field>
+                </div>
+                <mat-error *ngIf="!codeMatch()" fxLayoutAlign="center">
+                        Les codes doivent être identiques.
+                </mat-error>
+                <h4>Permissions</h4>
+                <div *ngFor="let permission of permissions">
+                    <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                        {{permission.permission.name}}
+                    </mat-checkbox>
+                </div>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="button" (click)="openDialog()"
+                            [disabled]="disable()">Ajouter</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -28,13 +28,12 @@ async function createSpecialAccount(req, res) {
         'code',
         'connection',
         'connection.username',
-        'connection.password'
     );
 
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body.specialAccount);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    const newAccount = req.body;
+    const newAccount = req.body.specialAccount;
 
     let newSpecialAccount = new SpecialAccount(
         {
@@ -80,7 +79,7 @@ async function getSpecialAccountById(req, res) {
  */
 async function updateSpecialAccount(req, res) {
     const schema = SpecialAccountSchema.min(1);
-    const newUser = req.body;
+    const newUser = req.body.specialAccount;
 
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.details[0].message);
@@ -100,7 +99,7 @@ async function updateSpecialAccount(req, res) {
         }
     );
 
-    const specialAccountId = req.param.id;
+    const specialAccountId = req.params.id;
 
     newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId,
         newSpecialAccount, newUser._embedded);
@@ -121,7 +120,6 @@ async function deleteSpecialAccount(req, res) {
     const specialAccount = await specialAccountService.deleteSpecialAccountById(specialAccountId);
 
     res.json(specialAccount);
-
 }
 
 module.exports = {

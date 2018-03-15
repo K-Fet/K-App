@@ -15,5 +15,5 @@ module.exports = {
     RoleSchema,
     MemberSchema,
     ServiceSchema,
-    SpecialAccountSchema
+    SpecialAccountSchema,
 };
