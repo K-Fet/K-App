@@ -7,7 +7,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/kommissions/new">
+            <a mat-mini-fab color="primary" routerLink="/kommissions/new" *ngxPermissionsOnly="['kommission:write']">
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>

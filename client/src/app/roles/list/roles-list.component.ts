@@ -4,11 +4,11 @@ import { RoleService, ToasterService } from '../../_services';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-
 
 @Component({
   templateUrl: './roles-list.component.html',
@@ -23,13 +23,17 @@ export class RolesListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private roleService: RoleService,
-                private toasterService: ToasterService,
-                private router: Router,
-                private dialog: MatDialog) {
+        private toasterService: ToasterService,
+        private router: Router,
+        private dialog: MatDialog,
+        private ngxPermissionsService: NgxPermissionsService) {
     }
 
     ngOnInit() {
         this.update();
+        if (!this.ngxPermissionsService.getPermissions()['specialaccount:write']) {
+            this.displayedColumns = ['name', 'description'];
+        }
     }
 
     update() {
@@ -74,4 +78,3 @@ export class RolesListComponent implements OnInit {
         });
     }
 }
-

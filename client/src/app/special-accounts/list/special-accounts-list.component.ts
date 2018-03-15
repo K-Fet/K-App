@@ -1,3 +1,4 @@
+import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SpecialAccount } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
@@ -23,11 +24,15 @@ export class SpecialAccountListComponent implements OnInit {
     constructor(private specialAccountService: SpecialAccountService,
         private toasterService: ToasterService,
         private router: Router,
-        private dialog: MatDialog) {
+        private dialog: MatDialog,
+        private ngxPermissionService: NgxPermissionsService) {
     }
 
     ngOnInit() {
         this.update();
+        if (!this.ngxPermissionService.getPermissions()['specialaccount:write']) {
+            this.displayedColumns = ['username', 'description'];
+        }
     }
 
     update() {

@@ -21,7 +21,9 @@ export class BarmenListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(private barmanService: BarmanService, private toasterService: ToasterService, private router: Router) {
+    constructor(private barmanService: BarmanService,
+        private toasterService: ToasterService,
+        private router: Router) {
     }
 
     ngOnInit() {
@@ -41,8 +43,8 @@ export class BarmenListComponent implements OnInit {
     view(barman: Barman) {
         this.router.navigate(['/barmen', barman.id]);
     }
+
     edit(barman: Barman) {
         this.router.navigate(['/barmen', barman.id, 'edit']);
     }
 }
-

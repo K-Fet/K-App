@@ -4,6 +4,7 @@ import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/m
 import { ToasterService, MemberService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 
 @Component({
@@ -24,10 +25,14 @@ export class MembersListComponent implements OnInit {
         private memberService: MemberService,
         private toasterService: ToasterService,
         private router: Router,
-        public dialog: MatDialog) { }
+        public dialog: MatDialog,
+        private ngxPermissionsService: NgxPermissionsService) { }
 
     ngOnInit() {
         this.update();
+        if (!this.ngxPermissionsService.getPermissions()['specialaccount:write']) {
+            this.displayedColumns = ['lastName', 'firstName', 'school'];
+        }
     }
 
     update() {
@@ -58,6 +63,7 @@ export class MembersListComponent implements OnInit {
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.membersData.filter = filterValue;
     }
+
     openDialog(member: Member): void {
         this.deletedMember = member;
         const dialogRef = this.dialog.open(CodeDialogComponent, {

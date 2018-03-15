@@ -13,7 +13,7 @@ export class MeService {
 
     put(connectedUser: ConnectedUser) {
         let body;
-        if (connectedUser.isBarman) {
+        if (connectedUser.isBarman()) {
             body = {
                 barman: connectedUser.barman,
             };

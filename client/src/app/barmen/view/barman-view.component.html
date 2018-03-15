@@ -8,7 +8,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <button mat-mini-fab color="primary" (click)="openConfirmationDialog()">
+            <button mat-mini-fab color="primary" (click)="openConfirmationDialog()" *ngxPermissionsOnly="['barman:write']">
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-card-header>

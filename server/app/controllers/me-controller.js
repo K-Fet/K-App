@@ -53,7 +53,7 @@ async function updateMe(req, res) {
         newSpecialAccount = await specialAccountService
             .updateSpecialAccountById(user.specialAccount.id, newSpecialAccount);
 
-        res.json(newSpecialAccount);
+        res.json({ specialAccount: newSpecialAccount, barman: undefined });
     }
     if (user.barman) {
         const schema = BarmanSchema.min(1);
@@ -79,7 +79,7 @@ async function updateMe(req, res) {
 
         newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman);
 
-        res.json(newBarman);
+        res.json({ specialAccount: undefined, barman: newBarman });
     }
 }
 
