@@ -53,7 +53,7 @@ import { ToasterService, LoginService, MemberService,
     TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
 
 // Guards
-import { AuthGuard } from './_guards/auth.guard';
+import { AuthGuard, EditGuard } from './_guards';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -132,6 +132,7 @@ import { MaterialModule } from './_helpers/material.module';
         SpecialAccountService,
         PermissionService,
         MeService,
+        EditGuard,
         {
             provide: LOCALE_ID, useValue: 'fr'
         },
