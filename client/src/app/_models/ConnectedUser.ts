@@ -15,4 +15,8 @@ export class ConnectedUser {
     isGuest(): Boolean {
         return this.accountType === 'Guest' ? true : false;
     }
+
+    isBarman(): Boolean {
+        return this.accountType === 'barman' ? true : false;
+    }
 }

@@ -1,8 +1,8 @@
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
 
 // Guards
 import { NgxPermissionsGuard } from 'ngx-permissions';
-import { AuthGuard } from './_guards/auth.guard';
+import { AuthGuard, EditGuard } from './_guards';
 
 // Components
 import { LoginComponent } from './login/login.component';
@@ -74,8 +74,7 @@ const routes: Routes = [
         data: generateData(['specialaccount:read']) },
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['specialaccount:write']) },
-    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
-        data: generateData(['specialaccount:write']) },
+    { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [AuthGuard, EditGuard] },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' }
 ];

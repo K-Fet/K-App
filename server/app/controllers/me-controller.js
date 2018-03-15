@@ -30,7 +30,7 @@ async function updateMe(req, res) {
 
     if (user.specialAccount) {
         const schema = SpecialAccountSchema.min(1);
-        const newSA = req.body;
+        const newSA = req.body.specialAccount;
 
         const { error } = schema.validate(newSA);
         if (error) throw createUserError('BadRequest', error.details[0].message);
@@ -53,11 +53,11 @@ async function updateMe(req, res) {
         newSpecialAccount = await specialAccountService
             .updateSpecialAccountById(user.specialAccount.id, newSpecialAccount);
 
-        res.json(newSpecialAccount);
+        res.json({ specialAccount: newSpecialAccount, barman: undefined });
     }
     if (user.barman) {
         const schema = BarmanSchema.min(1);
-        const newUser = req.body;
+        const newUser = req.body.barman;
 
         const { error } = schema.validate(newUser);
         if (error) throw createUserError('BadRequest', error.details[0].message);
@@ -79,7 +79,7 @@ async function updateMe(req, res) {
 
         newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman);
 
-        res.json(newBarman);
+        res.json({ specialAccount: undefined, barman: newBarman });
     }
 }
 

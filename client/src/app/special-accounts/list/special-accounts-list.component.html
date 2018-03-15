@@ -7,7 +7,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/specialaccounts/new">
+            <a mat-mini-fab color="primary" routerLink="/specialaccounts/new" *ngxPermissionsOnly="['specialaccount:write']">
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -24,7 +24,7 @@
                     </ng-container>
                     <ng-container matColumnDef="action">
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-                        <mat-cell *matCellDef="let specialAccount" >
+                        <mat-cell *matCellDef="let specialAccount">
                             <button mat-icon-button (click)="edit(specialAccount)"><mat-icon>edit</mat-icon></button>
                             <button mat-icon-button (click)="openDialog(specialAccount)"><mat-icon>delete</mat-icon></button>
                         </mat-cell>

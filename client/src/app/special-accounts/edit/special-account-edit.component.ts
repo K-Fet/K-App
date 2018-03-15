@@ -1,3 +1,4 @@
+import { MeService } from './../../_services/me.service';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ConnectedUser } from './../../_models/ConnectedUser';
 import { LoginService } from './../../_services/login.service';
@@ -37,7 +38,8 @@ export class SpecialAccountEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private meService: MeService,
     ) {
         this.createForms();
     }
@@ -104,14 +106,25 @@ export class SpecialAccountEditComponent implements OnInit {
 
     edit(code: Number) {
         const specialAccount = this.prepareEditing();
-
-        this.specialAccountService.update(specialAccount, code).subscribe(() => {
-            this.toasterService.showToaster('Compte special modifié', 'Fermer');
-            this.router.navigate(['/specialaccounts']);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        if (this.isMe()) {
+            this.currentUser.specialAccount = specialAccount;
+            this.meService.put(this.currentUser).subscribe(() => {
+                this.toasterService.showToaster('Modification(s) enregistrée(s)', 'Fermer');
+                this.router.navigate(['/specialaccounts'] );
+                this.loginService.me().subscribe();
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        } else {
+            this.specialAccountService.update(specialAccount, code).subscribe(() => {
+                this.toasterService.showToaster('Compte special modifié', 'Fermer');
+                this.router.navigate(['/specialaccounts']);
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        }
     }
 
     prepareEditing(): SpecialAccount {

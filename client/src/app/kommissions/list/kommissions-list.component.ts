@@ -4,6 +4,7 @@ import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/m
 import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
@@ -23,13 +24,17 @@ export class KommissionsListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private kommissionService: KommissionService,
-                private toasterService: ToasterService,
-                private router: Router,
-                private dialog: MatDialog) {
+        private toasterService: ToasterService,
+        private router: Router,
+        private dialog: MatDialog,
+        private ngxPermissionsService: NgxPermissionsService) {
     }
 
     ngOnInit() {
         this.update();
+        if (!this.ngxPermissionsService.getPermissions()['kommission:write']) {
+            this.displayedColumns = ['name', 'description'];
+        }
     }
 
     update() {
@@ -74,4 +79,3 @@ export class KommissionsListComponent implements OnInit {
         this.kommissionsData.filter = filterValue;
     }
 }
-

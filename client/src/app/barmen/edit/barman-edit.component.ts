@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
-import { Barman, Kommission, Role, AssociationChanges } from '../../_models/index';
+import { ToasterService, BarmanService,
+    KommissionService, RoleService, LoginService, MeService } from '../../_services';
+import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
 
 @Component({
   templateUrl: './barman-edit.component.html'
 })
 
 export class BarmanEditComponent implements OnInit {
+
+    connectedUser: ConnectedUser = new ConnectedUser();
 
     currentBarman: Barman = new Barman();
     barman: Barman = new Barman();
@@ -30,7 +33,9 @@ export class BarmanEditComponent implements OnInit {
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private loginService: LoginService,
+        private meService: MeService
     ) {
         this.createForm();
     }
@@ -42,6 +47,7 @@ export class BarmanEditComponent implements OnInit {
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required]),
+            password: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),
@@ -101,49 +107,78 @@ export class BarmanEditComponent implements OnInit {
         error => {
             this.toasterService.showToaster(error, 'Fermer');
         });
+
+        // Get connected user
+        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+            this.connectedUser = user;
+        });
     }
 
     edit() {
         this.prepareSaving();
-        this.barmanService.update(this.barman).subscribe(() => {
-            this.toasterService.showToaster('Barman modifié', 'Fermer');
-            this.router.navigate(['/barmen'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
-        });
+        if (this.isMe()) {
+            this.connectedUser.barman = this.barman;
+            this.meService.put(this.connectedUser).subscribe(() => {
+                this.toasterService.showToaster('Modification(s) enregistrée(s)', 'Fermer');
+                this.router.navigate(['/barmen'] );
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        } else {
+            this.barmanService.update(this.barman).subscribe(() => {
+                this.toasterService.showToaster('Barman modifié', 'Fermer');
+                this.router.navigate(['/barmen'] );
+            },
+            error => {
+                this.toasterService.showToaster(error, 'Fermer');
+            });
+        }
     }
 
     prepareSaving() {
+        const values = this.barmanForm.value;
+        this.currentBarman.connection.password = null;
         Object.keys(this.currentBarman).forEach(key => {
-            if (this.barmanForm.controls[key]) {
-                switch (key) {
-                    case 'godFather':
-                        if (this.barmanForm.controls.godFather.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.godFather = this.selectedGodFather;
-                        }
-                        break;
-                    case 'kommissions':
-                        if (this.barmanForm.controls.kommissions.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.kommissions = this.prepareAssociationChanges(
-                                this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
-                        }
-                        break;
-                    case 'roles':
-                        if (this.barmanForm.controls.roles.dirty) {
-                            if (!this.barman._embedded) { this.barman._embedded = {}; }
-                            this.barman._embedded.roles = this.prepareAssociationChanges(
-                                this.currentBarman.roles, this.barmanForm.controls.roles.value);
-                        }
-                        break;
-                    default:
-                        if (this.currentBarman[key] !== this.barmanForm.controls[key].value) {
-                            this.barman[key] = this.barmanForm.controls[key].value;
-                        }
-                        break;
-                }
+            switch (key) {
+                case 'connection':
+                    if (values.username !== this.currentBarman.connection.username) {
+                        this.barman.connection = {
+                            ...this.barman.connection,
+                            username: values.username,
+                        };
+                    } else if (values.password) {
+                        this.barman.connection = {
+                            ...this.barman.connection,
+                            password: values.password,
+                        };
+                    }
+                    break;
+                case 'godFather':
+                    if (this.barmanForm.controls.godFather.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.godFather = this.selectedGodFather;
+                    }
+                    break;
+                case 'kommissions':
+                    if (this.barmanForm.controls.kommissions.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.kommissions = this.prepareAssociationChanges(
+                            this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
+                    }
+                    break;
+                case 'roles':
+                    if (this.barmanForm.controls.roles.dirty) {
+                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        this.barman._embedded.roles = this.prepareAssociationChanges(
+                            this.currentBarman.roles, this.barmanForm.controls.roles.value);
+                    }
+                    break;
+                default:
+                    if (this.barmanForm.controls[key] && this.currentBarman[key] !== this.barmanForm.controls[key].value) {
+                        this.barman[key] = this.barmanForm.controls[key].value;
+                    }
+                    break;
             }
         });
     }
@@ -162,5 +197,10 @@ export class BarmanEditComponent implements OnInit {
             }
         });
         return { add, remove };
+    }
+
+    isMe(): Boolean {
+        return this.connectedUser && this.connectedUser.barman
+            && this.connectedUser.barman.id === this.currentBarman.id;
     }
 }

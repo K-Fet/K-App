@@ -50,10 +50,10 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 // Services
 import { ToasterService, LoginService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService} from './_services/';
+    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
 
 // Guards
-import { AuthGuard } from './_guards/auth.guard';
+import { AuthGuard, EditGuard } from './_guards';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -131,6 +131,8 @@ import { MaterialModule } from './_helpers/material.module';
         TemplateService,
         SpecialAccountService,
         PermissionService,
+        MeService,
+        EditGuard,
         {
             provide: LOCALE_ID, useValue: 'fr'
         },

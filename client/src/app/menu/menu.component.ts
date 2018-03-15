@@ -73,6 +73,15 @@ export class MenuComponent implements OnDestroy, OnInit {
         {
             links: [
                 {
+                    name: 'Comptes spéciaux',
+                    route: '/specialaccounts',
+                    permissions: ['specialaccount:read']
+                }
+            ]
+        },
+        {
+            links: [
+                {
                     name: 'Ouvrir les services',
                     route: '/open-services',
                     permissions: ['service:write']
@@ -100,7 +109,6 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.mobileQuery.addListener(this._mobileQueryListener);
         this.router = router;
     }
-
 
     logout() {
         this.loginService.logout().subscribe(res => {
