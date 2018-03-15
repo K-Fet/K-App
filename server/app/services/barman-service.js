@@ -152,7 +152,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
             const co = await currentBarman.getConnection();
 
             const coData = {
-                username: updatedBarman.connection.username ? updatedBarman.connection.username : undefined,
+                username: updatedBarman.connection.username,
                 password: updatedBarman.connection.password ? await hash(updatedBarman.connection.password) : undefined,
             };
 
