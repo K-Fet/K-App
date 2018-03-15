@@ -34,9 +34,23 @@ async function login(username, password) {
 
     const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (!user || !(await verify(user.password, password))) {
-        throw createUserError('LoginError', 'Bad username/password combination');
+    if (!user) throw createUserError('LoginError', 'Bad username/password combination');
+
+    if (!user.password) throw createUserError('UndefinedPassword', 'You must define password. Please, check your email.');
+
+    if (user.emailToken) {
+        throw createUserError('UnverifiedUsername', 'A valid email is required to use the app, you could change your ');
     }
+
+    if (await verify(user.password, password)) throw createUserError('LoginError', 'Bad username/password combination');
+
+    if (user.passwordToken) {
+        await user.update({ passwordToken: null });
+    }
+
+    delete user.password;
+    delete user.emailToken;
+    delete user.passwordToken;
 
     return createJWT(user);
 }
@@ -161,7 +175,7 @@ async function me(tokenId) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: { exclude: [ 'password' ] },
+                        attributes: [ 'id', 'username' ],
                     },
                     {
                         model: Kommission,
@@ -181,7 +195,7 @@ async function me(tokenId) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: { exclude: [ 'password' ] },
+                        attributes: [ 'id', 'username' ],
                     },
                 ],
             },
