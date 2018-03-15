@@ -31,7 +31,7 @@
         "postinstall": "cd client/ && yarn install --production=false",
         "prod": "NODE_ENV=production node server/index.js",
         "test": "concurrently \"yarn run test:back\" \"yarn run test:front\"",
-        "test:back": "jest",
+        "test:back": "jest --runInBand",
         "test:front": "yarn run lint"
     },
     "dependencies": {
@@ -77,7 +77,7 @@
         "collectCoverageFrom": [
             "<rootDir>/server/**/*.js"
         ],
-        "testRegex": "(/__tests__/.*|/server/tests/.*)\\.jsx?$",
+        "testRegex": "(/__tests__/.*|/server/tests/(int).*)\\.jsx?$",
         "coveragePathIgnorePatterns": [
             "app/routes/",
             "app/models/"

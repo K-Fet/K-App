@@ -68,6 +68,8 @@ async function clearDatabase() {
     sequelize._syncPromise = null;
 }
 
+
+
 function startExpress() {
     return new Promise((resolve, reject) => {
         server.on('error', () => reject());
