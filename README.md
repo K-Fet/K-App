@@ -70,6 +70,7 @@ Here are a list _(usually updated)_ of all the environment variables:
 * `DB_USER`: Username for the mysql server (default: `root`)
 * `DB_PWD`:  Password for the mysql server (default: ``)
 * `DB_DATABASE`: Name of the database (default: `kapp`)
+* `DB_DIALECT`: Dialect used (default: `mysql`)
 
 ###### Web
 

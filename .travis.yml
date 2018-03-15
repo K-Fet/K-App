@@ -1,17 +1,10 @@
 language: node_js
 cache: yarn
+dist: trusty
 node_js:
   - "8"
 
-env:
-  - CXX=g++-7
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
-after_success: yarn run coverage
+script: yarn test && codecov
 
 notifications:
   email: false

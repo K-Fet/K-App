@@ -1,28 +1,12 @@
 const Sequelize = require('sequelize');
 const logger = require('./logger');
-const DB_CONFIG = require('./config/db');
+const DB_SEQUELIZE = require('./config/sequelize');
 const models = require('./app/models/index');
 const { syncPermissions } = require('./permissions-init');
 
-const sequelize = new Sequelize(DB_CONFIG.database, DB_CONFIG.user, DB_CONFIG.password, {
-    host: DB_CONFIG.host,
-    dialect: 'mysql',
+const CONF = DB_SEQUELIZE[process.env.NODE_ENV || 'development'];
 
-    define: {
-        charset: 'utf8',
-        collate: 'utf8_general_ci',
-    },
-
-    logging: DB_CONFIG.debug,
-
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000,
-    },
-});
-
+const sequelize = new Sequelize(CONF);
 
 /*========================
     Model initialization
@@ -55,26 +39,22 @@ logger.debug('Models loaded: %s', modelNameList);
 ==========================*/
 
 
-if (process.env.NODE_ENV !== 'test') {
-    logger.debug('Synchronising the database...');
+logger.debug('Synchronising the database...');
 
-    sequelize
-        .sync()
-        .then(() => {
-            logger.debug('Database is synchronised with sequelize, synchronising permissions');
-            return syncPermissions();
-        })
-        .then(() => {
-            logger.debug('Permissions are synchronised with database');
-        })
-        .catch(err => {
-            logger.error('Error while synchronising sequelize and permissions:', err);
-            logger.error('Exiting for safety');
-            process.exit(1);
-        });
-} else {
-    logger.debug('[TEST] Skip synchronisation');
-}
+sequelize._syncPromise = sequelize
+    .sync()
+    .then(() => {
+        logger.debug('Database is synchronised with sequelize, synchronising permissions');
+        return syncPermissions();
+    })
+    .then(() => {
+        logger.debug('Permissions are synchronised with database');
+    })
+    .catch(err => {
+        logger.error('Error while synchronising sequelize and permissions:', err);
+        logger.error('Exiting for safety');
+        process.exit(1);
+    });
 
 
 module.exports = sequelize;
