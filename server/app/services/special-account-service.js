@@ -41,7 +41,6 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
         // TODO implement password generation
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
-
         const co = await newSpecialAccount.connection.save({ transaction });
         newSpecialAccount.connectionId = co.id;
         await newSpecialAccount.save({ transaction });
@@ -135,8 +134,8 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             const co = await currentSpecialAccount.getConnection();
             await co.update(
                 cleanObject({
-                    username: updateCo.username ? updateCo.username : co.username,
-                    password: updateCo.password ? await hash(updateCo.password) : co.password
+                    username: updateCo.username,
+                    password: updateCo.password ? await hash(updateCo.password) : undefined
                 }),
                 { transaction }
             );

@@ -15,24 +15,6 @@ export class PermissionService {
         return this.http.get<Permission[]>('/api/permissions').catch(this.handleError);
     }
 
-    getById(id: Number) {
-        return this.http.get<Permission>('/api/permissions/' + id).catch(this.handleError);
-    }
-
-    create(permission: Permission) {
-        return this.http.post('/api/permissions', permission).catch(this.handleError);
-    }
-
-    update(permission: Permission) {
-        const id = permission.id;
-        delete permission.id;
-        return this.http.put('/api/permissions/' + id, permission).catch(this.handleError);
-    }
-
-    delete(id: Number) {
-        return this.http.delete('/api/permissions/' + id).catch(this.handleError);
-    }
-
     private handleError(err: HttpErrorResponse) {
         let errorMessage = '';
         if (err.error instanceof Error) {

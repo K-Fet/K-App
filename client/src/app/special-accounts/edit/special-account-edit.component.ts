@@ -186,10 +186,8 @@ export class SpecialAccountEditComponent implements OnInit {
     }
 
     isMe(): Boolean {
-        if (this.currentUser && this.currentUser.specialAccount) {
-            return this.currentSpecialAccount.id === this.currentUser.specialAccount.id ? true : false;
-        }
-        return false;
+        return this.currentUser && this.currentUser.specialAccount
+            && this.currentSpecialAccount.id === this.currentUser.specialAccount.id;
     }
 
     codeFieldEnable(): Boolean {
