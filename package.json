@@ -35,7 +35,7 @@
         "test:front": "yarn run lint"
     },
     "dependencies": {
-        "argon2": "^0.17.0",
+        "argon2": "0.16.2",
         "body-parser": "^1.18.2",
         "compression": "^1.7.2",
         "express": "^4.16.2",
