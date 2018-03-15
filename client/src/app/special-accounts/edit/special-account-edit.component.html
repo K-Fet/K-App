@@ -1,0 +1,56 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+        <mat-card-header>
+            <mat-card-title>
+                <section class="mat-typography">
+                    <h1>Modifier un compte spécial</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <h4>Mise à jour des informations</h4>
+            <form [formGroup]="specialAccountForm" fxLayout="column" (ngSubmit)="openDialog()">
+                <mat-form-field>
+                    <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                    <mat-hint align="start">Un email de vérification sera envoyé si vous changez ce champ.</mat-hint>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Description" formControlName="description">
+                </mat-form-field>
+                <h4>Information(s) sensible(s)</h4>
+                <div *ngIf="!isMe()">
+                    <p >Le mot de passe ne peut pas être mis à jour que par l'utilisateur en question.</p>
+                    <p *ngxPermissionsExcept="['specialaccount:force-code-reset']">
+                        Le code ne peut pas être changer que par l'utilisateur en question ou un administrateur
+                        avec la permission specialaccount:force-code-reset.
+                    </p>
+                </div>
+                <p *ngIf="isMe()">A laisser vide si vous ne souhaitez pas modifier.</p>
+                <mat-form-field *ngIf="isMe()">
+                    <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="password">
+                </mat-form-field>
+                <div *ngIf="codeFieldEnable()">
+                    <mat-form-field fxFlex="45">
+                        <input matInput type="password" placeholder="Code" formControlName="code">
+                    </mat-form-field>
+                    <div fxFlex></div>
+                    <mat-form-field fxFlex="45">
+                        <input matInput type="password" placeholder="Confirmation du code" formControlName="codeConfirmation">
+                    </mat-form-field>
+                </div>
+                <mat-error *ngIf="!codesMatch()" fxLayoutAlign="center">
+                    Les codes doivent être identiques.
+                </mat-error>
+                <h4>Permissions</h4>
+                <div *ngFor="let permission of permissions">
+                    <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                        {{permission.permission.name}}
+                    </mat-checkbox>
+                </div>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="submit" [disabled]="disable()">Modifier</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
