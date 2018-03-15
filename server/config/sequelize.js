@@ -48,6 +48,6 @@ module.exports = {
         database: 'test-db',
         dialect: 'sqlite',
         storage: ':memory:',
-        logging: true,
+        logging: false,
     },
 };

@@ -20,7 +20,7 @@ describe('Integration::Members::GetMembers', () => {
 
         // When
 
-        const members = await site.baseRequest.get(`${site.BASE_URL }/members`);
+        const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
 
         // Then
 
@@ -34,5 +34,17 @@ describe('Integration::Members::GetMembers', () => {
                 }),
             ],
         );
+    });
+
+
+    test('should return empty array', async () => {
+        // Given
+        // When
+
+        const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
+
+        // Then
+
+        expect(members).toEqual([]);
     });
 });

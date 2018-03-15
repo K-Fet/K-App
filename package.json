@@ -81,8 +81,6 @@
         "coveragePathIgnorePatterns": [
             "app/routes/",
             "app/models/"
-        ],
-        "globalSetup": "<rootDir>/server/tests/utils/setup",
-        "globalTeardown": "<rootDir>/server/tests/utils/teardown"
+        ]
     }
 }

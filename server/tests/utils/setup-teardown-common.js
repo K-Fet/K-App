@@ -13,14 +13,22 @@ const sequelize = require('../../db');
 const models = require('../../app/models/index');
 const { SpecialAccount, ConnectionInformation, Permission } = models;
 const authService = require('../../app/services/auth-service');
-const { hash } = require('../../utils/index');
+const { hash } = require('../../utils/');
+const { syncPermissions } = require('../../permissions-init');
 
 app.use('/api/', routes);
 
 let _baseRequest = null;
 
 async function initDatabase() {
-    if (sequelize._syncPromise) await sequelize._syncPromise;
+    if (sequelize._syncPromise) {
+        await sequelize._syncPromise;
+    } else {
+        await sequelize.sync();
+        await syncPermissions();
+    }
+
+    await startExpress();
 
     const admin = await SpecialAccount.create(
         {
@@ -46,14 +54,18 @@ async function initDatabase() {
     await admin.setPermissions(allPerms);
 
     _baseRequest = request.defaults({
-        auth: {
-            bearer: await authService.createJWT(admin.connection),
+        headers: {
+            'Authorization': `Bearer ${await authService.createJWT(admin.connection)}`
         },
+        json: true,
     });
 }
 
 async function clearDatabase() {
-    return sequelize.drop();
+    await closeExpress();
+    await sequelize.drop();
+
+    sequelize._syncPromise = null;
 }
 
 function startExpress() {
