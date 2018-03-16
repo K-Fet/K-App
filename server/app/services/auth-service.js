@@ -193,12 +193,12 @@ async function me(tokenId) {
             {
                 model: SpecialAccount,
                 as: 'specialAccount',
-                attributes: { exclude: [ 'code' ] },
+                attributes: { exclude: ['code'] },
                 include: [
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: [ 'id', 'username' ],
+                        attributes: ['id', 'username'],
                     },
                 ],
             },
@@ -222,40 +222,50 @@ async function me(tokenId) {
 async function resetPassword(username, currTransaction) {
     const transaction = currTransaction || await sequelize.transaction();
 
-    const co = await ConnectionInformation.findOne({ where: { username }, transaction: currTransaction });
+    const co = await ConnectionInformation.findOne({
+        where: { username },
+        transaction: currTransaction,
+    });
 
     if (!co) throw createUserError('UnknownUser', 'Unable to find provided username');
 
     if (co.emailToken) throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
 
+    const passwordToken = await generateToken(128);
+
     try {
-        const passwordToken = await generateToken(256);
-
         await co.update({
-            passwordToken: await hash(passwordToken)
+            passwordToken: await hash(passwordToken),
         }, { transaction });
-
-        const transporter = nodemailer.createTransport(EMAIL_CONFIG[ process.env.NODE_ENV || 'development' ]);
-
-
-        // Setup email data with unicode symbols
-        const mailOptions = {
-            from: '"Fred Foo 👻" <foo@example.com>', // Sender address
-            to: 'bar@example.com, baz@example.com', // List of receivers
-            subject: 'Hello ✔', // Subject line
-            text: 'Hello world?', // Plain text body
-            html: `<b>Hello world? ${passwordToken}</b>` // Html body
-        };
-
-        // Send mail with defined transport object
-        const info = await transporter.sendMail(mailOptions);
-
     } catch (err) {
         logger.error('Error while creating reset password token %o', err);
         if (currTransaction) throw err;
 
         await transaction.rollback();
         throw createServerError('ServerError', 'Error while resetting password');
+    }
+
+    try {
+        const transporter = nodemailer.createTransport(EMAIL_CONFIG[process.env.NODE_ENV || 'development']);
+        // Setup email data with unicode symbols
+        const mailOptions = {
+            from: '"K-Fêt" <@example.com>', // Sender address
+            to: username, // List of receivers
+            subject: 'Welcome !', // Subject line
+            text: 'Hello world?', // Plain text body
+            html: `<b>Hello world? ${passwordToken}</b>`, // Html body
+        };
+
+        // Send mail with defined transport object
+        await transporter.sendMail(mailOptions);
+    } catch (err) {
+        logger.error('Error while sending reset password mail at %s', username);
+
+        if (!currTransaction) {
+            await transaction.rollback();
+        }
+
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
 
     if (!currTransaction) await transaction.commit();

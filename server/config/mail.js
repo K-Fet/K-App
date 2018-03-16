@@ -8,7 +8,6 @@ module.exports = {
     development: {
         host: 'smtp.ethereal.email',
         port: 587,
-        secure: false,
         auth: {
             user: 'qljbjh635upscglm@ethereal.email',
             pass: 'zn9besbKEfYg1ZU8NU'
@@ -27,7 +26,6 @@ module.exports = {
     test: {
         host: 'smtp.ethereal.email',
         port: 587,
-        secure: false,
         auth: {
             user: 'qljbjh635upscglm@ethereal.email',
             pass: 'zn9besbKEfYg1ZU8NU'

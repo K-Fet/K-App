@@ -1,8 +1,8 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Op } = require('sequelize');
-const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
-const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
+const {Op} = require('sequelize');
+const {ConnectionInformation, Barman, Kommission, Role} = require('../models');
+const {createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations} = require('../../utils');
 const authService = require('./auth-service');
 
 /**
@@ -29,21 +29,22 @@ async function createBarman(newBarman, _embedded) {
 
     const transaction = await sequelize.transaction();
     try {
-        const co = await newBarman.connection.save({ transaction });
+        const co = await newBarman.connection.save({transaction});
         newBarman.connectionId = co.id;
-        await newBarman.save({ transaction });
+        await newBarman.save({transaction});
 
         await authService.resetPassword(co.username, transaction);
     } catch (err) {
+        if (err.userError) throw err;
+
+        await transaction.rollback();
+        logger.warn('Barman service: Error while creating barman %o', err);
+
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
-            logger.warn('Barman service: Error while creating barman username not unique', err);
-            await transaction.rollback();
             throw createUserError('BadUsername', 'a username must be unique');
-        } else {
-            logger.warn('Barman service: Error while creating barman', err);
-            await transaction.rollback();
-            throw createServerError('ServerError', 'Error while creating barman');
         }
+
+        throw createServerError('ServerError', 'Error while creating barman');
     }
 
     // Associations
@@ -59,7 +60,7 @@ async function createBarman(newBarman, _embedded) {
                     throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
                 }
 
-                await newBarman.setGodFather(wantedGodFather, { transaction });
+                await newBarman.setGodFather(wantedGodFather, {transaction});
 
             } else {
                 await setEmbeddedAssociations(associationKey, value, newBarman, transaction, true);
@@ -85,7 +86,7 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ],
+                attributes: ['id', 'username'],
             },
             {
                 model: Barman,
@@ -148,7 +149,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
             dateOfBirth: updatedBarman.dateOfBirth,
             flow: updatedBarman.flow,
             active: updatedBarman.active,
-        }), { transaction });
+        }), {transaction});
 
         // If connection information is changed
         if (updatedBarman.connection) {
@@ -162,9 +163,9 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
             // If there is no connection yet, create one
             if (!co) {
-                await currentBarman.createConnection(cleanObject(coData), { transaction });
+                await currentBarman.createConnection(cleanObject(coData), {transaction});
             } else {
-                await co.update(cleanObject(coData), { transaction });
+                await co.update(cleanObject(coData), {transaction});
             }
         }
     } catch (err) {
@@ -192,7 +193,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
                     throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
                 }
 
-                await currentBarman.setGodFather(wantedGodFather, { transaction });
+                await currentBarman.setGodFather(wantedGodFather, {transaction});
 
             } else {
                 await setEmbeddedAssociations(associationKey, value, currentBarman, transaction);
@@ -220,7 +221,7 @@ async function deleteBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ]
+                attributes: ['id', 'username']
             }
         ]
     });
@@ -233,8 +234,8 @@ async function deleteBarmanById(barmanId) {
     // it deletes on cascade a barman. But when we delete a barman it doesn't delete a connection information on cascade
     // I try to use a hook (like a trigger) to delete but too complicated, i didn't manage to do it
     try {
-        await barman.connection.destroy({ transaction });
-        await barman.destroy({ transaction });
+        await barman.connection.destroy({transaction});
+        await barman.destroy({transaction});
     } catch (err) {
         logger.warn('Barman service: Error while deleting barman', err);
         await transaction.rollback();
@@ -273,7 +274,7 @@ async function getBarmanServices(barmanId, startDate, endDate) {
             {
                 model: Barman,
                 as: 'barmen',
-            }
+            },
         ],
     });
 }
@@ -296,7 +297,7 @@ async function createServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.addService(servicesId, { transaction });
+        await barman.addService(servicesId, {transaction});
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
@@ -324,7 +325,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
     try {
-        await barman.removeServices(servicesId, { transaction });
+        await barman.removeServices(servicesId, {transaction});
     } catch (err) {
         await transaction.rollback();
         throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
