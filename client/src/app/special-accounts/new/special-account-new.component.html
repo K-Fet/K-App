@@ -14,13 +14,19 @@
                     vérification envoyé automatiquement sur son adresse email (username)).</p>
                 <mat-form-field>
                     <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                    <mat-error *ngIf="specialAccountForm.get('username').hasError('email')">
+                        Le Username doit être un email valide.
+                    </mat-error>
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Description" formControlName="description">
                 </mat-form-field>
                 <div>
                     <mat-form-field fxFlex="45%">
-                        <input matInput type="password" placeholder="Code" formControlName="code">
+                        <input matInput type="password" placeholder="Code " formControlName="code">
+                        <mat-error *ngIf="specialAccountForm.get('code').hasError('pattern')">
+                            Le code doit comporter seulement des chiffres, 4 au minimums.
+                        </mat-error>
                     </mat-form-field>
                     <div fxFlex></div>
                     <mat-form-field fxFlex="45%">
@@ -28,7 +34,8 @@
                     </mat-form-field>
                 </div>
                 <mat-error *ngIf="!codeMatch()" fxLayoutAlign="center">
-                        Les codes doivent être identiques.
+                    <br />
+                    Les codes doivent être identiques.
                 </mat-error>
                 <h4>Permissions</h4>
                 <div *ngFor="let permission of permissions">

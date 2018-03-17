@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';
@@ -34,8 +34,8 @@ export class SpecialAccountNewComponent implements OnInit {
 
     createForms() {
         this.specialAccountForm = this.fb.group({
-            username: new FormControl('', [Validators.required]),
-            code: new FormControl('', [Validators.required]),
+            username: new FormControl('', [Validators.required, Validators.email]),
+            code: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl('', [Validators.required]),
             description: new FormControl(''),
         });
@@ -119,6 +119,6 @@ export class SpecialAccountNewComponent implements OnInit {
     }
 
     codeMatch(): Boolean {
-        return this.specialAccountForm.get('code').value === this.specialAccountForm.get('codeConfirmation').value;
+        return (this.specialAccountForm.get('code').value === this.specialAccountForm.get('codeConfirmation').value || this.specialAccountForm.get('codeConfirmation').untouched);
     }
 }

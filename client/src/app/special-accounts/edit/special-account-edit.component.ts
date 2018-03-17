@@ -3,7 +3,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { ConnectedUser } from './../../_models/ConnectedUser';
 import { LoginService } from './../../_services/login.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';
@@ -46,9 +46,9 @@ export class SpecialAccountEditComponent implements OnInit {
 
     createForms() {
         this.specialAccountForm = this.fb.group({
-            username: new FormControl('', [Validators.required]),
+            username: new FormControl('', [Validators.required,Validators.email]),
             description: new FormControl(''),
-            code: new FormControl(''),
+            code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),
             password: new FormControl(''),
         });
