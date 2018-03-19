@@ -46,7 +46,7 @@ export class SpecialAccountEditComponent implements OnInit {
 
     createForms() {
         this.specialAccountForm = this.fb.group({
-            username: new FormControl('', [Validators.required,Validators.email]),
+            username: new FormControl('', [Validators.required, Validators.email]),
             description: new FormControl(''),
             code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),

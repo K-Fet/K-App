@@ -76,7 +76,7 @@ export class RoleEditComponent implements OnInit {
         });
     }
 
-    prepareEditing(): Role{
+    prepareEditing(): Role {
         const role = new Role({
             id : +this.id,
             name : this.name,

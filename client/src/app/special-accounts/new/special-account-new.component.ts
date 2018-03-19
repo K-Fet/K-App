@@ -119,6 +119,8 @@ export class SpecialAccountNewComponent implements OnInit {
     }
 
     codeMatch(): Boolean {
-        return (this.specialAccountForm.get('code').value === this.specialAccountForm.get('codeConfirmation').value || this.specialAccountForm.get('codeConfirmation').untouched);
+        return (this.specialAccountForm.get('code').value ===
+            this.specialAccountForm.get('codeConfirmation').value ||
+            this.specialAccountForm.get('codeConfirmation').untouched);
     }
 }

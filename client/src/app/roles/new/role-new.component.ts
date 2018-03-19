@@ -23,7 +23,12 @@ export class RoleNewComponent implements OnInit {
     nameFormControl: FormControl = new FormControl('', [Validators.required]);
     descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
 
-    constructor(private roleService: RoleService, private toasterService: ToasterService, private router: Router, private permissionService: PermissionService) {}
+    constructor(
+        private roleService: RoleService,
+        private toasterService: ToasterService,
+        private router: Router,
+        private permissionService: PermissionService) {}
+
     ngOnInit(): void {
         this.permissionService.getAll().subscribe(permissions => {
             permissions.forEach(permission => {
