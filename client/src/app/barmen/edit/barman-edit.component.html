@@ -20,7 +20,7 @@
                 <mat-form-field>
                     <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Facebook" formControlName="facebook">
