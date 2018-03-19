@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService, BarmanService,
     KommissionService, RoleService, LoginService, MeService } from '../../_services';
@@ -46,7 +46,7 @@ export class BarmanEditComponent implements OnInit {
             firstName: new FormControl('', [Validators.required]),
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
-            username: new FormControl('', [Validators.required]),
+            username: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),

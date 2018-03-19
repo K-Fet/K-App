@@ -52,7 +52,7 @@ class SpecialAccount extends Model {
 }
 
 const SpecialAccountSchema = Joi.object().keys({
-    code: Joi.string(),
+    code: Joi.string().regex(/^[0-9]{4,}$/),
     description: Joi.string(),
     connection: ConnectionInformationSchema,
 

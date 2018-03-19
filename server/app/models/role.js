@@ -59,6 +59,7 @@ const RoleSchema = Joi.object()
         _embedded: Joi.object()
             .keys({
                 barmen: AssociationChangesSchema,
+                permissions: AssociationChangesSchema
             }),
     });
 

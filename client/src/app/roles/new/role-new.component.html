@@ -24,6 +24,12 @@
                     Description <strong>requise</strong>
                     </mat-error>
                 </mat-form-field>
+                <h4>Permissions</h4>
+                <div *ngFor="let permission of permissions">
+                    <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                        {{permission.permission.name}}
+                    </mat-checkbox>
+                </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="button" (click)="add()" 
                     [disabled]="!addForm.valid">Ajouter</button>
