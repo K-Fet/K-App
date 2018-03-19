@@ -32,7 +32,6 @@ async function createSpecialAccount(req, res) {
 
     const { error } = schema.validate(req.body.specialAccount);
     if (error) throw createUserError('BadRequest', error.details[0].message);
-    const re = new RegExp('(^[0-9]{4})$');
 
     const newAccount = req.body.specialAccount;
 
