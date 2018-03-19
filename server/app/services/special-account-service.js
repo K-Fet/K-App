@@ -50,9 +50,15 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
         co.password = undefined;
 
     } catch (err) {
-        logger.verbose('SpecialAccount service: Error while creating specialAccount %o', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while creating a specialAccount');
+        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+            logger.warn('SpecialAccount service: Error while creating special account', err);
+            await transaction.rollback();
+            throw createUserError('BadUsername', 'a username must be unique');
+        } else {
+            logger.warn('SpecialAccount service: Error while creating special account', err);
+            await transaction.rollback();
+            throw createServerError('ServerError', 'Error while creating special account');
+        }
     }
 
     if (_embedded) {
@@ -141,9 +147,15 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             );
         }
     } catch (err) {
-        logger.warn('SpecialAccount service: Error while updating SpecialAccount', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while updating SpecialAccount');
+        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+            logger.warn('SpecialAccount service: Error while updating special account', err);
+            await transaction.rollback();
+            throw createUserError('BadUsername', 'a username must be unique');
+        } else {
+            logger.warn('SpecialAccount service: Error while updating special account', err);
+            await transaction.rollback();
+            throw createServerError('ServerError', 'Error while updating special account');
+        }
     }
 
     if (_embedded) {
