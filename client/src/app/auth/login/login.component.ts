@@ -51,12 +51,14 @@ export class LoginComponent {
         const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
 
         dialogRef.afterClosed().subscribe(username => {
-            this.authService.resetPassword(username).subscribe(() => {
-                this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail',
-                    'Fermer');
-            }, error => {
-                this.toasterService.showToaster(error, 'Fermer');
-            });
+            if (username) {
+                this.authService.resetPassword(username).subscribe(() => {
+                    this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail',
+                        'Fermer');
+                }, error => {
+                    this.toasterService.showToaster(error, 'Fermer');
+                });
+            }
         });
     }
 }

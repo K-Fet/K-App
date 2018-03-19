@@ -1,3 +1,4 @@
+import { ConnectionInformation } from './../_models/ConnectionInformation';
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
@@ -78,6 +79,16 @@ export class AuthService {
             this.clearUser();
             return Observable.throw(err);
         });
+    }
+
+    definePassword(username: String, password: String, passwordToken: String): Observable<any> {
+        return this.http.put('api/reset-password?password-token=' + passwordToken,
+            { username: username, password: password });
+    }
+
+    verifyUsername(username: String, password: String, usernameToken: String): Observable<any> {
+        return this.http.put('api/username-verification?usernameToken=' + usernameToken,
+            { username: username, password: password });
     }
 
     private clearUser() {

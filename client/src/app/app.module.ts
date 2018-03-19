@@ -47,6 +47,8 @@ import { SpecialAccountNewComponent } from './special-accounts/new/special-accou
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
+import { DefinePasswordComponent } from './auth/define-password/define-password.component';
+import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 // Services
 import { ToasterService, AuthService, MemberService,
@@ -58,6 +60,7 @@ import { AuthGuard, EditGuard } from './_guards';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { EqualValidator } from './_helpers/equal-validator.directive';
 
 // Date
 
@@ -68,7 +71,6 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-
 
 @NgModule({
     declarations: [
@@ -101,7 +103,10 @@ import { MaterialModule } from './_helpers/material.module';
         SpecialAccountNewComponent,
         SpecialAccountEditComponent,
         ConfirmationDialogComponent,
-        ResetPasswordDialogComponent
+        ResetPasswordDialogComponent,
+        EqualValidator,
+        DefinePasswordComponent,
+        UsernameVerificationComponent
     ],
     entryComponents: [
         CodeDialogComponent,

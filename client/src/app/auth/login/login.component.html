@@ -14,9 +14,11 @@
                     CONNEXION
                 </button>
             </form>
-            <button mat-button (click)="openDialog()">
-                J'ai oublié mon mot de passe ...
-            </button>
+            <div fxLayoutAlign="end">
+                <i>
+                    <a mat-button (click)="openDialog()">J'ai oublié mon mot de passe ...</a>
+                </i>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

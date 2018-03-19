@@ -26,6 +26,8 @@ import { OpenServicesComponent } from './services/open-services/open-services.co
 import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
+import { DefinePasswordComponent } from './auth/define-password/define-password.component';
+import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -39,6 +41,8 @@ const generateData = (permissions: Array<String>) => {
 const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
+    { path: 'define-password', component: DefinePasswordComponent },
+    { path: 'username-verification', component: UsernameVerificationComponent },
     { path: 'members', component: MembersListComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
         data: generateData(['member:read']) },
     { path: 'members/new', component: MemberNewComponent, canActivate: [AuthGuard, NgxPermissionsGuard],
