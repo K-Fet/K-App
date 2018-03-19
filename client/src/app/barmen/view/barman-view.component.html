@@ -57,9 +57,16 @@
                 </ng-template>
                 <mat-divider></mat-divider>
                 <h3 mat-subheader>Role(s)</h3>
-                <mat-list-item *ngFor="let role of barman.roles">
-                    <p mat-line>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
-                </mat-list-item>
+                <div *ngIf="barman.roles.length !== 0; else elseTemplate">
+                    <mat-list-item *ngFor="let role of barman.roles">
+                        <p mat-line>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
+                    </mat-list-item>
+                </div>
+                <ng-template #elseTemplate>
+                    <mat-list-item>
+                        <p>Aucun role</p>
+                    </mat-list-item>
+                </ng-template>
                 <mat-divider></mat-divider>
                 <h3 mat-subheader>Dates</h3>
                 <mat-list-item>
