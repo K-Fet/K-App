@@ -37,9 +37,15 @@ async function createBarman(newBarman, _embedded) {
         // Remove critic fields
         co.password = undefined;
     } catch (err) {
-        logger.warn('Barman service: Error while creating barman', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while creating barman');
+        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+            logger.warn('Barman service: Error while creating barman username not unique', err);
+            await transaction.rollback();
+            throw createUserError('BadUsername', 'a username must be unique');
+        } else {
+            logger.warn('Barman service: Error while creating barman', err);
+            await transaction.rollback();
+            throw createServerError('ServerError', 'Error while creating barman');
+        }
     }
 
     // Associations
@@ -164,9 +170,15 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
             }
         }
     } catch (err) {
-        logger.warn('Barman service: Error while updating barman', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while updating barman');
+        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+            logger.warn('Barman service: Error while updating barman', err);
+            await transaction.rollback();
+            throw createUserError('BadUsername', 'a username must be unique');
+        } else {
+            logger.warn('Barman service: Error while updating barman', err);
+            await transaction.rollback();
+            throw createServerError('ServerError', 'Error while updating barman');
+        }
     }
 
     // Associations
