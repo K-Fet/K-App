@@ -53,8 +53,10 @@
                             </p>
 
                             <ng-template #elseBlock>
-                                <mat-icon>check_circle</mat-icon>
-                                De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                                <p mat-line>
+                                    <mat-icon>check_circle</mat-icon>
+                                    De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                                </p>
                             </ng-template>
 
 
