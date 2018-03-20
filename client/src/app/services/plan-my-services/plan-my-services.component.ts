@@ -21,13 +21,12 @@ export class PlanMyServicesComponent implements OnInit {
 
     ngOnInit() {
         // Get connected user
-        this.loginService.me().subscribe((user: ConnectedUser) => {
+        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
 
             // Get actual services of the connected user
             this.updateMyServices();
         });
-
         this.updatePlanning(0);
     }
 
