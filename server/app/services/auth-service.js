@@ -110,8 +110,7 @@ async function createJWT(user) {
     let permissions = [];
 
     if (barman) {
-        // TODO permissions = barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)));
-        permissions = require('../../config/permissions').PERMISSION_LIST;
+        permissions = barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)));
     } else {
         const specialAccount = await user.getSpecialAccount({
             include: [
