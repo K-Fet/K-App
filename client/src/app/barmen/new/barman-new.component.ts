@@ -73,9 +73,6 @@ export class BarmanNewComponent implements OnInit {
         // Get barmen
         this.barmanService.getAll().subscribe(barmen => {
             this.barmen = barmen;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 
