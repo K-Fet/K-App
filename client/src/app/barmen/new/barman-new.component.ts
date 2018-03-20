@@ -42,7 +42,6 @@ export class BarmanNewComponent implements OnInit {
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl('', [Validators.required]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),

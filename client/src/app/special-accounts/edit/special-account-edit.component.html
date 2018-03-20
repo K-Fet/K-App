@@ -26,14 +26,14 @@
                     <p >Le mot de passe ne peut pas être mis à jour que par l'utilisateur en question.</p>
                     <p *ngxPermissionsExcept="['specialaccount:force-code-reset']">
                         Le code ne peut pas être changer que par l'utilisateur en question ou un administrateur
-                        avec la permission specialaccount:force-code-reset.
+                        avec la permission "specialaccount:force-code-reset".
                     </p>
                 </div>
                 <p *ngIf="isMe()">A laisser vide si vous ne souhaitez pas modifier.</p>
                 <mat-form-field *ngIf="isMe()">
                     <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="password">
                 </mat-form-field>
-                <div *ngIf="codeFieldEnable()">
+                <div *ngxPermissionsExcept="['specialaccount:force-code-reset']">
                     <mat-form-field fxFlex="45">
                         <input matInput type="password" placeholder="Code " formControlName="code">
                         <mat-error *ngIf="specialAccountForm.get('code').hasError('pattern')">
@@ -46,14 +46,16 @@
                     </mat-form-field>
                 </div>
                 <mat-error *ngIf="!codesMatch()" fxLayoutAlign="center">
-                        <br />
-                        Les codes doivent être identiques.
-                    </mat-error>
-                <h4>Permissions</h4>
-                <div *ngFor="let permission of permissions">
-                    <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
-                        {{permission.permission.name}}
-                    </mat-checkbox>
+                    <br />
+                    Les codes doivent être identiques.
+                </mat-error>
+                <h4 *ngxPermissionsOnly="['specialaccount:write']">Permissions</h4>
+                <div *ngxPermissionsOnly="['specialaccount:write']">
+                    <div *ngFor="let permission of permissions">
+                        <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                            {{permission.permission.name}}
+                        </mat-checkbox>
+                    </div>
                 </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="submit" [disabled]="disable()">Modifier</button>

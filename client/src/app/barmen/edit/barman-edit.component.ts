@@ -1,3 +1,4 @@
+import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -37,7 +38,8 @@ export class BarmanEditComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         private authService: AuthService,
-        private meService: MeService
+        private meService: MeService,
+        private ngxPermissionsService: NgxPermissionsService
     ) {
         this.createForm();
     }
