@@ -41,9 +41,6 @@ export class LoginComponent {
                     this.router.navigate(['/members']);
                 }
             });
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 
@@ -53,10 +50,7 @@ export class LoginComponent {
         dialogRef.afterClosed().subscribe(username => {
             if (username) {
                 this.authService.resetPassword(username).subscribe(() => {
-                    this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail',
-                        'Fermer');
-                }, error => {
-                    this.toasterService.showToaster(error, 'Fermer');
+                    this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
                 });
             }
         });
