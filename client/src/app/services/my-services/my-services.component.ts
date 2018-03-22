@@ -30,8 +30,6 @@ export class MyServicesComponent implements OnInit {
                         } else {
                             this.myServices = undefined;
                         }
-                    }, error => {
-                        this.toasterService.showToaster(error, 'Fermer');
                     });
                 });
             }

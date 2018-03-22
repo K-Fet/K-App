@@ -52,11 +52,8 @@ export class KommissionsListComponent implements OnInit {
     delete(kommission: Kommission) {
         this.kommissionService.delete(kommission.id)
         .subscribe(() => {
-            this.toasterService.showToaster('Kommission supprimée', 'Fermer');
+            this.toasterService.showToaster('Kommission supprimée');
             this.update();
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 

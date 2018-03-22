@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -53,10 +53,11 @@ import { ToasterService, LoginService, MemberService,
     TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
 
 // Guards
-import { AuthGuard, EditGuard } from './_guards';
+import { EditGuard } from './_guards/edit.guard';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
 
@@ -126,7 +127,6 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceService,
         KommissionService,
         RoleService,
-        AuthGuard,
         ToasterService,
         TemplateService,
         SpecialAccountService,
@@ -135,6 +135,10 @@ import { MaterialModule } from './_helpers/material.module';
         EditGuard,
         {
             provide: LOCALE_ID, useValue: 'fr'
+        },
+        {
+            provide: ErrorHandler,
+            useClass: ErrorsHandler,
         },
         {
             provide: HTTP_INTERCEPTORS,

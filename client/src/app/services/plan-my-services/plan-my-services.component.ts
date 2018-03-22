@@ -41,8 +41,6 @@ export class PlanMyServicesComponent implements OnInit {
                     this.days = undefined;
                     this.dayServices = undefined;
                 }
-            }, error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
     }
@@ -78,8 +76,6 @@ export class PlanMyServicesComponent implements OnInit {
                     } else {
                         this.myServices = undefined;
                     }
-                }, error => {
-                    this.toasterService.showToaster(error, 'Fermer');
                 });
             });
         }
@@ -88,12 +84,10 @@ export class PlanMyServicesComponent implements OnInit {
     addService(service: Service) {
         if (this.user.barman) {
             this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
-                this.toasterService.showToaster('Service enregistré', 'Fermer');
+                this.toasterService.showToaster('Service enregistré');
                 this.updateMyServices();
                 const dayNumber = this.getCurrentDayIndex();
                 this.updatePlanning(dayNumber);
-            }, error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         }
     }
@@ -103,12 +97,10 @@ export class PlanMyServicesComponent implements OnInit {
 
     removeService(service: Service) {
         this.barmanService.removeService(this.user.barman.id, [service.id]).subscribe(() => {
-            this.toasterService.showToaster('Service supprimé', 'Fermer');
+            this.toasterService.showToaster('Service supprimé');
             this.updateMyServices();
             const dayNumber = this.getCurrentDayIndex();
             this.updatePlanning(dayNumber);
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

@@ -69,11 +69,8 @@ export class SpecialAccountNewComponent implements OnInit {
         const specialAccount = this.prepareEditing();
 
         this.specialAccountService.create(specialAccount, code).subscribe(() => {
-                this.toasterService.showToaster('Compte special modifié', 'Fermer');
+                this.toasterService.showToaster('Compte special modifié');
                 this.router.navigate(['/specialaccounts']);
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
     }
 

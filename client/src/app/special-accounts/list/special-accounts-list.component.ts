@@ -51,11 +51,8 @@ export class SpecialAccountListComponent implements OnInit {
 
         this.specialAccountService.delete(specialAccount.id, code)
         .subscribe(() => {
-            this.toasterService.showToaster('Compte spécial supprimé', 'Fermer');
+            this.toasterService.showToaster('Compte spécial supprimé');
             this.update();
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 

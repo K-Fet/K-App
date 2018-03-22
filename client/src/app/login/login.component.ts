@@ -39,9 +39,6 @@ export class LoginComponent {
                     this.router.navigate(['/members']);
                 }
             });
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

@@ -46,8 +46,6 @@ export class PlanningComponent implements OnInit {
                     this.days = undefined;
                     this.dayServices = undefined;
                 }
-            }, error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
     }
