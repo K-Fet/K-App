@@ -16,7 +16,7 @@ export class BarmanService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Barman[]>('/api/barmens');
+        return this.http.get<Barman[]>('/api/barmen');
     }
 
     getById(id: number) {

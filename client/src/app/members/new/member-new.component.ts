@@ -51,11 +51,8 @@ export class MemberNewComponent implements OnInit {
         member.lastName = this.lastName;
         member.school = this.school;
         this.memberService.create(member, this.code).subscribe(() => {
-            this.toasterService.showToaster('Adhérent créé', 'Fermer');
+            this.toasterService.showToaster('Adhérent créé');
             this.router.navigate(['/members'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

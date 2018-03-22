@@ -81,34 +81,22 @@ export class BarmanEditComponent implements OnInit {
                 this.selectedGodFather = barman.godFather ? barman.godFather.id : undefined;
                 this.selectedKommissions = barman.kommissions.map(k => k.id);
                 this.selectedRoles = barman.roles.map(r => r.id);
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
 
         // Get kommissions
         this.kommissionService.getAll().subscribe(kommissions => {
             this.kommissions = kommissions;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get roles
         this.roleService.getAll().subscribe(roles => {
             this.roles = roles;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get barmen
         this.barmanService.getAll().subscribe(barmen => {
             this.barmen = barmen;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get connected user
@@ -122,19 +110,13 @@ export class BarmanEditComponent implements OnInit {
         if (this.isMe()) {
             this.connectedUser.barman = this.barman;
             this.meService.put(this.connectedUser).subscribe(() => {
-                this.toasterService.showToaster('Modification(s) enregistrée(s)', 'Fermer');
+                this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/barmen'] );
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         } else {
             this.barmanService.update(this.barman).subscribe(() => {
-                this.toasterService.showToaster('Barman modifié', 'Fermer');
+                this.toasterService.showToaster('Barman modifié');
                 this.router.navigate(['/barmen'] );
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         }
     }

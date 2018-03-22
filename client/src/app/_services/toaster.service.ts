@@ -7,8 +7,8 @@ export class ToasterService {
   constructor(private snackBar: MatSnackBar) {
   }
 
-  showToaster(msg: string, action: string) {
-    this.snackBar.open(msg, action, {
+  showToaster(msg: string) {
+    this.snackBar.open(msg, 'Fermer', {
         duration: 2000,
     });
   }

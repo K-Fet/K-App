@@ -45,7 +45,7 @@
                 </mat-list-item>
                 <mat-divider></mat-divider>
                 <h3 mat-subheader>Kommission(s)</h3>
-                <div *ngIf="barman.kommissions.length !== 0; else elseBlock">
+                <div *ngIf="barman.kommissions?.length !== 0; else elseBlock">
                     <mat-list-item *ngFor="let komission of barman.kommission">
                         <p mat-line>{{kommission.name}} depuis le {{kommission.KommissionWrapper.createdAt |  date:'d MMM y'}}</p>
                     </mat-list-item>
@@ -57,7 +57,7 @@
                 </ng-template>
                 <mat-divider></mat-divider>
                 <h3 mat-subheader>Role(s)</h3>
-                <div *ngIf="barman.roles.length !== 0; else elseTemplate">
+                <div *ngIf="barman.roles?.length !== 0; else elseTemplate">
                     <mat-list-item *ngFor="let role of barman.roles">
                         <p mat-line>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
                     </mat-list-item>

@@ -101,8 +101,6 @@ export class OpenServicesComponent implements OnInit {
             this.templates = [
                 template
             ];
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
         this.onFormChanges();
     }
@@ -156,10 +154,8 @@ export class OpenServicesComponent implements OnInit {
         });
         console.log(services);
         this.serviceService.create(services).subscribe(() => {
-            this.toasterService.showToaster('Nouveaux services enregistrés', 'Fermer');
+            this.toasterService.showToaster('Nouveaux services enregistrés');
             this.router.navigate(['/dashboard']);
-        }, error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 

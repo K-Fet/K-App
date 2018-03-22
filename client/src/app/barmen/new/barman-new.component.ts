@@ -57,17 +57,11 @@ export class BarmanNewComponent implements OnInit {
         // Get kommissions
         this.kommissionService.getAll().subscribe(kommissions => {
             this.kommissions = kommissions;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get roles
         this.roleService.getAll().subscribe(roles => {
             this.roles = roles;
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
 
         // Get barmen
@@ -79,11 +73,8 @@ export class BarmanNewComponent implements OnInit {
     add() {
         this.prepareSaving();
         this.barmanService.create(this.barman).subscribe(() => {
-            this.toasterService.showToaster('Barman créé', 'Fermer');
+            this.toasterService.showToaster('Barman créé');
             this.router.navigate(['/barmen'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 

@@ -10,9 +10,9 @@ import { KommissionService } from '../../_services/kommission.service';
 })
 
 export class KommissionEditComponent implements OnInit {
-    id: string;
-    name: string;
-    description: string;
+    id: String;
+    name: String;
+    description: String;
 
     nameFormControl: FormControl = new FormControl('', [Validators.required]);
     descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
@@ -28,11 +28,8 @@ export class KommissionEditComponent implements OnInit {
         this.route.params.subscribe(params => {
             this.id = params['id'];
             this.kommissionService.getById(+this.id).subscribe(kommission => {
-                this.name = kommission.name;
+                this.name = <String>kommission.name;
                 this.description = kommission.description;
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
     }
@@ -43,11 +40,8 @@ export class KommissionEditComponent implements OnInit {
         kommission.name = this.name;
         kommission.description = this.description;
         this.kommissionService.update(kommission).subscribe(() => {
-            this.toasterService.showToaster('Kommission modifiée', 'Fermer');
+            this.toasterService.showToaster('Kommission modifiée');
             this.router.navigate(['/kommissions']);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

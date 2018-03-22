@@ -16,47 +16,24 @@ export class RoleService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Role[]>('/api/roles').catch(this.handleError);
+        return this.http.get<Role[]>('/api/roles');
     }
 
     getById(id: number) {
-        return this.http.get<Role>('/api/roles/' + id).catch(this.handleError);
+        return this.http.get<Role>('/api/roles/' + id);
     }
 
     create(role: Role) {
-        return this.http.post('/api/roles', role).catch(this.handleError);
+        return this.http.post('/api/roles', role);
     }
 
     update(role: Role) {
         const id = role.id;
         delete role.id;
-        return this.http.put('/api/roles/' + id, role).catch(this.handleError);
+        return this.http.put('/api/roles/' + id, role);
     }
 
     delete(id: Number) {
-        return this.http.delete('/api/roles/' + id).catch(this.handleError);
-    }
-
-    private handleError(err: HttpErrorResponse) {
-        let errorMessage = '';
-        if (err.error instanceof Error) {
-            errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
-        } else {
-            switch (err.error.error) {
-                case 'UknownRole':
-                    errorMessage = `Erreur, impossible de recuperer le role`;
-                    break;
-                case 'UnauthorizedError':
-                    errorMessage = `Erreur: opération non autorisée`;
-                    break;
-                case 'ServerError':
-                    errorMessage = `Erreur serveur`;
-                    break;
-                default:
-                    errorMessage = 'Code d\'erreur inconnu';
-                    break;
-            }
-        }
-        return Observable.throw(errorMessage);
+        return this.http.delete('/api/roles/' + id);
     }
 }

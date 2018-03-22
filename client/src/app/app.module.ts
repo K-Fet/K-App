@@ -53,7 +53,7 @@ import { ToasterService, LoginService, MemberService,
     TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
 
 // Guards
-import { AuthGuard, EditGuard } from './_guards';
+import { EditGuard } from './_guards/edit.guard';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
@@ -127,7 +127,6 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceService,
         KommissionService,
         RoleService,
-        AuthGuard,
         ToasterService,
         TemplateService,
         SpecialAccountService,

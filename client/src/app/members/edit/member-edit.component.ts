@@ -10,10 +10,10 @@ import { ToasterService } from '../../_services/toaster.service';
 })
 
 export class MemberEditComponent implements OnInit {
-    id: string;
-    firstName: string;
-    lastName: string;
-    school: string;
+    id: String;
+    firstName: String;
+    lastName: String;
+    school: String;
     code: Number;
 
     formArray: FormArray;
@@ -36,9 +36,6 @@ export class MemberEditComponent implements OnInit {
                 this.firstName = member.firstName;
                 this.lastName = member.lastName;
                 this.school = member.school;
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
         this.memberFormGroup = this.formBuilder.group({
@@ -65,11 +62,8 @@ export class MemberEditComponent implements OnInit {
         member.lastName = this.lastName;
         member.school = this.school;
         this.memberService.update(member, this.code).subscribe(() => {
-            this.toasterService.showToaster('Utilisateur modifié', 'Fermer');
+            this.toasterService.showToaster('Utilisateur modifié');
             this.router.navigate(['/members']);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }
