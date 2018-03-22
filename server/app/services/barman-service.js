@@ -203,6 +203,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
     }
 
     await transaction.commit();
+    await currentBarman.reload();
     return currentBarman;
 }
 

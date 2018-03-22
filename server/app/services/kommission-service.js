@@ -128,6 +128,7 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
     }
 
     await transaction.commit();
+    await currentKommission.reload();
     return currentKommission;
 }
 

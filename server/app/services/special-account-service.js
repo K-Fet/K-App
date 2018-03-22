@@ -167,6 +167,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     }
 
     await transaction.commit();
+    await currentSpecialAccount.reload();
     return currentSpecialAccount;
 }
 
