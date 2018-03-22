@@ -41,23 +41,21 @@
                     <mat-list *ngIf="dayServices">
                         <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
 
-                            <p mat-line *ngIf="available(service); else elseBlock">
+                            <p mat-line>
 
                                 
-                                    <button type="button" mat-icon-button (click)="addService(service)">
+                                    <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
                                         <mat-icon>add</mat-icon>
                                     </button>
-
+                                    <ng-template #elseBlock>
+                                        <mat-icon >check_circle</mat-icon>
+                                    </ng-template>
+                                   
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                           
                             </p>
 
-                            <ng-template #elseBlock>
-                                <p mat-line>
-                                    <mat-icon>check_circle</mat-icon>
-                                    De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
-                                </p>
-                            </ng-template>
+                         
 
 
 
