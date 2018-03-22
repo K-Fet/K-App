@@ -78,9 +78,6 @@ export class SpecialAccountEditComponent implements OnInit {
                     });
                 }
                 this.currentSpecialAccount = specialAccount;
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
         this.authService.$currentUser.subscribe((user: ConnectedUser) => {
@@ -106,20 +103,14 @@ export class SpecialAccountEditComponent implements OnInit {
         if (this.isMe()) {
             this.currentUser.specialAccount = specialAccount;
             this.meService.put(this.currentUser).subscribe(() => {
-                this.toasterService.showToaster('Modification(s) enregistrée(s)', 'Fermer');
+                this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/specialaccounts'] );
                 this.authService.me().subscribe();
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         } else {
             this.specialAccountService.update(specialAccount, code).subscribe(() => {
-                this.toasterService.showToaster('Compte special modifié', 'Fermer');
+                this.toasterService.showToaster('Compte special modifié');
                 this.router.navigate(['/specialaccounts']);
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         }
     }

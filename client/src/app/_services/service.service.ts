@@ -27,27 +27,27 @@ export class ServiceService {
             params: {
               start: (+start).toString(),
               end: (+end).toString()
-            }}).catch(this.handleError);
+            }});
     }
 
     getById(id: Number) {
-        return this.http.get<Service>('/api/services/' + id).catch(this.handleError);
+        return this.http.get<Service>('/api/services/' + id);
     }
 
     getBarmen(id: Number) {
-        return this.http.get<Barman[]>('/api/services/' + id + '/barmen').catch(this.handleError);
+        return this.http.get<Barman[]>('/api/services/' + id + '/barmen');
     }
 
     create(services: Service[]) {
-        return this.http.post('/api/services', services).catch(this.handleError);
+        return this.http.post('/api/services', services);
     }
 
     update(service: Service) {
-        return this.http.put('/api/services/' + service.id, service).catch(this.handleError);
+        return this.http.put('/api/services/' + service.id, service);
     }
 
     delete(id: Number) {
-        return this.http.delete('/api/services/' + id).catch(this.handleError);
+        return this.http.delete('/api/services/' + id);
     }
 
     getWeek(): Observable<{start: Moment, end: Moment}> {
@@ -109,25 +109,5 @@ export class ServiceService {
                 observer.error(error);
             });
         });
-    }
-
-    private handleError(err: HttpErrorResponse) {
-        let errorMessage = '';
-        if (err.error instanceof Error) {
-            errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
-        } else {
-            switch (err.error) {
-                case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter ou de récuperer un service`;
-                    break;
-                case 'ServerError':
-                    errorMessage = `Erreur serveur`;
-                    break;
-                default:
-                    errorMessage = 'Code d\'erreur inconnu';
-                    break;
-            }
-        }
-        return Observable.throw(errorMessage);
     }
 }

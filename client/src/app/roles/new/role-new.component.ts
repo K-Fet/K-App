@@ -57,11 +57,8 @@ export class RoleNewComponent implements OnInit {
             };
         }
         this.roleService.create(role).subscribe(() => {
-            this.toasterService.showToaster('Rôle créé', 'Fermer');
+            this.toasterService.showToaster('Rôle créé');
             this.router.navigate(['/roles'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

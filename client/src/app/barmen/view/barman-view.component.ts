@@ -26,9 +26,6 @@ export class BarmanViewComponent implements OnInit {
             this.barman.id = params['id'];
             this.barmanService.getById(+this.barman.id).subscribe(barman => {
                 this.barman = barman;
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
     }
@@ -48,11 +45,8 @@ export class BarmanViewComponent implements OnInit {
 
     delete() {
         this.barmanService.delete(this.barman.id).subscribe(() => {
-            this.toasterService.showToaster('Barman supprimé', 'Fermer');
+            this.toasterService.showToaster('Barman supprimé');
             this.router.navigate(['barmen']);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

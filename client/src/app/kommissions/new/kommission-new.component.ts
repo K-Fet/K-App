@@ -26,11 +26,8 @@ export class KommissionNewComponent implements OnInit {
         kommission.name = this.name;
         kommission.description = this.description;
         this.kommissionService.create(kommission).subscribe(() => {
-            this.toasterService.showToaster('Kommission créée', 'Fermer');
+            this.toasterService.showToaster('Kommission créée');
             this.router.navigate(['/kommissions'] );
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 }

@@ -10,9 +10,9 @@ import { RoleService, PermissionService } from '../../_services';
 })
 
 export class RoleEditComponent implements OnInit {
-    id: string;
-    name: string;
-    description: string;
+    id: String;
+    name: String;
+    description: String;
 
     permissions: Array<{
         permission: Permission,
@@ -58,9 +58,6 @@ export class RoleEditComponent implements OnInit {
                         }
                     });
                 }
-            },
-            error => {
-                this.toasterService.showToaster(error, 'Fermer');
             });
         });
     }
@@ -68,11 +65,8 @@ export class RoleEditComponent implements OnInit {
     edit() {
         const role = this.prepareEditing();
         this.roleService.update(role).subscribe(() => {
-            this.toasterService.showToaster('Rôle modifié', 'Fermer');
+            this.toasterService.showToaster('Rôle modifié');
             this.router.navigate(['/roles']);
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 

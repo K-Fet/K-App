@@ -11,22 +11,22 @@ export class SpecialAccountService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<SpecialAccount[]>('/api/specialaccounts').catch(this.handleError);
+        return this.http.get<SpecialAccount[]>('/api/specialaccounts');
     }
 
     getById(id: number) {
-        return this.http.get<SpecialAccount>('/api/specialaccounts/' + id).catch(this.handleError);
+        return this.http.get<SpecialAccount>('/api/specialaccounts/' + id);
     }
 
     create(specialAccount: SpecialAccount, code:  Number) {
-        return this.http.post('/api/specialaccounts', { specialAccount: specialAccount, code: code }).catch(this.handleError);
+        return this.http.post('/api/specialaccounts', { specialAccount: specialAccount, code: code });
     }
 
     update(specialAccount: SpecialAccount, code: Number) {
         const id = specialAccount.id;
         delete specialAccount.id;
         const body = { specialAccount: specialAccount, code: code };
-        return this.http.put('/api/specialaccounts/' + id, body).catch(this.handleError);
+        return this.http.put('/api/specialaccounts/' + id, body);
     }
 
     delete(id: Number, code: Number) {
@@ -35,29 +35,6 @@ export class SpecialAccountService {
                 code: code,
             }
         };
-        return this.http.request('DELETE', '/api/specialaccounts/' + id, options).catch(this.handleError);
-    }
-
-    private handleError(err: HttpErrorResponse) {
-        let errorMessage = '';
-        if (err.error instanceof Error) {
-            errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
-        } else {
-            switch (err.error.error) {
-                case 'UknownRole':
-                    errorMessage = `Erreur, impossible de recuperer le compte spécial`;
-                    break;
-                case 'UnauthorizedError':
-                    errorMessage = `Erreur: opération non autorisée`;
-                    break;
-                case 'ServerError':
-                    errorMessage = `Erreur serveur`;
-                    break;
-                default:
-                    errorMessage = 'Code d\'erreur inconnu';
-                    break;
-            }
-        }
-        return Observable.throw(errorMessage);
+        return this.http.request('DELETE', '/api/specialaccounts/' + id, options);
     }
 }

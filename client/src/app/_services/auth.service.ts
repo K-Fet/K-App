@@ -53,14 +53,12 @@ export class AuthService {
                 setTimeout(() => {
                     this.refresh().subscribe();
                 }, 45 * 60 * 60 * 1000);
-            })
-            .catch(this.handleError.bind(this));
+            });
     }
 
     logout() {
         return this.http.get('/api/auth/logout')
-            .do(this.clearUser.bind(this))
-            .catch(this.handleError.bind(this));
+            .do(this.clearUser.bind(this));
     }
 
     refresh() {
@@ -125,38 +123,10 @@ export class AuthService {
                         specialAccount: connectedUser.specialAccount,
                     }));
                 }
-            })
-            .catch(this.handleError.bind(this));
+            });
     }
 
     resetPassword(username: String): Observable<any> {
-        return this.http.post('/api/reset-password', { username: username }).catch(this.handleError.bind(this));
-    }
-
-    private handleError(err: HttpErrorResponse) {
-        console.error(err);
-        let errorMessage = '';
-        if (err.error instanceof Error) {
-            errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
-        } else {
-            switch (err.error.error) {
-                case 'LoginError':
-                    errorMessage = `Erreur: username ou mot de passe invalide`;
-                    break;
-                case 'LogoutError':
-                    errorMessage = `Erreur durant la déconnexion`;
-                    break;
-                case 'UnauthorizedError':
-                    errorMessage = `Erreur: opération non autorisée`;
-                    break;
-                case 'ServerError':
-                    errorMessage = `Erreur serveur`;
-                    break;
-                default:
-                    errorMessage = 'Code d\'erreur inconnu';
-                    break;
-            }
-        }
-        return Observable.throw(errorMessage);
+        return this.http.post('/api/reset-password', { username: username });
     }
 }

@@ -13,21 +13,21 @@ export class MemberService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Member[]>('/api/members').catch(this.handleError);
+        return this.http.get<Member[]>('/api/members');
     }
 
     getById(id: number) {
-        return this.http.get<Member>('/api/members/' + id).catch(this.handleError);
+        return this.http.get<Member>('/api/members/' + id);
     }
 
     create(member: Member, code: Number) {
-        return this.http.post('/api/members', {code: code, member: member}).catch(this.handleError);
+        return this.http.post('/api/members', {code: code, member: member});
     }
 
     update(member: Member, code: Number) {
         const id = member.id;
         delete member.id;
-        return this.http.put('/api/members/' + id, {code: code, member: member}).catch(this.handleError);
+        return this.http.put('/api/members/' + id, {code: code, member: member});
     }
 
     delete(id: Number, code: Number) {
@@ -36,29 +36,6 @@ export class MemberService {
                 code: code,
             }
         };
-        return this.http.request('DELETE', '/api/members/' + id, options).catch(this.handleError);
-    }
-
-    private handleError(err: HttpErrorResponse) {
-        let errorMessage = '';
-        if (err.error instanceof Error) {
-            errorMessage = `Une erreur est survenue du côté client, vérifiez votre connexion internet`;
-        } else {
-            switch (err.error.error) {
-                case 'Not Found':
-                    errorMessage = `Erreur, impossible d'ajouter un adhérent`;
-                    break;
-                case 'UnauthorizedError':
-                    errorMessage = `Erreur: opération non autorisée`;
-                    break;
-                case 'ServerError':
-                    errorMessage = `Erreur serveur`;
-                    break;
-                default:
-                    errorMessage = 'Code d\'erreur inconnu';
-                    break;
-            }
-        }
-        return Observable.throw(errorMessage);
+        return this.http.request('DELETE', '/api/members/' + id, options);
     }
 }

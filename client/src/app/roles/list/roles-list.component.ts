@@ -51,11 +51,8 @@ export class RolesListComponent implements OnInit {
     delete(role: Role) {
         this.roleService.delete(role.id)
         .subscribe(() => {
-            this.toasterService.showToaster('Role supprimé', 'Fermer');
+            this.toasterService.showToaster('Role supprimé');
             this.update();
-        },
-        error => {
-            this.toasterService.showToaster(error, 'Fermer');
         });
     }
 
