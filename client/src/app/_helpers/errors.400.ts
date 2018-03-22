@@ -14,4 +14,5 @@ export const ERRORS400 = {
     'UnknowUsernameToken': 'Token inconnu: le \'UsernameToken\' est inconnu de la base de données.',
     'MailerError': 'L\'envoi du mail du côté serveur a échoué.',
     'CodeError': 'Code invalide: Le code n\'est pas valide.',
+    'BadUsername': 'L\'username n\'est pas disponible',
 };
