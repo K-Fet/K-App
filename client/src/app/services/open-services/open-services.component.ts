@@ -152,7 +152,6 @@ export class OpenServicesComponent implements OnInit {
         const services: Service[] = this.servicesFormArray.controls.map(formGroup => {
             return this.prepareService((<FormGroup>formGroup).controls);
         });
-        console.log(services);
         this.serviceService.create(services).subscribe(() => {
             this.toasterService.showToaster('Nouveaux services enregistrés');
             this.router.navigate(['/dashboard']);
