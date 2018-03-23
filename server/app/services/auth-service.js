@@ -259,6 +259,51 @@ async function resetPassword(username, currTransaction) {
     if (!currTransaction) await transaction.commit();
 }
 
+/**
+ * Define a new password for an user.
+ * Will reject all existing JWT.
+ *
+ * @param username {String} User's login
+ * @param passwordToken {String} Token received by the user
+ * @param newPassword {String} New password
+ * @returns {Promise<void>} Nothing
+ */
+async function definePassword(username, passwordToken, newPassword) {
+    const user = ConnectionInformation.findOne({
+        where: {
+            username,
+            passwordToken: await hash(passwordToken),
+        },
+    });
+
+    if (!user) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+
+    if (user.emailToken) {
+        throw createUserError('UnverifiedUsername',
+            'A verified email is required, if you can not gain access to your account, contact an administrator');
+    }
+
+    const transaction = sequelize.transaction();
+    try {
+        await user.update({
+            password: await hash(newPassword),
+            passwordToken: null,
+        }, { transaction });
+
+        await JWT.update({ revoked: true }, {
+            transaction,
+            where: {
+                connectionId: user.id,
+            },
+        });
+    } catch (e) {
+        logger.warn('AuthService: Error while defining password: %o', e);
+        await transaction.rollback();
+    }
+
+    await transaction.commit();
+}
+
 
 module.exports = {
     isTokenRevoked,
@@ -268,4 +313,5 @@ module.exports = {
     me,
     createJWT,
     resetPassword,
+    definePassword,
 };

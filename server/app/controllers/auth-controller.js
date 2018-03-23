@@ -75,7 +75,38 @@ async function resetPassword(req, res) {
 
     await authService.resetPassword(req.body.username);
 
-    res.sendStatus(400);
+    res.sendStatus(200);
+}
+
+/**
+ * Define a password after reset request.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function definePassword(req, res) {
+    const schema = Joi.object().keys({
+        username: Joi.string().email().required(),
+        // TODO Add checks :
+        //      length > 8
+        //      at least one uppercase letter
+        //      at least one lowercase letter
+        //      at least one number
+        password: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
+    const passwordToken = req.params.passwordToken;
+    if (!passwordToken) throw createUserError('BadRequest', 'Missing passwordToken parameter');
+
+    const { username, password } = req.body;
+
+    await authService.definePassword(username, passwordToken, password);
+
+    res.sendStatus(200);
 }
 
 
@@ -84,4 +115,5 @@ module.exports = {
     logout,
     refresh,
     resetPassword,
+    definePassword,
 };
