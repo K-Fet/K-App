@@ -1,14 +1,13 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const uuidv4 = require('uuid/v4');
-const EMAIL_CONFIG = require('../../config/mail');
 
 const { jwtSecret, expirationDuration } = require('../../config/jwt');
 const { verify, createUserError, createServerError, generateToken, hash } = require('../../utils');
 
 const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission } = require('../models');
+const mailService = require('./mail-service');
 
 /**
  * Check if a token is revoked or not.
@@ -178,7 +177,7 @@ async function me(tokenId) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: [ 'id', 'username' ],
+                        attributes: ['id', 'username'],
                     },
                     {
                         model: Kommission,
@@ -246,18 +245,7 @@ async function resetPassword(username, currTransaction) {
     }
 
     try {
-        const transporter = nodemailer.createTransport(EMAIL_CONFIG[process.env.NODE_ENV || 'development']);
-        // Setup email data with unicode symbols
-        const mailOptions = {
-            from: '"K-Fêt" <@example.com>', // Sender address
-            to: username, // List of receivers
-            subject: 'Welcome !', // Subject line
-            text: 'Hello world?', // Plain text body
-            html: `<b>Hello world? ${passwordToken}</b>`, // Html body
-        };
-
-        // Send mail with defined transport object
-        await transporter.sendMail(mailOptions);
+        await mailService.sendPasswordResetMail(username, passwordToken);
     } catch (err) {
         logger.error('Error while sending reset password mail at %s', username);
 

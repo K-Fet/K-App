@@ -4,6 +4,8 @@ const am = require('../../utils/async-middleware');
 
 router.post('/login', am(authController.login));
 
+router.post('/reset-password', am(authController.resetPassword));
+
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
