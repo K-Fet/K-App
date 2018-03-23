@@ -36,6 +36,15 @@
                                 École <strong>requise</strong>
                                 </mat-error>
                             </mat-form-field>
+                            <mat-form-field>
+                                <mat-checkbox [(ngModel)]="statut"
+                                formControlName="statutFormControl">
+                                </mat-checkbox>
+                            
+                                <mat-error *ngIf="memberFormGroup.get('statutFormControl').errors.validCheckbox">
+                                il faut <strong>accepter</strong> les statuts
+                                </mat-error>
+                            </mat-form-field>
                         </div>
                     </mat-step>
                     <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Code Barman">

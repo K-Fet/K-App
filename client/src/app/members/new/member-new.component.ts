@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 import { FormArray } from '@angular/forms/src/model';
+import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 @Component({
   templateUrl: './member-new.component.html',
@@ -14,6 +15,7 @@ export class MemberNewComponent implements OnInit {
     firstName: string;
     lastName: string;
     school: string;
+    statut: boolean;
     code: Number;
 
     formArray: FormArray;
@@ -31,7 +33,8 @@ export class MemberNewComponent implements OnInit {
         this.memberFormGroup = this.formBuilder.group({
             lastNameFormControl: ['', Validators.required],
             firstNameFormControl: ['', Validators.required],
-            schoolFormControl: ['', Validators.required]
+            schoolFormControl: ['', Validators.required],
+            statutFormControl: ['', ValidateCheckbox]
         });
         this.codeFormGroup = this.formBuilder.group({
             codeFormControl: ['', Validators.required]
