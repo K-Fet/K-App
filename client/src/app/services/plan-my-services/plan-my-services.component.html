@@ -40,12 +40,26 @@
                 <div>
                     <mat-list *ngIf="dayServices">
                         <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
+
                             <p mat-line>
-                                <button type="button" mat-icon-button (click)="addService(service)">
-                                    <mat-icon>add</mat-icon>
-                                </button>
+
+                                
+                                    <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <ng-template #elseBlock>
+                                        <mat-icon >check_circle</mat-icon>
+                                    </ng-template>
+                                   
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                          
                             </p>
+
+                         
+
+
+
+
                             <span mat-line *ngIf="service.barmen" class="mat-caption">
                                 Avec <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
                             </span>
@@ -54,6 +68,8 @@
                             </span>
                         </mat-list-item>
                     </mat-list>
+
+
                     <p *ngIf="!dayServices">
                         Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a 
                         surement pas encore ouvert les services.
