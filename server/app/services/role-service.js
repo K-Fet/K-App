@@ -119,6 +119,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
         }
     }
     await transaction.commit();
+    await currentRole.reload();
     return currentRole;
 }
 
