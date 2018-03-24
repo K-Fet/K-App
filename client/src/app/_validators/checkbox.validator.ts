@@ -1,7 +1,7 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-export function ValidateCheckbox(control: AbstractControl) {
-    if (control.value === true) {
+export function ValidateCheckbox(control: AbstractControl): ValidationErrors | null {
+    if (control.value !== true) {
         return { validCheckbox: true };
     }
     return null;

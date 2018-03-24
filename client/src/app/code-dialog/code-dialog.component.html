@@ -5,12 +5,16 @@
         <mat-form-field>
             <input matInput type="password" placeholder="Code" formControlName="codeFormControl" required [(ngModel)]="code">
         </mat-form-field>
-        <mat-error *ngIf="form.controls.codeFormControl.hasError('required')">
-        Code <strong>requis</strong>
+        <mat-error *ngIf="form.controls.codeFormControl.hasError('required')
+            && form.controls.codeFormControl.dirty">
+            Code <strong>requis</strong>
+        </mat-error>
+        <mat-error *ngIf="form.get('codeFormControl').hasError('pattern')">
+            Le code doit comporter seulement des chiffres, 4 au minimum.
         </mat-error>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions fxLayoutAlign="center">
-    <button mat-button [mat-dialog-close]="code">Yes</button>
+    <button mat-button [mat-dialog-close]="code" [disabled]="!form.valid">Yes</button>
     <button mat-button [mat-dialog-close]="false">No</button>
 </mat-dialog-actions>

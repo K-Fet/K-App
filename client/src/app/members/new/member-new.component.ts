@@ -37,7 +37,7 @@ export class MemberNewComponent implements OnInit {
             statutFormControl: ['', ValidateCheckbox]
         });
         this.codeFormGroup = this.formBuilder.group({
-            codeFormControl: ['', Validators.required]
+            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]]
         });
         this.formArray = this.formBuilder.array([
             this.memberFormGroup,

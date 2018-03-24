@@ -36,15 +36,12 @@
                                 École <strong>requise</strong>
                                 </mat-error>
                             </mat-form-field>
-                            <mat-form-field>
-                                <mat-checkbox [(ngModel)]="statut"
-                                formControlName="statutFormControl">
-                                </mat-checkbox>
-                            
-                                <mat-error *ngIf="memberFormGroup.get('statutFormControl').errors.validCheckbox">
-                                il faut <strong>accepter</strong> les statuts
-                                </mat-error>
-                            </mat-form-field>
+                            <mat-checkbox [(ngModel)]="statut" formControlName="statutFormControl">
+                                J'accepte les <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a> de l'association
+                            </mat-checkbox>
+                            <mat-error *ngIf="memberFormGroup.get('statutFormControl').hasError('validCheckbox')">
+                                Vous devez <strong>accepter</strong> les statuts
+                            </mat-error>
                         </div>
                     </mat-step>
                     <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Code Barman">
@@ -52,8 +49,12 @@
                             <mat-form-field>
                                 <input matInput type="password" [(ngModel)]="code" placeholder="Code" formControlName="codeFormControl" required>
                             </mat-form-field>
-                            <mat-error *ngIf="codeFormGroup.controls.codeFormControl.hasError('required')">
-                            Code <strong>requis</strong>
+                            <mat-error *ngIf="codeFormGroup.controls.codeFormControl.hasError('required')
+                                && codeFormGroup.controls.codeFormControl.dirty">
+                                Code <strong>requis</strong>
+                            </mat-error>
+                            <mat-error *ngIf="codeFormGroup.get('codeFormControl').hasError('pattern')">
+                                Le code doit comporter seulement des chiffres, 4 au minimum.
                             </mat-error>
                         </div>
                     </mat-step>
