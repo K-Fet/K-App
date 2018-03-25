@@ -1,6 +1,6 @@
 const templateService = require('../services/template-service');
-const { ServicesTemplate } = require('../models');
-const { ServicesTemplateSchema } = require('../models/schemas');
+const { Template } = require('../models');
+const { TemplateSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
 
 /**
@@ -24,7 +24,7 @@ async function getAllTemplates(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createTemplate(req, res) {
-    const schema = ServicesTemplateSchema.requiredKeys(
+    const schema = TemplateSchema.requiredKeys(
         'name',
         'services',
     );
@@ -32,7 +32,7 @@ async function createTemplate(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newTemplate = new ServicesTemplate({
+    let newTemplate = new Template({
         ...req.body
     });
 
@@ -51,7 +51,7 @@ async function createTemplate(req, res) {
 async function getTemplateById(req, res) {
     const templateId = req.params.id;
 
-    const template = await templateService.getSpecialAccountById(templateId);
+    const template = await templateService.getTemplateById(templateId);
 
     res.json(template);
 }
@@ -64,12 +64,12 @@ async function getTemplateById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateTemplate(req, res) {
-    const schema = ServicesTemplateSchema.min(1);
+    const schema = TemplateSchema.min(1);
 
     const { error } = schema.validate(req.nody);
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
-    let newTemplate = new ServicesTemplate({
+    let newTemplate = new Template({
         ...req.body,
     });
 

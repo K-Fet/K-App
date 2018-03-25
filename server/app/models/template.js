@@ -4,7 +4,7 @@ const Joi = require('joi');
 /**
  * This class represents a template for a list of services for a week.
  */
-class ServicesTemplate extends Model {
+class Template extends Model {
 
     /**
      * Initialization function.
@@ -36,14 +36,14 @@ class ServicesTemplate extends Model {
      * @param models
      */
     static associate(models) {
-        this.hasMany(models.ServicesTemplateUnit, { as: 'services' });
+        this.hasMany(models.TemplateUnit, { as: 'services' });
     }
 }
 
 /**
  * This class represent an unique service for a template.
  */
-class ServicesTemplateUnit extends Model {
+class TemplateUnit extends Model {
 
     /**
      * Initialization function.
@@ -129,20 +129,20 @@ class ServicesTemplateUnit extends Model {
     }
 }
 
-const ServicesTemplateUnitSchema = Joi.object().keys({
+const TemplateUnitSchema = Joi.object().keys({
     nbMax: Joi.number(),
     startAt: Joi.date().iso(),
     endAt: Joi.date().iso().min(Joi.ref('startAt')),
 });
 
-const ServicesTemplateSchema = Joi.object().keys({
+const TemplateSchema = Joi.object().keys({
     name: Joi.string(),
-    services: Joi.array().items(ServicesTemplateUnitSchema),
+    services: Joi.array().items(TemplateUnitSchema),
 });
 
 module.exports = {
-    ServicesTemplate,
-    ServicesTemplateUnit,
-    ServicesTemplateSchema,
-    ServicesTemplateUnitSchema,
+    Template,
+    TemplateUnit,
+    TemplateSchema,
+    TemplateUnitSchema,
 };
