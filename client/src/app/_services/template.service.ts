@@ -8,7 +8,11 @@ export class TemplateService {
 
     constructor(private http: HttpClient) { }
 
-    getAll(): Observable<Array<Template>> {
-        return this.http.get<Array<Template>>('/api/templates');
+    getAll() {
+        return this.http.get<Template>('/api/services/template');
+    }
+
+    getAllArray() {
+        return this.http.get<Template[]>('/api/services/templates');
     }
 }

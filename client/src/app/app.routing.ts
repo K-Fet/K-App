@@ -28,6 +28,7 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { TemplatesListComponent } from './templates/list/templates-list.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -78,6 +79,7 @@ const routes: Routes = [
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['specialaccount:write']) },
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
+    { path: 'templates', component: TemplatesListComponent },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' },
 ];

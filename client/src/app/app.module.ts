@@ -73,6 +73,7 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { TemplatesListComponent } from './templates/list/templates-list.component';
 
 @NgModule({
     declarations: [
@@ -109,6 +110,7 @@ import { MaterialModule } from './_helpers/material.module';
         EqualValidator,
         DefinePasswordComponent,
         UsernameVerificationComponent,
+        TemplatesListComponent
     ],
     entryComponents: [
         CodeDialogComponent,
