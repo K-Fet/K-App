@@ -1,5 +1,6 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
+const authService = require('./auth-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
 const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
@@ -12,12 +13,12 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: { exclude: [ 'code' ] },
+        attributes: { exclude: ['code'] },
         include: [
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ],
+                attributes: ['id', 'username'],
             }
         ]
     });
@@ -38,27 +39,26 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
-        // TODO implement password generation
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
         const co = await newSpecialAccount.connection.save({ transaction });
         newSpecialAccount.connectionId = co.id;
         await newSpecialAccount.save({ transaction });
 
+        await authService.resetPassword(co.username, transaction);
         // Remove critic fields
         newSpecialAccount.code = undefined;
-        co.password = undefined;
 
     } catch (err) {
+        if (err.userError) throw err;
+
+        logger.verbose('SpecialAccount service: Error while creating specialAccount %o', err);
+        await transaction.rollback();
+
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
-            logger.warn('SpecialAccount service: Error while creating special account', err);
-            await transaction.rollback();
             throw createUserError('BadUsername', 'a username must be unique');
-        } else {
-            logger.warn('SpecialAccount service: Error while creating special account', err);
-            await transaction.rollback();
-            throw createServerError('ServerError', 'Error while creating special account');
         }
+        throw createServerError('ServerError', 'Error while creating special account');
     }
 
     if (_embedded) {
@@ -87,14 +87,14 @@ async function getSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: [ 'id', 'username' ]
+                attributes: ['id', 'username']
             },
             {
                 model: Permission,
                 as: 'permissions',
             }
         ],
-        attributes: { exclude: [ 'code' ] },
+        attributes: { exclude: ['code'] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -132,19 +132,21 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             description: updatedSpecialAccount.description
         }), { transaction });
 
-        const updateCo = updatedSpecialAccount.connection;
-
-        // If connection information is changed
-        // TODO implement username update
-        if (updateCo) {
+        if (updatedSpecialAccount.connection) {
             const co = await currentSpecialAccount.getConnection();
-            await co.update(
-                cleanObject({
-                    username: updateCo.username,
-                    password: updateCo.password ? await hash(updateCo.password) : undefined
-                }),
-                { transaction }
-            );
+
+            if (updatedSpecialAccount.connection.username) {
+                if (co.passwordToken !== null) throw createUserError('UndefinedPassword',
+                    'You must define a password. Please, check your email.');
+
+                await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
+            }
+
+            if (updatedSpecialAccount.connection.password) {
+                await co.update({
+                    password: await hash(updatedSpecialAccount.connection.password),
+                }, { transaction });
+            }
         }
     } catch (err) {
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
@@ -167,6 +169,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     }
 
     await transaction.commit();
+    await currentSpecialAccount.reload();
     return currentSpecialAccount;
 }
 

@@ -6,6 +6,7 @@ const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../../server/app/models');
 const mysqlConf = require('./mysql');
+const { syncPermissions } = require('../../server/permissions-init');
 
 const isCLI = require.main === module;
 
@@ -105,6 +106,7 @@ async function configure(config) {
     });
 
     await sequelize.sync();
+    await syncPermissions();
 
     const admin = await SpecialAccount.create(
         {

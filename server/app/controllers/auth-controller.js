@@ -13,7 +13,7 @@ const { createUserError } = require('../../utils');
 async function login(req, res) {
     const schema = Joi.object().keys({
         username: Joi.string().required(),
-        password: Joi.string().required()
+        password: Joi.string().required(),
     });
 
     const { error } = schema.validate(req.body);
@@ -25,7 +25,7 @@ async function login(req, res) {
     const jwt = await authService.login(username, password);
 
     res.json({
-        jwt
+        jwt,
     });
 }
 
@@ -40,7 +40,7 @@ async function refresh(req, res) {
     const jwt = await authService.refresh(req.user.jit);
 
     res.json({
-        jwt
+        jwt,
     });
 }
 
@@ -58,9 +58,62 @@ async function logout(req, res) {
     res.send({});
 }
 
+/**
+ * Request a password reset.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function resetPassword(req, res) {
+    const schema = Joi.object().keys({
+        username: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
+    await authService.resetPassword(req.body.username);
+
+    res.sendStatus(200);
+}
+
+/**
+ * Define a password after reset request.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function definePassword(req, res) {
+    const schema = Joi.object().keys({
+        username: Joi.string().email().required(),
+        // TODO Add checks :
+        //      length > 8
+        //      at least one uppercase letter
+        //      at least one lowercase letter
+        //      at least one number
+        password: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details.message);
+
+    const passwordToken = req.params.passwordToken;
+    if (!passwordToken) throw createUserError('BadRequest', 'Missing passwordToken parameter');
+
+    const { username, password } = req.body;
+
+    await authService.definePassword(username, passwordToken, password);
+
+    res.sendStatus(200);
+}
+
 
 module.exports = {
     login,
     logout,
     refresh,
+    resetPassword,
+    definePassword,
 };

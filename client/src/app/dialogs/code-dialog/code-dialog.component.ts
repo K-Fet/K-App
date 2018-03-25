@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { Member } from '../../_models/index';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
     selector: 'app-dialog-overview-example-dialog',
@@ -14,10 +14,11 @@ export class CodeDialogComponent {
 
     constructor(
         public dialogRef: MatDialogRef<CodeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        private fb: FormBuilder) {
 
-        this.form = new FormGroup({
-            codeFormControl: new FormControl('', [Validators.required])
+        this.form = this.fb.group({
+            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]]
         });
     }
 

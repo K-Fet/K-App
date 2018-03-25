@@ -30,7 +30,6 @@ async function createBarman(req, res) {
         'lastName',
         'connection',
         'connection.username',
-        'connection.password',
         'nickname',
         'dateOfBirth',
         'flow'

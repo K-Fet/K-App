@@ -28,8 +28,16 @@ class ConnectionInformation extends Model {
             },
 
             password: {
-                type: DataTypes.STRING
-            }
+                type: DataTypes.STRING,
+            },
+
+            passwordToken: {
+                type: DataTypes.STRING,
+            },
+
+            usernameToken: {
+                type: DataTypes.STRING,
+            },
         }, {
             sequelize
         });
@@ -72,7 +80,6 @@ class ConnectionInformation extends Model {
 
 const ConnectionInformationSchema = Joi.object().keys({
     username: Joi.string().email(),
-    password: Joi.string()
 }).min(1);
 
 module.exports = {

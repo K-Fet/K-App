@@ -11,10 +11,6 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "array-bracket-spacing": [
-            "error",
-            "always"
-        ],
         "block-spacing": "error",
         "brace-style": [
             "error",

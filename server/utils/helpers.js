@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { createUserError } = require('./errors');
 
 /**
@@ -10,7 +11,7 @@ const { createUserError } = require('./errors');
  * @return {*} The object cleaned
  */
 function cleanObject(obj) {
-    Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
+    Object.keys(obj).forEach(key => obj[ key ] === undefined && delete obj[ key ]);
     return obj;
 }
 
@@ -29,7 +30,7 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
 
     if (value.add && value.add.length > 0) {
         try {
-            await instance[`add${upperKey}`](value.add, { transaction });
+            await instance[ `add${upperKey}` ](value.add, { transaction });
         } catch (err) {
             await transaction.rollback();
             throw createUserError(`Unknown${ upperKey}`,
@@ -44,7 +45,7 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
         }
 
         try {
-            await instance[`remove${upperKey}`](value.remove, { transaction });
+            await instance[ `remove${upperKey}` ](value.remove, { transaction });
         } catch (err) {
             await transaction.rollback();
             throw createUserError(`Unknown${upperKey}`,
@@ -76,8 +77,28 @@ function parseStartAndEnd(query) {
     return { start, end };
 }
 
+/**
+ * Generate a secure token.
+ *
+ * @param stringBase base of the generated token
+ * @param byteLength Number of bytes to generate
+ * @returns {Promise<string>} Secure token
+ */
+function generateToken(byteLength = 48, stringBase = 'base64') {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(byteLength, (err, buffer) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(buffer.toString(stringBase));
+            }
+        });
+    });
+}
+
 module.exports = {
     cleanObject,
     setEmbeddedAssociations,
     parseStartAndEnd,
+    generateToken,
 };
