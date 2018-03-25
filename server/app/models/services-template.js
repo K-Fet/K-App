@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
+const Joi = require('joi');
 
 /**
  * This class represents a template for a list of services for a week.
@@ -128,7 +129,20 @@ class ServicesTemplateUnit extends Model {
     }
 }
 
+const ServicesTemplateUnitSchema = Joi.object().keys({
+    nbMax: Joi.number(),
+    startAt: Joi.date().iso(),
+    endAt: Joi.date().iso().min(Joi.ref('startAt')),
+});
+
+const ServicesTemplateSchema = Joi.object().keys({
+    name: Joi.string(),
+    services: Joi.array().items(ServicesTemplateUnitSchema),
+});
+
 module.exports = {
     ServicesTemplate,
     ServicesTemplateUnit,
+    ServicesTemplateSchema,
+    ServicesTemplateUnitSchema,
 };

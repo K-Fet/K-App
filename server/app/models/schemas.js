@@ -6,6 +6,7 @@ const { RoleSchema } = require('./role');
 const { MemberSchema } = require('./member');
 const { ServiceSchema } = require('./service');
 const { SpecialAccountSchema } = require('./special-account');
+const { ServicesTemplateSchema, ServicesTemplateUnitSchema } = require('./services-template');
 
 module.exports = {
     BarmanSchema,
@@ -16,4 +17,6 @@ module.exports = {
     MemberSchema,
     ServiceSchema,
     SpecialAccountSchema,
+    ServicesTemplateSchema,
+    ServicesTemplateUnitSchema,
 };
