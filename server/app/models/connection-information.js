@@ -35,7 +35,7 @@ class ConnectionInformation extends Model {
                 type: DataTypes.STRING,
             },
 
-            emailToken: {
+            usernameToken: {
                 type: DataTypes.STRING,
             },
         }, {

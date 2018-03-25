@@ -40,7 +40,7 @@ async function login(username, password) {
 
     if (!user.password) throw createUserError('UndefinedPassword', 'You must define password. Please, check your email.');
 
-    if (user.emailToken) {
+    if (user.usernameToken) {
         throw createUserError('UnverifiedUsername', 'A valid email is required to use the app, you could change your ');
     }
 
@@ -51,7 +51,7 @@ async function login(username, password) {
     }
 
     delete user.password;
-    delete user.emailToken;
+    delete user.usernameToken;
     delete user.passwordToken;
 
     return createJWT(user);
@@ -228,7 +228,7 @@ async function resetPassword(username, currTransaction) {
 
     if (!co) throw createUserError('UnknownUser', 'Unable to find provided username');
 
-    if (co.emailToken) throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
+    if (co.usernameToken) throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
 
     const passwordToken = await generateToken(128);
 
@@ -278,7 +278,7 @@ async function definePassword(username, passwordToken, newPassword) {
 
     if (!user) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
 
-    if (user.emailToken) {
+    if (user.usernameToken) {
         throw createUserError('UnverifiedUsername',
             'A verified email is required, if you can not gain access to your account, contact an administrator');
     }
@@ -304,6 +304,51 @@ async function definePassword(username, passwordToken, newPassword) {
     await transaction.commit();
 }
 
+/**
+ * Change username for a user. Need to be verified.
+ *
+ * @param currentUsername {String} User's login
+ * @param newUsername {String} new user's login
+ * @returns {Promise<void>} Nothing
+ */
+async function updateUsername(currentUsername, newUsername) {
+    const co = ConnectionInformation.findOne({
+        where: {
+            username: currentUsername,
+        },
+    });
+
+    if (!co) throw createUserError('UnknownUser', 'This User does not exist');
+
+    if (co.passwordToken) throw createUserError('UndefinedPassword', 'You must define a password. Please, check your email.');
+
+    const usernameToken = await generateToken(128);
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        await co.update({
+            usernameToken: await hash(usernameToken + newUsername),
+            verifiedUsername: false,
+        }, { transaction });
+    } catch (err) {
+        logger.error('Error while creating reset password token %o', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while change username');
+    }
+
+    try {
+        await mailService.sendVerifyUsernameMail(newUsername, usernameToken);
+        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken);
+    } catch (err) {
+        logger.error('Error while sending reset password mail at %s or %s', currentUsername, newUsername);
+        transaction.rollback();
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
+    }
+
+    await transaction.commit();
+}
+
 
 module.exports = {
     isTokenRevoked,
@@ -314,4 +359,5 @@ module.exports = {
     createJWT,
     resetPassword,
     definePassword,
+    updateUsername,
 };

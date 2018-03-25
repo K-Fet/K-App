@@ -1,8 +1,8 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const authService = require('./auth-service');
-const {ConnectionInformation, SpecialAccount, Permission} = require('../models');
-const {createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations} = require('../../utils');
+const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
+const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
 /**
  * Return all specialAccounts of the app
@@ -13,7 +13,7 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: {exclude: ['code']},
+        attributes: { exclude: ['code'] },
         include: [
             {
                 model: ConnectionInformation,
@@ -41,9 +41,9 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     try {
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
-        const co = await newSpecialAccount.connection.save({transaction});
+        const co = await newSpecialAccount.connection.save({ transaction });
         newSpecialAccount.connectionId = co.id;
-        await newSpecialAccount.save({transaction});
+        await newSpecialAccount.save({ transaction });
 
         await authService.resetPassword(co.username, transaction);
         // Remove critic fields
@@ -94,7 +94,7 @@ async function getSpecialAccountById(specialAccountId) {
                 as: 'permissions',
             }
         ],
-        attributes: {exclude: ['code']},
+        attributes: { exclude: ['code'] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -130,21 +130,23 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             id: updatedSpecialAccount.id,
             code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
             description: updatedSpecialAccount.description
-        }), {transaction});
+        }), { transaction });
 
-        const updateCo = updatedSpecialAccount.connection;
-
-        // If connection information is changed
-        // TODO implement username update
-        if (updateCo) {
+        if (updatedSpecialAccount.connection) {
             const co = await currentSpecialAccount.getConnection();
-            await co.update(
-                cleanObject({
-                    username: updateCo.username,
-                    password: updateCo.password ? await hash(updateCo.password) : undefined
-                }),
-                {transaction}
-            );
+
+            if (updatedSpecialAccount.connection.username) {
+                if (co.passwordToken !== null) throw createUserError('UndefinedPassword',
+                    'You must define a password. Please, check your email.');
+
+                await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
+            }
+
+            if (updatedSpecialAccount.connection.password) {
+                await co.update({
+                    password: await hash(updatedSpecialAccount.connection.password),
+                }, { transaction });
+            }
         }
     } catch (err) {
         if (err.Errors === sequelize.SequelizeUniqueConstraintError) {

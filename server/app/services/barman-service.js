@@ -156,15 +156,17 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
             const co = await currentBarman.getConnection();
 
-            const coData = {
-                username: updatedBarman.connection.username,
-                password: updatedBarman.connection.password ? await hash(updatedBarman.connection.password) : undefined,
-            };
+            if (updatedBarman.connection.username) {
+                if (co.passwordToken !== null) throw createUserError('UndefinedPassword',
+                    'You must define a password. Please, check your email.');
 
-            // If there is no connection yet, create one
-            if (!co) {
-                await currentBarman.createConnection(cleanObject(coData), { transaction });
-            } else {
+                await authService.updateUsername(co.username, updatedBarman.connection.username);
+            }
+
+            if (updatedBarman.connection.password) {
+                const coData = {
+                    password: await hash(updatedBarman.connection.password),
+                };
                 await co.update(cleanObject(coData), { transaction });
             }
         }
