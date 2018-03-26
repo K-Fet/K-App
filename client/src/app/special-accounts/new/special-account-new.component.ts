@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';
 import { SpecialAccountService, PermissionService } from '../../_services';
@@ -24,7 +24,6 @@ export class SpecialAccountNewComponent implements OnInit {
         private specialAccountService: SpecialAccountService,
         private permissionService: PermissionService,
         private toasterService: ToasterService,
-        private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
         public dialog: MatDialog

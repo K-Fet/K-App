@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { Service, Barman, Day } from '../_models/index';
 import { Observable } from 'rxjs/Rx';
@@ -7,7 +7,6 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
-import { ToasterService } from './index';
 
 import * as moment from 'moment';
 import { Moment } from 'moment';

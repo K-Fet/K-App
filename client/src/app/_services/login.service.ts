@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import { SpecialAccount, ConnectedUser} from '../_models';
+import { ConnectedUser} from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import {NgxPermissionsService} from 'ngx-permissions';
 import {Router} from '@angular/router';

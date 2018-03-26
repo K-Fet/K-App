@@ -1,4 +1,4 @@
-import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 // Guards
 import { NgxPermissionsGuard } from 'ngx-permissions';

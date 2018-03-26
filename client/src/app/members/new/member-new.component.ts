@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { MemberService } from '../../_services/member.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 import { FormArray } from '@angular/forms/src/model';

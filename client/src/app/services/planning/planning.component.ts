@@ -12,7 +12,7 @@ export class PlanningComponent implements OnInit {
     days: Day[] = new Array<Day>();
     dayServices: Service[];
 
-    constructor(private serviceService: ServiceService, private toasterService: ToasterService) {}
+    constructor(private serviceService: ServiceService) {}
 
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
-import { Moment } from 'moment';
 import { Service, ConnectedUser } from '../../_models/index';
 
 @Component({
@@ -15,8 +14,7 @@ export class MyServicesComponent implements OnInit {
 
     constructor(private loginService: LoginService,
         private barmanService: BarmanService,
-        private serviceService: ServiceService,
-        private toasterService: ToasterService) {
+        private serviceService: ServiceService) {
     }
 
     ngOnInit() {

@@ -45,13 +45,13 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    addServiceForm(categoryId: Number, nbMax: Number, startAt: Moment, endAt: Moment) {
+    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment) {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
             endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required]
         });
-        serviceFormGroup.valueChanges.subscribe(val => {
+        serviceFormGroup.valueChanges.subscribe(() => {
             this.sortServiceForm();
         });
         this.servicesFormArray.push(serviceFormGroup);
@@ -126,7 +126,7 @@ export class OpenServicesComponent implements OnInit {
                         startAt.add(1, 'week');
                         endAt.add(1, 'week');
                     }
-                    this.addServiceForm(service.categoryId, service.nbMax, startAt, endAt);
+                    this.addServiceForm(service.nbMax, startAt, endAt);
                 });
             }
             this.sortServiceForm();

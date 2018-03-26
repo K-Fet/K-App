@@ -1,5 +1,4 @@
 import { NgxPermissionsService } from 'ngx-permissions';
-import { ConnectedUser } from './../_models';
 import { LoginService } from './../_services';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';

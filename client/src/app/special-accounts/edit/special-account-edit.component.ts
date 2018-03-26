@@ -3,7 +3,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { ConnectedUser } from './../../_models/ConnectedUser';
 import { LoginService } from './../../_services/login.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpecialAccount, Permission } from '../../_models';
 import { ToasterService } from '../../_services';

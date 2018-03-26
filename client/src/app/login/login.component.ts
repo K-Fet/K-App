@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { LoginService, ToasterService } from '../_services';
+import { LoginService } from '../_services';
 import { Router } from '@angular/router';
 import { ConnectedUser } from '../_models';
 
@@ -15,7 +15,6 @@ export class LoginComponent {
 
     constructor(
         private loginService: LoginService,
-        private toasterService: ToasterService,
         private router: Router,
         private fb: FormBuilder) {
         this.createForm();

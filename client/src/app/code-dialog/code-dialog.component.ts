@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { Member } from '../_models/index';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
     selector: 'app-dialog-overview-example-dialog',
