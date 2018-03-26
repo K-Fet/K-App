@@ -1,36 +1,33 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BarmanService, LoginService, ServiceService } from '../../_services/';
-import { Service, ConnectedUser } from '../../_models/index';
+import { ConnectedUser, Service } from '../../_models/index';
 
 @Component({
-    selector: 'app-my-services',
-    templateUrl: './my-services.component.html',
+    selector: 'ngx-my-services',
+    templateUrl: './my-services.component.html'
 })
 
 export class MyServicesComponent implements OnInit {
 
-    myServices: Service[];
+    myServices: Array<Service>;
     user: ConnectedUser;
 
     constructor(private loginService: LoginService,
-        private barmanService: BarmanService,
-        private serviceService: ServiceService) {
+                private barmanService: BarmanService,
+                private serviceService: ServiceService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
-            if (this.user.barman) {
-                this.serviceService.getWeek().subscribe(week => {
-                    this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                        if (services.length > 0) {
-                            this.myServices = services;
-                        } else {
-                            this.myServices = undefined;
-                        }
+            if (this.user.barman)
+                this.serviceService.getWeek()
+                .subscribe(week => {
+                    this.barmanService.getServices(this.user.barman.id, week.start, week.end)
+                    .subscribe(services => {
+                        this.myServices = services.length > 0 ? services : undefined;
                     });
                 });
-            }
         });
     }
 }

@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-root',
+    selector: 'ngx-root',
     templateUrl: './app.component.html'
 })
 export class AppComponent {
     title = 'K-App';
-
-    constructor() {}
 }

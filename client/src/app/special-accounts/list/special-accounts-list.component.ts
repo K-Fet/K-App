@@ -1,10 +1,10 @@
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SpecialAccount } from '../../_models';
-import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
-import { ToasterService, SpecialAccountService } from '../../_services';
+import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { SpecialAccountService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import {CodeDialogComponent} from '../../code-dialog/code-dialog.component';
+import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -22,32 +22,32 @@ export class SpecialAccountListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private specialAccountService: SpecialAccountService,
-        private toasterService: ToasterService,
-        private router: Router,
-        private dialog: MatDialog,
-        private ngxPermissionService: NgxPermissionsService) {
+                private toasterService: ToasterService,
+                private router: Router,
+                private dialog: MatDialog,
+                private ngxPermissionService: NgxPermissionsService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.update();
-        if (!this.ngxPermissionService.getPermissions()['specialaccount:write']) {
+        if (!this.ngxPermissionService.getPermissions()['specialaccount:write'])
             this.displayedColumns = ['username', 'description'];
-        }
     }
 
-    update() {
-        this.specialAccountService.getAll().subscribe(specialAccounts => {
+    update(): void {
+        this.specialAccountService.getAll()
+        .subscribe(specialAccounts => {
             this.specialAccountData = new MatTableDataSource(specialAccounts);
             this.specialAccountData.paginator = this.paginator;
             this.specialAccountData.sort = this.sort;
         });
     }
 
-    edit(specialAccount: SpecialAccount) {
+    edit(specialAccount: SpecialAccount): void {
         this.router.navigate(['/specialaccounts', specialAccount.id]);
     }
 
-    delete(specialAccount: SpecialAccount, code: Number) {
+    delete(specialAccount: SpecialAccount, code: Number): void {
 
         this.specialAccountService.delete(specialAccount.id, code)
         .subscribe(() => {
@@ -59,13 +59,12 @@ export class SpecialAccountListComponent implements OnInit {
     openDialog(specialAccount: SpecialAccount): void {
         const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
-            data: { message: 'Suppression du compte special: ' + specialAccount.connection.username }
+            data: { message: `Suppression du compte special: ${specialAccount.connection.username}` }
         });
 
-        dialogRef.afterClosed().subscribe(code => {
-            if (code) {
-                this.delete(specialAccount, code);
-            }
+        dialogRef.afterClosed()
+        .subscribe(code => {
+            if (code) this.delete(specialAccount, code);
         });
     }
 }

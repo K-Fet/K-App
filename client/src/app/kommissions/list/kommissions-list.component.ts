@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Kommission } from '../../_models';
-import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
@@ -9,7 +9,6 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-
 
 @Component({
   templateUrl: './kommissions-list.component.html',
@@ -24,32 +23,32 @@ export class KommissionsListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private kommissionService: KommissionService,
-        private toasterService: ToasterService,
-        private router: Router,
-        private dialog: MatDialog,
-        private ngxPermissionsService: NgxPermissionsService) {
+                private toasterService: ToasterService,
+                private router: Router,
+                private dialog: MatDialog,
+                private ngxPermissionsService: NgxPermissionsService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.update();
-        if (!this.ngxPermissionsService.getPermissions()['kommission:write']) {
+        if (!this.ngxPermissionsService.getPermissions()['kommission:write'])
             this.displayedColumns = ['name', 'description'];
-        }
     }
 
-    update() {
-        this.kommissionService.getAll().subscribe(kommissions => {
+    update(): void {
+        this.kommissionService.getAll()
+        .subscribe(kommissions => {
             this.kommissionsData = new MatTableDataSource(kommissions);
             this.kommissionsData.paginator = this.paginator;
             this.kommissionsData.sort = this.sort;
         });
     }
 
-    edit(kommission: Kommission) {
+    edit(kommission: Kommission): void {
         this.router.navigate(['/kommissions', kommission.id]);
     }
 
-    delete(kommission: Kommission) {
+    delete(kommission: Kommission): void {
         this.kommissionService.delete(kommission.id)
         .subscribe(() => {
             this.toasterService.showToaster('Kommission supprimée');
@@ -60,17 +59,17 @@ export class KommissionsListComponent implements OnInit {
     openConfirmationDialog(kommission: Kommission): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '350px',
-            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + kommission.name + ' ?'}
+            data: { title: 'Confirmation', message: `Confirmez-vous la suppression de ${kommission.name}?`}
         });
 
-        dialogRef.afterClosed().subscribe(choice => {
-            if (choice) {
+        dialogRef.afterClosed()
+        .subscribe(choice => {
+            if (choice)
                 this.delete(kommission);
-            }
         });
     }
 
-    applyFilter(filterValue: string) {
+    applyFilter(filterValue: string): void {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.kommissionsData.filter = filterValue;

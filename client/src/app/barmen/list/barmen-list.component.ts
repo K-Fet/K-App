@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Barman } from '../../_models/index';
 import { BarmanService } from '../../_services/index';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 
 import 'rxjs/add/observable/fromEvent';
@@ -21,28 +21,29 @@ export class BarmenListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private barmanService: BarmanService,
-        private router: Router) {
+                private router: Router) {
     }
 
-    ngOnInit() {
-        this.barmanService.getAll().subscribe(barmen => {
+    ngOnInit(): void {
+        this.barmanService.getAll()
+        .subscribe(barmen => {
             this.barmenData = new MatTableDataSource(barmen);
             this.barmenData.paginator = this.paginator;
             this.barmenData.sort = this.sort;
         });
     }
 
-    applyFilter(filterValue: string) {
+    applyFilter(filterValue: string): void {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.barmenData.filter = filterValue;
     }
 
-    view(barman: Barman) {
+    view(barman: Barman): void {
         this.router.navigate(['/barmen', barman.id]);
     }
 
-    edit(barman: Barman) {
+    edit(barman: Barman): void {
         this.router.navigate(['/barmen', barman.id, 'edit']);
     }
 }

@@ -4,7 +4,7 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Moment } from 'moment';
 
 @Component({
-    selector: 'app-week-picker',
+    selector: 'ngx-week-picker',
     templateUrl: './week-picker.component.html'
 })
 
@@ -17,18 +17,19 @@ export class WeekPickerComponent implements OnInit {
         this.serviceService.$weekInterval.subscribe(weekInterval => {
             this.weekInterval = weekInterval;
         });
-        this.serviceService.getWeek().subscribe(week => {
+        this.serviceService.getWeek()
+        .subscribe(week => {
             this.week = week;
         });
     }
 
     constructor( private serviceService: ServiceService) {}
 
-    next() {
+    next(): void {
         this.serviceService.$weekInterval.next(+this.weekInterval + 1);
     }
 
-    previous() {
+    previous(): void {
         this.serviceService.$weekInterval.next(+this.weekInterval - 1);
     }
 }

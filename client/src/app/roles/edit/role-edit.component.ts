@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Role, Permission } from '../../_models/index';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Permission, Role } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
-import { RoleService, PermissionService } from '../../_services';
+import { PermissionService, RoleService } from '../../_services';
 
 @Component({
-  templateUrl: './role-edit.component.html',
+  templateUrl: './role-edit.component.html'
 })
 
 export class RoleEditComponent implements OnInit {
@@ -17,7 +17,7 @@ export class RoleEditComponent implements OnInit {
     permissions: Array<{
         permission: Permission,
         isChecked: Boolean,
-        initial: Boolean,
+        initial: Boolean
     }> = [];
 
     nameFormControl: FormControl = new FormControl('', [Validators.required]);
@@ -31,40 +31,42 @@ export class RoleEditComponent implements OnInit {
         private permissionService: PermissionService
     ) {}
 
-    ngOnInit() {
-        this.permissionService.getAll().subscribe(permissions => {
+    ngOnInit(): void {
+        this.permissionService.getAll()
+        .subscribe(permissions => {
             permissions.forEach(permission => {
                 this.permissions.push({
-                    permission: permission,
+                    permission,
                     isChecked: false,
-                    initial: false,
+                    initial: false
                 });
             });
         });
         this.route.params.subscribe(params => {
             this.id = params['id'];
-            this.roleService.getById(+this.id).subscribe(role => {
+            this.roleService.getById(+this.id)
+            .subscribe(role => {
                 this.name = role.name;
                 this.description = role.description;
-                if (role.permissions) {
+                if (role.permissions)
                     role.permissions.forEach(rolePermission => {
-                        if (this.permissions) {
+                        if (this.permissions)
                             this.permissions.filter(permission => {
                                 return rolePermission.id === permission.permission.id;
-                            }).forEach(permission => {
+                            })
+                            .forEach(permission => {
                                 permission.isChecked = true;
                                 permission.initial = true;
                             });
-                        }
                     });
-                }
             });
         });
     }
 
-    edit() {
+    edit(): void {
         const role = this.prepareEditing();
-        this.roleService.update(role).subscribe(() => {
+        this.roleService.update(role)
+        .subscribe(() => {
             this.toasterService.showToaster('Rôle modifié');
             this.router.navigate(['/roles']);
         });
@@ -83,24 +85,21 @@ export class RoleEditComponent implements OnInit {
         const remove = this.permissions.filter(permission => {
             return permission.isChecked === false && permission.initial !== permission.isChecked;
         });
-        if (add.length > 0) {
+        if (add.length > 0)
             role._embedded = {
                 permissions: {
-                    add: add.map(perm => perm.permission.id),
+                    add: add.map(perm => perm.permission.id)
                 }
             };
-        }
-        if (remove.length > 0) {
-            if (role._embedded) {
+        if (remove.length > 0)
+            if (role._embedded)
                 role._embedded.permissions.remove = remove.map(perm => perm.permission.id);
-            } else {
+            else
                 role._embedded = {
                     permissions: {
-                        remove: remove.map(perm => perm.permission.id),
+                        remove: remove.map(perm => perm.permission.id)
                     }
                 };
-            }
-        }
 
         return role;
     }

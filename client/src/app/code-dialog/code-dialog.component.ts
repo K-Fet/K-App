@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-dialog-overview-example-dialog',
-    templateUrl: './code-dialog.component.html',
+    selector: 'ngx-code-dialog',
+    templateUrl: './code-dialog.component.html'
 })
 export class CodeDialogComponent {
 

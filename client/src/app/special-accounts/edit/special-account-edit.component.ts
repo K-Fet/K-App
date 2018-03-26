@@ -1,18 +1,14 @@
-import { MeService } from './../../_services/me.service';
-import { NgxPermissionsService } from 'ngx-permissions';
-import { ConnectedUser } from './../../_models/ConnectedUser';
-import { LoginService } from './../../_services/login.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount, Permission } from '../../_models';
-import { ToasterService } from '../../_services';
-import { SpecialAccountService, PermissionService } from '../../_services';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { ConnectedUser, Permission, SpecialAccount } from '../../_models';
+import { LoginService, MeService, PermissionService, SpecialAccountService, ToasterService } from '../../_services';
 import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
-  templateUrl: './special-account-edit.component.html',
+  templateUrl: './special-account-edit.component.html'
 })
 
 export class SpecialAccountEditComponent implements OnInit {
@@ -26,7 +22,7 @@ export class SpecialAccountEditComponent implements OnInit {
     permissions: Array<{
         permission: Permission,
         isChecked: Boolean,
-        initial: Boolean,
+        initial: Boolean
     }> = [];
 
     constructor(
@@ -39,47 +35,50 @@ export class SpecialAccountEditComponent implements OnInit {
         private router: Router,
         private fb: FormBuilder,
         public dialog: MatDialog,
-        private meService: MeService,
+        private meService: MeService
     ) {
         this.createForms();
     }
 
-    createForms() {
+    createForms(): void {
         this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required, Validators.email]),
             description: new FormControl(''),
             code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),
-            password: new FormControl(''),
+            password: new FormControl('')
         });
     }
 
-    ngOnInit() {
-        this.permissionService.getAll().subscribe(permissions => {
+    ngOnInit(): void {
+        this.permissionService.getAll()
+        .subscribe(permissions => {
             permissions.forEach(permission => {
                 this.permissions.push({
-                    permission: permission,
+                    permission,
                     isChecked: false,
-                    initial: false,
+                    initial: false
                 });
             });
         });
         this.route.params.subscribe(params => {
-            this.specialAccountService.getById(params['id']).subscribe((specialAccount: SpecialAccount) => {
-                this.specialAccountForm.get('username').setValue(specialAccount.connection.username);
-                this.specialAccountForm.get('description').setValue(specialAccount.description ? specialAccount.description : '');
-                if (specialAccount.permissions) {
+            this.specialAccountService.getById(params['id'])
+            .subscribe((specialAccount: SpecialAccount) => {
+                this.specialAccountForm.get('username')
+                .setValue(specialAccount.connection.username);
+                this.specialAccountForm.get('description')
+                .setValue(specialAccount.description ? specialAccount.description : '');
+                if (specialAccount.permissions)
                     specialAccount.permissions.forEach(specialAccountPermission => {
-                        if (this.permissions) {
+                        if (this.permissions)
                             this.permissions.filter(permission => {
                                 return specialAccountPermission.id === permission.permission.id;
-                            }).forEach(permission => {
+                            })
+                            .forEach(permission => {
                                 permission.isChecked = true;
                                 permission.initial = true;
                             });
-                        }
                     });
-                }
                 this.currentSpecialAccount = specialAccount;
             });
         });
@@ -94,55 +93,52 @@ export class SpecialAccountEditComponent implements OnInit {
             data: { message: 'Edition d\'un compte special' }
         });
 
-        dialogRef.afterClosed().subscribe(code => {
-            if (code) {
-                this.edit(code);
-            }
+        dialogRef.afterClosed()
+        .subscribe(code => {
+            if (code) this.edit(code);
         });
     }
 
-    edit(code: Number) {
+    edit(code: Number): void {
         const specialAccount = this.prepareEditing();
         if (this.isMe()) {
             this.currentUser.specialAccount = specialAccount;
-            this.meService.put(this.currentUser).subscribe(() => {
+            this.meService.put(this.currentUser)
+            .subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/specialaccounts'] );
-                this.loginService.me().subscribe();
+                this.loginService.me()
+                .subscribe();
             });
-        } else {
-            this.specialAccountService.update(specialAccount, code).subscribe(() => {
+        } else
+            this.specialAccountService.update(specialAccount, code)
+            .subscribe(() => {
                 this.toasterService.showToaster('Compte special modifié');
                 this.router.navigate(['/specialaccounts']);
             });
-        }
     }
 
     prepareEditing(): SpecialAccount {
         const specialAccount = new SpecialAccount({
-            id: this.currentSpecialAccount.id,
+            id: this.currentSpecialAccount.id
         });
 
         const formValues = this.specialAccountForm.value;
 
         // Simple field
-        if (this.currentSpecialAccount.description !== formValues.description) {
+        if (this.currentSpecialAccount.description !== formValues.description)
             specialAccount.description = formValues.description;
-        }
-        if (this.currentSpecialAccount.connection.username !== formValues.username) {
+        if (this.currentSpecialAccount.connection.username !== formValues.username)
             specialAccount.connection = {
                 username: formValues.username
             };
-        }
-        if (formValues.password) {
+        if (formValues.password)
             specialAccount.connection = {
                 ...specialAccount.connection,
                 password: formValues.password
             };
-        }
-        if (formValues.code) {
+        if (formValues.code)
             specialAccount.code = formValues.code;
-        }
 
         // Associations
         const add = this.permissions.filter(permission => {
@@ -151,24 +147,22 @@ export class SpecialAccountEditComponent implements OnInit {
         const remove = this.permissions.filter(permission => {
             return permission.isChecked === false && permission.initial !== permission.isChecked;
         });
-        if (add.length > 0) {
+        if (add.length > 0)
             specialAccount._embedded = {
                 permissions: {
-                    add: add.map(perm => perm.permission.id),
+                    add: add.map(perm => perm.permission.id)
                 }
             };
-        }
-        if (remove.length > 0) {
-            if (specialAccount._embedded) {
+        if (remove.length > 0)
+            if (specialAccount._embedded)
                 specialAccount._embedded.permissions.remove = remove.map(perm => perm.permission.id);
-            } else {
+            else
                 specialAccount._embedded = {
                     permissions: {
-                        remove: remove.map(perm => perm.permission.id),
+                        remove: remove.map(perm => perm.permission.id)
                     }
                 };
-            }
-        }
+
         return specialAccount;
     }
 
@@ -179,9 +173,8 @@ export class SpecialAccountEditComponent implements OnInit {
         const remove = this.permissions.filter(permission => {
             return permission.isChecked === false && permission.initial !== permission.isChecked;
         });
-        if (!this.specialAccountForm.valid) {
-            return true;
-        }
+        if (!this.specialAccountForm.valid) return true;
+
         return this.currentSpecialAccount.connection.username === this.specialAccountForm.get('username').value
             && this.currentSpecialAccount.description === this.specialAccountForm.get('description').value
             && add.length === 0
@@ -200,12 +193,20 @@ export class SpecialAccountEditComponent implements OnInit {
 
     codesMatch(): Boolean {
         if (this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value) {
-            this.specialAccountForm.get('code').setErrors({'incorrect': true});
-            this.specialAccountForm.get('codeConfirmation').setErrors({'incorrect': true});
+            this.specialAccountForm.get('code')
+            .setErrors({incorrect: true});
+            this.specialAccountForm.get('codeConfirmation')
+            .setErrors({incorrect: true});
+
             return false;
         }
-        this.specialAccountForm.get('code').setErrors(null);
-        this.specialAccountForm.get('codeConfirmation').setErrors(null);
+        this.specialAccountForm.get('code')
+        // tslint:disable-next-line:no-null-keyword
+        .setErrors(null);
+        this.specialAccountForm.get('codeConfirmation')
+        // tslint:disable-next-line:no-null-keyword
+        .setErrors(null);
+
         return true;
     }
 }

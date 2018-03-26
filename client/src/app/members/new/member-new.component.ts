@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MemberService } from '../../_services/member.service';
 import { Router } from '@angular/router';
 import { Member } from '../../_models/index';
@@ -8,7 +8,7 @@ import { FormArray } from '@angular/forms/src/model';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 @Component({
-  templateUrl: './member-new.component.html',
+  templateUrl: './member-new.component.html'
 })
 
 export class MemberNewComponent implements OnInit {
@@ -48,12 +48,13 @@ export class MemberNewComponent implements OnInit {
         });
     }
 
-    add() {
+    add(): void {
         const member = new Member();
         member.firstName = this.firstName;
         member.lastName = this.lastName;
         member.school = this.school;
-        this.memberService.create(member, this.code).subscribe(() => {
+        this.memberService.create(member, this.code)
+        .subscribe(() => {
             this.toasterService.showToaster('Adhérent créé');
             this.router.navigate(['/members'] );
         });

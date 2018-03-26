@@ -1,25 +1,25 @@
-import {Component, OnInit} from '@angular/core';
-import { Service, ConnectedUser, Day } from '../../_models/index';
-import { ServiceService, ToasterService, BarmanService, LoginService } from '../../_services/index';
+import { Component, OnInit } from '@angular/core';
+import { ConnectedUser, Day, Service } from '../../_models/index';
+import { BarmanService, LoginService, ServiceService, ToasterService } from '../../_services/index';
 
 @Component({
-    selector: 'app-plan-my-services',
-    templateUrl: './plan-my-services.component.html',
+    selector: 'ngx-plan-my-services',
+    templateUrl: './plan-my-services.component.html'
 })
 
 export class PlanMyServicesComponent implements OnInit {
 
-    myServices: Service[];
-    dayServices: Service[];
-    days: Day[] = new Array<Day>();
+    myServices: Array<Service>;
+    dayServices: Array<Service>;
+    days: Array<Day> = new Array<Day>();
     user: ConnectedUser;
 
     constructor(private serviceService: ServiceService,
-        private loginService: LoginService,
-        private barmanService: BarmanService,
-        private toasterService: ToasterService) {}
+                private loginService: LoginService,
+                private barmanService: BarmanService,
+                private toasterService: ToasterService) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         // Get connected user
         this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
@@ -32,8 +32,10 @@ export class PlanMyServicesComponent implements OnInit {
 
     updatePlanning(dayNumber: Number): void {
          // Get the planning of the current week
-         this.serviceService.getWeek().subscribe(week => {
-            this.serviceService.getPlanning(week.start, week.end).subscribe(days => {
+         this.serviceService.getWeek()
+         .subscribe(week => {
+            this.serviceService.getPlanning(week.start, week.end)
+            .subscribe(days => {
                 if (days.length > 0) {
                     this.days = days;
                     this.updateDayDetails(this.days[+dayNumber]);
@@ -47,56 +49,53 @@ export class PlanMyServicesComponent implements OnInit {
 
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {
-            if (currentDay === day) {
-                currentDay.active = true;
-            } else {
-                currentDay.active = false;
-            }
+            currentDay.active = currentDay === day ? true : false;
+
             return currentDay;
         });
         this.dayServices = this.days.filter(currentDay => {
             return currentDay.active === true;
-        }).map(currentDay => {
+        })
+        .map(currentDay => {
             currentDay.services.map(service => {
-                if  (service.barmen && service.barmen.length === 0) {
+                if  (service.barmen && service.barmen.length === 0)
                     service.barmen = undefined;
-                }
+
                 return service;
             });
+
             return currentDay.services;
         })[0];
     }
 
-    updateMyServices() {
-        if (this.user.barman) {
-            this.serviceService.getWeek().subscribe(week => {
-                this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                    if (services.length > 0) {
-                        this.myServices = services;
-                    } else {
-                        this.myServices = undefined;
-                    }
+    updateMyServices(): void {
+        if (this.user.barman)
+            this.serviceService.getWeek()
+            .subscribe(week => {
+                this.barmanService.getServices(this.user.barman.id, week.start, week.end)
+                .subscribe(services => {
+                    this.myServices = services.length > 0 ? services : undefined;
                 });
             });
-        }
     }
 
-    addService(service: Service) {
-        if (this.user.barman) {
-            this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
+    addService(service: Service): void {
+        if (this.user.barman)
+            this.barmanService.addService(this.user.barman.id, [service.id])
+            .subscribe(() => {
                 this.toasterService.showToaster('Service enregistré');
                 this.updateMyServices();
                 const dayNumber = this.getCurrentDayIndex();
                 this.updatePlanning(dayNumber);
             });
-        }
     }
     getCurrentDayIndex(): Number {
         return this.days.indexOf(this.days.filter(day => day.active === true)[0]);
     }
 
-    removeService(service: Service) {
-        this.barmanService.removeService(this.user.barman.id, [service.id]).subscribe(() => {
+    removeService(service: Service): void {
+        this.barmanService.removeService(this.user.barman.id, [service.id])
+        .subscribe(() => {
             this.toasterService.showToaster('Service supprimé');
             this.updateMyServices();
             const dayNumber = this.getCurrentDayIndex();
@@ -104,9 +103,10 @@ export class PlanMyServicesComponent implements OnInit {
         });
     }
     available(service: Service): Boolean {
-        if (!service.barmen || service.barmen.map(barman => barman.id).indexOf(this.user.barman.id)) {
+        if (!service.barmen || service.barmen.map(barman => barman.id)
+        .indexOf(this.user.barman.id))
             return true;
-        }
+
         return false;
     }
 }

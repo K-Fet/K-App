@@ -1,14 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { CommonModule, registerLocaleData } from '@angular/common';
 
 // Forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatDatetimepickerModule,
-    MatNativeDatetimeModule,
+    MatNativeDatetimeModule
   } from '@mat-datetimepicker/core';
 
 // Libraries
@@ -48,9 +48,9 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 // Services
-import { ToasterService, LoginService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
+import { BarmanService, KommissionService, LoginService,
+    MemberService, MeService, PermissionService, RoleService,
+    ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services/';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -60,15 +60,12 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
-
-import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-
 
 @NgModule({
     declarations: [
@@ -104,7 +101,7 @@ import { MaterialModule } from './_helpers/material.module';
     ],
     entryComponents: [
         CodeDialogComponent,
-        ConfirmationDialogComponent,
+        ConfirmationDialogComponent
     ],
     imports: [
         CommonModule,
@@ -138,7 +135,7 @@ import { MaterialModule } from './_helpers/material.module';
         },
         {
             provide: ErrorHandler,
-            useClass: ErrorsHandler,
+            useClass: ErrorsHandler
         },
         {
             provide: HTTP_INTERCEPTORS,

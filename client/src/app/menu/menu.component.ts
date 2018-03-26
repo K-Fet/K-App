@@ -1,5 +1,5 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
@@ -17,7 +17,7 @@ interface SubMenu {
 }
 
 @Component({
-    selector: 'app-menu',
+    selector: 'ngx-menu',
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.scss']
 })
@@ -110,8 +110,9 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.router = router;
     }
 
-    logout() {
-        this.loginService.logout().subscribe(() => {
+    logout(): void {
+        this.loginService.logout()
+        .subscribe(() => {
             this.toasterService.showToaster('Déconnexion réussie');
         });
     }
@@ -119,9 +120,8 @@ export class MenuComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         this.loginService.$currentUser.subscribe(user => {
             this.user = user;
-            if (this.user.isGuest) {
+            if (this.user.isGuest)
                 this.sideNav.opened = false;
-            }
         });
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
+import { BarmanService, KommissionService, RoleService, ToasterService } from '../../_services/index';
 import { Barman, Kommission, Role } from '../../_models/index';
 
 @Component({
@@ -12,15 +12,15 @@ export class BarmanNewComponent implements OnInit {
 
     barman: Barman = new Barman();
 
-    kommissions: Kommission[] = new Array<Kommission>();
-    roles: Role[] = new Array<Role>();
-    barmen: Barman[] = new Array<Barman>();
+    kommissions: Array<Kommission> = new Array<Kommission>();
+    roles: Array<Role> = new Array<Role>();
+    barmen: Array<Barman> = new Array<Barman>();
 
     barmanForm: FormGroup;
 
     selectedGodFather: Number;
-    selectedKommissions: Number[];
-    selectedRoles: Number[];
+    selectedKommissions: Array<Number>;
+    selectedRoles: Array<Number>;
 
     startDate = new Date();
 
@@ -35,7 +35,7 @@ export class BarmanNewComponent implements OnInit {
         this.createForm();
     }
 
-    createForm() {
+    createForm(): void {
         this.barmanForm = this.fb.group({
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
@@ -55,35 +55,40 @@ export class BarmanNewComponent implements OnInit {
 
     ngOnInit(): void {
         // Get kommissions
-        this.kommissionService.getAll().subscribe(kommissions => {
+        this.kommissionService.getAll()
+        .subscribe(kommissions => {
             this.kommissions = kommissions;
         });
 
         // Get roles
-        this.roleService.getAll().subscribe(roles => {
+        this.roleService.getAll()
+        .subscribe(roles => {
             this.roles = roles;
         });
 
         // Get barmen
-        this.barmanService.getAll().subscribe(barmen => {
+        this.barmanService.getAll()
+        .subscribe(barmen => {
             this.barmen = barmen;
         });
     }
 
-    add() {
+    add(): void {
         this.prepareSaving();
-        this.barmanService.create(this.barman).subscribe(() => {
+        this.barmanService.create(this.barman)
+        .subscribe(() => {
             this.toasterService.showToaster('Barman créé');
             this.router.navigate(['/barmen'] );
         });
     }
 
-    prepareSaving() {
+    prepareSaving(): void {
         this.barman._embedded = {};
         this.barman.connection = {};
-        Object.keys(this.barmanForm.controls).forEach(key => {
-            let add: Number[] = [];
-            if (this.barmanForm.controls[key].value) {
+        Object.keys(this.barmanForm.controls)
+        .forEach(key => {
+            let add: Array<Number> = [];
+            if (this.barmanForm.controls[key].value)
                 switch (key) {
                     case 'username':
                         this.barman.connection.username = this.barmanForm.controls.username.value;
@@ -99,20 +104,19 @@ export class BarmanNewComponent implements OnInit {
                         this.barmanForm.controls.kommissions.value.forEach(idKommission => {
                             add.push(idKommission);
                         });
-                        this.barman._embedded.kommissions = { add: add };
+                        this.barman._embedded.kommissions = { add };
                         break;
                     case 'roles':
                         add = [];
                         this.barmanForm.controls.roles.value.forEach(idRole => {
                             add.push(idRole);
                         });
-                        this.barman._embedded.roles = { add: add };
+                        this.barman._embedded.roles = { add };
                         break;
                     default:
                         this.barman[key] = this.barmanForm.controls[key].value;
                         break;
                 }
-            }
         });
     }
 }
