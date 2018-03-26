@@ -16,7 +16,7 @@
                                 <mat-select placeholder="Template" formControlName="templateSelectorFormControl" 
                                     [(ngModel)]="selectedTemplate" name="template">
                                     <mat-option *ngFor="let template of templates" [value]="template">
-                                        {{template.name}}
+                                        {{ template.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -24,8 +24,8 @@
                     </mat-step>
                     <mat-step formArrayName="1" [stepControl]="generalFormArray.get([1])" label="Services">
                         <ng-template matStepLabel>
-                            Services du {{getFirstServiceDate() | date:'EEEE d LLLL':'':'fr'}} 
-                            au {{getLastServiceDate() | date:'EEEE d LLLL':'':'fr'}}
+                            Services du {{ getFirstServiceDate() | date:'EEEE d LLLL':'':'fr' }} 
+                            au {{ getLastServiceDate() | date:'EEEE d LLLL':'':'fr' }}
                         </ng-template>
                         <mat-accordion>
                             <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i">
@@ -36,9 +36,9 @@
                                                 <mat-icon fxFlex="10px">remove</mat-icon>
                                             </button>
                                             <span *ngIf="getControls()[i].controls.startAtFormControl.value">
-                                                {{getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr'}}
-                                                de {{getControls()[i].controls.startAtFormControl.value | date:'H'}}h
-                                                à {{getControls()[i].controls.endAtFormControl.value | date:'H'}}h
+                                                {{ getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr' }}
+                                                de {{ getControls()[i].controls.startAtFormControl.value | date:'H' }}h
+                                                à {{ getControls()[i].controls.endAtFormControl.value | date:'H' }}h
                                             </span>
                                             <ng-template #elseBlock>
                                                 Non défini...

@@ -178,42 +178,17 @@
         "use-pipe-transform-interface": true,
         "component-class-suffix": true,
         "directive-class-suffix": true,
-        "angular-whitespace": [
-            true,
-            "check-interpolation",
-            "check-pipe"
-          ],
-          "banana-in-box": true,
-          "templates-no-negated-async": true,
-          "directive-selector": [
-            true,
-            "attribute",
-            [
-              "ngx",
-              "test"
-            ],
-            "camelCase"
-          ],
-          "component-selector": [
-            true,
-            "element",
-            [
-              "ngx",
-              "test"
-            ],
-            "kebab-case"
-          ],
-          "use-view-encapsulation": true,
-          "no-attribute-parameter-decorator": true,
-          "no-output-on-prefix": true,
-          "no-forward-ref": true,
-          "contextual-life-cycle": true,
-          "trackBy-function": true,
-          "pipe-naming": [
-            true,
-            "camelCase",
-            "ngx"
-          ],
-          "pipe-impure": true
+        "angular-whitespace": [true, "check-interpolation", "check-pipe"],
+        "banana-in-box": true,
+        "templates-no-negated-async": true,
+        "directive-selector": [true, "attribute", ["ngx", "test"], "camelCase"],
+        "component-selector": [true, "element", ["ngx", "test"], "kebab-case"],
+        "use-view-encapsulation": true,
+        "no-attribute-parameter-decorator": true,
+        "no-output-on-prefix": true,
+        "no-forward-ref": true,
+        "contextual-life-cycle": true,
+        "pipe-naming": [true, "camelCase", "ngx"],
+        "pipe-impure": true
     }
 }

@@ -21,17 +21,17 @@
                 <mat-table #table [dataSource]="membersData" matSort>
                     <ng-container matColumnDef="lastName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
-                        <mat-cell *matCellDef="let member"> {{member.lastName}} </mat-cell>
+                        <mat-cell *matCellDef="let member"> {{ member.lastName }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="firstName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
-                        <mat-cell *matCellDef="let member"> {{member.firstName}} </mat-cell>
+                        <mat-cell *matCellDef="let member"> {{ member.firstName }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="school">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> École </mat-header-cell>
-                        <mat-cell *matCellDef="let member"> {{member.school}} </mat-cell>
+                        <mat-cell *matCellDef="let member"> {{ member.school }} </mat-cell>
                     </ng-container>
                     
                     <ng-container matColumnDef="action">

@@ -8,10 +8,10 @@
     </mat-card-header>
     <mat-card-content>
         <div>
-            <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
+            <div fxFlex="{{ 100/days.length }}" fxLayoutAlign="center" *ngFor="let day of days">
                 <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)"
                 [color]="day.active ? 'accent' : 'primary'">
-                    {{day.name}}
+                    {{ day.name }}
                 </button>
             </div>
         </div>
@@ -19,10 +19,10 @@
             <mat-list *ngIf="dayServices">
                 <mat-list-item *ngFor="let service of dayServices">
                     <span mat-line>
-                        De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                        De {{ service.startAt | date:'H' }}h à {{ service.endAt | date:'H' }}h
                     </span>
                     <span mat-line *ngIf="service.barmen" class="mat-caption">
-                        Avec <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                        Avec <span *ngFor="let barman of service.barmen">{{ barman.nickname }}</span>
                     </span>
                     <span mat-line *ngIf="!service.barmen" class="mat-caption">
                         Aucun barmen pour le moment...

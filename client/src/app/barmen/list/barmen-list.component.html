@@ -21,17 +21,17 @@
                 <mat-table #table [dataSource]="barmenData" matSort>
                     <ng-container matColumnDef="nickname">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.nickname}} </mat-cell>
+                        <mat-cell *matCellDef="let barman"> {{ barman.nickname }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="lastName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.lastName}} </mat-cell>
+                        <mat-cell *matCellDef="let barman"> {{ barman.lastName }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="firstName">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.firstName}} </mat-cell>
+                        <mat-cell *matCellDef="let barman"> {{ barman.firstName }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="action">

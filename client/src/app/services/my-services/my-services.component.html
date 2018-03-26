@@ -9,8 +9,8 @@
     <mat-card-content>
         <mat-list *ngIf="myServices">
             <mat-list-item *ngFor="let service of myServices">
-                {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de 
-                    {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                {{ service.startAt | date:'EEEE d LLLL':'':'fr' }} de 
+                {{ service.startAt | date:'H' }}h à {{ service.endAt | date:'H' }}h
             </mat-list-item>
         </mat-list>
         <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>

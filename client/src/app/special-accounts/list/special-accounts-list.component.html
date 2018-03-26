@@ -16,11 +16,11 @@
                 <mat-table #table [dataSource]="specialAccountData" matSort>
                     <ng-container matColumnDef="username">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Username </mat-header-cell>
-                        <mat-cell *matCellDef="let specialAccount"> {{specialAccount.connection.username}} </mat-cell>
+                        <mat-cell *matCellDef="let specialAccount"> {{ specialAccount.connection.username }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="description">
                         <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-                        <mat-cell *matCellDef="let specialAccount"> {{specialAccount.description}} </mat-cell>
+                        <mat-cell *matCellDef="let specialAccount"> {{ specialAccount.description }} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="action">
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>

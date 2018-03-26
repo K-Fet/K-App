@@ -27,7 +27,7 @@
                 <h4>Permissions</h4>
                 <div *ngFor="let permission of permissions">
                     <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
-                        {{permission.permission.name}}
+                        {{ permission.permission.name }}
                     </mat-checkbox>
                 </div>
                 <div fxLayoutAlign="center">

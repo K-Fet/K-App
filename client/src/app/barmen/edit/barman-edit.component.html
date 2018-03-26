@@ -41,17 +41,17 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
-                        <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
+                        <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{ godFather.nickname }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
-                        <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
+                        <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{ kommission.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
-                        <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
+                        <mat-option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-checkbox formControlName="active">Actif</mat-checkbox>
