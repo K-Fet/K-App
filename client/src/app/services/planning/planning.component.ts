@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceService, ToasterService } from '../../_services/index';
+import { ServiceService } from '../../_services/index';
 import { Day, Service } from '../../_models/index';
 
 @Component({

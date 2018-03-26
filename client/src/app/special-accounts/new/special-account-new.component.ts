@@ -20,14 +20,12 @@ export class SpecialAccountNewComponent implements OnInit {
         isChecked: Boolean,
     }> = [];
 
-    constructor(
-        private specialAccountService: SpecialAccountService,
+    constructor(private specialAccountService: SpecialAccountService,
         private permissionService: PermissionService,
         private toasterService: ToasterService,
         private router: Router,
         private fb: FormBuilder,
-        public dialog: MatDialog
-    ) {
+        public dialog: MatDialog) {
         this.createForms();
     }
 
@@ -100,7 +98,7 @@ export class SpecialAccountNewComponent implements OnInit {
         return specialAccount;
     }
 
-    disable (): Boolean {
+    disable(): Boolean {
         const add = this.permissions.filter(permission => {
             return permission.isChecked === true;
         });

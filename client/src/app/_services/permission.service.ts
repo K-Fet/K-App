@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Permission } from '../_models/index';
@@ -10,7 +11,7 @@ export class PermissionService {
 
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<Permission[]>('/api/permissions');
+    getAll(): Observable<Array<Permission>> {
+        return this.http.get<Array<Permission>>('/api/permissions');
     }
 }

@@ -1,5 +1,4 @@
-import { Permission, AssociationChanges } from './index';
-
+import { AssociationChanges, Permission } from './index';
 
 export class Role {
 
@@ -8,10 +7,10 @@ export class Role {
     description: String;
 
     // Association
-    permissions: Permission[];
+    permissions: Array<Permission>;
 
     _embedded: {
-        permissions?: AssociationChanges,
+        permissions?: AssociationChanges
     };
 
     constructor(values: Object = {}) {

@@ -5,7 +5,7 @@ export class Day {
     name: String;
     date: Moment;
     active: Boolean;
-    services: Service[];
+    services: Array<Service>;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

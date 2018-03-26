@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService,
-    KommissionService, RoleService, LoginService, MeService } from '../../_services';
-import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BarmanService, KommissionService,
+    LoginService, MeService, RoleService, ToasterService } from '../../_services';
+import { AssociationChanges, Barman, ConnectedUser, Kommission, Role } from '../../_models';
 
 @Component({
   templateUrl: './barman-edit.component.html'
@@ -17,12 +17,12 @@ export class BarmanEditComponent implements OnInit {
     barman: Barman = new Barman();
 
     selectedGodFather: Number;
-    selectedKommissions: Number[];
-    selectedRoles: Number[];
+    selectedKommissions: Array<Number>;
+    selectedRoles: Array<Number>;
 
-    kommissions: Kommission[] = new Array<Kommission>();
-    roles: Role[] = new Array<Role>();
-    barmen: Barman[] = new Array<Barman>();
+    kommissions: Array<Kommission> = new Array<Kommission>();
+    roles: Array<Role> = new Array<Role>();
+    barmen: Array<Barman> = new Array<Barman>();
 
     barmanForm: FormGroup;
 
@@ -42,7 +42,7 @@ export class BarmanEditComponent implements OnInit {
         this.createForm();
     }
 
-    createForm() {
+    createForm(): void {
         this.barmanForm = this.fb.group({
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
@@ -65,7 +65,8 @@ export class BarmanEditComponent implements OnInit {
         // Get barman information and fill up form
         this.route.params.subscribe(params => {
             this.barman.id = params['id'];
-            this.barmanService.getById(+this.barman.id).subscribe(barman => {
+            this.barmanService.getById(+this.barman.id)
+            .subscribe(barman => {
                 this.currentBarman = barman;
                 this.barman.id = barman.id;
 
@@ -85,17 +86,20 @@ export class BarmanEditComponent implements OnInit {
         });
 
         // Get kommissions
-        this.kommissionService.getAll().subscribe(kommissions => {
+        this.kommissionService.getAll()
+        .subscribe(kommissions => {
             this.kommissions = kommissions;
         });
 
         // Get roles
-        this.roleService.getAll().subscribe(roles => {
+        this.roleService.getAll()
+        .subscribe(roles => {
             this.roles = roles;
         });
 
         // Get barmen
-        this.barmanService.getAll().subscribe(barmen => {
+        this.barmanService.getAll()
+        .subscribe(barmen => {
             this.barmen = barmen;
         });
 
@@ -105,82 +109,82 @@ export class BarmanEditComponent implements OnInit {
         });
     }
 
-    edit() {
+    edit(): void {
         this.prepareSaving();
         if (this.isMe()) {
             this.connectedUser.barman = this.barman;
-            this.meService.put(this.connectedUser).subscribe(() => {
+            this.meService.put(this.connectedUser)
+            .subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/barmen'] );
             });
-        } else {
-            this.barmanService.update(this.barman).subscribe(() => {
+        } else
+            this.barmanService.update(this.barman)
+            .subscribe(() => {
                 this.toasterService.showToaster('Barman modifié');
                 this.router.navigate(['/barmen'] );
             });
-        }
     }
 
-    prepareSaving() {
+    prepareSaving(): void {
         const values = this.barmanForm.value;
-        this.currentBarman.connection.password = null;
-        Object.keys(this.currentBarman).forEach(key => {
+        this.currentBarman.connection.password = undefined;
+        Object.keys(this.currentBarman)
+        .forEach(key => {
             switch (key) {
                 case 'connection':
-                    if (values.username !== this.currentBarman.connection.username) {
+                    if (values.username !== this.currentBarman.connection.username)
                         this.barman.connection = {
                             ...this.barman.connection,
-                            username: values.username,
+                            username: values.username
                         };
-                    } else if (values.password) {
+                    else if (values.password)
                         this.barman.connection = {
                             ...this.barman.connection,
-                            password: values.password,
+                            password: values.password
                         };
-                    }
                     break;
                 case 'godFather':
                     if (this.barmanForm.controls.godFather.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) this.barman._embedded = {};
                         this.barman._embedded.godFather = this.selectedGodFather;
                     }
                     break;
                 case 'kommissions':
                     if (this.barmanForm.controls.kommissions.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) this.barman._embedded = {};
                         this.barman._embedded.kommissions = this.prepareAssociationChanges(
                             this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
                     }
                     break;
                 case 'roles':
                     if (this.barmanForm.controls.roles.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) this.barman._embedded = {};
                         this.barman._embedded.roles = this.prepareAssociationChanges(
                             this.currentBarman.roles, this.barmanForm.controls.roles.value);
                     }
                     break;
                 default:
-                    if (this.barmanForm.controls[key] && this.currentBarman[key] !== this.barmanForm.controls[key].value) {
+                    if (this.barmanForm.controls[key] && this.currentBarman[key] !== this.barmanForm.controls[key].value)
                         this.barman[key] = this.barmanForm.controls[key].value;
-                    }
                     break;
             }
         });
     }
 
     prepareAssociationChanges(current, updated): AssociationChanges {
-        const add: Number[] = [];
-        const remove: Number[] = [];
+        const add: Array<Number> = [];
+        const remove: Array<Number> = [];
         updated.forEach(aId => {
-            if (!current.map(a => a.id).includes(aId)) {
+            // tslint:disable-next-line:newline-per-chained-call
+            if (!current.map(a => a.id).includes(aId))
                 add.push(aId);
-            }
         });
         current.map(a => {
-            if (!updated.includes(a.id)) {
+            if (!updated.includes(a.id))
                 remove.push(a.id);
-            }
         });
+
         return { add, remove };
     }
 

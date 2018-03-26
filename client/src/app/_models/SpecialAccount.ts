@@ -1,4 +1,4 @@
-import { ConnectionInformation, Permission, AssociationChanges } from './index';
+import { AssociationChanges, ConnectionInformation, Permission } from './index';
 
 export class SpecialAccount {
 
@@ -10,10 +10,10 @@ export class SpecialAccount {
 
     // Association
     connection: ConnectionInformation;
-    permissions: Permission[];
+    permissions: Array<Permission>;
 
     _embedded: {
-        permissions?: AssociationChanges,
+        permissions?: AssociationChanges
     };
 
     constructor(values: Object = {}) {

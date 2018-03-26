@@ -23,7 +23,7 @@ export class OpenServicesComponent implements OnInit {
     generalFormArray: FormArray;
     generalFormGroup: FormGroup;
 
-    constructor (private templateService: TemplateService,
+    constructor(private templateService: TemplateService,
         private toasterService: ToasterService,
         private serviceService: ServiceService,
         private formBuilder: FormBuilder,

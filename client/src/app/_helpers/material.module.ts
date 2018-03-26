@@ -31,11 +31,11 @@ import {
     MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
+    MatStepperModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
-    MatStepperModule
+    MatTooltipModule
 } from '@angular/material';
 
 @NgModule({

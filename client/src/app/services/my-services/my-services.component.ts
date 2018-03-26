@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
+import { BarmanService, LoginService, ServiceService } from '../../_services/';
 import { Service, ConnectedUser } from '../../_models/index';
 
 @Component({

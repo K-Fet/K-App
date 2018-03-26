@@ -5,34 +5,36 @@ import { Kommission } from '../_models/index';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class KommissionService {
 
-    dataChange: BehaviorSubject<Kommission[]> = new BehaviorSubject<Kommission[]>([]);
-    get data(): Kommission[] { return this.dataChange.value; }
+    dataChange: BehaviorSubject<Array<Kommission>> = new BehaviorSubject<Array<Kommission>>([]);
+    get data(): Array<Kommission> { return this.dataChange.value; }
 
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<Kommission[]>('/api/kommissions');
+    getAll(): Observable<Array<Kommission>> {
+        return this.http.get<Array<Kommission>>('/api/kommissions');
     }
 
-    getById(id: number) {
-        return this.http.get<Kommission>('/api/kommissions/' + id);
+    getById(id: number): Observable<Kommission> {
+        return this.http.get<Kommission>(`/api/kommissions/${id}`);
     }
 
-    create(kommission: Kommission) {
-        return this.http.post('/api/kommissions', kommission);
+    create(kommission: Kommission): Observable<Kommission> {
+        return this.http.post<Kommission>('/api/kommissions', kommission);
     }
 
-    update(kommission: Kommission) {
+    update(kommission: Kommission): Observable<Kommission> {
         const id = kommission.id;
         delete kommission.id;
-        return this.http.put('/api/kommissions/' + id, kommission);
+
+        return this.http.put<Kommission>(`/api/kommissions/${id}`, kommission);
     }
 
-    delete(id: Number) {
-        return this.http.delete('/api/kommissions/' + id);
+    delete(id: Number): Observable<Kommission> {
+        return this.http.delete<Kommission>(`/api/kommissions/${id}`);
     }
 }
