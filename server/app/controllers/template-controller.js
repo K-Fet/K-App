@@ -1,7 +1,8 @@
 const templateService = require('../services/template-service');
-const { Template } = require('../models');
-const { TemplateSchema } = require('../models/schemas');
+const { Template, TemplateUnit } = require('../models');
+const { TemplateSchema, TemplateUnitSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all templates from the database
@@ -24,7 +25,15 @@ async function getAllTemplates(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createTemplate(req, res) {
-    const schema = TemplateSchema.requiredKeys(
+    const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
+        'startAt',
+        'endAt',
+        'nbMax',
+    );
+
+    const schema = TemplateSchema.keys({
+        services: Joi.array().items(strictTemplateUnitSchema).min(1),
+    }).requiredKeys(
         'name',
         'services',
     );
@@ -34,7 +43,12 @@ async function createTemplate(req, res) {
 
     let newTemplate = new Template({
         ...req.body
-    });
+    }, { include: [
+        {
+            model: TemplateUnit,
+            as: 'services',
+        }
+    ] });
 
     newTemplate = await templateService.createTemplate(newTemplate);
 
@@ -64,14 +78,31 @@ async function getTemplateById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateTemplate(req, res) {
-    const schema = TemplateSchema.min(1);
+    const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
+        'startAt',
+        'endAt',
+        'nbMax',
+    );
 
-    const { error } = schema.validate(req.nody);
+    const schema = TemplateSchema.keys({
+        services: Joi.array().items(strictTemplateUnitSchema).min(1),
+    }).requiredKeys(
+        'name',
+        'services',
+    );
+
+    const { error } = schema.validate(req.body);
+
     if (error) throw createUserError('BadRequest', error.details[0].message);
 
     let newTemplate = new Template({
         ...req.body,
-    });
+    }, { include: [
+        {
+            model: TemplateUnit,
+            as: 'services',
+        }
+    ] });
 
     const templateId = req.params.id;
 
@@ -91,7 +122,7 @@ async function updateTemplate(req, res) {
 async function deleteTemplate(req, res) {
     const templateId = req.params.id;
 
-    const specialAccount = await templateService.deletetemplateById(templateId);
+    const specialAccount = await templateService.deleteTemplateById(templateId);
 
     res.json(specialAccount);
 }

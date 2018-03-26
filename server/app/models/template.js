@@ -36,7 +36,7 @@ class Template extends Model {
      * @param models
      */
     static associate(models) {
-        this.hasMany(models.TemplateUnit, { as: 'services' });
+        this.hasMany(models.TemplateUnit, { onDelete: 'CASCADE', as: 'services' });
     }
 }
 
@@ -131,8 +131,16 @@ class TemplateUnit extends Model {
 
 const TemplateUnitSchema = Joi.object().keys({
     nbMax: Joi.number(),
-    startAt: Joi.date().iso(),
-    endAt: Joi.date().iso().min(Joi.ref('startAt')),
+    startAt: Joi.object().keys({
+        day: Joi.number(),
+        hours: Joi.number(),
+        minutes: Joi.number(),
+    }),
+    endAt: Joi.object().keys({
+        day: Joi.number(),
+        hours: Joi.number(),
+        minutes: Joi.number(),
+    }),
 });
 
 const TemplateSchema = Joi.object().keys({

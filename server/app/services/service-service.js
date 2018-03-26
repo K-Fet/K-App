@@ -1,8 +1,8 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const sequelize = require('../../db');
-const { Service, ServicesTemplate, ServicesTemplateUnit, Barman } = require('../models');
-const { createUserError, createServerError, cleanObject, getDefaultTemplate } = require('../../utils');
+const { Service, Barman } = require('../models');
+const { createUserError, createServerError, cleanObject } = require('../../utils');
 
 /**
  * Return all services of the app between start and end. Include associated barmen.
@@ -133,46 +133,10 @@ async function deleteService(serviceId) {
     return service;
 }
 
-/**
- * Return a default template for now.
- * At the end, should return an array of templates.
- * @return {ServicesTemplate} Services Template
- */
-async function getServicesTemplate() {
-
-    let template = await ServicesTemplate.findOne({
-        include: [
-            {
-                model: ServicesTemplateUnit,
-                as: 'services',
-            },
-        ],
-    });
-
-    // Temporary workaround
-    // Create a template if no template was found yet.
-    if (!template) {
-        template = await ServicesTemplate.create({
-            name: 'Template par défaut',
-            services: getDefaultTemplate(),
-        }, {
-            include: [
-                {
-                    model: ServicesTemplateUnit,
-                    as: 'services',
-                },
-            ],
-        });
-    }
-
-    return template;
-}
-
 module.exports = {
     getAllServices,
     createService,
     updateService,
     getServiceById,
     deleteService,
-    getServicesTemplate,
 };
