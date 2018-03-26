@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DEFAULT_WEEK_SWITCH, ServiceService, TemplateService, ToasterService } from '../../_services/index';
 import { Service, Template } from '../../_models/index';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Moment } from 'moment';
-import moment from 'moment/src/moment';
+import * as moment from 'moment';
 import { Router } from '@angular/router';
 
 @Component({
@@ -44,7 +43,7 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment): void {
+    addServiceForm(nbMax: Number, startAt: moment.Moment, endAt: moment.Moment): void {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
@@ -108,7 +107,7 @@ export class OpenServicesComponent implements OnInit {
         this.templateSelectorFormGroup.valueChanges.subscribe(val => {
             if (val.templateSelectorFormControl)
                 (val.templateSelectorFormControl as Template).services.forEach(service => {
-                    const startAt: Moment = moment()
+                    const startAt: moment.Moment = moment()
                     .isoWeekday(+service.startAt.day)
                     .set({
                         hour: +service.startAt.hours,
@@ -116,7 +115,7 @@ export class OpenServicesComponent implements OnInit {
                         second: 0,
                         millisecond: 0
                     });
-                    const endAt: Moment = moment()
+                    const endAt: moment.Moment = moment()
                     .isoWeekday(+service.endAt.day)
                     .set({
                         hour: +service.endAt.hours,
@@ -135,7 +134,7 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    getFirstDayOfNextWeek(): Moment {
+    getFirstDayOfNextWeek(): moment.Moment {
         const firstDay = moment()
         .set({
             hour: 0,

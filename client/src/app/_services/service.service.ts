@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Barman, Day, Service } from '../_models/index';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Moment } from 'moment';
-import moment from 'moment/src/moment';
+import * as moment from 'moment';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
@@ -19,7 +18,7 @@ export class ServiceService {
 
     constructor(private http: HttpClient) { }
 
-    get(start: Moment, end: Moment): Observable<Array<Service>> {
+    get(start: moment.Moment, end: moment.Moment): Observable<Array<Service>> {
         return this.http.get<Array<Service>>('/api/services', {
             params: {
               start: (+start).toString(),
@@ -47,17 +46,17 @@ export class ServiceService {
         return this.http.delete<Service>(`/api/services/${id}`);
     }
 
-    getWeek(): Observable<{start: Moment, end: Moment}> {
+    getWeek(): Observable<{start: moment.Moment, end: moment.Moment}> {
         return new Observable(week => {
             this.$weekInterval.subscribe(weekInterval => {
-                const start: Moment = moment.utc()
+                const start: moment.Moment = moment.utc()
                 .set({
                     hour: 0,
                     minute: 0,
                     second: 0,
                     millisecond: 0
                 });
-                const end: Moment = moment.utc()
+                const end: moment.Moment = moment.utc()
                 .set({
                     hour: 23,
                     minute: 59,
@@ -86,7 +85,7 @@ export class ServiceService {
         });
     }
 
-    getPlanning(start: Moment, end: Moment): Observable<Array<Day>> {
+    getPlanning(start: moment.Moment, end: moment.Moment): Observable<Array<Day>> {
         const days: Array<Day> = new Array<Day>();
 
         return Observable.create((observer) => {
