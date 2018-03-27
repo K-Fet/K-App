@@ -8,19 +8,11 @@
   right: 0;
 }
 
-.toolbar {
-  height: 56px;
-}
-
 .is-mobile .toolbar {
   position: fixed;
   /* Make sure the toolbar will stay on top of the content as it scrolls past. */
   z-index: 2;
 
-}
-
-h1.app-name {
-  margin-left: 8px;
 }
 
 .sidenav-container {
@@ -34,16 +26,10 @@ h1.app-name {
       `<body>` to be our scrolling element for mobile layouts. */
   flex: 1 0 auto;
 }
-.spacer {
-  flex: 1 1 auto;
-}
-
-.components-container {
-  padding: 10px;
-}
 
 .sidenav {
-  width: 200px;
+  width: 256px;
+  border-right: 1px solid rgba(0, 0, 0, 0.14);
 }
 
 .connectedUserInformation {
