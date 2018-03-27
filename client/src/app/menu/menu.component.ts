@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService, ToasterService } from '../_services';
@@ -102,7 +103,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 private toasterService: ToasterService,
                 changeDetectorRef: ChangeDetectorRef,
                 media: MediaMatcher) {
-        this.mobileQuery = media.matchMedia('(max-width: 600px)');
+        this.mobileQuery = media.matchMedia('(max-width: 599px)');
         this.sidenavQuery = media.matchMedia('(max-width: 1480px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         this._sidebavQueryListener = () => changeDetectorRef.detectChanges();

@@ -42,7 +42,7 @@
 				</mat-list>
 			</mat-nav-list>
 		</mat-sidenav>
-		<mat-sidenav-content [style.marginTop.px]="mobileQuery.matches ? 20 : 28">
+		<mat-sidenav-content [style.paddingTop.px]="mobileQuery.matches ? 20 : 28" class="content-container">
 			<router-outlet></router-outlet>
 		</mat-sidenav-content>
 	</mat-sidenav-container>

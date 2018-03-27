@@ -1,11 +1,10 @@
-<div fxLayout.lt-lg="column" fxLayoutGap="20px" fxLayoutAlign="center">
-    <div fxLayoutAlign="center">
-        <app-week-picker fxFlex="550px" fxFlex.lt-sm="95"></app-week-picker>
-    </div>
-    <div fxLayoutAlign="center">
-        <app-my-services fxFlex="550px" fxFlex.lt-sm="95"></app-my-services>
-    </div>
-    <div fxLayoutAlign="center">           
-        <app-planning fxFlex="550px" fxFlex.lt-sm="95"></app-planning>
+<div fxLayoutAlign="center">
+    <div fxLayout="column" fxLayoutGap="20px" class="max-width">
+        <app-week-picker fxFlex></app-week-picker>
+        <div fxLayout="row" fxLayout.lt-md="column"
+            fxLayoutGap="20px">
+            <app-my-services fxFlex></app-my-services>
+            <app-planning fxFlex></app-planning>
+        </div>
     </div>
 </div>
