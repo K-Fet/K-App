@@ -37,7 +37,6 @@ export class MembersListComponent implements OnInit {
         this.media.subscribe((change: MediaChange) => {
             if (change.mqAlias == 'xs' && this.displayedColumns.includes('school')) {
                 this.displayedColumns.splice(this.displayedColumns.indexOf('school'), 1);
-                console.log(this.displayedColumns.indexOf('school'));
             } else if(!this.displayedColumns.includes('school')) {
                 this.displayedColumns.splice(this.displayedColumns.indexOf('firstName') + 1, 0, 'school');
             }
