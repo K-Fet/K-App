@@ -49,6 +49,8 @@ import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confi
 import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { TemplatesListComponent } from './templates/list/templates-list.component';
+import { TemplateNewComponent } from './templates/new/templates-new.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
@@ -73,7 +75,6 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { TemplatesListComponent } from './templates/list/templates-list.component';
 
 @NgModule({
     declarations: [
@@ -110,7 +111,8 @@ import { TemplatesListComponent } from './templates/list/templates-list.componen
         EqualValidator,
         DefinePasswordComponent,
         UsernameVerificationComponent,
-        TemplatesListComponent
+        TemplatesListComponent,
+        TemplateNewComponent
     ],
     entryComponents: [
         CodeDialogComponent,

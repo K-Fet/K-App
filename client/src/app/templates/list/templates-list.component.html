@@ -7,7 +7,8 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/templates/new" *ngxPermissionsOnly="['template:write']">
+            <!-- il manque *ngxPermissionsOnly="['template:write']" dans la ligne suivante -->
+            <a mat-mini-fab color="primary" routerLink="/templates/new" >
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -20,6 +21,11 @@
             <div class="mat-elevation-z3">
                 <mat-table #table [dataSource]="templatesData" matSort>
                     
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+                        <mat-cell *matCellDef="let template"> {{template.name}} </mat-cell>
+                    </ng-container>
+
 
                     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

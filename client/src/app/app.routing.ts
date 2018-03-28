@@ -29,6 +29,7 @@ import { SpecialAccountNewComponent } from './special-accounts/new/special-accou
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
+import { TemplateNewComponent } from './templates/new/templates-new.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -80,6 +81,7 @@ const routes: Routes = [
         data: generateData(['specialaccount:write']) },
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
     { path: 'templates', component: TemplatesListComponent },
+    { path: 'templates/new', component: TemplateNewComponent },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' },
 ];
