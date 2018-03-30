@@ -266,15 +266,21 @@ async function resetPassword(username, currTransaction) {
  * @param username {String} User's login
  * @param passwordToken {String} Token received by the user
  * @param newPassword {String} New password
+ * @param oldPassword {String} Old password (only if !passwordToken)
  * @returns {Promise<void>} Nothing
  */
-async function definePassword(username, passwordToken, newPassword) {
-    const user = ConnectionInformation.findOne({
-        where: {
-            username,
-            passwordToken: await hash(passwordToken),
-        },
-    });
+async function definePassword(username, passwordToken, newPassword, oldPassword) {
+    const where = { username };
+
+    if (passwordToken) {
+        where.passwordToken = await hash(passwordToken);
+    } else if (oldPassword) {
+        where.oldPassword = await hash(oldPassword);
+    } else {
+        throw createServerError('ServerError', 'Missing parameter');
+    }
+
+    const user = await ConnectionInformation.findOne({ where });
 
     if (!user) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
 
@@ -283,7 +289,7 @@ async function definePassword(username, passwordToken, newPassword) {
             'A verified email is required, if you can not gain access to your account, contact an administrator');
     }
 
-    const transaction = sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
         await user.update({
             password: await hash(newPassword),
@@ -329,7 +335,6 @@ async function updateUsername(currentUsername, newUsername) {
     try {
         await co.update({
             usernameToken: await hash(usernameToken + newUsername),
-            verifiedUsername: false,
         }, { transaction });
     } catch (err) {
         logger.error('Error while creating reset password token %o', err);
@@ -349,6 +354,57 @@ async function updateUsername(currentUsername, newUsername) {
     await transaction.commit();
 }
 
+/**
+ * Verify a new username request.
+ *
+ * @param username {String} User's login
+ * @param password {String} new user's login
+ * @param usernameToken {String} Username token
+ * @returns {Promise<void>} Nothing
+ */
+async function usernameVerify(username, password, usernameToken) {
+    const co = ConnectionInformation.findOne({
+        where: {
+            // TODO Do we know the old email? If yes, we should probably filter on it
+            usernameToken: await hash(usernameToken + username),
+        },
+    });
+
+    if (!co) throw createUserError('UnknownUser', 'This User does not exist');
+
+    const transaction = await sequelize.transaction();
+
+    try {
+        await co.update({
+            username,
+            usernameToken: null,
+        }, { transaction });
+
+        // Revoke all current JWTs
+
+        await JWT.update({ revoked: true }, {
+            transaction,
+            where: {
+                connectionId: co.id,
+            },
+        });
+    } catch (err) {
+        logger.error('Error while creating reset password token %o', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while change username');
+    }
+
+    try {
+        await mailService.sendUsernameConfirmation(username);
+    } catch (err) {
+        logger.error('Error while sending a confirmation for username update for %s', username);
+        transaction.rollback();
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
+    }
+
+    await transaction.commit();
+}
+
 
 module.exports = {
     isTokenRevoked,
@@ -360,4 +416,5 @@ module.exports = {
     resetPassword,
     definePassword,
     updateUsername,
+    usernameVerify,
 };

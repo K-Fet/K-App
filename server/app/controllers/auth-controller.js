@@ -17,7 +17,7 @@ async function login(req, res) {
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
 
     const { username, password } = req.body;
@@ -71,7 +71,7 @@ async function resetPassword(req, res) {
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     await authService.resetPassword(req.body.username);
 
@@ -94,17 +94,46 @@ async function definePassword(req, res) {
         //      at least one lowercase letter
         //      at least one number
         password: Joi.string().required(),
+        oldPassword: Joi.string(),
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
 
     const passwordToken = req.params.passwordToken;
-    if (!passwordToken) throw createUserError('BadRequest', 'Missing passwordToken parameter');
+    const { username, password, oldPassword } = req.body;
+
+    if (!passwordToken && !oldPassword) {
+        throw createUserError('BadRequest', 'Missing passwordToken parameter or oldPassword field');
+    }
+
+    await authService.definePassword(username, passwordToken, password, oldPassword);
+
+    res.sendStatus(200);
+}
+
+/**
+ * Verify an username.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function usernameVerify(req, res) {
+    const schema = Joi.object().keys({
+        username: Joi.string().email().required(),
+        password: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) throw createUserError('BadRequest', error.details[0].message);
+
+    const usernameToken = req.params.usernameToken;
+    if (!usernameToken) throw createUserError('BadRequest', 'Missing passwordToken parameter field');
 
     const { username, password } = req.body;
 
-    await authService.definePassword(username, passwordToken, password);
+    await authService.usernameVerify(username, password, usernameToken);
 
     res.sendStatus(200);
 }
@@ -116,4 +145,5 @@ module.exports = {
     refresh,
     resetPassword,
     definePassword,
+    usernameVerify,
 };
