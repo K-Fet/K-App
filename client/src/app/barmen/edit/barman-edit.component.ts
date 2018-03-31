@@ -99,7 +99,14 @@ export class BarmanEditComponent implements OnInit {
         // Get barmen
         this.barmanService.getAll().subscribe(barmen => {
             this.barmen = barmen;
-        });
+            let i = 0
+            let barman = this.barmen[0];
+            while (this.barmen[i].id !== this.currentBarman.id){
+                i++;
+                barman = barmen[i];
+            }
+            this.barmen.splice(i,1);
+        })
 
         // Get connected user
         this.authService.$currentUser.subscribe((user: ConnectedUser) => {
