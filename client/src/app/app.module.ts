@@ -51,6 +51,7 @@ import { DefinePasswordComponent } from './auth/define-password/define-password.
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateViewComponent } from './templates/view/template-view.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
@@ -112,7 +113,8 @@ import { MaterialModule } from './_helpers/material.module';
         DefinePasswordComponent,
         UsernameVerificationComponent,
         TemplatesListComponent,
-        TemplateNewComponent
+        TemplateNewComponent,
+        TemplateViewComponent
     ],
     entryComponents: [
         CodeDialogComponent,

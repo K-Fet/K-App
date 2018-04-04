@@ -30,6 +30,7 @@ import { DefinePasswordComponent } from './auth/define-password/define-password.
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateViewComponent } from './templates/view/template-view.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -82,6 +83,7 @@ const routes: Routes = [
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
     { path: 'templates', component: TemplatesListComponent },
     { path: 'templates/new', component: TemplateNewComponent },
+    { path: 'templates/:id', component: TemplateViewComponent },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' },
 ];

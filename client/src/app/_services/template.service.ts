@@ -15,4 +15,8 @@ export class TemplateService {
     getAllArray() {
         return this.http.get<Template[]>('/api/services/templates');
     }
+
+    getById(id: number) {
+        return this.http.get<Template>('/api/barmen/' + id);
+    }
 }
