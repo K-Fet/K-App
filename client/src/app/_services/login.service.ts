@@ -48,7 +48,6 @@ export class LoginService {
                 .subscribe();
                 const jwtDecoded = jwt_decode(jwt.jwt);
                 this.permissionsService.addPermission(jwtDecoded.permissions);
-                console.log(jwtDecoded);
                 // Refresh token every 45 minutes
                 setTimeout(() => {
                     this.refresh()
