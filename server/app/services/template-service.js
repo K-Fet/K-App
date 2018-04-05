@@ -6,7 +6,7 @@ const { createUserError, createServerError, getDefaultTemplate } = require('../.
 /**
  * Return all services templates of the app
  *
- * @returns {Promise<Array>} SpecialAccount
+ * @returns {Promise<Array>} Template
  */
 async function getAllTemplates() {
     logger.verbose('Template service: get all templates');
@@ -42,8 +42,8 @@ async function getAllTemplates() {
 
 /**
  * Get a Template by his id.
- * @param templateId {number} SpecialAccount Id
- * @returns {Promise<SpecialAccount>} SpecialAccount
+ * @param templateId {number} Template Id
+ * @returns {Promise<Template>} Template
  */
 async function getTemplateById(templateId) {
 
@@ -67,7 +67,7 @@ async function getTemplateById(templateId) {
  * Create a template.
  *
  * @param newTemplate {Template} the new template
- * @return {Promise<SpecialAccount>} The created SpecialAccount with its id
+ * @return {Promise<Template>} The created Template with its id
  */
 async function createTemplate(newTemplate) {
 
@@ -85,10 +85,10 @@ async function createTemplate(newTemplate) {
 }
 
 /**
- * Update a specialAccount
+ * Update a template
  *
- * @param templateId {number} specialAccount id
- * @param updatedTemplate {Template} Updated SpecialAccount, constructed from the request.
+ * @param templateId {number} template id
+ * @param updatedTemplate {Template} Updated Template, constructed from the request.
  * @return {Promise<Template>} the updated template
  */
 async function updateTemplateById(templateId, updatedTemplate) {
@@ -125,15 +125,14 @@ async function updateTemplateById(templateId, updatedTemplate) {
 
     await transaction.commit();
 
-    // Remove
     return updatedTemplate;
 }
 
 /**
- * Delete a SpecialAccount
+ * Delete a Template
  *
- * @param templateId {number} SpecialAccount id
- * @return {Promise<SpecialAccount>} The deleted Template
+ * @param templateId {number} Template id
+ * @return {Promise<Template>} The deleted Template
  */
 async function deleteTemplateById(templateId) {
 

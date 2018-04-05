@@ -18,7 +18,7 @@ async function getAllTemplates(req, res) {
 }
 
 /**
- * Create a SpecialAccount
+ * Create a Template
  *
  * @param req Request
  * @param res Response
@@ -56,7 +56,7 @@ async function createTemplate(req, res) {
 }
 
 /**
- * Get a SpecialAccount by its id
+ * Get a Template by its id
  *
  * @param req Request
  * @param res Response
@@ -71,7 +71,7 @@ async function getTemplateById(req, res) {
 }
 
 /**
- * Update a SpecialAccount.
+ * Update a Template.
  *
  * @param req Request
  * @param res Response
@@ -113,7 +113,7 @@ async function updateTemplate(req, res) {
 }
 
 /**
- * Delete a SpecialAccount
+ * Delete a Template
  *
  * @param req Request
  * @param res Response
@@ -122,9 +122,9 @@ async function updateTemplate(req, res) {
 async function deleteTemplate(req, res) {
     const templateId = req.params.id;
 
-    const specialAccount = await templateService.deleteTemplateById(templateId);
+    const template = await templateService.deleteTemplateById(templateId);
 
-    res.json(specialAccount);
+    res.json(template);
 }
 
 module.exports = {
