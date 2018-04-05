@@ -10,7 +10,7 @@ const { RoleWrapper } = require('./role-wrapper');
 const { Service } = require('./service');
 const { ServiceWrapper } = require('./service-wrapper');
 const { SpecialAccount } = require('./special-account');
-const { ServicesTemplate, ServicesTemplateUnit } = require('./services-template');
+const { Template, TemplateUnit } = require('./template');
 
 module.exports = {
     Barman,
@@ -25,6 +25,6 @@ module.exports = {
     Service,
     ServiceWrapper,
     SpecialAccount,
-    ServicesTemplate,
-    ServicesTemplateUnit,
+    Template,
+    TemplateUnit,
 };
