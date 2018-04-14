@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
-const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
+const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 const authService = require('./auth-service');
 
 /**
@@ -86,7 +86,7 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Barman,
@@ -154,12 +154,8 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
         // If connection information is changed
         if (updatedBarman.connection && updatedBarman.connection.username) {
 
+            // We have to load old username
             const co = await currentBarman.getConnection();
-
-            if (co.passwordToken !== null) {
-                throw createUserError('UndefinedPassword',
-                    'You must define a password. Please, check your email.');
-            }
 
             await authService.updateUsername(co.username, updatedBarman.connection.username);
         }
@@ -212,7 +208,7 @@ async function deleteBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
         ],
     });
@@ -255,10 +251,10 @@ async function getBarmanServices(barmanId, startDate, endDate) {
     return barman.getServices({
         where: {
             startAt: {
-                [Op.gte]: startDate,
+                [ Op.gte ]: startDate,
             },
             endAt: {
-                [Op.lte]: endDate,
+                [ Op.lte ]: endDate,
             },
         },
         include: [

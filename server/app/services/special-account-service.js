@@ -13,12 +13,12 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
         include: [
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
         ],
     });
@@ -63,7 +63,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[associationKey];
+            const value = _embedded[ associationKey ];
 
             await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
         }
@@ -87,14 +87,14 @@ async function getSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Permission,
                 as: 'permissions',
             },
         ],
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -128,17 +128,15 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     try {
         await currentSpecialAccount.update(cleanObject({
             id: updatedSpecialAccount.id,
+            // TODO Allow code update only if 'special-account:force-code-reset' permission
             code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
             description: updatedSpecialAccount.description,
         }), { transaction });
 
         if (updatedSpecialAccount.connection && updatedSpecialAccount.connection.username) {
-            const co = await currentSpecialAccount.getConnection();
 
-            if (co.passwordToken !== null) {
-                throw createUserError('UndefinedPassword',
-                    'You must define a password. Please, check your email.');
-            }
+            // We have to load old username
+            const co = await currentSpecialAccount.getConnection();
 
             await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
         }

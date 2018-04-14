@@ -365,12 +365,12 @@ async function updateUsername(currentUsername, newUsername) {
 async function usernameVerify(username, password, usernameToken) {
     const co = ConnectionInformation.findOne({
         where: {
-            // TODO Do we know the old email? If yes, we should probably filter on it
+            password: await hash(password),
             usernameToken: await hash(usernameToken + username),
         },
     });
 
-    if (!co) throw createUserError('UnknownUser', 'This User does not exist');
+    if (!co) throw createUserError('VerificationError', 'Bad token/password/new email combination.');
 
     const transaction = await sequelize.transaction();
 

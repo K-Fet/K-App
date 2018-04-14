@@ -4,7 +4,7 @@ const path = require('path');
 const { promisify } = require('util');
 const EMAIL_CONFIG = require('../../config/mail');
 const WEB_CONFIG = require('../../config/web');
-const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
+const CONFIG = EMAIL_CONFIG[ process.env.NODE_ENV || 'development' ];
 
 const readFile = promisify(fs.readFile);
 
@@ -17,7 +17,7 @@ const readFile = promisify(fs.readFile);
  */
 async function sendPasswordResetMail(email, token) {
 
-    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'reset-password.html'));
+    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'reset-password.html'), 'utf8');
 
     mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
         switch (replaceToken) {
@@ -52,7 +52,7 @@ async function sendPasswordResetMail(email, token) {
  */
 async function sendVerifyUsernameMail(email, token) {
 
-    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'verify-username.html'));
+    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'verify-username.html'), 'utf8');
 
     mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
         switch (replaceToken) {
@@ -87,7 +87,7 @@ async function sendVerifyUsernameMail(email, token) {
  */
 async function sendUsernameUpdateInformationMail(email, token) {
 
-    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'));
+    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'), 'utf8');
 
     mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
         switch (replaceToken) {
@@ -121,7 +121,7 @@ async function sendUsernameUpdateInformationMail(email, token) {
  */
 async function sendUsernameConfirmation(email) {
 
-    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-confirm-change.html'));
+    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-confirm-change.html'), 'utf8');
 
     mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
         switch (replaceToken) {
