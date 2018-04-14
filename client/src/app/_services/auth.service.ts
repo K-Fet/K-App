@@ -1,7 +1,6 @@
-import { ConnectionInformation } from './../_models/ConnectionInformation';
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { SpecialAccount, ConnectedUser} from '../_models';
@@ -80,13 +79,13 @@ export class AuthService {
     }
 
     definePassword(username: String, password: String, passwordToken: String): Observable<any> {
-        return this.http.put('api/reset-password?password-token=' + passwordToken,
-            { username: username, password: password });
+        return this.http.put('api/auth/reset-password?passwordToken=' + passwordToken,
+            { username , password });
     }
 
     verifyUsername(username: String, password: String, usernameToken: String): Observable<any> {
-        return this.http.put('api/username-verification?usernameToken=' + usernameToken,
-            { username: username, password: password });
+        return this.http.put('api/auth/username-verification?usernameToken=' + usernameToken,
+            { username, password });
     }
 
     private clearUser() {
@@ -127,6 +126,6 @@ export class AuthService {
     }
 
     resetPassword(username: String): Observable<any> {
-        return this.http.post('/api/reset-password', { username: username });
+        return this.http.post('/api/auth/reset-password', { username });
     }
 }

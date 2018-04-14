@@ -125,7 +125,6 @@ export class BarmanEditComponent implements OnInit {
 
     prepareSaving() {
         const values = this.barmanForm.value;
-        this.currentBarman.connection.password = null;
         Object.keys(this.currentBarman).forEach(key => {
             switch (key) {
                 case 'connection':
@@ -133,11 +132,6 @@ export class BarmanEditComponent implements OnInit {
                         this.barman.connection = {
                             ...this.barman.connection,
                             username: values.username,
-                        };
-                    } else if (values.password) {
-                        this.barman.connection = {
-                            ...this.barman.connection,
-                            password: values.password,
                         };
                     }
                     break;
