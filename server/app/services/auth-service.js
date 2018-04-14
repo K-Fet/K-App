@@ -247,7 +247,7 @@ async function resetPassword(username, currTransaction) {
     try {
         await mailService.sendPasswordResetMail(username, passwordToken);
     } catch (err) {
-        logger.error('Error while sending reset password mail at %s', username);
+        logger.error('Error while sending reset password mail at %s, %o', username, err);
 
         if (!currTransaction) {
             await transaction.rollback();
@@ -346,7 +346,7 @@ async function updateUsername(currentUsername, newUsername) {
         await mailService.sendVerifyUsernameMail(newUsername, usernameToken);
         await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken);
     } catch (err) {
-        logger.error('Error while sending reset password mail at %s or %s', currentUsername, newUsername);
+        logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
         transaction.rollback();
         throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
@@ -397,7 +397,7 @@ async function usernameVerify(username, password, usernameToken) {
     try {
         await mailService.sendUsernameConfirmation(username);
     } catch (err) {
-        logger.error('Error while sending a confirmation for username update for %s', username);
+        logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
         transaction.rollback();
         throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
