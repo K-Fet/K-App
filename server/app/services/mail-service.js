@@ -8,6 +8,8 @@ const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
 
 const readFile = promisify(fs.readFile);
 
+const REGEX_TOKEN = /{{\s*([a-zA-Z_]+)\s*}}/g;
+
 /**
  * Send password reset mail
  *
@@ -19,7 +21,7 @@ async function sendPasswordResetMail(email, token) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'reset-password.html'), 'utf8');
 
-    mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
+    mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
         switch (replaceToken) {
             case 'MAIL_WEBSITE':
                 return WEB_CONFIG.publicURL;
@@ -54,7 +56,7 @@ async function sendVerifyUsernameMail(email, token) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'verify-username.html'), 'utf8');
 
-    mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
+    mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
         switch (replaceToken) {
             case 'MAIL_WEBSITE':
                 return WEB_CONFIG.publicURL;
@@ -89,7 +91,7 @@ async function sendUsernameUpdateInformationMail(email, token) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'), 'utf8');
 
-    mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
+    mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
         switch (replaceToken) {
             case 'MAIL_WEBSITE':
                 return WEB_CONFIG.publicURL;
@@ -123,7 +125,7 @@ async function sendUsernameConfirmation(email) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-confirm-change.html'), 'utf8');
 
-    mail = mail.replace(/{{\s*(\w)\s*}}/, (matches, replaceToken) => {
+    mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
         switch (replaceToken) {
             case 'MAIL_WEBSITE':
                 return WEB_CONFIG.publicURL;
