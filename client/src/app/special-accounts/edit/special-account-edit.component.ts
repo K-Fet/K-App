@@ -47,7 +47,6 @@ export class SpecialAccountEditComponent implements OnInit {
             description: new FormControl(''),
             code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),
-            password: new FormControl(''),
         });
     }
 
@@ -131,12 +130,6 @@ export class SpecialAccountEditComponent implements OnInit {
                 username: formValues.username
             };
         }
-        if (formValues.password) {
-            specialAccount.connection = {
-                ...specialAccount.connection,
-                password: formValues.password
-            };
-        }
         if (formValues.code) {
             specialAccount.code = formValues.code;
         }
@@ -189,10 +182,6 @@ export class SpecialAccountEditComponent implements OnInit {
     isMe(): Boolean {
         return this.currentUser && this.currentUser.specialAccount
             && this.currentSpecialAccount.id === this.currentUser.specialAccount.id;
-    }
-
-    codeFieldEnable(): Boolean {
-        return (this.isMe() || this.ngxPermissionsService.getPermissions()['specialaccount:force-code-reset']) ? true : false;
     }
 
     codesMatch(): Boolean {

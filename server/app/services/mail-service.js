@@ -28,7 +28,7 @@ async function sendPasswordResetMail(email, token) {
             case 'MAIL_USERNAME':
                 return email;
             case 'MAIL_LINK':
-                return `${WEB_CONFIG.publicURL }/define-password?username=${email}&passwordToken=${token}`;
+                return `${WEB_CONFIG.publicURL }/define-password?username=${email}&passwordToken=${encodeURIComponent(token)}`;
         }
     });
 
@@ -63,7 +63,7 @@ async function sendVerifyUsernameMail(email, token) {
             case 'MAIL_USERNAME':
                 return email;
             case 'MAIL_LINK':
-                return `${WEB_CONFIG.publicURL }/username-verification?username=${email}&usernameToken=${token}`;
+                return `${WEB_CONFIG.publicURL }/username-verification?username=${email}&usernameToken=${encodeURIComponent(token)}`;
         }
     });
 
@@ -98,7 +98,7 @@ async function sendUsernameUpdateInformationMail(email, token) {
             case 'MAIL_USERNAME':
                 return email;
             case 'MAIL_LINK':
-                return `${WEB_CONFIG.publicURL }/cancel-username-update?username=${email}&usernameToken=${token}`;
+                return `${WEB_CONFIG.publicURL }/cancel-username-update?username=${email}&usernameToken=${encodeURIComponent(token)}`;
         }
     });
 
