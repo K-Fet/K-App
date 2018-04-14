@@ -17,7 +17,7 @@ async function login(req, res) {
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
 
     const { username, password } = req.body;
@@ -71,7 +71,7 @@ async function resetPassword(req, res) {
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     await authService.resetPassword(req.body.username);
 
@@ -88,17 +88,16 @@ async function resetPassword(req, res) {
 async function definePassword(req, res) {
     const schema = Joi.object().keys({
         username: Joi.string().email().required(),
-        // TODO Add checks :
-        //      length > 8
-        //      at least one uppercase letter
-        //      at least one lowercase letter
-        //      at least one number
-        password: Joi.string().required(),
+        password: Joi.string()
+            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
+            .error(createUserError('WeakPassword',
+                'Password must be at least 8 characters, with at least 1 uppercase, 1 lowercase and 1 digit'))
+            .required(),
         oldPassword: Joi.string(),
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     const passwordToken = req.params.passwordToken;
     const { username, password, oldPassword } = req.body;
@@ -126,7 +125,7 @@ async function usernameVerify(req, res) {
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     const usernameToken = req.params.usernameToken;
     if (!usernameToken) throw createUserError('BadRequest', 'Missing passwordToken parameter field');
