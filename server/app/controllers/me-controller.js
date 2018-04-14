@@ -33,7 +33,7 @@ async function updateMe(req, res) {
         const newSA = req.body.specialAccount;
 
         const { error } = schema.validate(newSA);
-        if (error) throw createUserError('BadRequest', error.details[0].message);
+        if (error) throw createUserError('BadRequest', error.message);
 
         let newSpecialAccount = new SpecialAccount(
             {
@@ -60,7 +60,7 @@ async function updateMe(req, res) {
         const newUser = req.body.barman;
 
         const { error } = schema.validate(newUser);
-        if (error) throw createUserError('BadRequest', error.details[0].message);
+        if (error) throw createUserError('BadRequest', error.message);
 
         let newBarman = new Barman(
             {
@@ -108,7 +108,7 @@ async function addBarmanService(req, res) {
     const schema = Joi.array().items(Joi.number().integer().required()).required();
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+    if (error) throw createUserError('BadRequest', error.message);
 
     const servicesId = req.body;
 
@@ -127,7 +127,7 @@ async function removeBarmanService(req, res) {
     const schema = Joi.array().items(Joi.number().integer().required()).required();
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+    if (error) throw createUserError('BadRequest', error.message);
 
     const servicesId = req.body;
 

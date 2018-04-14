@@ -81,26 +81,28 @@ async function generateRoles() {
     try {
         await syncPermissions();
 
+        const serviceRead = await Permission.findOne({ where: { name: 'service:read' } });
+
         const data = [
             {
                 name: 'Président',
                 description: 'Le meilleur en tout genre, le plus beau',
                 permissions: [
-                    'service:read',
+                    serviceRead,
                 ],
             },
             {
                 name: 'Trésorier',
                 description: 'Celui qui gère la thune de la K-Fêt',
                 permissions: [
-                    'service:read',
+                    serviceRead,
                 ],
             },
             {
                 name: 'Barman',
                 description: 'Servir sans faillir: serviam indeclinabilem',
                 permissions: [
-                    'service:read',
+                    serviceRead,
                 ],
             },
         ];

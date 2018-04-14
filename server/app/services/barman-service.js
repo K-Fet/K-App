@@ -2,7 +2,7 @@ const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
-const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
+const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 const authService = require('./auth-service');
 
 /**
@@ -86,7 +86,7 @@ async function getBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Barman,
@@ -152,34 +152,19 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
         }), { transaction });
 
         // If connection information is changed
-        if (updatedBarman.connection) {
+        if (updatedBarman.connection && updatedBarman.connection.username) {
 
+            // We have to load old username
             const co = await currentBarman.getConnection();
 
-            if (updatedBarman.connection.username) {
-                if (co.passwordToken !== null) throw createUserError('UndefinedPassword',
-                    'You must define a password. Please, check your email.');
-
-                await authService.updateUsername(co.username, updatedBarman.connection.username);
-            }
-
-            if (updatedBarman.connection.password) {
-                const coData = {
-                    password: await hash(updatedBarman.connection.password),
-                };
-                await co.update(cleanObject(coData), { transaction });
-            }
+            await authService.updateUsername(co.username, updatedBarman.connection.username);
         }
     } catch (err) {
-        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
-            logger.warn('Barman service: Error while updating barman', err);
-            await transaction.rollback();
-            throw createUserError('BadUsername', 'a username must be unique');
-        } else {
-            logger.warn('Barman service: Error while updating barman', err);
-            await transaction.rollback();
-            throw createServerError('ServerError', 'Error while updating barman');
-        }
+        if (err.userError) throw err;
+
+        logger.warn('Barman service: Error while updating barman', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating barman');
     }
 
     // Associations
@@ -223,7 +208,7 @@ async function deleteBarmanById(barmanId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
+                attributes: [ 'id', 'username' ],
             },
         ],
     });

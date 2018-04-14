@@ -30,7 +30,7 @@ async function createKommission(req, res) {
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.message);
 
 
     let newKommission = new Kommission({
@@ -71,7 +71,7 @@ async function updateKommission(req, res) {
     const schema = KommissionSchema.min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     let newKommission = new Kommission({
         ...req.body,

@@ -49,5 +49,5 @@ module.exports = {
      *
      * Used in side channels to link back to here.
      */
-    publicURL: process.env.PUBLIC_URL,
+    publicURL: process.env.PUBLIC_URL || (process.env.NODE_ENV !== 'production' ? 'http://localhost:4200' : undefined),
 };

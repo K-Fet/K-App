@@ -4,7 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>[K-App] Réinitialisation du mot de passe</title>
+    <title>[K-App] Confirmation du changement d'adresse email</title>
     <!--
     The style block is collapsed on page load to save you some scrolling.
     Postmark automatically inlines all CSS properties for maximum email client
@@ -405,7 +405,7 @@
     </style>
 </head>
 <body>
-<span class="preheader">Utilisez ce lien pour redéfinir votre mot de passe.</span>
+<span class="preheader">Votre nom d'utilisateur (email) a bien été modifié</span>
 <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
     <tr>
         <td align="center">
@@ -425,49 +425,11 @@
                             <tr>
                                 <td class="content-cell">
                                     <h1>Hey {{ MAIL_USERNAME }},</h1>
-                                    <p>Vous avez récemment demandé à changer votre username (adresse email) pour K-App.
-                                        Cliquez sur le bouton ci-dessous pour vérifier votre nouveau username (adresse email).</p>
-                                    <!-- Action -->
-                                    <table class="body-action" align="center" width="100%" cellpadding="0"
-                                           cellspacing="0">
-                                        <tr>
-                                            <td align="center">
-                                                <!-- Border based button
-                                           https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
-                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                                    <tr>
-                                                        <td align="center">
-                                                            <table border="0" cellspacing="0" cellpadding="0">
-                                                                <tr>
-                                                                    <td>
-                                                                        <a href="{{ MAIL_LINK }}"
-                                                                           class="button button--green" target="_blank">
-                                                                            Vérifier votre username (email)</a>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <p>Si vous n'avez pas fait cette demande, vous pouvez ignorer ce mail ou bien
-                                        <a href="{{MAIL_WEBSITE}}/contact-us">nous contacter</a>.
-                                    </p>
+                                    <p>Votre demande de changement de nom d'utilisateur a bien été validée.
+                                        Par sécurité, veuillez vous reconnecter sur tout vos appareils.</p>
+
                                     <p>Cordialement,
                                         <br>La team K-App</p>
-                                    <!-- Sub copy -->
-                                    <table class="body-sub">
-                                        <tr>
-                                            <td>
-                                                <p class="sub">Si vous avez des problèmes avec le bouton, vous pouvez
-                                                    copier l'url directement dans votre navigateur.
-                                                </p>
-                                                <p class="sub">{{MAIL_LINK}}</p>
-                                            </td>
-                                        </tr>
-                                    </table>
                                 </td>
                             </tr>
                         </table>

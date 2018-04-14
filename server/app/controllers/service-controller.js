@@ -34,7 +34,7 @@ async function createService(req, res) {
     )).min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     const services = await serviceService.createService(req.body);
 
@@ -70,7 +70,7 @@ async function updateService(req, res) {
     const schema = ServiceSchema.min(1);
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details.message);
+    if (error) throw createUserError('BadRequest', error.message);
     let newService = new Service({
         ...req.body
     });
@@ -97,26 +97,10 @@ async function deleteService(req, res) {
     res.json(service);
 }
 
-/**
- * Return a default template for now.
- * At the end, should return an array of templates.
- *
- * @param req Request
- * @param res Response
- * @return {Promise.<void>} Nothing
- */
-async function getServicesTemplate(req, res) {
-
-    const template = await serviceService.getServicesTemplate();
-
-    res.json(template);
-}
-
 module.exports = {
     getAllServices,
     createService,
     updateService,
     getServiceById,
     deleteService,
-    getServicesTemplate,
 };

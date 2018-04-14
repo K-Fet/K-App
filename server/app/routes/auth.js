@@ -7,6 +7,8 @@ router.post('/login', am(authController.login));
 router.post('/reset-password', am(authController.resetPassword));
 router.put('/reset-password', am(authController.definePassword));
 
+router.post('/username-verification', am(authController.usernameVerify));
+
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 

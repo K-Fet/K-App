@@ -13,14 +13,14 @@ async function getAllSpecialAccounts() {
 
     logger.verbose('SpecialAccount service: get all specialAccounts');
     return SpecialAccount.findAll({
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
         include: [
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username'],
-            }
-        ]
+                attributes: [ 'id', 'username' ],
+            },
+        ],
     });
 }
 
@@ -87,14 +87,14 @@ async function getSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-                attributes: ['id', 'username']
+                attributes: [ 'id', 'username' ],
             },
             {
                 model: Permission,
                 as: 'permissions',
-            }
+            },
         ],
-        attributes: { exclude: ['code'] },
+        attributes: { exclude: [ 'code' ] },
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -114,9 +114,9 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
         include: [
             {
                 model: ConnectionInformation,
-                as: 'connection'
-            }
-        ]
+                as: 'connection',
+            },
+        ],
     });
 
     if (!currentSpecialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
@@ -128,36 +128,25 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     try {
         await currentSpecialAccount.update(cleanObject({
             id: updatedSpecialAccount.id,
+            // TODO Allow code update only if 'special-account:force-code-reset' permission
             code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
-            description: updatedSpecialAccount.description
+            description: updatedSpecialAccount.description,
         }), { transaction });
 
-        if (updatedSpecialAccount.connection) {
+        if (updatedSpecialAccount.connection && updatedSpecialAccount.connection.username) {
+
+            // We have to load old username
             const co = await currentSpecialAccount.getConnection();
 
-            if (updatedSpecialAccount.connection.username) {
-                if (co.passwordToken !== null) throw createUserError('UndefinedPassword',
-                    'You must define a password. Please, check your email.');
-
-                await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
-            }
-
-            if (updatedSpecialAccount.connection.password) {
-                await co.update({
-                    password: await hash(updatedSpecialAccount.connection.password),
-                }, { transaction });
-            }
+            await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
         }
     } catch (err) {
-        if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
-            logger.warn('SpecialAccount service: Error while updating special account', err);
-            await transaction.rollback();
-            throw createUserError('BadUsername', 'a username must be unique');
-        } else {
-            logger.warn('SpecialAccount service: Error while updating special account', err);
-            await transaction.rollback();
-            throw createServerError('ServerError', 'Error while updating special account');
-        }
+        if (err.userError) throw err;
+
+        logger.warn('SpecialAccount service: Error while updating special account', err);
+        await transaction.rollback();
+        throw createServerError('ServerError', 'Error while updating special account');
+
     }
 
     if (_embedded) {
@@ -188,13 +177,13 @@ async function deleteSpecialAccountById(specialAccountId) {
             {
                 model: ConnectionInformation,
                 as: 'connection',
-            }
-        ]
+            },
+        ],
     });
 
     if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
-    const transaction = sequelize.transaction();
+    const transaction = await sequelize.transaction();
 
     try {
         await specialAccount.connection.destroy();
@@ -211,5 +200,5 @@ module.exports = {
     createSpecialAccount,
     getSpecialAccountById,
     deleteSpecialAccountById,
-    updateSpecialAccountById
+    updateSpecialAccountById,
 };

@@ -79,6 +79,13 @@ Here are a list _(usually updated)_ of all the environment variables:
 * `TRUSTED_PROXY`: Value for [express's proxy configuration](https://expressjs.com/en/guide/behind-proxies.html)
 * `PUBLIC_URL`: Website URL.
 
+###### Email
+
+* `EMAIL_HOST`: SMTP url.
+* `EMAIL_PORT`: Port use for SMTP.
+* `EMAIL_USER`: Email used to send mail.
+* `EMAIL_PASS`: Password of the email.
+
 ###### JWT
 
 * `JWT_SECRET`: JWT secret to use (default: `devModeSecret` only in development)

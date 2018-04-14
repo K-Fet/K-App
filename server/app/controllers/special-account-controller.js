@@ -31,7 +31,7 @@ async function createSpecialAccount(req, res) {
     );
 
     const { error } = schema.validate(req.body.specialAccount);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     const newAccount = req.body.specialAccount;
 
@@ -82,7 +82,7 @@ async function updateSpecialAccount(req, res) {
     const newUser = req.body.specialAccount;
 
     const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     let newSpecialAccount = new SpecialAccount(
         {
