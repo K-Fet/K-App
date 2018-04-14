@@ -9,14 +9,10 @@ export class TemplateService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Template>('/api/services/template');
-    }
-
-    getAllArray() {
-        return this.http.get<Template[]>('/api/services/templates');
+        return this.http.get<Template[]>('/api/templates');
     }
 
     getById(id: number) {
-        return this.http.get<Template>('/api/barmen/' + id);
+        return this.http.get<Template>('/api/templates/' + id);
     }
 }

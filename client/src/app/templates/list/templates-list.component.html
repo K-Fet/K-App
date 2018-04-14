@@ -3,12 +3,11 @@
         <mat-card-header>
             <mat-card-title>
                 <section class="mat-typography">
-                    <h1>Listes des Templates</h1>
+                    <h1>Liste des Templates</h1>
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <!-- il manque *ngxPermissionsOnly="['template:write']" dans la ligne suivante -->
-            <a mat-mini-fab color="primary" routerLink="/templates/new" >
+            <a mat-mini-fab color="primary" *ngxPermissionsOnly="['template:write']" routerLink="/templates/new" >
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -20,10 +19,18 @@
             </div>
             <div class="mat-elevation-z3">
                 <mat-table #table [dataSource]="templatesData" matSort>
-                    
+                                        
                     <ng-container matColumnDef="name">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
                         <mat-cell *matCellDef="let template"> {{template.name}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                        <mat-cell *matCellDef="let template" >         
+                            <button mat-icon-button (click)="edit(template)" *ngxPermissionsOnly="['template:write']"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button (click)="view(template)"><mat-icon>zoom_in</mat-icon></button>
+                        </mat-cell>
                     </ng-container>
 
 

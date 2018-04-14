@@ -16,8 +16,12 @@
             <mat-list>
                 <h3 mat-subheader>Services</h3>
                 <div *ngIf="template.services?.length !== 0; else elseBlock">
-                    <mat-list-item *ngFor="let service of barman.service">
-                        <p mat-line>{{service.startAt | date:'d MMM y'}} à {{service.endAt | date:'d MMM y'}} </p>
+                    <mat-list-item *ngFor="let service of template.services">
+                        <p mat-line>{{service.startAt.day | date:'EEEE'}} de
+                          {{service.startAt.hours | date:'H'}}h {{service.startAt.minutes | date:'mm'}} à
+                          {{service.endAt.hours | date:'H'}}h {{service.endAt.minutes | date:'mm'}}
+                        </p>
+                        <p mat-line> {{service.nbMax}} barmen maximum</p>
                     </mat-list-item>
                 </div>
                 <ng-template #elseBlock>

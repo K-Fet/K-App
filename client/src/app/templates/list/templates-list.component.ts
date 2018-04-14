@@ -15,7 +15,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class TemplatesListComponent implements OnInit {
 
-    displayedColumns = ['name'];
+    displayedColumns = ['name', 'action'];
     templatesData: MatTableDataSource<Template>;
 
     @ViewChild(MatSort) sort: MatSort;
@@ -27,7 +27,7 @@ export class TemplatesListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.templateService.getAllArray().subscribe(templates => {
+        this.templateService.getAll().subscribe(templates => {
             this.templatesData = new MatTableDataSource(templates);
             this.templatesData.paginator = this.paginator;
             this.templatesData.sort = this.sort;
@@ -38,6 +38,10 @@ export class TemplatesListComponent implements OnInit {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.templatesData.filter = filterValue;
+    }
+
+    view(template: Template) {
+        this.router.navigate(['/templates', template.id]);
     }
 
 }

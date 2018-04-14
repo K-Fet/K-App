@@ -23,6 +23,6 @@ module.exports = {
         'specialaccount:force-code-reset',
 
         'template:read',
-        'template:write',
+        'template:write'
     ],
 };
