@@ -32,6 +32,14 @@ async function askQuestions(configObj) {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
             }
+        },
+        {
+            type: 'input',
+            name: 'publicUrl',
+            message: 'What is the public url? (e.g.: `https://example.com/`)',
+            validate: input => {
+                return !!input || 'A public url is required for emails';
+            }
         }
     ];
 
@@ -40,7 +48,8 @@ async function askQuestions(configObj) {
 
     configObj.app = {
         instances: answers.instanceNum,
-        firstPort: answers.firstPort
+        firstPort: answers.firstPort,
+        publicUrl: answers.publicUrl
     };
 }
 
@@ -75,11 +84,18 @@ After=network.target mysql.service
 
 Environment=PORT=%i
 Environment=HOSTNAME=${config.proxy ? 'localhost' : ''}
+Environment=PUBLIC_URL=${config.app.publicUrl}
 
 Environment=DB_HOST=${config.mysql.host}
 Environment=DB_USER=${config.mysql.app.username}
 Environment=DB_PWD=${config.mysql.app.password}
 Environment=DB_DATABASE=${config.mysql.database}
+
+
+Environment=EMAIL_HOST=${config.email.host}
+Environment=EMAIL_PORT=${config.email.port}
+Environment=EMAIL_USER=${config.email.user}
+Environment=EMAIL_PASS=${config.email.pass}
 
 Environment=JWT_SECRET=${config.jwt.secret}
 

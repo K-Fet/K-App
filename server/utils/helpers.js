@@ -11,7 +11,7 @@ const { createUserError } = require('./errors');
  * @return {*} The object cleaned
  */
 function cleanObject(obj) {
-    Object.keys(obj).forEach(key => obj[ key ] === undefined && delete obj[ key ]);
+    Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
     return obj;
 }
 
@@ -30,7 +30,7 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
 
     if (value.add && value.add.length > 0) {
         try {
-            await instance[ `add${upperKey}` ](value.add, { transaction });
+            await instance[`add${upperKey}`](value.add, { transaction });
         } catch (err) {
             await transaction.rollback();
             throw createUserError(`Unknown${ upperKey}`,
@@ -45,7 +45,7 @@ async function setEmbeddedAssociations(key, value, instance, transaction, preven
         }
 
         try {
-            await instance[ `remove${upperKey}` ](value.remove, { transaction });
+            await instance[`remove${upperKey}`](value.remove, { transaction });
         } catch (err) {
             await transaction.rollback();
             throw createUserError(`Unknown${upperKey}`,

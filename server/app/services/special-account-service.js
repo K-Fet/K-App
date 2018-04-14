@@ -63,7 +63,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
     if (_embedded) {
         for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[ associationKey ];
+            const value = _embedded[associationKey];
 
             await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
         }

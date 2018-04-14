@@ -251,10 +251,10 @@ async function getBarmanServices(barmanId, startDate, endDate) {
     return barman.getServices({
         where: {
             startAt: {
-                [ Op.gte ]: startDate,
+                [Op.gte]: startDate,
             },
             endAt: {
-                [ Op.lte ]: endDate,
+                [Op.lte]: endDate,
             },
         },
         include: [

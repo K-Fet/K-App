@@ -16,6 +16,7 @@ const inquirer = require('inquirer');
 
 const account = require('./prod-scripts/account');
 const backup = require('./prod-scripts/backup');
+const email = require('./prod-scripts/email');
 const jwt = require('./prod-scripts/jwt');
 const mysql = require('./prod-scripts/mysql');
 const proxy = require('./prod-scripts/proxy');
@@ -35,6 +36,7 @@ async function askAll() {
     await mysql.askQuestions(config);
     await backup.askQuestions(config);
     await proxy.askQuestions(config);
+    await email.askQuestions(config);
     await jwt.askQuestions(config);
     await account.askQuestions(config);
 }
@@ -48,6 +50,7 @@ async function confirmConfig() {
     mysql.confirmConfig(config);
     backup.confirmConfig(config);
     proxy.confirmConfig(config);
+    email.confirmConfig(config);
     jwt.confirmConfig(config);
     account.confirmConfig(config);
 
@@ -74,7 +77,7 @@ async function startEverything() {
     const answers = await inquirer.prompt([{
         type: 'confirm',
         name: 'start',
-        message: 'Do you to start everything needed? (NodeJS, Caddy, Backups, etc.)',
+        message: 'Do you want to start everything needed? (NodeJS, Caddy, Backups, etc.)',
         default: true
     }]);
 

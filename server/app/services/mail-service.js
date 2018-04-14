@@ -4,7 +4,7 @@ const path = require('path');
 const { promisify } = require('util');
 const EMAIL_CONFIG = require('../../config/mail');
 const WEB_CONFIG = require('../../config/web');
-const CONFIG = EMAIL_CONFIG[ process.env.NODE_ENV || 'development' ];
+const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
 
 const readFile = promisify(fs.readFile);
 
