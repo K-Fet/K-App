@@ -39,7 +39,7 @@ async function createTemplate(req, res) {
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     let newTemplate = new Template({
         ...req.body
@@ -93,16 +93,19 @@ async function updateTemplate(req, res) {
 
     const { error } = schema.validate(req.body);
 
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
-    let newTemplate = new Template({
-        ...req.body,
-    }, { include: [
+    let newTemplate = new Template(
+        req.body,
         {
-            model: TemplateUnit,
-            as: 'services',
+            include: [
+                {
+                    model: TemplateUnit,
+                    as: 'services',
+                }
+            ]
         }
-    ] });
+    );
 
     const templateId = req.params.id;
 

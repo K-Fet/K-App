@@ -33,7 +33,7 @@ which explain everything :).
 
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
-- [Yarn](https://yarnpkg.com)version 1.3.2 or higher.
+- [Yarn](https://yarnpkg.com) version 1.3.2 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
@@ -77,6 +77,14 @@ Here are a list _(usually updated)_ of all the environment variables:
 * `PORT`: Port for the web app (default: `3000`)
 * `HOSTNAME`: Hostname to serve (default: _all interfaces_)
 * `TRUSTED_PROXY`: Value for [express's proxy configuration](https://expressjs.com/en/guide/behind-proxies.html)
+* `PUBLIC_URL`: Website URL.
+
+###### Email
+
+* `EMAIL_HOST`: SMTP url.
+* `EMAIL_PORT`: Port use for SMTP.
+* `EMAIL_USER`: Email used to send mail.
+* `EMAIL_PASS`: Password of the email.
 
 ###### JWT
 

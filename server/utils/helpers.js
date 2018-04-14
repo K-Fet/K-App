@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { createUserError } = require('./errors');
 
 /**
@@ -76,8 +77,28 @@ function parseStartAndEnd(query) {
     return { start, end };
 }
 
+/**
+ * Generate a secure token.
+ *
+ * @param stringBase base of the generated token
+ * @param byteLength Number of bytes to generate
+ * @returns {Promise<string>} Secure token
+ */
+function generateToken(byteLength = 48, stringBase = 'base64') {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(byteLength, (err, buffer) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(buffer.toString(stringBase));
+            }
+        });
+    });
+}
+
 module.exports = {
     cleanObject,
     setEmbeddedAssociations,
     parseStartAndEnd,
+    generateToken,
 };

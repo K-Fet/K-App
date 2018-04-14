@@ -46,11 +46,11 @@ async function askQuestions(configObj) {
             password: answers.dbPassword
         },
         app: {
-            username: 'kapp-u-' + (Math.floor(Math.random() * 9000) + 1000),
+            username: `kapp-u-${ Math.floor(Math.random() * 9000) + 1000}`,
             password: crypto.randomBytes(32).toString('hex')
         },
         backup: {
-            username: 'kapp-b-' + (Math.floor(Math.random() * 9000) + 1000),
+            username: `kapp-b-${ Math.floor(Math.random() * 9000) + 1000}`,
             password: crypto.randomBytes(32).toString('hex')
         },
         host: answers.dbHost,

@@ -42,5 +42,12 @@ module.exports = {
     /**
      * Absolute path to the folder containing all the static files
      */
-    publicFolder: path.resolve(__dirname, '../../client/dist/')
+    publicFolder: path.resolve(__dirname, '../../client/dist/'),
+
+    /**
+     * Website url.
+     *
+     * Used in side channels to link back to here.
+     */
+    publicURL: process.env.PUBLIC_URL || (process.env.NODE_ENV !== 'production' ? 'http://localhost:4200' : undefined),
 };

@@ -30,14 +30,13 @@ async function createBarman(req, res) {
         'lastName',
         'connection',
         'connection.username',
-        'connection.password',
         'nickname',
         'dateOfBirth',
         'flow'
     );
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     const newUser = req.body;
 
@@ -87,7 +86,7 @@ async function updateBarman(req, res) {
     const newUser = req.body;
 
     const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.details[0].message);
+    if (error) throw createUserError('BadRequest', error.message);
 
     let newBarman = new Barman(
         {
@@ -156,7 +155,7 @@ async function createServiceBarman(req, res) {
     const schema = Joi.array().items(Joi.number().integer().required()).required();
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+    if (error) throw createUserError('BadRequest', error.message);
 
     const servicesId = req.body;
 
@@ -179,7 +178,7 @@ async function deleteServiceBarman(req, res) {
     const schema = Joi.array().items(Joi.number().integer().required()).required();
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', 'The body is missing properties');
+    if (error) throw createUserError('BadRequest', error.message);
 
     const servicesId = req.body;
 
