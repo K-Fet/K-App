@@ -28,11 +28,12 @@ async function isTokenRevoked(tokenId) {
  * The token will contain every
  * permissions given for the user.
  *
- * @param username Username used to login
+ * @param usernameDirty Username used to login (dirty is because it can contain upper letters)
  * @param password Unencrypted password
  * @returns {Promise<String>} JWT Signed token
  */
-async function login(username, password) {
+async function login(usernameDirty, password) {
+    const username = usernameDirty.toLowerCase();
 
     const user = await ConnectionInformation.findOne({ where: { username } });
 
@@ -214,11 +215,12 @@ async function me(tokenId) {
  * Launch the procedure to reset the password of an user.
  *
  *
- * @param username {String} Username of the user
+ * @param usernameDirty {String} Username of the user (dirty because it can contain upper letters)
  * @param currTransaction {Object=} Transaction to use, it will no handle commit and rollback !
  * @returns {Promise<void>}
  */
-async function resetPassword(username, currTransaction) {
+async function resetPassword(usernameDirty, currTransaction) {
+    const username = usernameDirty.toLowerCase();
     const transaction = currTransaction || await sequelize.transaction();
 
     const co = await ConnectionInformation.findOne({
@@ -263,13 +265,14 @@ async function resetPassword(username, currTransaction) {
  * Define a new password for an user.
  * Will reject all existing JWT.
  *
- * @param username {String} User's login
+ * @param usernameDirty {String} User's login (dirty because it can contain upper letters)
  * @param passwordToken {String} Token received by the user
  * @param newPassword {String} New password
  * @param oldPassword {String} Old password (only if !passwordToken)
  * @returns {Promise<void>} Nothing
  */
-async function definePassword(username, passwordToken, newPassword, oldPassword) {
+async function definePassword(usernameDirty, passwordToken, newPassword, oldPassword) {
+    const username = usernameDirty.toLowerCase();
     const user = await ConnectionInformation.findOne({ where: { username } });
 
     let isValid = false;
@@ -324,7 +327,7 @@ async function definePassword(username, passwordToken, newPassword, oldPassword)
 async function updateUsername(currentUsername, newUsername) {
     const co = await ConnectionInformation.findOne({
         where: {
-            username: currentUsername,
+            username: currentUsername.toLowerCase(),
         },
     });
 
@@ -381,7 +384,13 @@ async function usernameVerify(userId, username, password, usernameToken) {
 
     try {
         await co.update({
-            username,
+            // We force the email to lowercase for multiple reasons:
+            // 1. We can profit of the unique index of mysql
+            // 2. It's easier to make request case sensitive than insensitive
+            // 3. For most of providers (for us at least), it is treated the same
+            //
+            // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+            username: username.toLowerCase(),
             usernameToken: null,
         }, { transaction });
 
