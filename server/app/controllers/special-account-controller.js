@@ -1,5 +1,4 @@
 const specialAccountService = require('../services/special-account-service');
-const guard = require('express-jwt-permissions')();
 const { SpecialAccount, ConnectionInformation } = require('../models');
 const { SpecialAccountSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
