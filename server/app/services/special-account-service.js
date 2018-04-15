@@ -39,6 +39,14 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
+        // We force the email to lowercase for multiple reasons:
+        // 1. We can profit of the unique index of mysql
+        // 2. It's easier to make request case sensitive than insensitive
+        // 3. For most of providers (for us at least), it is treated the same
+        //
+        // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+        newSpecialAccount.connection.username = newSpecialAccount.connection.username.toLowerCase();
+
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
         const co = await newSpecialAccount.connection.save({ transaction });

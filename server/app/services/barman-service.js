@@ -29,6 +29,14 @@ async function createBarman(newBarman, _embedded) {
 
     const transaction = await sequelize.transaction();
     try {
+        // We force the email to lowercase for multiple reasons:
+        // 1. We can profit of the unique index of mysql
+        // 2. It's easier to make request case sensitive than insensitive
+        // 3. For most of providers (for us at least), it is treated the same
+        //
+        // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+        newBarman.connection.username = newBarman.connection.username.toLowerCase();
+
         const co = await newBarman.connection.save({ transaction });
         newBarman.connectionId = co.id;
         await newBarman.save({ transaction });

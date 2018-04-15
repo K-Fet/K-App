@@ -24,7 +24,7 @@ async function getAllTemplates() {
     // Create a default template if no template was found yet.
     if (templates.length === 0) {
         const template = await Template.create({
-            name: 'Semaine par default',
+            name: 'Semaine par défaut',
             services: getDefaultTemplate(),
         }, {
             include: [
@@ -74,7 +74,7 @@ async function createTemplate(newTemplate) {
     logger.verbose('Template service: creating a new Template with name %s',
         newTemplate.name);
 
-    return Template.create(newTemplate, {
+    return newTemplate.save({
         include: [
             {
                 model: TemplateUnit,
