@@ -18,6 +18,7 @@ module.exports = {
         },
 
         logging: true,
+        operatorsAliases: false,
     },
 
     production: {
@@ -40,6 +41,7 @@ module.exports = {
         },
 
         logging: false,
+        operatorsAliases: false,
     },
 
     test: {
@@ -49,5 +51,6 @@ module.exports = {
         dialect: 'sqlite',
         storage: ':memory:',
         logging: false,
+        operatorsAliases: false,
     },
 };
