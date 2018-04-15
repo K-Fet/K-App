@@ -124,6 +124,7 @@ async function definePassword(req, res) {
  */
 async function usernameVerify(req, res) {
     const schema = Joi.object().keys({
+        userId: Joi.number().integer().required(),
         username: Joi.string().email().required(),
         password: Joi.string().required(),
         usernameToken: Joi.string().required()
@@ -132,8 +133,8 @@ async function usernameVerify(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    const { username, password, usernameToken } = req.body;
-    await authService.usernameVerify(username, password, usernameToken);
+    const { userId, username, password, usernameToken } = req.body;
+    await authService.usernameVerify(userId, username, password, usernameToken);
 
     res.sendStatus(200);
 }

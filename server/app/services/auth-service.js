@@ -177,7 +177,7 @@ async function me(tokenId) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: ['id', 'username'],
+                        attributes: [ 'id', 'username' ],
                     },
                     {
                         model: Kommission,
@@ -192,12 +192,12 @@ async function me(tokenId) {
             {
                 model: SpecialAccount,
                 as: 'specialAccount',
-                attributes: { exclude: ['code'] },
+                attributes: { exclude: [ 'code' ] },
                 include: [
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: ['id', 'username'],
+                        attributes: [ 'id', 'username' ],
                     },
                 ],
             },
@@ -270,19 +270,23 @@ async function resetPassword(username, currTransaction) {
  * @returns {Promise<void>} Nothing
  */
 async function definePassword(username, passwordToken, newPassword, oldPassword) {
-    const where = { username };
+    const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (passwordToken) {
-        where.passwordToken = await hash(passwordToken);
-    } else if (oldPassword) {
-        where.oldPassword = await hash(oldPassword);
-    } else {
-        throw createServerError('ServerError', 'Missing parameter');
+    let isValid = false;
+
+    if (user) {
+        if (passwordToken) {
+            isValid = await verify(user.passwordToken, passwordToken);
+        } else if (oldPassword) {
+            isValid = await verify(user.oldPassword, oldPassword);
+        } else {
+            throw createServerError('ServerError', 'Missing parameter');
+        }
     }
 
-    const user = await ConnectionInformation.findOne({ where });
-
-    if (!user) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    if (!isValid) {
+        throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    }
 
     if (user.usernameToken) {
         throw createUserError('UnverifiedUsername',
@@ -318,7 +322,7 @@ async function definePassword(username, passwordToken, newPassword, oldPassword)
  * @returns {Promise<void>} Nothing
  */
 async function updateUsername(currentUsername, newUsername) {
-    const co = ConnectionInformation.findOne({
+    const co = await ConnectionInformation.findOne({
         where: {
             username: currentUsername,
         },
@@ -343,8 +347,8 @@ async function updateUsername(currentUsername, newUsername) {
     }
 
     try {
-        await mailService.sendVerifyUsernameMail(newUsername, usernameToken);
-        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken);
+        await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
+        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken, co.id);
     } catch (err) {
         logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
         transaction.rollback();
@@ -357,20 +361,21 @@ async function updateUsername(currentUsername, newUsername) {
 /**
  * Verify a new username request.
  *
+ * @param userId {Number} user id
  * @param username {String} User's login
  * @param password {String} new user's login
  * @param usernameToken {String} Username token
  * @returns {Promise<void>} Nothing
  */
-async function usernameVerify(username, password, usernameToken) {
-    const co = ConnectionInformation.findOne({
-        where: {
-            password: await hash(password),
-            usernameToken: await hash(usernameToken + username),
-        },
-    });
+async function usernameVerify(userId, username, password, usernameToken) {
+    const co = ConnectionInformation.findOne(userId);
 
-    if (!co) throw createUserError('VerificationError', 'Bad token/password/new email combination.');
+    if (!co ||
+        !await verify(co.password, password) ||
+        !await verify(co.usernameToken, usernameToken + username)
+    ) {
+        throw createUserError('VerificationError', 'Bad token/password/new email combination.');
+    }
 
     const transaction = await sequelize.transaction();
 

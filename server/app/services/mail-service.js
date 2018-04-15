@@ -4,7 +4,7 @@ const path = require('path');
 const { promisify } = require('util');
 const EMAIL_CONFIG = require('../../config/mail');
 const WEB_CONFIG = require('../../config/web');
-const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
+const CONFIG = EMAIL_CONFIG[ process.env.NODE_ENV || 'development' ];
 
 const readFile = promisify(fs.readFile);
 
@@ -50,9 +50,10 @@ async function sendPasswordResetMail(email, token) {
  *
  * @param email {String} recipient email address
  * @param token {String} usernameToken
+ * @param userId {Number} User id
  * @returns {Promise<void>} Nothing
  */
-async function sendVerifyUsernameMail(email, token) {
+async function sendVerifyUsernameMail(email, token, userId) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'verify-username.html'), 'utf8');
 
@@ -63,7 +64,7 @@ async function sendVerifyUsernameMail(email, token) {
             case 'MAIL_USERNAME':
                 return email;
             case 'MAIL_LINK':
-                return `${WEB_CONFIG.publicURL }/username-verification?username=${email}&usernameToken=${encodeURIComponent(token)}`;
+                return `${WEB_CONFIG.publicURL }/username-verification?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
         }
     });
 
@@ -85,9 +86,10 @@ async function sendVerifyUsernameMail(email, token) {
  *
  * @param email {String} recipient email address
  * @param token {String} passwordToken
+ * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameUpdateInformationMail(email, token) {
+async function sendUsernameUpdateInformationMail(email, token, userId) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'), 'utf8');
 
@@ -98,7 +100,7 @@ async function sendUsernameUpdateInformationMail(email, token) {
             case 'MAIL_USERNAME':
                 return email;
             case 'MAIL_LINK':
-                return `${WEB_CONFIG.publicURL }/cancel-username-update?username=${email}&usernameToken=${encodeURIComponent(token)}`;
+                return `${WEB_CONFIG.publicURL }/cancel-username-update?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
         }
     });
 
