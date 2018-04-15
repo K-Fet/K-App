@@ -3,7 +3,7 @@ import { TemplateService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Template } from '../../_models';
 import { MatDialog } from '@angular/material';
-import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     templateUrl: './template-view.component.html',
