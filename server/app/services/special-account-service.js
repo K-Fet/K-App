@@ -128,7 +128,6 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     try {
         await currentSpecialAccount.update(cleanObject({
             id: updatedSpecialAccount.id,
-            // TODO Allow code update only if 'special-account:force-code-reset' permission
             code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
             description: updatedSpecialAccount.description,
         }), { transaction });
@@ -139,6 +138,9 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             const co = await currentSpecialAccount.getConnection();
 
             await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
+
+            // Remove this association before reloading
+            updatedSpecialAccount.connection = undefined;
         }
     } catch (err) {
         if (err.userError) throw err;
