@@ -3,7 +3,7 @@ import { Member } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { ToasterService, MemberService } from '../../_services';
 import { Router } from '@angular/router';
-import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 

@@ -20,7 +20,7 @@ import { routing } from './app.routing';
 // Components
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
@@ -38,25 +38,29 @@ import { KommissionEditComponent } from './kommissions/edit/kommission-edit.comp
 import { RolesListComponent } from './roles/list/roles-list.component';
 import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
-import { CodeDialogComponent } from './code-dialog/code-dialog.component';
+import { CodeDialogComponent } from './dialogs/code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
+import { DefinePasswordComponent } from './auth/define-password/define-password.component';
+import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 // Services
-import { ToasterService, LoginService, MemberService,
+import { ToasterService, AuthService, MemberService,
     BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
+    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { EqualValidator } from './_helpers/equal-validator.directive';
 import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
@@ -68,7 +72,6 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-
 
 @NgModule({
     declarations: [
@@ -100,11 +103,16 @@ import { MaterialModule } from './_helpers/material.module';
         SpecialAccountListComponent,
         SpecialAccountNewComponent,
         SpecialAccountEditComponent,
-        ConfirmationDialogComponent
+        ConfirmationDialogComponent,
+        ResetPasswordDialogComponent,
+        EqualValidator,
+        DefinePasswordComponent,
+        UsernameVerificationComponent
     ],
     entryComponents: [
         CodeDialogComponent,
         ConfirmationDialogComponent,
+        ResetPasswordDialogComponent
     ],
     imports: [
         CommonModule,
@@ -121,7 +129,7 @@ import { MaterialModule } from './_helpers/material.module';
     ],
     bootstrap: [AppComponent],
     providers: [
-        LoginService,
+        AuthService,
         MemberService,
         BarmanService,
         ServiceService,

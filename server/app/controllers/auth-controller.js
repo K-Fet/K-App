@@ -94,16 +94,20 @@ async function definePassword(req, res) {
                 'Password must be at least 8 characters, with at least 1 uppercase, 1 lowercase and 1 digit'))
             .required(),
         oldPassword: Joi.string(),
+        passwordToken: Joi.string(),
     });
 
     const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+    if (error) {
+        if (error.userError) throw error;
 
-    const passwordToken = req.params.passwordToken;
-    const { username, password, oldPassword } = req.body;
+        throw createUserError('BadRequest', error.message);
+    }
+
+    const { username, password, oldPassword, passwordToken } = req.body;
 
     if (!passwordToken && !oldPassword) {
-        throw createUserError('BadRequest', 'Missing passwordToken parameter or oldPassword field');
+        throw createUserError('BadRequest', 'Missing passwordToken or oldPassword field');
     }
 
     await authService.definePassword(username, passwordToken, password, oldPassword);
@@ -120,19 +124,17 @@ async function definePassword(req, res) {
  */
 async function usernameVerify(req, res) {
     const schema = Joi.object().keys({
+        userId: Joi.number().integer().required(),
         username: Joi.string().email().required(),
         password: Joi.string().required(),
+        usernameToken: Joi.string().required()
     });
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    const usernameToken = req.params.usernameToken;
-    if (!usernameToken) throw createUserError('BadRequest', 'Missing passwordToken parameter field');
-
-    const { username, password } = req.body;
-
-    await authService.usernameVerify(username, password, usernameToken);
+    const { userId, username, password, usernameToken } = req.body;
+    await authService.usernameVerify(userId, username, password, usernameToken);
 
     res.sendStatus(200);
 }

@@ -84,6 +84,12 @@ async function updateSpecialAccount(req, res) {
     const { error } = schema.validate(newUser);
     if (error) throw createUserError('BadRequest', error.message);
 
+    if (newUser.code && !req.user.permissions.include('specialaccount:force-code-reset')) {
+        const err = createUserError('PermissionError', 'You don\'t have enough permissions!');
+        err.code = 'permissions_denied';
+        throw err;
+    }
+
     let newSpecialAccount = new SpecialAccount(
         {
             ...newUser,

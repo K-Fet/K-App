@@ -1,11 +1,11 @@
-import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 // Guards
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { EditGuard } from './_guards/edit.guard';
 
 // Components
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
@@ -26,6 +26,8 @@ import { OpenServicesComponent } from './services/open-services/open-services.co
 import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
+import { DefinePasswordComponent } from './auth/define-password/define-password.component';
+import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -39,6 +41,8 @@ const generateData = (permissions: Array<String>) => {
 const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
+    { path: 'define-password', component: DefinePasswordComponent },
+    { path: 'username-verification', component: UsernameVerificationComponent },
     { path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['member:read']) },
     { path: 'members/new', component: MemberNewComponent, canActivate: [NgxPermissionsGuard],

@@ -1,0 +1,18 @@
+<div fxLayoutAlign="center">
+        <mat-card fxFlex="350px" fxFlex.lt-sm="95">
+            <mat-card-content>
+                <h3>Vérification de l'adresse mail</h3>
+                <p>Veuillez renseigner votre mot de passe afin de vérifier l'adresse: "{{username}}"</p>
+                <form [formGroup]="passwordForm" fxLayout="column" (ngSubmit)="verifyUsername()">
+                    <mat-form-field>
+                        <input matInput placeholder="Mot de passe" autocapitalize="off" type="password"
+                               autocorrect="off" formControlName="password">
+                    </mat-form-field>
+                    <button mat-button type="submit" [disabled]="!passwordForm.valid">
+                        VÉRIFIER
+                    </button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    

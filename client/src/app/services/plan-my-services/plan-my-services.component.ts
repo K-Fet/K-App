@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { Service, ConnectedUser, Day } from '../../_models/index';
-import { ServiceService, ToasterService, BarmanService, LoginService } from '../../_services/index';
+import { ServiceService, ToasterService, BarmanService, AuthService } from '../../_services';
 
 @Component({
     selector: 'app-plan-my-services',
@@ -15,13 +15,13 @@ export class PlanMyServicesComponent implements OnInit {
     user: ConnectedUser;
 
     constructor(private serviceService: ServiceService,
-        private loginService: LoginService,
+        private authService: AuthService,
         private barmanService: BarmanService,
         private toasterService: ToasterService) {}
 
     ngOnInit() {
         // Get connected user
-        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
 
             // Get actual services of the connected user

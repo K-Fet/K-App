@@ -1,8 +1,9 @@
+import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService, BarmanService,
-    KommissionService, RoleService, LoginService, MeService } from '../../_services';
+    KommissionService, RoleService, AuthService, MeService } from '../../_services';
 import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
 
 @Component({
@@ -36,8 +37,9 @@ export class BarmanEditComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
-        private loginService: LoginService,
-        private meService: MeService
+        private authService: AuthService,
+        private meService: MeService,
+        private ngxPermissionsService: NgxPermissionsService
     ) {
         this.createForm();
     }
@@ -100,7 +102,7 @@ export class BarmanEditComponent implements OnInit {
         });
 
         // Get connected user
-        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.connectedUser = user;
         });
     }
@@ -123,7 +125,6 @@ export class BarmanEditComponent implements OnInit {
 
     prepareSaving() {
         const values = this.barmanForm.value;
-        this.currentBarman.connection.password = null;
         Object.keys(this.currentBarman).forEach(key => {
             switch (key) {
                 case 'connection':
@@ -131,11 +132,6 @@ export class BarmanEditComponent implements OnInit {
                         this.barman.connection = {
                             ...this.barman.connection,
                             username: values.username,
-                        };
-                    } else if (values.password) {
-                        this.barman.connection = {
-                            ...this.barman.connection,
-                            password: values.password,
                         };
                     }
                     break;

@@ -10,6 +10,7 @@
         </mat-card-header>
         <mat-card-content>
             <form [formGroup]="barmanForm" fxLayout="column">
+                <h4>Informations personnelles</h4>
                 <mat-form-field>
                     <input matInput placeholder="Nom de famille" formControlName="lastName">
                 </mat-form-field>
@@ -17,21 +18,20 @@
                     <input matInput placeholder="Prénom" formControlName="firstName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Surnom" formControlName="nickname">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Username (adresse email)" formControlName="username">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="password" placeholder="Mot de passe" formControlName="password">
+                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Facebook" formControlName="facebook">
                 </mat-form-field>
+                <h4>Informations de connection</h4>
                 <mat-form-field>
-                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+                    <input matInput placeholder="Username (adresse email)" formControlName="username">
+                </mat-form-field>
+                <h4>Informations relative à la K-Fêt</h4>
+                <mat-form-field>
+                    <input matInput placeholder="Surnom" formControlName="nickname">
                 </mat-form-field>
                 <mat-form-field>
                     <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>

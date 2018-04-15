@@ -42,7 +42,6 @@ export class BarmanNewComponent implements OnInit {
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),
@@ -87,9 +86,6 @@ export class BarmanNewComponent implements OnInit {
                 switch (key) {
                     case 'username':
                         this.barman.connection.username = this.barmanForm.controls.username.value;
-                        break;
-                    case 'password':
-                        this.barman.connection.password = this.barmanForm.controls.password.value;
                         break;
                     case 'godFather':
                         this.barman._embedded.godFather = this.selectedGodFather;

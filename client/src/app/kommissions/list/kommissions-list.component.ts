@@ -3,7 +3,7 @@ import { Kommission } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 import 'rxjs/add/observable/fromEvent';

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, BehaviorSubject} from 'rxjs/Rx';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { SpecialAccount, ConnectedUser} from '../_models';
@@ -9,7 +9,7 @@ import {NgxPermissionsService} from 'ngx-permissions';
 import {Router} from '@angular/router';
 
 @Injectable()
-export class LoginService {
+export class AuthService {
 
     $currentUser: BehaviorSubject<ConnectedUser>;
 
@@ -78,6 +78,14 @@ export class LoginService {
         });
     }
 
+    definePassword(username: String, password: String, passwordToken: String): Observable<any> {
+        return this.http.put('api/auth/reset-password', { username , password, passwordToken });
+    }
+
+    verifyUsername(userId: Number, username: String, password: String, usernameToken: String): Observable<any> {
+        return this.http.put('api/auth/username-verification', { userId, username, password, usernameToken });
+    }
+
     private clearUser() {
         this.$currentUser.next(new ConnectedUser({
             accountType: 'Guest',
@@ -113,5 +121,9 @@ export class LoginService {
                     }));
                 }
             });
+    }
+
+    resetPassword(username: String): Observable<any> {
+        return this.http.post('/api/auth/reset-password', { username });
     }
 }

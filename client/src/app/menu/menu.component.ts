@@ -1,7 +1,7 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginService, ToasterService } from '../_services';
+import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
 
@@ -99,7 +99,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     @ViewChild('snav') public sideNav: MatSidenav;
 
     constructor(
-        private loginService: LoginService,
+        private authService: AuthService,
         private toasterService: ToasterService,
         router: Router,
         changeDetectorRef: ChangeDetectorRef,
@@ -111,13 +111,13 @@ export class MenuComponent implements OnDestroy, OnInit {
     }
 
     logout() {
-        this.loginService.logout().subscribe(res => {
+        this.authService.logout().subscribe(() => {
             this.toasterService.showToaster('Déconnexion réussie');
         });
     }
 
     ngOnInit(): void {
-        this.loginService.$currentUser.subscribe(user => {
+        this.authService.$currentUser.subscribe(user => {
             this.user = user;
             if (this.user.isGuest) {
                 this.sideNav.opened = false;

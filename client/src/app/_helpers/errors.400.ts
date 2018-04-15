@@ -15,4 +15,6 @@ export const ERRORS400 = {
     'MailerError': 'L\'envoi du mail du côté serveur a échoué.',
     'CodeError': 'Code invalide: Le code n\'est pas valide.',
     'BadUsername': 'L\'username n\'est pas disponible',
+    'WeakPassword': 'Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre et plus de 8 charactères.',
+    'UnknownPasswordToken': 'Token inconnu: le token utilisé n\'existe pas ou n\'est plus valide',
 };

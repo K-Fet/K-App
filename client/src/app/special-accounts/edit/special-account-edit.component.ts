@@ -1,14 +1,11 @@
-import { MeService } from './../../_services/me.service';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { ConnectedUser } from './../../_models/ConnectedUser';
-import { LoginService } from './../../_services/login.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount, Permission } from '../../_models';
-import { ToasterService } from '../../_services';
-import { SpecialAccountService, PermissionService } from '../../_services';
-import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { SpecialAccount, Permission, ConnectedUser } from '../../_models';
+import { SpecialAccountService, PermissionService,
+    AuthService, MeService, ToasterService  } from '../../_services';
+import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -31,7 +28,7 @@ export class SpecialAccountEditComponent implements OnInit {
 
     constructor(
         private specialAccountService: SpecialAccountService,
-        private loginService: LoginService,
+        private authService: AuthService,
         private permissionService: PermissionService,
         private ngxPermissionsService: NgxPermissionsService,
         private toasterService: ToasterService,
@@ -50,7 +47,6 @@ export class SpecialAccountEditComponent implements OnInit {
             description: new FormControl(''),
             code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),
-            password: new FormControl(''),
         });
     }
 
@@ -83,7 +79,7 @@ export class SpecialAccountEditComponent implements OnInit {
                 this.currentSpecialAccount = specialAccount;
             });
         });
-        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.currentUser = user;
         });
     }
@@ -108,7 +104,7 @@ export class SpecialAccountEditComponent implements OnInit {
             this.meService.put(this.currentUser).subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/specialaccounts'] );
-                this.loginService.me().subscribe();
+                this.authService.me().subscribe();
             });
         } else {
             this.specialAccountService.update(specialAccount, code).subscribe(() => {
@@ -132,12 +128,6 @@ export class SpecialAccountEditComponent implements OnInit {
         if (this.currentSpecialAccount.connection.username !== formValues.username) {
             specialAccount.connection = {
                 username: formValues.username
-            };
-        }
-        if (formValues.password) {
-            specialAccount.connection = {
-                ...specialAccount.connection,
-                password: formValues.password
             };
         }
         if (formValues.code) {
@@ -192,10 +182,6 @@ export class SpecialAccountEditComponent implements OnInit {
     isMe(): Boolean {
         return this.currentUser && this.currentUser.specialAccount
             && this.currentSpecialAccount.id === this.currentUser.specialAccount.id;
-    }
-
-    codeFieldEnable(): Boolean {
-        return (this.isMe() || this.ngxPermissionsService.getPermissions()['specialaccount:force-code-reset']) ? true : false;
     }
 
     codesMatch(): Boolean {
