@@ -368,7 +368,7 @@ async function updateUsername(currentUsername, newUsername) {
  * @returns {Promise<void>} Nothing
  */
 async function usernameVerify(userId, username, password, usernameToken) {
-    const co = ConnectionInformation.findOne(userId);
+    const co = ConnectionInformation.findById(userId);
 
     if (!co ||
         !await verify(co.password, password) ||
