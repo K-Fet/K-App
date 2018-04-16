@@ -26,6 +26,8 @@ export class BarmanEditComponent implements OnInit {
 
     barmanForm: FormGroup;
 
+    oldPassword: string;
+
     startDate = new Date();
 
     constructor(
@@ -50,6 +52,7 @@ export class BarmanEditComponent implements OnInit {
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl(''),
+            oldPassword: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),
@@ -113,6 +116,9 @@ export class BarmanEditComponent implements OnInit {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/barmen'] );
             });
+            if (this.barmanForm.controls.password.value.dirty() ) {
+                this.meService.resetPassword(this.connectedUser.barman.connection, this.oldPassword);
+            }
         } else {
             this.barmanService.update(this.barman).subscribe(() => {
                 this.toasterService.showToaster('Barman modifié');
@@ -124,6 +130,9 @@ export class BarmanEditComponent implements OnInit {
     prepareSaving() {
         const values = this.barmanForm.value;
         this.currentBarman.connection.password = null;
+        if (this.barmanForm.controls.oldPassword.value.dirty() ) {
+            this.oldPassword = this.barmanForm.controls.oldPassword.value;
+        }
         Object.keys(this.currentBarman).forEach(key => {
             switch (key) {
                 case 'connection':
