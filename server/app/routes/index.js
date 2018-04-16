@@ -10,6 +10,12 @@ router.use(morgan('combined', { stream: logger.stream }));
 
 router.use(bodyParser.json());
 
+
+// No Auth
+
+router.use('/feed', require('./feed'));
+
+
 // Auth
 
 router.use('/auth', require('./auth'));
