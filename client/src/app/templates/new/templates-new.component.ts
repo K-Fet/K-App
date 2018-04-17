@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToasterService, TemplateService } from '../../_services/index';
-import { Template } from '../../_models/index';
-
-const WEEK_DAY: Array<String> = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+import { Template, Service } from '../../_models/index';
 
 @Component({
   templateUrl: './templates-new.component.html'
@@ -13,10 +11,20 @@ const WEEK_DAY: Array<String> = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendred
 export class TemplateNewComponent implements OnInit {
 
     template: Template = new Template();
-    startAt: string;
-    endAt: string;
+    services: Array<Service>;
+    serviceForm: FormGroup;
     templateForm: FormGroup;
+    formArray: FormArray;
     selectedDay: Number;
+
+    WEEK_DAY = [
+        {id: '1', value: 'Lundi'},
+        {id: '2', value: 'Mardi'},
+        {id: '3', value: 'Mercredi'},
+        {id: '4', value: 'Jeudi'},
+        {id: '5', value: 'Vendredi'},
+        {id: '6', value: 'Samedi'},
+        {id: '7', value: 'Dimanche'} ];
 
     constructor(
         private templateService: TemplateService,
@@ -28,12 +36,16 @@ export class TemplateNewComponent implements OnInit {
     }
 
     createForm() {
-        this.templateForm = this.fb.group({
-            name: new FormControl('', [Validators.required]),
+        this.serviceForm = this.fb.group({
+            name: new FormControl('', [Validators.required]),   // à passer dans le templateForm plus tard
             start: new FormControl('', [Validators.required]),
             end: new FormControl('', [Validators.required]),
             day: new FormControl('', [Validators.required])
         });
+      /*  this.templateForm = this.fb.group({
+            name: new FormControl('', [Validators.required])
+        });
+        */
     }
 
     ngOnInit(): void {
@@ -47,4 +59,8 @@ export class TemplateNewComponent implements OnInit {
         });
     }
     */
+
+
+
+    addService() {}
 }
