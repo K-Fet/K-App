@@ -15,4 +15,8 @@ export class TemplateService {
     getById(id: number) {
         return this.http.get<Template>('/api/templates/' + id);
     }
+
+    create(template: Template) {
+        return this.http.post('/api/templates', {template: template} );
+    }
 }

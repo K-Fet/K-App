@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplateService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Template } from '../../_models';
+import { Template, Service } from '../../_models';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -12,6 +12,9 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
 export class TemplateViewComponent implements OnInit {
 
     template: Template = new Template;
+    services: Service[] = new Array<Service>();
+
+
 
     constructor(
         private templateService: TemplateService,
@@ -28,5 +31,24 @@ export class TemplateViewComponent implements OnInit {
                 this.template = template;
             });
         });
+        this.changeFormatDate();
+    }
+
+    toDate(val) {
+        const date = new Date();
+        date.setDate(val.day);
+        date.setHours(val.hours);
+        date.setMinutes(val.minutes);
+        return date;
+    }
+
+    changeFormatDate() {
+        this.services = this.template.services.map(n =>
+        new Service({
+            startAt: this.toDate(n.startAt),
+            endAt: this.toDate(n.endAt),
+            nbMax: n.nbMax
+        }));
+
     }
 }
