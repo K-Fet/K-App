@@ -98,7 +98,7 @@ export class BarmanEditComponent implements OnInit {
 
         // Get barmen
         this.barmanService.getAll().subscribe(barmen => {
-            this.barmen = barmen;
+            this.barmen = barmen.filter(barman => barman.id !== this.currentBarman.id);
         });
 
         // Get connected user

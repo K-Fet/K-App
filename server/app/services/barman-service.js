@@ -186,6 +186,9 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
                 if (!wantedGodFather) {
                     await transaction.rollback();
                     throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                } else if (wantedGodFather.id === currentBarman.id) {
+                    await transaction.rollback();
+                    throw createUserError('PickHimself', 'Try to pick himself as his gofFather');
                 }
 
                 await currentBarman.setGodFather(wantedGodFather, { transaction });
