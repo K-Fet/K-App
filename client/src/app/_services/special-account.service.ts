@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SpecialAccount } from '../_models/index';
+import { HttpClient } from '@angular/common/http';
+import { SpecialAccount } from '../_models';
 
 import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class SpecialAccountService {
@@ -30,11 +29,6 @@ export class SpecialAccountService {
     }
 
     delete(id: Number, code: Number) {
-        const options = {
-            body: {
-                code: code,
-            }
-        };
-        return this.http.request('DELETE', '/api/specialaccounts/' + id, options);
+        return this.http.post('/api/specialaccounts/' + id + '/delete', { code });
     }
 }

@@ -7,6 +7,6 @@ router.get('/', guard.check('kommission:read'), am(kommissionController.getAllKo
 router.post('/', guard.check('kommission:write'), am(kommissionController.createKommission));
 router.get('/:id(\\d+)', guard.check('kommission:read'), am(kommissionController.getKommissionById));
 router.put('/:id(\\d+)', guard.check('kommission:write'), am(kommissionController.updateKommission));
-router.delete('/:id(\\d+)', guard.check('kommission:write'), am(kommissionController.deleteKommission));
+router.post('/:id(\\d+)/delete', guard.check('kommission:write'), am(kommissionController.deleteKommission));
 
 module.exports = router;

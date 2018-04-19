@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Permission } from '../_models/index';
+import { HttpClient } from '@angular/common/http';
+import { Permission } from '../_models';
 
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class PermissionService {

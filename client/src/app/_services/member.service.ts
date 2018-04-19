@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import { Member } from '../_models/index';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { Member } from '../_models';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 
@@ -31,11 +29,6 @@ export class MemberService {
     }
 
     delete(id: Number, code: Number) {
-        const options = {
-            body: {
-                code: code,
-            }
-        };
-        return this.http.request('DELETE', '/api/members/' + id, options);
+        return this.http.post('/api/members/' + id, { code });
     }
 }
