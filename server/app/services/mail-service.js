@@ -149,10 +149,43 @@ async function sendUsernameConfirmation(email) {
     await transporter.sendMail(mailOptions);
 }
 
+/**
+ * Send a welcome mail
+ *
+ * @param email {String} recipient email address
+ * @returns {Promise<void>} Nothing
+ */
+async function sendWelcomeMail(email) {
+
+    let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'welcome.html'), 'utf8');
+
+    mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
+        switch (replaceToken) {
+            case 'MAIL_WEBSITE':
+                return WEB_CONFIG.publicURL;
+            case 'MAIL_USERNAME':
+                return email;
+        }
+    });
+
+    const transporter = nodemailer.createTransport(CONFIG);
+    // Setup email data with unicode symbols
+    const mailOptions = {
+        from: CONFIG.auth.user,
+        to: email,
+        subject: '[K-App] Bienvenue sur l\'application',
+        html: mail,
+    };
+
+    // Send mail with defined transport object
+    await transporter.sendMail(mailOptions);
+}
+
 
 module.exports = {
     sendPasswordResetMail,
     sendVerifyUsernameMail,
     sendUsernameUpdateInformationMail,
     sendUsernameConfirmation,
+    sendWelcomeMail,
 };

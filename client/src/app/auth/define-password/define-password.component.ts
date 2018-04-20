@@ -44,7 +44,7 @@ export class DefinePasswordComponent implements OnInit {
     definePassword() {
         const password = this.passwordForm.get('password').value;
         this.authService.definePassword(this.username, password, this.token).subscribe(() => {
-            this.toasterService.showToaster('Enregistré, veuillez vous connecter');
+            this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
             setTimeout(this.router.navigate(['/login']), 1000);
         });
     }
