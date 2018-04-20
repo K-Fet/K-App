@@ -35,9 +35,9 @@ export class MembersListComponent implements OnInit {
             this.displayedColumns = ['lastName', 'firstName', 'school'];
         }
         this.media.subscribe((change: MediaChange) => {
-            if (change.mqAlias == 'xs' && this.displayedColumns.includes('school')) {
+            if (change.mqAlias === 'xs' && this.displayedColumns.includes('school')) {
                 this.displayedColumns.splice(this.displayedColumns.indexOf('school'), 1);
-            } else if(!this.displayedColumns.includes('school')) {
+            } else if (!this.displayedColumns.includes('school')) {
                 this.displayedColumns.splice(this.displayedColumns.indexOf('firstName') + 1, 0, 'school');
             }
         });
