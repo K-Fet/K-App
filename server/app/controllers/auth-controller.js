@@ -75,7 +75,7 @@ async function resetPassword(req, res) {
 
     await authService.resetPassword(req.body.username);
 
-    res.sendStatus(200);
+    res.send({});
 }
 
 /**
@@ -112,7 +112,7 @@ async function definePassword(req, res) {
 
     await authService.definePassword(username, passwordToken, password, oldPassword);
 
-    res.sendStatus(200);
+    res.send({});
 }
 
 /**
@@ -136,7 +136,7 @@ async function usernameVerify(req, res) {
     const { userId, username, password, usernameToken } = req.body;
     await authService.usernameVerify(userId, username, password, usernameToken);
 
-    res.sendStatus(200);
+    res.send({});
 }
 
 
