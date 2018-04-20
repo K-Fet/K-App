@@ -17,6 +17,6 @@ export class ConnectedUser {
     }
 
     isBarman(): Boolean {
-        return this.accountType === 'barman' ? true : false;
+        return this.accountType === 'Barman' ? true : false;
     }
 }

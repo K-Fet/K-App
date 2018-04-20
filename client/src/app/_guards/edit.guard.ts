@@ -15,7 +15,7 @@ export class EditGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.authService.$currentUser.map(connectedUser => {
-            const id = route.params['id'];
+            const id = +route.params['id'];
             if ((connectedUser.specialAccount && connectedUser.specialAccount.id === id)
                 || (connectedUser.barman && connectedUser.barman.id === id)
                 || this.ngxPermissionsService.getPermissions()['barman:write']

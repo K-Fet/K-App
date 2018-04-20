@@ -350,7 +350,7 @@ async function updateUsername(currentUsername, newUsername) {
 
     try {
         await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
-        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken, co.id);
+        await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
     } catch (err) {
         logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
         transaction.rollback();

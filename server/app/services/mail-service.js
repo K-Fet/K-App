@@ -37,7 +37,7 @@ async function sendPasswordResetMail(email, token) {
     const mailOptions = {
         from: CONFIG.auth.user,
         to: email,
-        subject: '[K-App] Réinitialisation du mot de passe',
+        subject: '[K-App] (re)Définition du mot de passe',
         html: mail,
     };
 
@@ -89,7 +89,7 @@ async function sendVerifyUsernameMail(email, token, userId) {
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameUpdateInformationMail(email, token, userId) {
+async function sendUsernameUpdateInformationMail(email, newEmail, token, userId) {
 
     let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'), 'utf8');
 
@@ -99,6 +99,8 @@ async function sendUsernameUpdateInformationMail(email, token, userId) {
                 return WEB_CONFIG.publicURL;
             case 'MAIL_USERNAME':
                 return email;
+            case 'MAIL_NEW_USERNAME':
+                return newEmail;
             case 'MAIL_LINK':
                 return `${WEB_CONFIG.publicURL }/cancel-username-update?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
         }
