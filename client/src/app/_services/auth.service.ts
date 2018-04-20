@@ -83,7 +83,7 @@ export class AuthService {
     }
 
     verifyUsername(userId: Number, username: String, password: String, usernameToken: String): Observable<any> {
-        return this.http.put('api/auth/username-verification', { userId, username, password, usernameToken });
+        return this.http.post('api/auth/username-verification', { userId, username, password, usernameToken });
     }
 
     private clearUser() {
