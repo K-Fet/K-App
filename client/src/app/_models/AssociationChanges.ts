@@ -1,4 +1,4 @@
 export class AssociationChanges {
-    add?: Number[];
-    remove?: Number[];
+    add?: Array<Number>;
+    remove?: Array<Number>;
 }

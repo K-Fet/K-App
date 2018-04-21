@@ -1,13 +1,13 @@
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService,
-    KommissionService, RoleService, AuthService, MeService } from '../../_services';
-import { Barman, Kommission, Role, AssociationChanges, ConnectedUser } from '../../_models';
+import { EmailValidator, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService, BarmanService,
+    KommissionService, MeService, RoleService, ToasterService } from '../../_services';
+import { AssociationChanges, Barman, ConnectedUser, Kommission, Role } from '../../_models';
 
 @Component({
-  templateUrl: './barman-edit.component.html'
+    templateUrl: './barman-edit.component.html',
 })
 
 export class BarmanEditComponent implements OnInit {
@@ -18,33 +18,30 @@ export class BarmanEditComponent implements OnInit {
     barman: Barman = new Barman();
 
     selectedGodFather: Number;
-    selectedKommissions: Number[];
-    selectedRoles: Number[];
+    selectedKommissions: Array<Number>;
+    selectedRoles: Array<Number>;
 
-    kommissions: Kommission[] = new Array<Kommission>();
-    roles: Role[] = new Array<Role>();
-    barmen: Barman[] = new Array<Barman>();
+    kommissions: Array<Kommission> = new Array<Kommission>();
+    roles: Array<Role> = new Array<Role>();
+    barmen: Array<Barman> = new Array<Barman>();
 
     barmanForm: FormGroup;
 
     startDate = new Date();
 
-    constructor(
-        private barmanService: BarmanService,
-        private kommissionService: KommissionService,
-        private roleService: RoleService,
-        private toasterService: ToasterService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private fb: FormBuilder,
-        private authService: AuthService,
-        private meService: MeService,
-        private ngxPermissionsService: NgxPermissionsService
-    ) {
+    constructor(private barmanService: BarmanService,
+                private kommissionService: KommissionService,
+                private roleService: RoleService,
+                private toasterService: ToasterService,
+                private route: ActivatedRoute,
+                private router: Router,
+                private fb: FormBuilder,
+                private authService: AuthService,
+                private meService: MeService) {
         this.createForm();
     }
 
-    createForm() {
+    createForm(): void {
         this.barmanForm = this.fb.group({
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
@@ -57,13 +54,12 @@ export class BarmanEditComponent implements OnInit {
             godFather: new FormControl(''),
             roles: new FormControl(''),
             kommissions: new FormControl(''),
-            active: new FormControl('')
+            active: new FormControl(''),
         });
         this.startDate.setFullYear(this.startDate.getFullYear() - 20);
     }
 
     ngOnInit(): void {
-
         // Get barman information and fill up form
         this.route.params.subscribe(params => {
             this.barman.id = params['id'];
@@ -107,23 +103,23 @@ export class BarmanEditComponent implements OnInit {
         });
     }
 
-    edit() {
+    edit(): void {
         this.prepareSaving();
         if (this.isMe()) {
             this.connectedUser.barman = this.barman;
             this.meService.put(this.connectedUser).subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
-                this.router.navigate(['/barmen'] );
+                this.router.navigate(['/barmen']);
             });
         } else {
             this.barmanService.update(this.barman).subscribe(() => {
                 this.toasterService.showToaster('Barman modifié');
-                this.router.navigate(['/barmen'] );
+                this.router.navigate(['/barmen']);
             });
         }
     }
 
-    prepareSaving() {
+    prepareSaving(): void {
         const values = this.barmanForm.value;
         Object.keys(this.currentBarman).forEach(key => {
             switch (key) {
@@ -165,8 +161,8 @@ export class BarmanEditComponent implements OnInit {
     }
 
     prepareAssociationChanges(current, updated): AssociationChanges {
-        const add: Number[] = [];
-        const remove: Number[] = [];
+        const add: Array<Number> = [];
+        const remove: Array<Number> = [];
         updated.forEach(aId => {
             if (!current.map(a => a.id).includes(aId)) {
                 add.push(aId);

@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
@@ -19,7 +20,7 @@ interface SubMenu {
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
 })
 
 export class MenuComponent implements OnDestroy, OnInit {
@@ -30,64 +31,64 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Tableau de bord',
                     route: '/dashboard',
-                    permissions: []
-                }
-            ]
+                    permissions: [],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Adhérents',
                     route: '/members',
-                    permissions: ['member:read']
-                }
-            ]
+                    permissions: ['member:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Barmen',
                     route: '/barmen',
-                    permissions: ['barman:read']
-                }
-            ]
+                    permissions: ['barman:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Kommissions',
                     route: '/kommissions',
-                    permissions: ['kommission:read']
-                }
-            ]
+                    permissions: ['kommission:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Roles',
                     route: '/roles',
-                    permissions: ['roles:read']
-                }
-            ]
+                    permissions: ['roles:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Comptes spéciaux',
                     route: '/specialaccounts',
-                    permissions: ['specialaccount:read']
-                }
-            ]
+                    permissions: ['specialaccount:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Ouvrir les services',
                     route: '/open-services',
-                    permissions: ['service:write']
-                }
-            ]
-        }
+                    permissions: ['service:write'],
+                },
+            ],
+        },
     ];
 
     mobileQuery: MediaQueryList;
@@ -111,7 +112,7 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.sidenavQuery.addListener(this._mobileQueryListener);
     }
 
-    logout() {
+    logout(): void {
         this.authService.logout().subscribe(() => {
             this.toasterService.showToaster('Déconnexion réussie');
         });

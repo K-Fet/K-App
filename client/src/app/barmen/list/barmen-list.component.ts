@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Member, Barman } from '../../_models/index';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Barman, Member } from '../../_models/index';
 import { BarmanService } from '../../_services/index';
-import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
 
@@ -10,8 +10,8 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
-  templateUrl: './barmen-list.component.html',
-  styleUrls: ['./barmen-list.component.scss']
+    templateUrl: './barmen-list.component.html',
+    styleUrls: ['./barmen-list.component.scss'],
 })
 export class BarmenListComponent implements OnInit {
 
@@ -22,11 +22,10 @@ export class BarmenListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private barmanService: BarmanService,
-        private toasterService: ToasterService,
-        private router: Router) {
+                private router: Router) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.barmanService.getAll().subscribe(barmen => {
             this.barmenData = new MatTableDataSource(barmen);
             this.barmenData.paginator = this.paginator;
@@ -34,17 +33,17 @@ export class BarmenListComponent implements OnInit {
         });
     }
 
-    applyFilter(filterValue: string) {
+    applyFilter(filterValue: string): void {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.barmenData.filter = filterValue;
     }
 
-    view(barman: Barman) {
+    view(barman: Barman): void {
         this.router.navigate(['/barmen', barman.id]);
     }
 
-    edit(barman: Barman) {
+    edit(barman: Barman): void {
         this.router.navigate(['/barmen', barman.id, 'edit']);
     }
 }

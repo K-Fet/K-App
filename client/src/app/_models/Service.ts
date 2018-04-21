@@ -9,7 +9,7 @@ export class Service {
 
     // Association
 
-    barmen?: Barman[];
+    barmen?: Array<Barman>;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

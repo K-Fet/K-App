@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Role, Permission } from '../../_models/index';
+import { FormControl, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Permission, Role } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
-import { RoleService, PermissionService } from '../../_services';
+import { PermissionService, RoleService } from '../../_services';
 
 @Component({
-  templateUrl: './role-edit.component.html',
+    templateUrl: './role-edit.component.html',
 })
 
 export class RoleEditComponent implements OnInit {
@@ -31,7 +31,7 @@ export class RoleEditComponent implements OnInit {
         private permissionService: PermissionService
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.permissionService.getAll().subscribe(permissions => {
             permissions.forEach(permission => {
                 this.permissions.push({
@@ -62,7 +62,7 @@ export class RoleEditComponent implements OnInit {
         });
     }
 
-    edit() {
+    edit(): void {
         const role = this.prepareEditing();
         this.roleService.update(role).subscribe(() => {
             this.toasterService.showToaster('Rôle modifié');
@@ -74,7 +74,7 @@ export class RoleEditComponent implements OnInit {
         const role = new Role({
             id : +this.id,
             name : this.name,
-            description : this.description
+            description : this.description,
         });
         // Associations
         const add = this.permissions.filter(permission => {
@@ -87,7 +87,7 @@ export class RoleEditComponent implements OnInit {
             role._embedded = {
                 permissions: {
                     add: add.map(perm => perm.permission.id),
-                }
+                },
             };
         }
         if (remove.length > 0) {
@@ -97,7 +97,7 @@ export class RoleEditComponent implements OnInit {
                 role._embedded = {
                     permissions: {
                         remove: remove.map(perm => perm.permission.id),
-                    }
+                    },
                 };
             }
         }

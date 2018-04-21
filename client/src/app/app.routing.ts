@@ -33,8 +33,8 @@ const generateData = (permissions: Array<String>) => {
     return {
         permissions: {
             only: permissions,
-            redirectTo: '/dashboard'
-        }
+            redirectTo: '/dashboard',
+        },
     };
 };
 
@@ -79,7 +79,7 @@ const routes: Routes = [
         data: generateData(['specialaccount:write']) },
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
     { path: '404', component: NotFoundComponent },
-    { path: '**', redirectTo: '/404' }
+    { path: '**', redirectTo: '/404' },
 ];
 
 export const routing = RouterModule.forRoot(routes);

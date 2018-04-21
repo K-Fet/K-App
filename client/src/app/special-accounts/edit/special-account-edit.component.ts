@@ -1,21 +1,19 @@
-import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount, Permission, ConnectedUser } from '../../_models';
-import { SpecialAccountService, PermissionService,
-    AuthService, MeService, ToasterService  } from '../../_services';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConnectedUser, Permission, SpecialAccount } from '../../_models';
+import { AuthService, MeService, PermissionService, SpecialAccountService, ToasterService } from '../../_services';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
-  templateUrl: './special-account-edit.component.html',
+    templateUrl: './special-account-edit.component.html',
 })
 
 export class SpecialAccountEditComponent implements OnInit {
 
     currentSpecialAccount: SpecialAccount = new SpecialAccount({
-        connection: {}
+        connection: {},
     });
     currentUser: ConnectedUser = new ConnectedUser();
     specialAccountForm: FormGroup;
@@ -30,18 +28,17 @@ export class SpecialAccountEditComponent implements OnInit {
         private specialAccountService: SpecialAccountService,
         private authService: AuthService,
         private permissionService: PermissionService,
-        private ngxPermissionsService: NgxPermissionsService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
         public dialog: MatDialog,
-        private meService: MeService,
+        private meService: MeService
     ) {
         this.createForms();
     }
 
-    createForms() {
+    createForms(): void {
         this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required, Validators.email]),
             description: new FormControl(''),
@@ -50,7 +47,7 @@ export class SpecialAccountEditComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.permissionService.getAll().subscribe(permissions => {
             permissions.forEach(permission => {
                 this.permissions.push({
@@ -87,7 +84,7 @@ export class SpecialAccountEditComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
-            data: { message: 'Edition d\'un compte special' }
+            data: { message: 'Edition d\'un compte special' },
         });
 
         dialogRef.afterClosed().subscribe(code => {
@@ -97,13 +94,13 @@ export class SpecialAccountEditComponent implements OnInit {
         });
     }
 
-    edit(code: Number) {
+    edit(code: Number): void {
         const specialAccount = this.prepareEditing();
         if (this.isMe()) {
             this.currentUser.specialAccount = specialAccount;
             this.meService.put(this.currentUser).subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
-                this.router.navigate(['/specialaccounts'] );
+                this.router.navigate(['/specialaccounts']);
                 this.authService.me().subscribe();
             });
         } else {
@@ -127,7 +124,7 @@ export class SpecialAccountEditComponent implements OnInit {
         }
         if (this.currentSpecialAccount.connection.username !== formValues.username) {
             specialAccount.connection = {
-                username: formValues.username
+                username: formValues.username,
             };
         }
         if (formValues.code) {
@@ -145,7 +142,7 @@ export class SpecialAccountEditComponent implements OnInit {
             specialAccount._embedded = {
                 permissions: {
                     add: add.map(perm => perm.permission.id),
-                }
+                },
             };
         }
         if (remove.length > 0) {
@@ -155,7 +152,7 @@ export class SpecialAccountEditComponent implements OnInit {
                 specialAccount._embedded = {
                     permissions: {
                         remove: remove.map(perm => perm.permission.id),
-                    }
+                    },
                 };
             }
         }
@@ -186,8 +183,8 @@ export class SpecialAccountEditComponent implements OnInit {
 
     codesMatch(): Boolean {
         if (this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value) {
-            this.specialAccountForm.get('code').setErrors({'incorrect': true});
-            this.specialAccountForm.get('codeConfirmation').setErrors({'incorrect': true});
+            this.specialAccountForm.get('code').setErrors({ 'incorrect': true });
+            this.specialAccountForm.get('codeConfirmation').setErrors({ 'incorrect': true });
             return false;
         }
         this.specialAccountForm.get('code').setErrors(null);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Service, Barman, Day } from '../_models';
+import { Barman, Day, Service } from '../_models';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/throw';
@@ -9,6 +9,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/of';
 
 import * as moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
 import { Moment } from 'moment';
 
 // The K-Fêt week change every thusday ( = 4 )
@@ -21,32 +22,34 @@ export class ServiceService {
 
     constructor(private http: HttpClient) { }
 
-    get(start: Moment, end: Moment) {
-        return this.http.get<Service[]>('/api/services', {
+    get(start: Moment, end: Moment): Observable<Array<Service>> {
+        return this.http.get<Array<Service>>('/api/services', {
             params: {
-              start: (+start).toString(),
-              end: (+end).toString()
+                start: (+start).toString(),
+                end: (+end).toString(),
             }});
     }
 
-    getById(id: Number) {
-        return this.http.get<Service>('/api/services/' + id);
+    getById(id: Number): Observable<Service> {
+        return this.http.get<Service>(`/api/services/${id}`);
     }
 
-    getBarmen(id: Number) {
-        return this.http.get<Barman[]>('/api/services/' + id + '/barmen');
+    getBarmen(id: Number): Observable<Array<Barman>> {
+        return this.http.get<Array<Barman>>(`/api/services/${id}/barmen`);
     }
 
-    create(services: Service[]) {
-        return this.http.post('/api/services', services);
+    create(services: Array<Service>): Observable<Array<Service>> {
+        return this.http.post<Array<Service>>('/api/services', services);
     }
 
-    update(service: Service) {
-        return this.http.put('/api/services/' + service.id, service);
+    update(service: Service): Observable<Service> {
+        const id = service.id;
+        delete service.id;
+        return this.http.put<Service>(`/api/services/${id}`, service);
     }
 
-    delete(id: Number) {
-        return this.http.post('/api/services/' + id + '/delete', null);
+    delete(id: Number): Observable<Service> {
+        return this.http.post<Service>(`/api/services/${id}/delete`, null);
     }
 
     getWeek(): Observable<{start: Moment, end: Moment}> {
@@ -56,13 +59,13 @@ export class ServiceService {
                     'hour': 0,
                     'minute': 0,
                     'second': 0,
-                    'millisecond': 0
+                    'millisecond': 0,
                 });
                 const end: Moment = moment.utc().set({
                     'hour': 23,
                     'minute': 59,
                     'second': 59,
-                    'millisecond': 59
+                    'millisecond': 59,
                 });
                 if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
                     start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).subtract(1, 'week');
@@ -78,7 +81,7 @@ export class ServiceService {
                     start.add(Math.abs(+weekInterval), 'week');
                     end.add(Math.abs(+weekInterval), 'week');
                 }
-                week.next({ start: start, end: end});
+                week.next({ start: start, end: end });
             });
         });
     }
@@ -95,7 +98,7 @@ export class ServiceService {
                             name: WEEK_DAY_SHORT[moment(service.startAt).isoWeekday()],
                             date: moment.utc(service.startAt),
                             active: false,
-                            services: []
+                            services: [],
                         };
                         day.services.push(service);
                         days.push(day);

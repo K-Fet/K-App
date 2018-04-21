@@ -1,4 +1,4 @@
-import { ConnectionInformation, Kommission, Role, AssociationChanges } from './index';
+import { AssociationChanges, ConnectionInformation, Kommission, Role } from './index';
 
 export class Barman {
 
@@ -18,8 +18,8 @@ export class Barman {
 
     connection: ConnectionInformation;
     godFather: Barman;
-    kommissions: Kommission[];
-    roles: Role[];
+    kommissions: Array<Kommission>;
+    roles: Array<Role>;
 
     _embedded: {
         godFather?: Number;

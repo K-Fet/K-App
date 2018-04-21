@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService, ToasterService } from '../../_services';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-username-verification',
-  templateUrl: './username-verification.component.html',
+    selector: 'app-username-verification',
+    templateUrl: './username-verification.component.html',
 })
 
 export class UsernameVerificationComponent implements OnInit {
@@ -15,15 +15,15 @@ export class UsernameVerificationComponent implements OnInit {
     username: String;
     userId: Number;
 
-    constructor (private authService: AuthService,
-        private toasterService: ToasterService,
-        private fb: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router) {
+    constructor(private authService: AuthService,
+                private toasterService: ToasterService,
+                private fb: FormBuilder,
+                private route: ActivatedRoute,
+                private router: Router) {
         this.createForm();
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
             if (params['username'] && params['usernameToken'] && params['userId']) {
                 this.username = params['username'];
@@ -36,13 +36,13 @@ export class UsernameVerificationComponent implements OnInit {
         });
     }
 
-    createForm() {
+    createForm(): void {
         this.passwordForm = this.fb.group({
             password: new FormControl('', [Validators.required]),
         });
     }
 
-    verifyUsername() {
+    verifyUsername(): void {
         const password = this.passwordForm.get('password').value;
         this.authService.verifyUsername(this.userId, this.username, password, this.token).subscribe(() => {
             this.toasterService.showToaster('Enregistré, veuillez vous connecter');
