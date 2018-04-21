@@ -85,6 +85,7 @@ async function sendVerifyUsernameMail(email, token, userId) {
  * Send username update information
  *
  * @param email {String} recipient email address
+ * @param newEmail {String} updated email address
  * @param token {String} passwordToken
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing

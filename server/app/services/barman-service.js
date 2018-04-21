@@ -81,6 +81,7 @@ async function createBarman(newBarman, _embedded) {
     try {
         await mailService.sendWelcomeMail(newBarman.connection.username);
     } catch (err) {
+        await transaction.rollback();
         logger.error('Error while sending reset password mail at %s, %o', newBarman.connection.username, err);
         throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
