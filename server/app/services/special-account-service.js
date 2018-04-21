@@ -1,6 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const authService = require('./auth-service');
+const mailService = require('./mail-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
 const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
@@ -75,6 +76,14 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
             await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
         }
+    }
+
+    // Welcome email
+    try {
+        await mailService.sendWelcomeMail(newSpecialAccount.connection.username);
+    } catch (err) {
+        logger.error('Error while sending reset password mail at %s, %o', newSpecialAccount.connection.username, err);
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
 
     await transaction.commit();

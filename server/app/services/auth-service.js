@@ -350,7 +350,7 @@ async function updateUsername(currentUsername, newUsername) {
 
     try {
         await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
-        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken, co.id);
+        await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
     } catch (err) {
         logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
         transaction.rollback();
@@ -370,7 +370,7 @@ async function updateUsername(currentUsername, newUsername) {
  * @returns {Promise<void>} Nothing
  */
 async function usernameVerify(userId, username, password, usernameToken) {
-    const co = ConnectionInformation.findById(userId);
+    const co = await ConnectionInformation.findById(userId);
 
     if (!co ||
         !await verify(co.password, password) ||
