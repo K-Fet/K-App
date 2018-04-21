@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Member } from '../../_models';
 import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
 import { ToasterService, MemberService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-
+import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 
 @Component({
     templateUrl: './members-list.component.html',
@@ -21,18 +21,26 @@ export class MembersListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(
-        private memberService: MemberService,
-        private toasterService: ToasterService,
-        private router: Router,
-        public dialog: MatDialog,
-        private ngxPermissionsService: NgxPermissionsService) { }
+    constructor(private memberService: MemberService,
+                private toasterService: ToasterService,
+                private router: Router,
+                public dialog: MatDialog,
+                private ngxPermissionsService: NgxPermissionsService,
+                public media: ObservableMedia
+                ) { }
 
     ngOnInit() {
         this.update();
         if (!this.ngxPermissionsService.getPermissions()['specialaccount:write']) {
             this.displayedColumns = ['lastName', 'firstName', 'school'];
         }
+        this.media.subscribe((change: MediaChange) => {
+            if (change.mqAlias === 'xs' && this.displayedColumns.includes('school')) {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('school'), 1);
+            } else if (!this.displayedColumns.includes('school')) {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('firstName') + 1, 0, 'school');
+            }
+        });
     }
 
     update() {

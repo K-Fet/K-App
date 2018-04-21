@@ -1,6 +1,6 @@
+import { Observable } from 'rxjs/Observable';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
@@ -91,23 +91,24 @@ export class MenuComponent implements OnDestroy, OnInit {
     ];
 
     mobileQuery: MediaQueryList;
-    router: Router;
+    sidenavQuery: MediaQueryList;
     user: ConnectedUser;
 
     private _mobileQueryListener: () => void;
+    private _sidebavQueryListener: () => void;
 
     @ViewChild('snav') public sideNav: MatSidenav;
 
-    constructor(
-        private authService: AuthService,
-        private toasterService: ToasterService,
-        router: Router,
-        changeDetectorRef: ChangeDetectorRef,
-        media: MediaMatcher) {
-        this.mobileQuery = media.matchMedia('(max-width: 750px)');
+    constructor(private authService: AuthService,
+                private toasterService: ToasterService,
+                changeDetectorRef: ChangeDetectorRef,
+                media: MediaMatcher) {
+        this.mobileQuery = media.matchMedia('(max-width: 599px)');
+        this.sidenavQuery = media.matchMedia('(max-width: 1480px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+        this._sidebavQueryListener = () => changeDetectorRef.detectChanges();
         this.mobileQuery.addListener(this._mobileQueryListener);
-        this.router = router;
+        this.sidenavQuery.addListener(this._mobileQueryListener);
     }
 
     logout() {

@@ -1,9 +1,7 @@
-<div fxLayout.lt-lg="column" fxLayoutGap="20px" fxLayoutAlign="center">
-    <div fxLayoutAlign="center">
-        <app-week-picker fxFlex="550px" fxFlex.lt-sm="95"></app-week-picker>
-    </div>
-    <div fxLayoutAlign="center">
-        <mat-card fxFlex="550px" fxFlex.lt-sm="95">
+<div fxLayoutAlign="center">
+    <div fxFlex class="max-width" fxLayout="column" fxLayoutGap="20px">
+        <app-week-picker></app-week-picker>
+        <mat-card>
             <mat-card-header>
                 <mat-card-title>
                     <section class="mat-typography">
@@ -20,8 +18,7 @@
                         <button type="button" mat-icon-button (click)="removeService(service)">
                             <mat-icon>delete</mat-icon>
                         </button>
-                        {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de 
-                        {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                        {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                     </mat-list-item>
                 </mat-list>
                 <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
@@ -31,8 +28,7 @@
                 </section>
                 <div>
                     <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
-                        <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)"
-                        [color]="day.active ? 'accent' : 'primary'">
+                        <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
                             {{day.name}}
                         </button>
                     </div>
@@ -40,39 +36,26 @@
                 <div>
                     <mat-list *ngIf="dayServices">
                         <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
-
                             <p mat-line>
-
-                                
-                                    <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
-                                        <mat-icon>add</mat-icon>
-                                    </button>
-                                    <ng-template #elseBlock>
-                                        <mat-icon >check_circle</mat-icon>
-                                    </ng-template>
-                                   
+                                <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                                <ng-template #elseBlock>
+                                    <mat-icon>check_circle</mat-icon>
+                                </ng-template>
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
-                          
                             </p>
-
-                         
-
-
-
-
                             <span mat-line *ngIf="service.barmen" class="mat-caption">
-                                Avec <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                                Avec
+                                <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
                             </span>
                             <span mat-line *ngIf="!service.barmen" class="mat-caption">
                                 Aucun barmen pour le moment...
                             </span>
                         </mat-list-item>
                     </mat-list>
-
-
                     <p *ngIf="!dayServices">
-                        Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a 
-                        surement pas encore ouvert les services.
+                        Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a surement pas encore ouvert les services.
                     </p>
                 </div>
             </mat-card-content>

@@ -1,5 +1,5 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex="550px" fxFlex.lt-sm="95">
+    <mat-card fxFlex class="max-width">
         <mat-card-header>
             <mat-card-title>
                 <section class="mat-typography">
@@ -33,12 +33,18 @@
                         <mat-header-cell *matHeaderCellDef mat-sort-header> École </mat-header-cell>
                         <mat-cell *matCellDef="let member"> {{member.school}} </mat-cell>
                     </ng-container>
-                    
+
                     <ng-container matColumnDef="action">
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
                         <mat-cell *matCellDef="let member">
-                            <button mat-icon-button (click)="edit(member)"><mat-icon>edit</mat-icon></button>
-                            <button mat-icon-button (click)="openDialog(member)"><mat-icon>delete</mat-icon></button>
+                            <div fxLayout="row">
+                                <button mat-icon-button (click)="edit(member)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="openDialog(member)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
                         </mat-cell>
                     </ng-container>
 
@@ -46,10 +52,7 @@
                     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
                 </mat-table>
 
-                <mat-paginator #paginator
-                    [pageIndex]="0"
-                    [pageSize]="10"
-                    [pageSizeOptions]="[5, 10, 25, 100]">
+                <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
                 </mat-paginator>
             </div>
         </mat-card-content>
