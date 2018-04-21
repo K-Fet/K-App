@@ -7,6 +7,6 @@ router.get('/', guard.check('template:read'), am(templateController.getAllTempla
 router.post('/', guard.check('template:write'), am(templateController.createTemplate));
 router.get('/:id(\\d+)', guard.check('template:read'), am(templateController.getTemplateById));
 router.put('/:id(\\d+)', guard.check('template:write'), am(templateController.updateTemplate));
-router.delete('/:id(\\d+)', guard.check('template:write'), am(templateController.deleteTemplate));
+router.post('/:id(\\d+)/delete', guard.check('template:write'), am(templateController.deleteTemplate));
 
 module.exports = router;

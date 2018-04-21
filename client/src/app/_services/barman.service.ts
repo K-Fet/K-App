@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import { Barman, Service } from '../_models/index';
-import { Observable } from 'rxjs/Observable';
+import { Barman, Service } from '../_models';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import * as moment from 'moment';
-import { Moment, weekdays } from 'moment';
+import { Moment } from 'moment';
 
 @Injectable()
 export class BarmanService {
@@ -40,10 +37,7 @@ export class BarmanService {
     }
 
     removeService(id: Number, services: Number[]) {
-        const options = {
-            body: services
-        };
-        return this.http.request('DELETE', '/api/barmen/' + id + '/services' , options);
+        return this.http.post('/api/barmen/' + id + '/services/delete' , services);
     }
 
     update(barman: Barman) {

@@ -11,6 +11,6 @@ router.post('/', guard.check('member:write'), am(codeGuard), am(memberController
 router.get('/:id(\\d+)', guard.check('member:read'), am(memberController.getMemberById));
 
 router.put('/:id(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.updateMember));
-router.delete('/:id(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.deleteMember));
+router.post('/:id(\\d+)/delete', guard.check('member:write'), am(codeGuard), am(memberController.deleteMember));
 
 module.exports = router;
