@@ -3,7 +3,7 @@
     "version": "1.0.0-beta.3",
     "description": "K-App provide a large panel of useful tools for associations",
     "contributors": [
-        "Corentin Giraud",
+        "Corentin Giraud <corentin.giraud@insa-lyon.fr>",
         "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
         "Baptiste Viry",
         "Clément Guittat",
