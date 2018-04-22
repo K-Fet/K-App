@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { EmailValidator, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BarmanService, KommissionService, RoleService, ToasterService } from '../../_services/index';
-import { AssociationChanges, Barman, Kommission, Role } from '../../_models/index';
+import { Barman, Kommission, Role } from '../../_models/index';
 
 @Component({
     templateUrl: './barman-new.component.html',

@@ -1,7 +1,5 @@
-import { Observable } from 'rxjs/Observable';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
@@ -95,8 +93,8 @@ export class MenuComponent implements OnDestroy, OnInit {
     sidenavQuery: MediaQueryList;
     user: ConnectedUser;
 
-    private _mobileQueryListener: () => void;
-    private _sidebavQueryListener: () => void;
+    _mobileQueryListener: () => void;
+    _sidebavQueryListener: () => void;
 
     @ViewChild('snav') public sideNav: MatSidenav;
 

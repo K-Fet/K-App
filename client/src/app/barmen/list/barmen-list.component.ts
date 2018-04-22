@@ -1,8 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Barman, Member } from '../../_models/index';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Barman } from '../../_models/index';
 import { BarmanService } from '../../_services/index';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
 
 import 'rxjs/add/observable/fromEvent';

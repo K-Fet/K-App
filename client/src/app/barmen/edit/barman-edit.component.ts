@@ -1,6 +1,5 @@
-import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit } from '@angular/core';
-import { EmailValidator, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, BarmanService,
     KommissionService, MeService, RoleService, ToasterService } from '../../_services';

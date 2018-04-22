@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Member } from '../../_models';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { MemberService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { ObservableMedia, MediaChange } from '@angular/flex-layout';
+import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
     templateUrl: './members-list.component.html',
