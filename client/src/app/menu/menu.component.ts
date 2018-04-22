@@ -94,7 +94,6 @@ export class MenuComponent implements OnDestroy, OnInit {
     user: ConnectedUser;
 
     private _mobileQueryListener: () => void;
-    private _sidebavQueryListener: () => void;
 
     @ViewChild('snav') public sideNav: MatSidenav;
 
@@ -105,7 +104,6 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.mobileQuery = media.matchMedia('(max-width: 599px)');
         this.sidenavQuery = media.matchMedia('(max-width: 1480px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-        this._sidebavQueryListener = () => changeDetectorRef.detectChanges();
         this.mobileQuery.addListener(this._mobileQueryListener);
         this.sidenavQuery.addListener(this._mobileQueryListener);
     }
