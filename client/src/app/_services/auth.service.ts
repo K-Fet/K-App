@@ -5,8 +5,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
 import { ConnectedUser } from '../_models';
 import * as jwt_decode from 'jwt-decode';
-import { NgxPermissionsService } from 'ngx-permissions';
+import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
+import { roles } from '../_helpers/roles';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,8 @@ export class AuthService {
     $currentUser: BehaviorSubject<ConnectedUser>;
 
     constructor(private http: HttpClient,
-                private permissionsService: NgxPermissionsService,
+                private ngxPermissionsService: NgxPermissionsService,
+                private ngxRolesService: NgxRolesService,
                 private router: Router) {
         this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
             accountType: 'Guest',
@@ -25,7 +27,8 @@ export class AuthService {
             if (currentUser.jwt) {
                 const jwtDecoded = jwt_decode(currentUser.jwt);
                 if (Date.now() < jwtDecoded.exp * 1000) {
-                    this.permissionsService.addPermission(jwtDecoded.permissions);
+                    this.managePermissionAndRole(jwtDecoded.permissions);
+
                     // Update /me
                     this.me().subscribe();
 
@@ -46,7 +49,7 @@ export class AuthService {
                 this.saveUser(jwt);
                 this.me().subscribe();
                 const jwtDecoded = jwt_decode(jwt.jwt);
-                this.permissionsService.addPermission(jwtDecoded.permissions);
+                this.managePermissionAndRole(jwtDecoded.permissions);
 
                 // Refresh token every 45 minutes
                 setTimeout(() => {
@@ -65,7 +68,7 @@ export class AuthService {
             if (newJWT) {
                 this.saveUser(newJWT);
                 const jwtDecoded = jwt_decode(newJWT.jwt);
-                this.permissionsService.addPermission(jwtDecoded.permissions);
+                this.managePermissionAndRole(jwtDecoded.permissions);
 
                 // Refresh token every 45 minutes
                 setTimeout(() => {
@@ -91,7 +94,8 @@ export class AuthService {
             accountType: 'Guest',
             createdAt: new Date(),
         }));
-        this.permissionsService.flushPermissions();
+        this.ngxPermissionsService.flushPermissions();
+        this.ngxRolesService.flushRoles();
         if (localStorage.getItem('currentUser')) {
             localStorage.removeItem('currentUser');
         }
@@ -100,6 +104,15 @@ export class AuthService {
 
     private saveUser(jwt): void {
         localStorage.setItem('currentUser', JSON.stringify(jwt));
+    }
+
+    private managePermissionAndRole(permissions: Array<string>): void {
+        this.ngxPermissionsService.addPermission(permissions);
+        roles.forEach(role => {
+            if (permissions.filter(perm => role.permissions.includes(perm)).length === role.permissions.length) {
+                this.ngxRolesService.addRole(role.name, role.permissions);
+            }
+        });
     }
 
     me(): Observable<any> {

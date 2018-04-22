@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
-import { NgxPermissionsService } from 'ngx-permissions';
+import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 
 interface Link {
     name: String;
@@ -83,7 +83,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Ouvrir les services',
                     route: '/open-services',
-                    permissions: ['service:write', 'template:read'],
+                    permissions: ['SERVICE_MANAGER'],
                 },
             ],
         },
@@ -100,6 +100,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     constructor(private authService: AuthService,
                 private toasterService: ToasterService,
                 private ngxPermissionsService: NgxPermissionsService,
+                private ngxRolesService: NgxRolesService,
                 changeDetectorRef: ChangeDetectorRef,
                 media: MediaMatcher) {
         this.mobileQuery = media.matchMedia('(max-width: 599px)');
@@ -132,7 +133,8 @@ export class MenuComponent implements OnDestroy, OnInit {
         for (const link of subMenu.links) {
             if (!link.permissions) return true;
             for (const perm of link.permissions) {
-                if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1) {
+                if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1
+                    || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm as string) !== -1) {
                     return true;
                 }
             }
