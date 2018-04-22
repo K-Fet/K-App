@@ -15,7 +15,7 @@ import { KommissionEditComponent } from './kommissions/edit/kommission-edit.comp
 import { RolesListComponent } from './roles/list/roles-list.component';
 import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardBarmanComponent } from './dashboard-barman/dashboard-barman.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
 import { BarmenListComponent } from './barmen/list/barmen-list.component';
 import { BarmanNewComponent } from './barmen/new/barman-new.component';
@@ -63,7 +63,7 @@ const routes: Routes = [
         data: generateData(['role:write']) },
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['service:write']) },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [] },
+    { path: 'dashboard-barman', component: DashboardBarmanComponent, canActivate: [] },
     { path: 'barmen', component: BarmenListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['barman:read']) },
     { path: 'barmen/new', component: BarmanNewComponent, canActivate: [NgxPermissionsGuard],

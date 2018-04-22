@@ -9,6 +9,7 @@ interface Link {
     name: String;
     route: String;
     permissions?: Array<String>;
+    accountType?: String;
 }
 
 interface SubMenu {
@@ -28,8 +29,9 @@ export class MenuComponent implements OnDestroy, OnInit {
         {
             links: [
                 {
-                    name: 'Tableau de bord',
-                    route: '/dashboard',
+                    name: 'Mes services',
+                    route: '/dashboard-barman',
+                    permissions: ['Barman'],
                 },
             ],
         },

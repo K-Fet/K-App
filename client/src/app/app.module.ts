@@ -24,7 +24,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardBarmanComponent } from './dashboard-barman/dashboard-barman.component';
 import { MyServicesComponent } from './services/my-services/my-services.component';
 import { PlanningComponent } from './services/planning/planning.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
@@ -83,7 +83,7 @@ import { MaterialModule } from './_helpers/material.module';
         MembersListComponent,
         MemberNewComponent,
         MemberEditComponent,
-        DashboardComponent,
+        DashboardBarmanComponent,
         MyServicesComponent,
         PlanningComponent,
         PlanMyServicesComponent,
