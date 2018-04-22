@@ -93,8 +93,8 @@ export class MenuComponent implements OnDestroy, OnInit {
     sidenavQuery: MediaQueryList;
     user: ConnectedUser;
 
-    _mobileQueryListener: () => void;
-    _sidebavQueryListener: () => void;
+    private _mobileQueryListener: () => void;
+    private _sidebavQueryListener: () => void;
 
     @ViewChild('snav') public sideNav: MatSidenav;
 

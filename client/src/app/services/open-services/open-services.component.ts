@@ -46,7 +46,7 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment): void { // TODO: categoryId: Number
+    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment): void {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
