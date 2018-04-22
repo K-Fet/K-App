@@ -125,6 +125,7 @@ export class AuthService {
                         createdAt: connectedUser.barman.createdAt,
                         barman: connectedUser.barman,
                     }));
+                    this.ngxRolesService.addRole('BARMAN', ['']);
                 } else if (connectedUser.specialAccount) {
                     this.$currentUser.next(new ConnectedUser({
                         accountType: 'SpecialAccount',
@@ -132,6 +133,7 @@ export class AuthService {
                         createdAt: connectedUser.specialAccount.createdAt,
                         specialAccount: connectedUser.specialAccount,
                     }));
+                    this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
                 }
             });
     }
