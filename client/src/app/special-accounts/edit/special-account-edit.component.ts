@@ -97,7 +97,6 @@ export class SpecialAccountEditComponent implements OnInit {
     edit(code: Number): void {
         const specialAccount = this.prepareEditing();
         if (this.isMe()) {
-            this.currentUser.specialAccount = specialAccount;
             this.meService.put(this.currentUser).subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/specialaccounts']);

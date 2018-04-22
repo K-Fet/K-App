@@ -10,6 +10,6 @@ export class TemplateService {
 
     getAll(): Observable<Template> {
         // TODO change return type to Template[]
-        return this.http.get<Template>('/api/services/template');
+        return this.http.get<Array<Template>>('/api/templates');
     }
 }
