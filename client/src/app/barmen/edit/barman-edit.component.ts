@@ -105,10 +105,10 @@ export class BarmanEditComponent implements OnInit {
     edit(): void {
         this.prepareSaving();
         if (this.isMe()) {
-            this.connectedUser.barman = this.barman;
-            this.meService.put(this.connectedUser).subscribe(() => {
+            this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: this.barman })).subscribe(() => {
                 this.toasterService.showToaster('Modification(s) enregistrée(s)');
                 this.router.navigate(['/barmen']);
+                this.authService.me().subscribe();
             });
         } else {
             this.barmanService.update(this.barman).subscribe(() => {
