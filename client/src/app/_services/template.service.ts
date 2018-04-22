@@ -9,7 +9,6 @@ export class TemplateService {
     constructor(private http: HttpClient) { }
 
     getAll(): Observable<Array<Template>> {
-        // TODO change return type to Template[]
         return this.http.get<Array<Template>>('/api/templates');
     }
 }
