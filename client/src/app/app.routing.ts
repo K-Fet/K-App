@@ -72,7 +72,7 @@ const routes: Routes = [
     { path: 'barmen/:id', component: BarmanViewComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['barman:read']) },
     { path: 'open-services', component: OpenServicesComponent, canActivate: [NgxPermissionsGuard],
-        data: generateData(['service:write']) },
+        data: generateData(['SERVICE_MANAGER']) },
     { path: 'specialaccounts', component: SpecialAccountListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['specialaccount:read']) },
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [NgxPermissionsGuard],
