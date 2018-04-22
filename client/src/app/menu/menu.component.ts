@@ -130,14 +130,11 @@ export class MenuComponent implements OnDestroy, OnInit {
 
     isVisible(subMenu: SubMenu): Boolean {
         for (const link of subMenu.links) {
-            if (link.permissions) {
-                for (const perm of link.permissions) {
-                    if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1) {
-                        return true;
-                    }
+            if (!link.permissions) return true;
+            for (const perm of link.permissions) {
+                if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1) {
+                    return true;
                 }
-            } else {
-                return true;
             }
         }
         return false;
