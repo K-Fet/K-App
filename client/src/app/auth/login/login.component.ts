@@ -36,7 +36,7 @@ export class LoginComponent {
             this.authService.$currentUser.subscribe(user => {
                 this.user = user;
                 if (user && user.barman) {
-                    this.router.navigate(['/dashboard']);
+                    this.router.navigate(['/dashboard-barman']);
                 } else {
                     this.router.navigate(['/members']);
                 }

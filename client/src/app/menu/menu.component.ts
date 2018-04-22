@@ -31,7 +31,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Mes services',
                     route: '/dashboard-barman',
-                    permissions: ['Barman'],
+                    permissions: ['BARMAN'],
                 },
             ],
         },
