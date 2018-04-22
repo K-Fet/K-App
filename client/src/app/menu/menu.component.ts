@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 interface Link {
     name: String;
@@ -29,7 +30,6 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Tableau de bord',
                     route: '/dashboard',
-                    permissions: [],
                 },
             ],
         },
@@ -65,7 +65,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Roles',
                     route: '/roles',
-                    permissions: ['roles:read'],
+                    permissions: ['role:read'],
                 },
             ],
         },
@@ -83,7 +83,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 {
                     name: 'Ouvrir les services',
                     route: '/open-services',
-                    permissions: ['service:write'],
+                    permissions: ['service:write', 'template:read'],
                 },
             ],
         },
@@ -99,6 +99,7 @@ export class MenuComponent implements OnDestroy, OnInit {
 
     constructor(private authService: AuthService,
                 private toasterService: ToasterService,
+                private ngxPermissionsService: NgxPermissionsService,
                 changeDetectorRef: ChangeDetectorRef,
                 media: MediaMatcher) {
         this.mobileQuery = media.matchMedia('(max-width: 599px)');
@@ -127,4 +128,18 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     }
 
+    isVisible(subMenu: SubMenu): Boolean {
+        for (const link of subMenu.links) {
+            if (link.permissions) {
+                for (const perm of link.permissions) {
+                    if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1) {
+                        return true;
+                    }
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 }

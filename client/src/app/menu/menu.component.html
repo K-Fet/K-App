@@ -31,10 +31,10 @@
 			<mat-nav-list [style.paddingTop.px]="0">
 				<mat-list [style.paddingTop.px]="0">
 					<div *ngFor="let subMenu of menu">
-						<div *ngxPermissionsOnly="subMenu.permissions">
+						<div *ngIf="isVisible(subMenu)">
 							<h3 mat-subheader *ngIf="subMenu.name">{{subMenu.name}}</h3>
 							<div *ngFor="let link of subMenu.links" (click)="sidenavQuery.matches ? snav.toggle() : null">
-								<a mat-list-item routerLink="{{link.route}}">{{link.name}}</a>
+								<a mat-list-item routerLink="{{link.route}}" *ngxPermissionsOnly="link.permissions">{{link.name}}</a>
 							</div>
 							<mat-divider></mat-divider>
 						</div>

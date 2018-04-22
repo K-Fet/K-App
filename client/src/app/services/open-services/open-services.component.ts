@@ -98,8 +98,8 @@ export class OpenServicesComponent implements OnInit {
 
     ngOnInit(): void {
         // Get templates
-        this.templateService.getAll().subscribe(template => {
-            this.templates = template;
+        this.templateService.getAll().subscribe(templates => {
+            this.templates = templates;
         });
         this.onFormChanges();
     }
