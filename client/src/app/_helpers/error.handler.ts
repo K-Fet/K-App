@@ -2,7 +2,7 @@ import { ERRORS400 } from './errors.400';
 import { Router } from '@angular/router';
 import { ToasterService } from './../_services';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, ErrorHandler, Injector } from '@angular/core';
+import { ErrorHandler, Injectable, Injector } from '@angular/core';
 
 @Injectable()
 export class ErrorsHandler implements ErrorHandler {
@@ -13,7 +13,7 @@ export class ErrorsHandler implements ErrorHandler {
         private injector: Injector
     ) { }
 
-    handleError(error: Error | HttpErrorResponse) {
+    handleError(error: Error | HttpErrorResponse): void {
         const toasterService = this.injector.get(ToasterService);
         const router = this.injector.get(Router);
 
@@ -34,13 +34,16 @@ export class ErrorsHandler implements ErrorHandler {
                     case 404:
                         return toasterService.showToaster('Appel serveur inconnu');
                     case 500:
-                        return toasterService.showToaster('Erreur serveur (indépendant du client). Merci de vérifier le serveur.');
+                        return toasterService.showToaster('Erreur serveur (indépendant du client). Merci de contacter l\'administrateur.');
+                    default:
+                        return toasterService.showToaster('Erreur inconnue. Merci de contacter l\'administrateur.');
                 }
             }
         } else {
             // TODO: Handle Client Error (Angular Error, ReferenceError...). Maybe send it to DB in order to manage it.
         }
         // Log the error in the console
-        console.error('Server error happens: ', error);
+        // DEV ENV ONLY, DO NOT COMMIT
+        // console.error('Server error happens: ', error);
     }
 }

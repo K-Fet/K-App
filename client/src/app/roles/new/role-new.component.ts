@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Role, Permission } from '../../_models/index';
+import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Permission, Role } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 import { RoleService } from '../../_services/role.service';
 import { PermissionService } from '../../_services';
 
-
 @Component({
-  templateUrl: './role-new.component.html',
+    templateUrl: './role-new.component.html',
 })
 
 export class RoleNewComponent implements OnInit {
@@ -41,7 +40,7 @@ export class RoleNewComponent implements OnInit {
 
     }
 
-    add() {
+    add(): void {
         const role = new Role();
         role.name = this.name;
         role.description = this.description;
@@ -53,12 +52,12 @@ export class RoleNewComponent implements OnInit {
             role._embedded = {
                 permissions: {
                     add: add.map(perm => perm.permission.id),
-                }
+                },
             };
         }
         this.roleService.create(role).subscribe(() => {
             this.toasterService.showToaster('Rôle créé');
-            this.router.navigate(['/roles'] );
+            this.router.navigate(['/roles']);
         });
     }
 }

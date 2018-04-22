@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 // Forms
@@ -51,9 +51,9 @@ import { DefinePasswordComponent } from './auth/define-password/define-password.
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 // Services
-import { ToasterService, AuthService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services';
+import { AuthService, BarmanService, KommissionService,
+    MemberService, MeService, PermissionService, RoleService,
+    ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -65,6 +65,7 @@ import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
 
+// tslint:disable-next-line:no-duplicate-imports
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -107,12 +108,12 @@ import { MaterialModule } from './_helpers/material.module';
         ResetPasswordDialogComponent,
         EqualValidator,
         DefinePasswordComponent,
-        UsernameVerificationComponent
+        UsernameVerificationComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
         ConfirmationDialogComponent,
-        ResetPasswordDialogComponent
+        ResetPasswordDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -125,7 +126,7 @@ import { MaterialModule } from './_helpers/material.module';
         ReactiveFormsModule,
         MatNativeDatetimeModule,
         MatDatetimepickerModule,
-        NgxPermissionsModule.forRoot()
+        NgxPermissionsModule.forRoot(),
     ],
     bootstrap: [AppComponent],
     providers: [
@@ -142,7 +143,7 @@ import { MaterialModule } from './_helpers/material.module';
         MeService,
         EditGuard,
         {
-            provide: LOCALE_ID, useValue: 'fr'
+            provide: LOCALE_ID, useValue: 'fr',
         },
         {
             provide: ErrorHandler,
@@ -151,8 +152,8 @@ import { MaterialModule } from './_helpers/material.module';
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class AppModule { }

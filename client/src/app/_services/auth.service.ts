@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable, BehaviorSubject} from 'rxjs/Rx';
-import {HttpClient} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import { SpecialAccount, ConnectedUser} from '../_models';
+import { ConnectedUser } from '../_models';
 import * as jwt_decode from 'jwt-decode';
-import {NgxPermissionsService} from 'ngx-permissions';
-import {Router} from '@angular/router';
+import { NgxPermissionsService } from 'ngx-permissions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
@@ -40,8 +40,8 @@ export class AuthService {
         }
     }
 
-    login(username: string, password: string) {
-        return this.http.post('/api/auth/login', {username, password})
+    login(username: string, password: string): Observable<any> {
+        return this.http.post('/api/auth/login', { username, password })
             .do((jwt: { jwt: String }) => {
                 this.saveUser(jwt);
                 this.me().subscribe();
@@ -55,12 +55,12 @@ export class AuthService {
             });
     }
 
-    logout() {
+    logout(): Observable<any> {
         return this.http.get('/api/auth/logout')
             .do(this.clearUser.bind(this));
     }
 
-    refresh() {
+    refresh(): Observable<any> {
         return this.http.get('/api/auth/refresh').do((newJWT: { jwt: String }) => {
             if (newJWT) {
                 this.saveUser(newJWT);
@@ -86,7 +86,7 @@ export class AuthService {
         return this.http.post('api/auth/username-verification', { userId, username, password, usernameToken });
     }
 
-    private clearUser() {
+    private clearUser(): void {
         this.$currentUser.next(new ConnectedUser({
             accountType: 'Guest',
             createdAt: new Date(),
@@ -98,11 +98,11 @@ export class AuthService {
         this.router.navigate(['/login']);
     }
 
-    private saveUser(jwt) {
+    private saveUser(jwt): void {
         localStorage.setItem('currentUser', JSON.stringify(jwt));
     }
 
-    me() {
+    me(): Observable<any> {
         return this.http.get<ConnectedUser>('/api/me')
             .do(connectedUser => {
                 if (connectedUser.barman) {

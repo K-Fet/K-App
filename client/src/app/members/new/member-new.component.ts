@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MemberService } from '../../_services/member.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 import { FormArray } from '@angular/forms/src/model';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 @Component({
-  templateUrl: './member-new.component.html',
+    templateUrl: './member-new.component.html',
 })
 
 export class MemberNewComponent implements OnInit {
@@ -34,28 +34,28 @@ export class MemberNewComponent implements OnInit {
             lastNameFormControl: ['', Validators.required],
             firstNameFormControl: ['', Validators.required],
             schoolFormControl: ['', Validators.required],
-            statutFormControl: ['', ValidateCheckbox]
+            statutFormControl: ['', ValidateCheckbox],
         });
         this.codeFormGroup = this.formBuilder.group({
-            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]]
+            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]],
         });
         this.formArray = this.formBuilder.array([
             this.memberFormGroup,
-            this.codeFormGroup
+            this.codeFormGroup,
         ]);
         this.form = this.formBuilder.group({
-            formArray: this.formArray
+            formArray: this.formArray,
         });
     }
 
-    add() {
+    add(): void {
         const member = new Member();
         member.firstName = this.firstName;
         member.lastName = this.lastName;
         member.school = this.school;
         this.memberService.create(member, this.code).subscribe(() => {
             this.toasterService.showToaster('Adhérent créé');
-            this.router.navigate(['/members'] );
+            this.router.navigate(['/members']);
         });
     }
 }

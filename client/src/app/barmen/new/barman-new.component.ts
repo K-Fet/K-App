@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, BarmanService, KommissionService, RoleService } from '../../_services/index';
-import { Barman, Kommission, Role, AssociationChanges } from '../../_models/index';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BarmanService, KommissionService, RoleService, ToasterService } from '../../_services/index';
+import { Barman, Kommission, Role } from '../../_models/index';
 
 @Component({
-  templateUrl: './barman-new.component.html'
+    templateUrl: './barman-new.component.html',
 })
 
 export class BarmanNewComponent implements OnInit {
 
     barman: Barman = new Barman();
 
-    kommissions: Kommission[] = new Array<Kommission>();
-    roles: Role[] = new Array<Role>();
-    barmen: Barman[] = new Array<Barman>();
+    kommissions: Array<Kommission> = new Array<Kommission>();
+    roles: Array<Role> = new Array<Role>();
+    barmen: Array<Barman> = new Array<Barman>();
 
     barmanForm: FormGroup;
 
     selectedGodFather: Number;
-    selectedKommissions: Number[];
-    selectedRoles: Number[];
+    selectedKommissions: Array<Number>;
+    selectedRoles: Array<Number>;
 
     startDate = new Date();
 
@@ -35,7 +35,7 @@ export class BarmanNewComponent implements OnInit {
         this.createForm();
     }
 
-    createForm() {
+    createForm(): void {
         this.barmanForm = this.fb.group({
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
@@ -47,7 +47,7 @@ export class BarmanNewComponent implements OnInit {
             godFather: new FormControl(''),
             roles: new FormControl(''),
             kommissions: new FormControl(''),
-            active: new FormControl('')
+            active: new FormControl(''),
         });
         this.startDate.setFullYear(this.startDate.getFullYear() - 20);
     }
@@ -69,19 +69,19 @@ export class BarmanNewComponent implements OnInit {
         });
     }
 
-    add() {
+    add(): void {
         this.prepareSaving();
         this.barmanService.create(this.barman).subscribe(() => {
             this.toasterService.showToaster('Barman créé');
-            this.router.navigate(['/barmen'] );
+            this.router.navigate(['/barmen']);
         });
     }
 
-    prepareSaving() {
+    prepareSaving(): void {
         this.barman._embedded = {};
         this.barman.connection = {};
         Object.keys(this.barmanForm.controls).forEach(key => {
-            let add: Number[] = [];
+            let add: Array<Number> = [];
             if (this.barmanForm.controls[key].value) {
                 switch (key) {
                     case 'username':
