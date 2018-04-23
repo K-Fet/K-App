@@ -26,8 +26,9 @@ export class MeService {
 
         return this.http.put('/api/me', body);
     }
-    resetPassword(connexion: ConnectionInformation, oldPassword: string) {
-        const body: {username, passwordToken, password, oldPassword} = {
+
+    resetPassword(connexion: ConnectionInformation, oldPassword: string): Observable<any> {
+        const body = {
             username: connexion.username,
             password: connexion.password,
             oldPassword: oldPassword,

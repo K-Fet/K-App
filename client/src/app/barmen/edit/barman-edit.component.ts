@@ -113,7 +113,7 @@ export class BarmanEditComponent implements OnInit {
                 this.router.navigate(['/barmen']);
                 this.authService.me().subscribe();
             });
-            if (this.barmanForm.controls.password.value.dirty() ) {
+            if (this.barmanForm.controls.password.value.dirty()) {
                 this.meService.resetPassword(this.connectedUser.barman.connection, this.oldPassword);
             }
         } else {
@@ -127,7 +127,7 @@ export class BarmanEditComponent implements OnInit {
     prepareSaving(): void {
         const values = this.barmanForm.value;
         this.currentBarman.connection.password = null;
-        if (this.barmanForm.controls.oldPassword.value.dirty() ) {
+        if (this.barmanForm.controls.oldPassword.value.dirty()) {
             this.oldPassword = this.barmanForm.controls.oldPassword.value;
         }
         Object.keys(this.currentBarman).forEach(key => {
