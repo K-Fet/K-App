@@ -8,7 +8,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <button mat-mini-fab color="primary">
+            <button mat-mini-fab color="primary" (click)="openConfirmationDialog()" *ngxPermissionsOnly="['template:write']">
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-card-header>
@@ -16,12 +16,10 @@
             <mat-list>
                 <h3 mat-subheader>Services</h3>
                 <div *ngIf="template.services?.length !== 0; else elseBlock">
-                    <mat-list-item *ngFor="let service of template.services">
-                        <p mat-line>{{services.startAt.day | date:'EEEE'}} de
-                          {{services.startAt.hours | date:'H'}}h {{services.startAt.minutes | date:'mm'}} à
-                          {{services.endAt.hours | date:'H'}}h {{services.endAt.minutes | date:'mm'}}
-                        </p>
-                        <p mat-line> {{services.nbMax}} barmen maximum</p>
+                    <mat-list-item *ngFor="let service of services">
+                        <p mat-line> {{service.startAt | date:'EEEE' }} de 
+                                {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h</p>
+                        <p mat-line> {{service.nbMax}} barmen maximum</p>
                     </mat-list-item>
                 </div>
                 <ng-template #elseBlock>

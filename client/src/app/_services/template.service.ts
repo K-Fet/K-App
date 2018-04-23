@@ -17,6 +17,10 @@ export class TemplateService {
     }
 
     create(template: Template) {
-        return this.http.post('/api/templates', {template: template} );
+        return this.http.post('/api/templates',  template);
+    }
+
+    delete(id: Number) {
+        return this.http.delete('api/templates/' + id);
     }
 }

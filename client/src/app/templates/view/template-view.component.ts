@@ -29,9 +29,10 @@ export class TemplateViewComponent implements OnInit {
             this.template.id = params['id'];
             this.templateService.getById(+this.template.id).subscribe(template => {
                 this.template = template;
+                this.changeFormatDate();
             });
+
         });
-        this.changeFormatDate();
     }
 
     toDate(val) {
@@ -50,5 +51,25 @@ export class TemplateViewComponent implements OnInit {
             nbMax: n.nbMax
         }));
 
+    }
+
+    openConfirmationDialog(): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '350px',
+            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + this.template.name + ' ?'}
+        });
+
+        dialogRef.afterClosed().subscribe(choice => {
+            if (choice) {
+                this.delete();
+            }
+        });
+    }
+
+    delete() {
+        this.templateService.delete(this.template.id).subscribe(() => {
+            this.toasterService.showToaster('Template supprimé');
+            this.router.navigate(['templates']);
+        });
     }
 }

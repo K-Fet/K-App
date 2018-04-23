@@ -93,7 +93,8 @@ export class MenuComponent implements OnDestroy, OnInit {
             links: [
                 {
                     name: 'Templates',
-                    route: '/templates'
+                    route: '/templates',
+                    permissions: ['template:write']
                 }
             ]
         }
