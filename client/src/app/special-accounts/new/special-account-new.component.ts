@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, PatternValidator, EmailValidator, Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { SpecialAccount, Permission } from '../../_models';
-import { ToasterService } from '../../_services';
-import { SpecialAccountService, PermissionService } from '../../_services';
-import { CodeDialogComponent } from '../../code-dialog/code-dialog.component';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Permission, SpecialAccount } from '../../_models';
+import { PermissionService, SpecialAccountService, ToasterService } from '../../_services';
+import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -24,7 +23,6 @@ export class SpecialAccountNewComponent implements OnInit {
         private specialAccountService: SpecialAccountService,
         private permissionService: PermissionService,
         private toasterService: ToasterService,
-        private route: ActivatedRoute,
         private router: Router,
         private fb: FormBuilder,
         public dialog: MatDialog
@@ -32,7 +30,7 @@ export class SpecialAccountNewComponent implements OnInit {
         this.createForms();
     }
 
-    createForms() {
+    createForms(): void {
         this.specialAccountForm = this.fb.group({
             username: new FormControl('', [Validators.required, Validators.email]),
             code: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{4,}$/)]),
@@ -41,7 +39,7 @@ export class SpecialAccountNewComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.permissionService.getAll().subscribe(permissions => {
             permissions.forEach(permission => {
                 this.permissions.push({
@@ -55,7 +53,7 @@ export class SpecialAccountNewComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
-            data: { message: 'Ajout d\'un compte special' }
+            data: { message: 'Ajout d\'un compte special' },
         });
 
         dialogRef.afterClosed().subscribe(code => {
@@ -65,13 +63,13 @@ export class SpecialAccountNewComponent implements OnInit {
         });
     }
 
-    add(code: Number) {
+    add(code: Number): void {
         const specialAccount = this.prepareEditing();
 
         this.specialAccountService.create(specialAccount, code).subscribe(() => {
-                this.toasterService.showToaster('Compte special modifié');
-                this.router.navigate(['/specialaccounts']);
-            });
+            this.toasterService.showToaster('Compte special modifié');
+            this.router.navigate(['/specialaccounts']);
+        });
     }
 
     prepareEditing(): SpecialAccount {
@@ -84,7 +82,7 @@ export class SpecialAccountNewComponent implements OnInit {
         }
 
         specialAccount.connection = {
-            username: this.specialAccountForm.get('username').value
+            username: this.specialAccountForm.get('username').value,
         };
 
         // Associations
@@ -95,13 +93,13 @@ export class SpecialAccountNewComponent implements OnInit {
             specialAccount._embedded = {
                 permissions: {
                     add: add.map(perm => perm.permission.id),
-                }
+                },
             };
         }
         return specialAccount;
     }
 
-    disable (): Boolean {
+    disable(): Boolean {
         const add = this.permissions.filter(permission => {
             return permission.isChecked === true;
         });

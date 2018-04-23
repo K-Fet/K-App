@@ -1,6 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const authService = require('./auth-service');
+const mailService = require('./mail-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
 const { createUserError, createServerError, cleanObject, hash, setEmbeddedAssociations } = require('../../utils');
 
@@ -39,6 +40,14 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
+        // We force the email to lowercase for multiple reasons:
+        // 1. We can profit of the unique index of mysql
+        // 2. It's easier to make request case sensitive than insensitive
+        // 3. For most of providers (for us at least), it is treated the same
+        //
+        // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+        newSpecialAccount.connection.username = newSpecialAccount.connection.username.toLowerCase();
+
         newSpecialAccount.code = await hash(newSpecialAccount.code);
 
         const co = await newSpecialAccount.connection.save({ transaction });
@@ -67,6 +76,14 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
             await setEmbeddedAssociations(associationKey, value, newSpecialAccount, transaction, true);
         }
+    }
+
+    // Welcome email
+    try {
+        await mailService.sendWelcomeMail(newSpecialAccount.connection.username);
+    } catch (err) {
+        logger.error('Error while sending reset password mail at %s, %o', newSpecialAccount.connection.username, err);
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
 
     await transaction.commit();
@@ -128,7 +145,6 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
     try {
         await currentSpecialAccount.update(cleanObject({
             id: updatedSpecialAccount.id,
-            // TODO Allow code update only if 'special-account:force-code-reset' permission
             code: updatedSpecialAccount.code ? await hash(updatedSpecialAccount.code) : undefined,
             description: updatedSpecialAccount.description,
         }), { transaction });
@@ -139,6 +155,9 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
             const co = await currentSpecialAccount.getConnection();
 
             await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
+
+            // Remove this association before reloading
+            updatedSpecialAccount.connection = undefined;
         }
     } catch (err) {
         if (err.userError) throw err;

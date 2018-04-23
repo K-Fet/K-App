@@ -3,7 +3,7 @@ import { Barman, SpecialAccount } from './index';
 export class ConnectedUser {
 
     username?: String;
-    createdAt: Date;
+    createdAt?: Date;
     accountType: String;
     barman?: Barman;
     specialAccount?: SpecialAccount;
@@ -12,11 +12,11 @@ export class ConnectedUser {
         Object.assign(this, values);
     }
 
-    isGuest(): Boolean {
+    public isGuest(): Boolean {
         return this.accountType === 'Guest' ? true : false;
     }
 
-    isBarman(): Boolean {
-        return this.accountType === 'barman' ? true : false;
+    public isBarman(): Boolean {
+        return this.accountType === 'Barman' ? true : false;
     }
 }

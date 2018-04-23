@@ -5,7 +5,7 @@ import { Moment } from 'moment';
 
 @Component({
     selector: 'app-week-picker',
-    templateUrl: './week-picker.component.html'
+    templateUrl: './week-picker.component.html',
 })
 
 export class WeekPickerComponent implements OnInit {
@@ -22,13 +22,13 @@ export class WeekPickerComponent implements OnInit {
         });
     }
 
-    constructor( private serviceService: ServiceService) {}
+    constructor(private serviceService: ServiceService) {}
 
-    next() {
+    next(): void {
         this.serviceService.$weekInterval.next(+this.weekInterval + 1);
     }
 
-    previous() {
+    previous(): void {
         this.serviceService.$weekInterval.next(+this.weekInterval - 1);
     }
 }

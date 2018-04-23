@@ -7,6 +7,6 @@ router.get('/', am(specialAccountController.getAllSpecialAccounts));
 router.post('/', am(codeGuard), am(specialAccountController.createSpecialAccount));
 router.get('/:id(\\d+)', am(specialAccountController.getSpecialAccountById));
 router.put('/:id(\\d+)', am(codeGuard), am(specialAccountController.updateSpecialAccount));
-router.delete('/:id(\\d+)', am(codeGuard), am(specialAccountController.deleteSpecialAccount));
+router.post('/:id(\\d+)/delete', am(codeGuard), am(specialAccountController.deleteSpecialAccount));
 
 module.exports = router;

@@ -3,7 +3,7 @@ import { BarmanService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Barman } from '../../_models';
 import { MatDialog } from '@angular/material';
-import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     templateUrl: './barman-view.component.html',
@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent } from '../../confirmation-dialog/confirmat
 
 export class BarmanViewComponent implements OnInit {
 
-    barman: Barman = new Barman;
+    barman: Barman = new Barman();
 
     constructor(
         private barmanService: BarmanService,
@@ -21,7 +21,7 @@ export class BarmanViewComponent implements OnInit {
         public dialog: MatDialog
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.params.subscribe(params => {
             this.barman.id = params['id'];
             this.barmanService.getById(+this.barman.id).subscribe(barman => {
@@ -33,7 +33,7 @@ export class BarmanViewComponent implements OnInit {
     openConfirmationDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '350px',
-            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + this.barman.nickname + ' ?'}
+            data: { title: 'Confirmation', message: `Confirmez-vous la suppression de ${this.barman.nickname} ?` },
         });
 
         dialogRef.afterClosed().subscribe(choice => {
@@ -43,7 +43,7 @@ export class BarmanViewComponent implements OnInit {
         });
     }
 
-    delete() {
+    delete(): void {
         this.barmanService.delete(this.barman.id).subscribe(() => {
             this.toasterService.showToaster('Barman supprimé');
             this.router.navigate(['barmen']);

@@ -3,7 +3,7 @@
     "version": "1.0.0-beta.3",
     "description": "K-App provide a large panel of useful tools for associations",
     "contributors": [
-        "Corentin Giraud",
+        "Corentin Giraud <corentin.giraud@insa-lyon.fr>",
         "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
         "Baptiste Viry",
         "Clément Guittat",
@@ -30,9 +30,9 @@
         "install:prod": "yarn install --production --loglevel warn",
         "postinstall": "cd client/ && yarn install --production=false",
         "prod": "NODE_ENV=production node server/index.js",
-        "test": "concurrently \"yarn run test:back\" \"yarn run test:front\"",
+        "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
         "test:back": "jest --runInBand",
-        "test:front": "yarn run lint"
+        "test:front": "cd client/ && yarn build"
     },
     "dependencies": {
         "argon2": "0.16.2",

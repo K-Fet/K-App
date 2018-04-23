@@ -1,14 +1,15 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, OnDestroy, Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { LoginService, ToasterService } from '../_services';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
+import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 
 interface Link {
     name: String;
     route: String;
     permissions?: Array<String>;
+    accountType?: String;
 }
 
 interface SubMenu {
@@ -19,7 +20,7 @@ interface SubMenu {
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
 })
 
 export class MenuComponent implements OnDestroy, OnInit {
@@ -28,96 +29,97 @@ export class MenuComponent implements OnDestroy, OnInit {
         {
             links: [
                 {
-                    name: 'Tableau de bord',
-                    route: '/dashboard',
-                    permissions: []
-                }
-            ]
+                    name: 'Mes services',
+                    route: '/dashboard-barman',
+                    permissions: ['BARMAN'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Adhérents',
                     route: '/members',
-                    permissions: ['member:read']
-                }
-            ]
+                    permissions: ['member:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Barmen',
                     route: '/barmen',
-                    permissions: ['barman:read']
-                }
-            ]
+                    permissions: ['barman:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Kommissions',
                     route: '/kommissions',
-                    permissions: ['kommission:read']
-                }
-            ]
+                    permissions: ['kommission:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Roles',
                     route: '/roles',
-                    permissions: ['roles:read']
-                }
-            ]
+                    permissions: ['role:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Comptes spéciaux',
                     route: '/specialaccounts',
-                    permissions: ['specialaccount:read']
-                }
-            ]
+                    permissions: ['specialaccount:read'],
+                },
+            ],
         },
         {
             links: [
                 {
                     name: 'Ouvrir les services',
                     route: '/open-services',
-                    permissions: ['service:write']
-                }
-            ]
-        }
+                    permissions: ['SERVICE_MANAGER'],
+                },
+            ],
+        },
     ];
 
     mobileQuery: MediaQueryList;
-    router: Router;
+    sidenavQuery: MediaQueryList;
     user: ConnectedUser;
 
     private _mobileQueryListener: () => void;
 
     @ViewChild('snav') public sideNav: MatSidenav;
 
-    constructor(
-        private loginService: LoginService,
-        private toasterService: ToasterService,
-        router: Router,
-        changeDetectorRef: ChangeDetectorRef,
-        media: MediaMatcher) {
-        this.mobileQuery = media.matchMedia('(max-width: 750px)');
+    constructor(private authService: AuthService,
+                private toasterService: ToasterService,
+                private ngxPermissionsService: NgxPermissionsService,
+                private ngxRolesService: NgxRolesService,
+                changeDetectorRef: ChangeDetectorRef,
+                media: MediaMatcher) {
+        this.mobileQuery = media.matchMedia('(max-width: 599px)');
+        this.sidenavQuery = media.matchMedia('(max-width: 1480px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         this.mobileQuery.addListener(this._mobileQueryListener);
-        this.router = router;
+        this.sidenavQuery.addListener(this._mobileQueryListener);
     }
 
-    logout() {
-        this.loginService.logout().subscribe(res => {
+    logout(): void {
+        this.authService.logout().subscribe(() => {
             this.toasterService.showToaster('Déconnexion réussie');
         });
     }
 
     ngOnInit(): void {
-        this.loginService.$currentUser.subscribe(user => {
+        this.authService.$currentUser.subscribe(user => {
             this.user = user;
             if (this.user.isGuest) {
                 this.sideNav.opened = false;
@@ -129,4 +131,16 @@ export class MenuComponent implements OnDestroy, OnInit {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     }
 
+    isVisible(subMenu: SubMenu): Boolean {
+        for (const link of subMenu.links) {
+            if (!link.permissions) return true;
+            for (const perm of link.permissions) {
+                if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1
+                    || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm as string) !== -1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

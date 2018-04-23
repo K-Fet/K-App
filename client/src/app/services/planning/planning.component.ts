@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceService, ToasterService } from '../../_services/index';
+import { ServiceService } from '../../_services/index';
 import { Day, Service } from '../../_models/index';
 
 @Component({
@@ -9,18 +9,14 @@ import { Day, Service } from '../../_models/index';
 
 export class PlanningComponent implements OnInit {
 
-    days: Day[] = new Array<Day>();
-    dayServices: Service[];
+    days: Array<Day> = new Array<Day>();
+    dayServices: Array<Service>;
 
-    constructor(private serviceService: ServiceService, private toasterService: ToasterService) {}
+    constructor(private serviceService: ServiceService) {}
 
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {
-            if (currentDay === day) {
-                currentDay.active = true;
-            } else {
-                currentDay.active = false;
-            }
+            currentDay.active = currentDay === day ? true : false;
             return currentDay;
         });
         this.dayServices = this.days.filter(currentDay => {
@@ -36,7 +32,7 @@ export class PlanningComponent implements OnInit {
         })[0];
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.serviceService.getWeek().subscribe(week => {
             this.serviceService.getPlanning(week.start, week.end).subscribe(days => {
                 if (days.length > 0) {

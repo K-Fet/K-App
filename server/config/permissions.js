@@ -20,5 +20,9 @@ module.exports = {
 
         'specialaccount:read',
         'specialaccount:write',
+        'specialaccount:force-code-reset',
+
+        'template:read',
+        'template:write',
     ],
 };

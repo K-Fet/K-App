@@ -28,11 +28,12 @@ async function isTokenRevoked(tokenId) {
  * The token will contain every
  * permissions given for the user.
  *
- * @param username Username used to login
+ * @param usernameDirty Username used to login (dirty is because it can contain upper letters)
  * @param password Unencrypted password
  * @returns {Promise<String>} JWT Signed token
  */
-async function login(username, password) {
+async function login(usernameDirty, password) {
+    const username = usernameDirty.toLowerCase();
 
     const user = await ConnectionInformation.findOne({ where: { username } });
 
@@ -109,8 +110,7 @@ async function createJWT(user) {
     let permissions = [];
 
     if (barman) {
-        // TODO permissions = barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)));
-        permissions = require('../../config/permissions').PERMISSION_LIST;
+        permissions = barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)), []);
     } else {
         const specialAccount = await user.getSpecialAccount({
             include: [
@@ -177,7 +177,7 @@ async function me(tokenId) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: ['id', 'username'],
+                        attributes: [ 'id', 'username' ],
                     },
                     {
                         model: Kommission,
@@ -192,12 +192,12 @@ async function me(tokenId) {
             {
                 model: SpecialAccount,
                 as: 'specialAccount',
-                attributes: { exclude: ['code'] },
+                attributes: { exclude: [ 'code' ] },
                 include: [
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                        attributes: ['id', 'username'],
+                        attributes: [ 'id', 'username' ],
                     },
                 ],
             },
@@ -214,11 +214,12 @@ async function me(tokenId) {
  * Launch the procedure to reset the password of an user.
  *
  *
- * @param username {String} Username of the user
+ * @param usernameDirty {String} Username of the user (dirty because it can contain upper letters)
  * @param currTransaction {Object=} Transaction to use, it will no handle commit and rollback !
  * @returns {Promise<void>}
  */
-async function resetPassword(username, currTransaction) {
+async function resetPassword(usernameDirty, currTransaction) {
+    const username = usernameDirty.toLowerCase();
     const transaction = currTransaction || await sequelize.transaction();
 
     const co = await ConnectionInformation.findOne({
@@ -263,26 +264,31 @@ async function resetPassword(username, currTransaction) {
  * Define a new password for an user.
  * Will reject all existing JWT.
  *
- * @param username {String} User's login
+ * @param usernameDirty {String} User's login (dirty because it can contain upper letters)
  * @param passwordToken {String} Token received by the user
  * @param newPassword {String} New password
  * @param oldPassword {String} Old password (only if !passwordToken)
  * @returns {Promise<void>} Nothing
  */
-async function definePassword(username, passwordToken, newPassword, oldPassword) {
-    const where = { username };
+async function definePassword(usernameDirty, passwordToken, newPassword, oldPassword) {
+    const username = usernameDirty.toLowerCase();
+    const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (passwordToken) {
-        where.passwordToken = await hash(passwordToken);
-    } else if (oldPassword) {
-        where.oldPassword = await hash(oldPassword);
-    } else {
-        throw createServerError('ServerError', 'Missing parameter');
+    let isValid = false;
+
+    if (user) {
+        if (passwordToken) {
+            isValid = await verify(user.passwordToken, passwordToken);
+        } else if (oldPassword) {
+            isValid = await verify(user.oldPassword, oldPassword);
+        } else {
+            throw createServerError('ServerError', 'Missing parameter');
+        }
     }
 
-    const user = await ConnectionInformation.findOne({ where });
-
-    if (!user) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    if (!isValid) {
+        throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    }
 
     if (user.usernameToken) {
         throw createUserError('UnverifiedUsername',
@@ -318,9 +324,9 @@ async function definePassword(username, passwordToken, newPassword, oldPassword)
  * @returns {Promise<void>} Nothing
  */
 async function updateUsername(currentUsername, newUsername) {
-    const co = ConnectionInformation.findOne({
+    const co = await ConnectionInformation.findOne({
         where: {
-            username: currentUsername,
+            username: currentUsername.toLowerCase(),
         },
     });
 
@@ -343,8 +349,8 @@ async function updateUsername(currentUsername, newUsername) {
     }
 
     try {
-        await mailService.sendVerifyUsernameMail(newUsername, usernameToken);
-        await mailService.sendUsernameUpdateInformationMail(currentUsername, usernameToken);
+        await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
+        await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
     } catch (err) {
         logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
         transaction.rollback();
@@ -357,26 +363,33 @@ async function updateUsername(currentUsername, newUsername) {
 /**
  * Verify a new username request.
  *
+ * @param userId {Number} user id
  * @param username {String} User's login
  * @param password {String} new user's login
  * @param usernameToken {String} Username token
  * @returns {Promise<void>} Nothing
  */
-async function usernameVerify(username, password, usernameToken) {
-    const co = ConnectionInformation.findOne({
-        where: {
-            password: await hash(password),
-            usernameToken: await hash(usernameToken + username),
-        },
-    });
+async function usernameVerify(userId, username, password, usernameToken) {
+    const co = await ConnectionInformation.findById(userId);
 
-    if (!co) throw createUserError('VerificationError', 'Bad token/password/new email combination.');
+    if (!co ||
+        !await verify(co.password, password) ||
+        !await verify(co.usernameToken, usernameToken + username)
+    ) {
+        throw createUserError('VerificationError', 'Bad token/password/new email combination.');
+    }
 
     const transaction = await sequelize.transaction();
 
     try {
         await co.update({
-            username,
+            // We force the email to lowercase for multiple reasons:
+            // 1. We can profit of the unique index of mysql
+            // 2. It's easier to make request case sensitive than insensitive
+            // 3. For most of providers (for us at least), it is treated the same
+            //
+            // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+            username: username.toLowerCase(),
             usernameToken: null,
         }, { transaction });
 

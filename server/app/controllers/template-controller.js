@@ -41,14 +41,14 @@ async function createTemplate(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    let newTemplate = new Template({
-        ...req.body
-    }, { include: [
-        {
-            model: TemplateUnit,
-            as: 'services',
-        }
-    ] });
+    let newTemplate = new Template(req.body, {
+        include: [
+            {
+                model: TemplateUnit,
+                as: 'services',
+            }
+        ]
+    });
 
     newTemplate = await templateService.createTemplate(newTemplate);
 

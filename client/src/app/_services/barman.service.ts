@@ -1,58 +1,53 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import { Barman, Service } from '../_models/index';
-import { Observable } from 'rxjs/Observable';
+import { Barman, Service } from '../_models';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import * as moment from 'moment';
-import { Moment, weekdays } from 'moment';
+import { Moment } from 'moment';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class BarmanService {
 
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<Barman[]>('/api/barmen');
+    getAll(): Observable<Array<Barman>> {
+        return this.http.get<Array<Barman>>('/api/barmen');
     }
 
-    getById(id: number) {
-        return this.http.get<Barman>('/api/barmen/' + id);
+    getById(id: number): Observable<Barman> {
+        return this.http.get<Barman>(`/api/barmen/${id}`);
     }
 
-    getServices(id: Number, start: Moment, end: Moment) {
-        return this.http.get<Service[]>('/api/barmen/' + id + '/services', {
+    getServices(id: Number, start: Moment, end: Moment): Observable<Array<Service>> {
+        return this.http.get<Array<Service>>(`/api/barmen/${id}/services`, {
             params: {
                 start: (+start).toString(),
-                end: (+end).toString()
+                end: (+end).toString(),
             }});
     }
 
-    create(barman: Barman) {
-        return this.http.post('/api/barmen', barman);
+    create(barman: Barman): Observable<Barman> {
+        return this.http.post<Barman>('/api/barmen', barman);
     }
 
-    addService(id: Number, services: Number[]) {
-        return this.http.post('/api/barmen/' + id + '/services', services);
+    addService(id: Number, services: Array<Number>): Observable<Service> {
+        return this.http.post<Service>(`/api/barmen/${id}/services`, services);
     }
 
-    removeService(id: Number, services: Number[]) {
-        const options = {
-            body: services
-        };
-        return this.http.request('DELETE', '/api/barmen/' + id + '/services' , options);
+    removeService(id: Number, services: Array<Number>): Observable<Service> {
+        return this.http.post<Service>(`/api/barmen/${id}/services/delete`, services);
     }
 
-    update(barman: Barman) {
+    update(barman: Barman): Observable<Barman> {
         const id = barman.id;
         delete barman.id;
-        return this.http.put('/api/barmen/' + id, barman);
+        return this.http.put<Barman>(`/api/barmen/${id}`, barman);
     }
 
-    delete(id: Number) {
-        return this.http.delete('/api/barmen/' + id);
+    delete(id: Number): Observable<Barman> {
+        return this.http.delete<Barman>(`/api/barmen/${id}`);
     }
 }

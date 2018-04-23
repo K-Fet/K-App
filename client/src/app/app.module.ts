@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, LOCALE_ID, ErrorHandler } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 // Forms
@@ -20,11 +20,11 @@ import { routing } from './app.routing';
 // Components
 import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
 import { MemberNewComponent } from './members/new/member-new.component';
 import { MemberEditComponent } from './members/edit/member-edit.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardBarmanComponent } from './dashboard-barman/dashboard-barman.component';
 import { MyServicesComponent } from './services/my-services/my-services.component';
 import { PlanningComponent } from './services/planning/planning.component';
 import { PlanMyServicesComponent } from './services/plan-my-services/plan-my-services.component';
@@ -38,29 +38,34 @@ import { KommissionEditComponent } from './kommissions/edit/kommission-edit.comp
 import { RolesListComponent } from './roles/list/roles-list.component';
 import { RoleNewComponent } from './roles/new/role-new.component';
 import { RoleEditComponent } from './roles/edit/role-edit.component';
-import { CodeDialogComponent } from './code-dialog/code-dialog.component';
+import { CodeDialogComponent } from './dialogs/code-dialog/code-dialog.component';
 import { NotFoundComponent } from './404/not-found.component';
 import { OpenServicesComponent } from './services/open-services/open-services.component';
 import { WeekPickerComponent } from './services/week-picker/week-picker.component';
 import { SpecialAccountListComponent } from './special-accounts/list/special-accounts-list.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
+import { DefinePasswordComponent } from './auth/define-password/define-password.component';
+import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 
 // Services
-import { ToasterService, LoginService, MemberService,
-    BarmanService, ServiceService, KommissionService, RoleService,
-    TemplateService, SpecialAccountService, PermissionService, MeService} from './_services/';
+import { AuthService, BarmanService, KommissionService,
+    MemberService, MeService, PermissionService, RoleService,
+    ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
 
 // Helpers
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { EqualValidator } from './_helpers/equal-validator.directive';
 import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
 
+// tslint:disable-next-line:no-duplicate-imports
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
@@ -68,7 +73,6 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-
 
 @NgModule({
     declarations: [
@@ -79,7 +83,7 @@ import { MaterialModule } from './_helpers/material.module';
         MembersListComponent,
         MemberNewComponent,
         MemberEditComponent,
-        DashboardComponent,
+        DashboardBarmanComponent,
         MyServicesComponent,
         PlanningComponent,
         PlanMyServicesComponent,
@@ -100,11 +104,16 @@ import { MaterialModule } from './_helpers/material.module';
         SpecialAccountListComponent,
         SpecialAccountNewComponent,
         SpecialAccountEditComponent,
-        ConfirmationDialogComponent
+        ConfirmationDialogComponent,
+        ResetPasswordDialogComponent,
+        EqualValidator,
+        DefinePasswordComponent,
+        UsernameVerificationComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
         ConfirmationDialogComponent,
+        ResetPasswordDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -117,11 +126,11 @@ import { MaterialModule } from './_helpers/material.module';
         ReactiveFormsModule,
         MatNativeDatetimeModule,
         MatDatetimepickerModule,
-        NgxPermissionsModule.forRoot()
+        NgxPermissionsModule.forRoot(),
     ],
     bootstrap: [AppComponent],
     providers: [
-        LoginService,
+        AuthService,
         MemberService,
         BarmanService,
         ServiceService,
@@ -134,7 +143,7 @@ import { MaterialModule } from './_helpers/material.module';
         MeService,
         EditGuard,
         {
-            provide: LOCALE_ID, useValue: 'fr'
+            provide: LOCALE_ID, useValue: 'fr',
         },
         {
             provide: ErrorHandler,
@@ -143,8 +152,8 @@ import { MaterialModule } from './_helpers/material.module';
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class AppModule { }

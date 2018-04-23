@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-
+import { HttpClient } from '@angular/common/http';
 import { ConnectedUser, ConnectionInformation } from '../_models';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
@@ -11,7 +10,7 @@ export class MeService {
 
     constructor(private http: HttpClient) { }
 
-    put(connectedUser: ConnectedUser) {
+    put(connectedUser: ConnectedUser): Observable<any> {
         let body;
         if (connectedUser.isBarman()) {
             body = {

@@ -12,7 +12,9 @@ export const ERRORS400 = {
     'UndefinedPassword': 'Le mot de passe n\'a pas été défini, merci de vérifier vos e-mails.',
     'UnknowPasswordToken': 'Token inconnu: le \'PasswordToken\' est inconnu de la base de données.',
     'UnknowUsernameToken': 'Token inconnu: le \'UsernameToken\' est inconnu de la base de données.',
-    'MailerError': 'L\'envoi du mail du côté serveur a échoué.',
+    'MailerError': 'L\'envoi du mail du côté serveur a échoué. Merci de vérifier que l\'adresse email est valide.',
     'CodeError': 'Code invalide: Le code n\'est pas valide.',
     'BadUsername': 'L\'username n\'est pas disponible',
+    'WeakPassword': 'Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre et plus de 8 charactères.',
+    'UnknownPasswordToken': 'Token inconnu: le token utilisé n\'existe pas ou n\'est plus valide',
 };

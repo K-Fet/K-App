@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MemberService } from '../../_services/member.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Member } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
 
 @Component({
-  templateUrl: './member-edit.component.html',
+    templateUrl: './member-edit.component.html',
 })
 
 export class MemberEditComponent implements OnInit {
@@ -29,7 +29,7 @@ export class MemberEditComponent implements OnInit {
         private formBuilder: FormBuilder
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.params.subscribe(params => {
             this.id = params['id'];
             this.memberService.getById(+this.id).subscribe(member => {
@@ -41,21 +41,21 @@ export class MemberEditComponent implements OnInit {
         this.memberFormGroup = this.formBuilder.group({
             lastNameFormControl: ['', Validators.required],
             firstNameFormControl: ['', Validators.required],
-            schoolFormControl: ['', Validators.required]
+            schoolFormControl: ['', Validators.required],
         });
         this.codeFormGroup = this.formBuilder.group({
-            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]]
+            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]],
         });
         this.formArray = this.formBuilder.array([
             this.memberFormGroup,
-            this.codeFormGroup
+            this.codeFormGroup,
         ]);
         this.form = this.formBuilder.group({
-            formArray: this.formArray
+            formArray: this.formArray,
         });
     }
 
-    edit() {
+    edit(): void {
         const member = new Member();
         member.id = +this.id;
         member.firstName = this.firstName;

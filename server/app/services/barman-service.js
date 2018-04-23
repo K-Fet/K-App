@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
 const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 const authService = require('./auth-service');
+const mailService = require('./mail-service');
 
 /**
  * Return all barmen of the app.
@@ -29,6 +30,14 @@ async function createBarman(newBarman, _embedded) {
 
     const transaction = await sequelize.transaction();
     try {
+        // We force the email to lowercase for multiple reasons:
+        // 1. We can profit of the unique index of mysql
+        // 2. It's easier to make request case sensitive than insensitive
+        // 3. For most of providers (for us at least), it is treated the same
+        //
+        // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+        newBarman.connection.username = newBarman.connection.username.toLowerCase();
+
         const co = await newBarman.connection.save({ transaction });
         newBarman.connectionId = co.id;
         await newBarman.save({ transaction });
@@ -66,6 +75,15 @@ async function createBarman(newBarman, _embedded) {
                 await setEmbeddedAssociations(associationKey, value, newBarman, transaction, true);
             }
         }
+    }
+
+    // Welcome email
+    try {
+        await mailService.sendWelcomeMail(newBarman.connection.username);
+    } catch (err) {
+        await transaction.rollback();
+        logger.error('Error while sending reset password mail at %s, %o', newBarman.connection.username, err);
+        throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
 
     await transaction.commit();
@@ -178,6 +196,9 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
                 if (!wantedGodFather) {
                     await transaction.rollback();
                     throw createUserError('UnknownBarman', `Unable to find god father with id ${wantedGodFather}`);
+                } else if (wantedGodFather.id === currentBarman.id) {
+                    await transaction.rollback();
+                    throw createUserError('PickHimself', 'Try to pick himself as his gofFather');
                 }
 
                 await currentBarman.setGodFather(wantedGodFather, { transaction });

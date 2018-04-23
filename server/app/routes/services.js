@@ -7,6 +7,6 @@ router.get('/', guard.check('service:read'), am(serviceController.getAllServices
 router.post('/', guard.check('service:write'), am(serviceController.createService));
 router.get('/:id(\\d+)', guard.check('service:read'), am(serviceController.getServiceById));
 router.put('/:id(\\d+)', guard.check('service:write'), am(serviceController.updateService));
-router.delete('/:id(\\d+)', guard.check('service:write'), am(serviceController.deleteService));
+router.post('/:id(\\d+)/delete', guard.check('service:write'), am(serviceController.deleteService));
 
 module.exports = router;

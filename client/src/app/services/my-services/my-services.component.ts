@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import { BarmanService, ToasterService, LoginService, ServiceService } from '../../_services/';
-import { Moment } from 'moment';
-import { Service, ConnectedUser } from '../../_models/index';
+import { Component, OnInit } from '@angular/core';
+import { AuthService, BarmanService, ServiceService } from '../../_services';
+import { ConnectedUser, Service } from '../../_models';
 
 @Component({
     selector: 'app-my-services',
@@ -10,26 +9,21 @@ import { Service, ConnectedUser } from '../../_models/index';
 
 export class MyServicesComponent implements OnInit {
 
-    myServices: Service[];
+    myServices: Array<Service>;
     user: ConnectedUser;
 
-    constructor(private loginService: LoginService,
-        private barmanService: BarmanService,
-        private serviceService: ServiceService,
-        private toasterService: ToasterService) {
+    constructor(private authService: AuthService,
+                private barmanService: BarmanService,
+                private serviceService: ServiceService) {
     }
 
-    ngOnInit() {
-        this.loginService.$currentUser.subscribe((user: ConnectedUser) => {
+    ngOnInit(): void {
+        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
             if (this.user.barman) {
                 this.serviceService.getWeek().subscribe(week => {
                     this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                        if (services.length > 0) {
-                            this.myServices = services;
-                        } else {
-                            this.myServices = undefined;
-                        }
+                        this.myServices = services.length > 0 ? services : undefined;
                     });
                 });
             }

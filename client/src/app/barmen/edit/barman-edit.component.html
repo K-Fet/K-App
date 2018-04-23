@@ -1,5 +1,5 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+    <mat-card fxFlex class="max-width">
         <mat-card-header>
             <mat-card-title fxLayout="row">
                 <a mat-button routerLink="/barmen" *ngxPermissionsOnly="['barman:read']"><mat-icon>arrow_back</mat-icon></a>
@@ -37,29 +37,31 @@
                         <input matInput type="password" placeholder="Ancien mot de passe" formControlName="oldPassword">
                     </mat-form-field>
                 </div>
-                <h4>Informations relative à la K-Fêt</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Surnom" formControlName="nickname">
-                </mat-form-field>
-                <mat-form-field>
-                    <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
-                        <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
-                        <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
-                        <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-checkbox formControlName="active">Actif</mat-checkbox>
+                <div *ngxPermissionsOnly="['barman:write']" fxLayout="column">
+                    <h4>Informations relative à la K-Fêt</h4>
+                    <mat-form-field>
+                        <input matInput placeholder="Surnom" formControlName="nickname">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
+                            <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
+                            <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
+                            <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-checkbox formControlName="active">Actif</mat-checkbox>
+                </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
                 </div>

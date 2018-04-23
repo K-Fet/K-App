@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { TemplateService, ToasterService, ServiceService, DEFAULT_WEEK_SWITCH } from '../../_services/index';
-import { Template, Service } from '../../_models/index';
-import { FormArray, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DEFAULT_WEEK_SWITCH, ServiceService, TemplateService, ToasterService } from '../../_services';
+import { Service, Template } from '../../_models/index';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import * as moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
 import { Moment } from 'moment';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-open-services',
-    templateUrl: './open-services.component.html'
+    templateUrl: './open-services.component.html',
 })
 
 export class OpenServicesComponent implements OnInit {
 
-    templates: Template[] = new Array<Template>();
-    services: Service[] = new Array<Service>();
+    templates: Array<Template> = new Array<Template>();
+    services: Array<Service> = new Array<Service>();
     selectedTemplate: Template;
 
     templateSelectorFormGroup: FormGroup;
@@ -23,44 +24,44 @@ export class OpenServicesComponent implements OnInit {
     generalFormArray: FormArray;
     generalFormGroup: FormGroup;
 
-    constructor (private templateService: TemplateService,
-        private toasterService: ToasterService,
-        private serviceService: ServiceService,
-        private formBuilder: FormBuilder,
-        private router: Router) {
+    constructor(private templateService: TemplateService,
+                private toasterService: ToasterService,
+                private serviceService: ServiceService,
+                private formBuilder: FormBuilder,
+                private router: Router) {
         this.createForms();
     }
 
-    createForms() {
+    createForms(): void {
         this.templateSelectorFormGroup = this.formBuilder.group({
-            templateSelectorFormControl: [''/*, Validators.required*/]
+            templateSelectorFormControl: [''/*, Validators.required*/],
         });
         this.servicesFormArray = this.formBuilder.array([]);
         this.generalFormArray = this.formBuilder.array([
             this.templateSelectorFormGroup,
-            this.servicesFormArray
+            this.servicesFormArray,
         ]);
         this.generalFormGroup = this.formBuilder.group({
-            generalFormArray: this.generalFormArray
+            generalFormArray: this.generalFormArray,
         });
     }
 
-    addServiceForm(categoryId: Number, nbMax: Number, startAt: Moment, endAt: Moment) {
+    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment): void {
         const serviceFormGroup = this.formBuilder.group({
             nbMaxFormControl: [nbMax, Validators.required],
             startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
-            endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required]
+            endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required],
         });
-        serviceFormGroup.valueChanges.subscribe(val => {
+        serviceFormGroup.valueChanges.subscribe(() => {
             this.sortServiceForm();
         });
         this.servicesFormArray.push(serviceFormGroup);
     }
 
-    sortServiceForm() {
+    sortServiceForm(): void {
         this.servicesFormArray.controls.sort((a, b) => {
-            const aStartAt = (<FormGroup>a).controls.startAtFormControl.value;
-            const bStartAt = (<FormGroup>b).controls.startAtFormControl.value;
+            const aStartAt = (a as FormGroup).controls.startAtFormControl.value;
+            const bStartAt = (b as FormGroup).controls.startAtFormControl.value;
             if (aStartAt < bStartAt) {
                 return -1;
             } else if (aStartAt > bStartAt) {
@@ -70,17 +71,17 @@ export class OpenServicesComponent implements OnInit {
         });
     }
 
-    removeServiceForm(fromGroupId: Number) {
+    removeServiceForm(fromGroupId: Number): void {
         this.servicesFormArray.removeAt(+fromGroupId);
     }
 
-    getControls() {
-        return (<FormArray>this.generalFormArray.get([1])).controls;
+    getControls(): Array<AbstractControl> {
+        return (this.generalFormArray.get([1]) as FormArray).controls;
     }
 
     getFirstServiceDate(): Date {
         if (this.servicesFormArray.controls.length > 0) {
-            return (<FormGroup>this.servicesFormArray.controls[0]).controls.startAtFormControl.value;
+            return (this.servicesFormArray.controls[0] as FormGroup).controls.startAtFormControl.value;
         } else {
             return null;
         }
@@ -89,7 +90,7 @@ export class OpenServicesComponent implements OnInit {
     getLastServiceDate(): Date {
         if (this.servicesFormArray.controls.length > 0) {
             const lastIndex = this.servicesFormArray.controls.length - 1;
-            return (<FormGroup>this.servicesFormArray.controls[lastIndex]).controls.startAtFormControl.value;
+            return (this.servicesFormArray.controls[lastIndex] as FormGroup).controls.startAtFormControl.value;
         } else {
             return null;
         }
@@ -97,36 +98,34 @@ export class OpenServicesComponent implements OnInit {
 
     ngOnInit(): void {
         // Get templates
-        this.templateService.getAll().subscribe(template => {
-            this.templates = [
-                template
-            ];
+        this.templateService.getAll().subscribe(templates => {
+            this.templates = templates;
         });
         this.onFormChanges();
     }
 
-    onFormChanges() {
+    onFormChanges(): void {
         this.templateSelectorFormGroup.valueChanges.subscribe(val => {
             if (val.templateSelectorFormControl) {
-                (<Template>val.templateSelectorFormControl).services.forEach(service => {
+                (val.templateSelectorFormControl as Template).services.forEach(service => {
                     const startAt: Moment = moment().isoWeekday(+service.startAt.day).set({
                         'hour': +service.startAt.hours,
                         'minute': +service.startAt.minutes,
                         'second': 0,
-                        'millisecond': 0
+                        'millisecond': 0,
                     });
                     const endAt: Moment = moment().isoWeekday(+service.endAt.day).set({
                         'hour': +service.endAt.hours,
                         'minute': +service.endAt.minutes,
                         'second': 0,
-                        'millisecond': 0
+                        'millisecond': 0,
                     });
                     const firstDayOfNextWeek = this.getFirstDayOfNextWeek();
                     while (startAt.isBefore(firstDayOfNextWeek)) {
                         startAt.add(1, 'week');
                         endAt.add(1, 'week');
                     }
-                    this.addServiceForm(service.categoryId, service.nbMax, startAt, endAt);
+                    this.addServiceForm(service.nbMax, startAt, endAt);
                 });
             }
             this.sortServiceForm();
@@ -138,7 +137,7 @@ export class OpenServicesComponent implements OnInit {
             'hour': 0,
             'minute': 0,
             'second': 0,
-            'millisecond': 0
+            'millisecond': 0,
         });
         if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
             firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
@@ -148,9 +147,9 @@ export class OpenServicesComponent implements OnInit {
         return firstDay;
     }
 
-    createServices() {
-        const services: Service[] = this.servicesFormArray.controls.map(formGroup => {
-            return this.prepareService((<FormGroup>formGroup).controls);
+    createServices(): void {
+        const services: Array<Service> = this.servicesFormArray.controls.map(formGroup => {
+            return this.prepareService((formGroup as FormGroup).controls);
         });
         this.serviceService.create(services).subscribe(() => {
             this.toasterService.showToaster('Nouveaux services enregistrés');
