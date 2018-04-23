@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Member, Template } from '../../_models/index';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Template } from '../../_models/index';
 import { TemplateService } from '../../_services/index';
 import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
-import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
 
 import 'rxjs/add/observable/fromEvent';
@@ -22,7 +21,6 @@ export class TemplatesListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private templateService: TemplateService,
-        private toasterService: ToasterService,
         private router: Router) {
     }
 

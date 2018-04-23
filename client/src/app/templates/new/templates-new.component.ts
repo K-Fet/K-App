@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ToasterService, TemplateService } from '../../_services/index';
 import { Template, Service } from '../../_models/index';
 
 @Component({
@@ -27,9 +25,6 @@ export class TemplateNewComponent implements OnInit {
         {id: '7', value: 'Dimanche'} ];
 
     constructor(
-        private templateService: TemplateService,
-        private toasterService: ToasterService,
-        private router: Router,
         private fb: FormBuilder
     ) {
         this.createForm();
