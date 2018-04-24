@@ -24,9 +24,7 @@ export class MemberService {
     }
 
     update(member: Member, code: Number): Observable<Member> {
-        const id = member.id;
-        delete member.id;
-        return this.http.put<Member>(`/api/members/${id}`, { code: code, member: member });
+        return this.http.put<Member>(`/api/members/${member.id}`, { code: code, member: member });
     }
 
     delete(id: Number, code: Number): Observable<Member> {

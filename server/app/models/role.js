@@ -52,16 +52,15 @@ class Role extends Model {
 }
 
 
-const RoleSchema = Joi.object()
-    .keys({
-        name: Joi.string(),
-        description: Joi.string(),
-        _embedded: Joi.object()
-            .keys({
-                barmen: AssociationChangesSchema,
-                permissions: AssociationChangesSchema
-            }),
-    });
+const RoleSchema = Joi.object().keys({
+    id: Joi.number().integer(),
+    name: Joi.string(),
+    description: Joi.string(),
+    _embedded: Joi.object().keys({
+        barmen: AssociationChangesSchema,
+        permissions: AssociationChangesSchema
+    }),
+});
 
 module.exports = {
     Role,

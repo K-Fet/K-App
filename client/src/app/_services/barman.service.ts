@@ -42,9 +42,7 @@ export class BarmanService {
     }
 
     update(barman: Barman): Observable<Barman> {
-        const id = barman.id;
-        delete barman.id;
-        return this.http.put<Barman>(`/api/barmen/${id}`, barman);
+        return this.http.put<Barman>(`/api/barmen/${barman.id}`, barman);
     }
 
     delete(id: Number): Observable<Barman> {

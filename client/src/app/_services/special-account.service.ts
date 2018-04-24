@@ -23,10 +23,7 @@ export class SpecialAccountService {
     }
 
     update(specialAccount: SpecialAccount, code: Number): Observable<SpecialAccount> {
-        const id = specialAccount.id;
-        delete specialAccount.id;
-        const body = { specialAccount: specialAccount, code: code };
-        return this.http.put<SpecialAccount>(`/api/specialaccounts/${id}`, body);
+        return this.http.put<SpecialAccount>(`/api/specialaccounts/${specialAccount.id}`, { specialAccount, code });
     }
 
     delete(id: Number, code: Number): Observable<SpecialAccount> {

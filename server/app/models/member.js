@@ -56,6 +56,7 @@ class Member extends Model {
 }
 
 const MemberSchema = Joi.object().keys({
+    id: Joi.number().integer(),
     firstName: Joi.string(),
     lastName: Joi.string(),
     school: Joi.string(),
