@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConnectedUser, Permission, SpecialAccount } from '../../_models';
 import { AuthService, MeService, PermissionService, SpecialAccountService, ToasterService } from '../../_services';
@@ -17,6 +17,7 @@ export class SpecialAccountEditComponent implements OnInit {
     });
     currentUser: ConnectedUser = new ConnectedUser();
     specialAccountForm: FormGroup;
+    passwordForm: FormGroup;
 
     permissions: Array<{
         permission: Permission,
@@ -45,6 +46,22 @@ export class SpecialAccountEditComponent implements OnInit {
             code: new FormControl('', [ Validators.pattern(/^[0-9]{4,}$/)]),
             codeConfirmation: new FormControl(''),
         });
+
+        function passwordMatchValidator(g: FormGroup): ValidationErrors | null {
+            return g.get('newPassword').value === g.get('newPasswordConfirm').value
+               ? null : { 'passwordMismatch': true };
+        }
+
+        function passwordRegExValidator(g: FormGroup): ValidationErrors | null {
+            return g.get('newPassword').value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
+                ? null : { 'weakPassword': true };
+        }
+
+        this.passwordForm = new FormGroup({
+            oldPassword: new FormControl('', [Validators.required]),
+            newPassword: new FormControl('', [Validators.required]),
+            newPasswordConfirm: new FormControl('', [Validators.required]),
+        }, [ passwordMatchValidator, passwordRegExValidator ]);
     }
 
     ngOnInit(): void {
@@ -156,6 +173,24 @@ export class SpecialAccountEditComponent implements OnInit {
             }
         }
         return specialAccount;
+    }
+
+    updatePassword(): void {
+        this.meService.resetPassword(this.currentSpecialAccount.connection.username,
+            this.passwordForm.value.newPassword,
+            this.passwordForm.value.oldPassword).subscribe(() => {
+                this.toasterService.showToaster('Modification(s) du mot de passe enregistré');
+                this.authService.me().subscribe();
+            });
+    }
+
+    getErrorMessage(): String {
+        if (this.passwordForm.hasError('passwordMismatch')) {
+            return 'Les nouveaux mots de passe ne correspondent pas.';
+        } else if (this.passwordForm.hasError('weakPassword')) {
+            return 'Le nouveau mot de passe doit contenir au moins 8 caractères et doit avoir 1 minuscule, 1 majuscule et 1 chiffre.';
+        }
+        return '';
     }
 
     disable(): Boolean {
