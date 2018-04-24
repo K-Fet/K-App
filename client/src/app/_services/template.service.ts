@@ -1,25 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Template } from '../_models/index';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class TemplateService {
 
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<Template[]>('/api/templates');
+    getAll(): Observable<Array<Template>> {
+        return this.http.get<Array<Template>>('/api/templates');
     }
 
-    getById(id: number) {
-        return this.http.get<Template>('/api/templates/' + id);
+    getById(id: number): Observable<Template> {
+        return this.http.get<Template>(`/api/templates/${id}`);
     }
 
-    create(template: Template) {
-        return this.http.post('/api/templates',  template);
+    create(template: Template): Observable<Template> {
+        return this.http.post<Template>('/api/templates', template);
     }
 
-    delete(id: Number) {
-        return this.http.delete('api/templates/' + id);
+    delete(id: Number): Observable<Template> {
+        return this.http.delete<Template>(`api/templates/${id}`);
     }
 }

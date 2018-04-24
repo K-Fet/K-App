@@ -35,10 +35,13 @@
                                             <button mat-icon-button (click)="removeServiceForm(i)" >
                                                 <mat-icon fxFlex="10px">remove</mat-icon>
                                             </button>
-                                            <span *ngIf="getControls()[i].controls.startAtFormControl.value">
+                                            <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startAtFormControl.value">
                                                 {{getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr'}}
                                                 de {{getControls()[i].controls.startAtFormControl.value | date:'H'}}h
                                                 à {{getControls()[i].controls.endAtFormControl.value | date:'H'}}h
+                                            </span>
+                                            <span class="mat-error" *ngIf="!getControls()[i].controls.startAtFormControl.value">
+                                                Service à définir !
                                             </span>
                                             <ng-template #elseBlock>
                                                 Non défini...

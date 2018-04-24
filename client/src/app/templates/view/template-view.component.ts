@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplateService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Template, Service } from '../../_models';
+import { Service, Template } from '../../_models';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -11,10 +11,8 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
 
 export class TemplateViewComponent implements OnInit {
 
-    template: Template = new Template;
-    services: Service[] = new Array<Service>();
-
-
+    template: Template = new Template();
+    services: Array<Service> = new Array<Service>();
 
     constructor(
         private templateService: TemplateService,
@@ -24,7 +22,7 @@ export class TemplateViewComponent implements OnInit {
         public dialog: MatDialog
     ) {}
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.route.params.subscribe(params => {
             this.template.id = params['id'];
             this.templateService.getById(+this.template.id).subscribe(template => {
@@ -35,7 +33,7 @@ export class TemplateViewComponent implements OnInit {
         });
     }
 
-    toDate(val) {
+    toDate(val): Date {
         const date = new Date();
         date.setDate(val.day);
         date.setHours(val.hours);
@@ -43,12 +41,12 @@ export class TemplateViewComponent implements OnInit {
         return date;
     }
 
-    changeFormatDate() {
+    changeFormatDate(): void {
         this.services = this.template.services.map(n =>
         new Service({
             startAt: this.toDate(n.startAt),
             endAt: this.toDate(n.endAt),
-            nbMax: n.nbMax
+            nbMax: n.nbMax,
         }));
 
     }
@@ -56,7 +54,7 @@ export class TemplateViewComponent implements OnInit {
     openConfirmationDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '350px',
-            data: { title: 'Confirmation', message: 'Confirmez-vous la suppression de ' + this.template.name + ' ?'}
+            data: { title: 'Confirmation', message: `Confirmez-vous la suppression de ${this.template.name} ?` },
         });
 
         dialogRef.afterClosed().subscribe(choice => {
@@ -66,7 +64,7 @@ export class TemplateViewComponent implements OnInit {
         });
     }
 
-    delete() {
+    delete(): void {
         this.templateService.delete(this.template.id).subscribe(() => {
             this.toasterService.showToaster('Template supprimé');
             this.router.navigate(['templates']);

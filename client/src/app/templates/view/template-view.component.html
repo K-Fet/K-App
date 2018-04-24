@@ -1,5 +1,5 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+    <mat-card fxFlex class="max-width">
         <mat-card-header>
             <mat-card-title fxLayout="row">
                 <a mat-button routerLink="/templates"><mat-icon>arrow_back</mat-icon></a>
@@ -17,7 +17,8 @@
                 <h3 mat-subheader>Services</h3>
                 <div *ngIf="template.services?.length !== 0; else elseBlock">
                     <mat-list-item *ngFor="let service of services">
-                        <p mat-line> {{service.startAt | date:'EEEE' }} de 
+                        <p mat-line> 
+                            <span class="first-letter-uppercase">{{service.startAt | date:'EEEE' }}</span> de 
                                 {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h</p>
                         <p mat-line> {{service.nbMax}} barmen maximum</p>
                     </mat-list-item>

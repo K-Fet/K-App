@@ -114,7 +114,7 @@ import { MaterialModule } from './_helpers/material.module';
         UsernameVerificationComponent,
         TemplatesListComponent,
         TemplateNewComponent,
-        TemplateViewComponent
+        TemplateViewComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
