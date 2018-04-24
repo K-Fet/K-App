@@ -26,13 +26,4 @@ export class MeService {
 
         return this.http.put('/api/me', body);
     }
-
-    resetPassword(username: String, newPassword: String, oldPassword: String): Observable<any> {
-        const body = {
-            username: username,
-            password: newPassword,
-            oldPassword: oldPassword,
-        };
-        return this.http.put('/api/auth/reset-password', body);
-    }
 }

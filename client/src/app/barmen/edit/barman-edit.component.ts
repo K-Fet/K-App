@@ -130,12 +130,12 @@ export class BarmanEditComponent implements OnInit {
     }
 
     updatePassword(): void {
-        this.meService.resetPassword(this.currentBarman.connection.username,
+        this.authService.definePassword(this.currentBarman.connection.username,
             this.passwordForm.value.newPassword,
+            null,
             this.passwordForm.value.oldPassword).subscribe(() => {
-                this.toasterService.showToaster('Modification(s) du mot de passe enregistré');
-                this.router.navigate(['/dashboard-barman']);
-                this.authService.me().subscribe();
+                this.toasterService.showToaster('Modification du mot de passe enregistré');
+                this.router.navigate(['/login']);
             });
     }
 
