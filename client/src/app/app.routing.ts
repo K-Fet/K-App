@@ -31,18 +31,19 @@ import { UsernameVerificationComponent } from './auth/username-verification/user
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 // import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
         permissions: {
             only: permissions,
-            redirectTo: '/dashboard',
+            redirectTo: '/',
         },
     };
 };
 
 const routes: Routes = [
-    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+    { path: '', component: HomePageComponent },
     { path: 'login', component: LoginComponent },
     { path: 'define-password', component: DefinePasswordComponent },
     { path: 'username-verification', component: UsernameVerificationComponent },
