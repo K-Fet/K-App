@@ -21,6 +21,6 @@ export class TemplateService {
     }
 
     delete(id: Number): Observable<Template> {
-        return this.http.delete<Template>(`api/templates/${id}`);
+        return this.http.post<Template>(`api/templates/${id}/delete`, null);
     }
 }
