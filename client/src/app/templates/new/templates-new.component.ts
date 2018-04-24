@@ -1,19 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { Template, Service } from '../../_models/index';
+import { Template } from '../../_models/index';
 
 @Component({
   templateUrl: './templates-new.component.html'
 })
 
 export class TemplateNewComponent implements OnInit {
-
+    name: String;
     template: Template = new Template();
-    services: Array<Service>;
+
+    startAt: Date;
+    endAt: Date;
+    selectedDay: Number;
+    nbMax: Number;
+
+    services: Array<{
+        nbMax: Number,
+        startAt: {
+            day: Number,
+            hours: Number,
+            minutes: Number
+        },
+        endAt: {
+            day: Number,
+            hours: Number,
+            minutes: Number
+        }
+    }>;
+
     serviceForm: FormGroup;
     templateForm: FormGroup;
     formArray: FormArray;
-    selectedDay: Number;
+ 
 
     WEEK_DAY = [
         {id: '1', value: 'Lundi'},
@@ -32,30 +51,38 @@ export class TemplateNewComponent implements OnInit {
 
     createForm() {
         this.serviceForm = this.fb.group({
-            name: new FormControl('', [Validators.required]),   // à passer dans le templateForm plus tard
-            start: new FormControl('', [Validators.required]),
-            end: new FormControl('', [Validators.required]),
-            day: new FormControl('', [Validators.required])
+            startFormControl: new FormControl('', [Validators.required]),
+            endFormControl: new FormControl('', [Validators.required]),
+            dayFormControl: new FormControl('', [Validators.required]),
+            nbMaxFormControl: new FormControl('', [Validators.required])
         });
-      /*  this.templateForm = this.fb.group({
-            name: new FormControl('', [Validators.required])
+        this.formArray = this.fb.array([
+            this.serviceForm
+        ]);
+        this.templateForm = this.fb.group({
+            nameFormControl: new FormControl('', [Validators.required]),
+            formArray: this.formArray
         });
-        */
     }
 
     ngOnInit(): void {
-
     }
-/*
-    add() {
-        this.templateService.create(this.template).subscribe(() => {
-            this.toasterService.showToaster('Template créé');
-            this.router.navigate(['/templates'] );
-        });
+
+    toNumber(date: Date, selectedDay) {
+        return {
+            day: selectedDay,
+            hours: date.getHours(),
+            minutes: date.getMinutes(),
+        };
     }
-    */
 
-
-
-    addService() {}
+    addService(): void {
+        const val = {
+            nbMax: this.nbMax,
+            startAt: this.toNumber(this.startAt, this.selectedDay),
+            endAt: this.toNumber(this.endAt, this.selectedDay)
+        }
+        this.services.push(val);
+        
+    }
 }
