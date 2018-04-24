@@ -91,6 +91,7 @@ export class BarmanEditComponent implements OnInit {
         // Get barman information and fill up form
         this.route.params.subscribe(params => {
             this.barmanService.getById(params['id']).subscribe(barman => {
+                this.barman.id = barman.id;
                 this.currentBarman = barman;
 
                 this.barmanForm.controls.lastName.setValue(barman.lastName);
