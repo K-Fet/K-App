@@ -99,7 +99,7 @@ export class AuthService {
         if (localStorage.getItem('currentUser')) {
             localStorage.removeItem('currentUser');
         }
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
     }
 
     private saveUser(jwt): void {

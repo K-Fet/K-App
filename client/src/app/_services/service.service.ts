@@ -43,9 +43,7 @@ export class ServiceService {
     }
 
     update(service: Service): Observable<Service> {
-        const id = service.id;
-        delete service.id;
-        return this.http.put<Service>(`/api/services/${id}`, service);
+        return this.http.put<Service>(`/api/services/${service.id}`, service);
     }
 
     delete(id: Number): Observable<Service> {

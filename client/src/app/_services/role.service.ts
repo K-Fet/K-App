@@ -28,9 +28,7 @@ export class RoleService {
     }
 
     update(role: Role): Observable<Role> {
-        const id = role.id;
-        delete role.id;
-        return this.http.put<Role>(`/api/roles/${id}`, role);
+        return this.http.put<Role>(`/api/roles/${role.id}`, role);
     }
 
     delete(id: Number): Observable<Role> {

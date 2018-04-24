@@ -4,6 +4,7 @@ import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
+import { Router } from '@angular/router';
 
 interface Link {
     name: String;
@@ -26,6 +27,14 @@ interface SubMenu {
 export class MenuComponent implements OnDestroy, OnInit {
 
     menu: Array<SubMenu> = [
+        {
+            links: [
+                {
+                    name: 'Accueil',
+                    route: '/',
+                },
+            ],
+        },
         {
             links: [
                 {
@@ -112,6 +121,7 @@ export class MenuComponent implements OnDestroy, OnInit {
                 private toasterService: ToasterService,
                 private ngxPermissionsService: NgxPermissionsService,
                 private ngxRolesService: NgxRolesService,
+                private router: Router,
                 changeDetectorRef: ChangeDetectorRef,
                 media: MediaMatcher) {
         this.mobileQuery = media.matchMedia('(max-width: 599px)');
@@ -151,5 +161,9 @@ export class MenuComponent implements OnDestroy, OnInit {
             }
         }
         return false;
+    }
+
+    redirectHome(): void {
+        this.router.navigate(['/']);
     }
 }

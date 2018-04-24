@@ -28,9 +28,7 @@ export class KommissionService {
     }
 
     update(kommission: Kommission): Observable<Kommission> {
-        const id = kommission.id;
-        delete kommission.id;
-        return this.http.put<Kommission>(`/api/kommissions/${id}`, kommission);
+        return this.http.put<Kommission>(`/api/kommissions/${kommission.id}`, kommission);
     }
 
     delete(id: Number): Observable<Kommission> {

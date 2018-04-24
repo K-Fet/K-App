@@ -16,12 +16,10 @@ export class MeService {
             body = {
                 barman: connectedUser.barman,
             };
-            delete body.barman.id;
         } else {
             body = {
                 specialAccount: connectedUser.specialAccount,
             };
-            delete body.specialAccount.id;
         }
 
         return this.http.put('/api/me', body);

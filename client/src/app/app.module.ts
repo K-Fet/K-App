@@ -52,6 +52,7 @@ import { UsernameVerificationComponent } from './auth/username-verification/user
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
@@ -115,6 +116,7 @@ import { MaterialModule } from './_helpers/material.module';
         TemplatesListComponent,
         TemplateNewComponent,
         TemplateViewComponent,
+        HomePageComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
