@@ -280,7 +280,7 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
         if (passwordToken) {
             isValid = await verify(user.passwordToken, passwordToken);
         } else if (oldPassword) {
-            isValid = await verify(user.oldPassword, oldPassword);
+            isValid = await verify(user.password, oldPassword);
         } else {
             throw createServerError('ServerError', 'Missing parameter');
         }

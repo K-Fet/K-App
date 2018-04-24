@@ -81,8 +81,8 @@ export class AuthService {
         });
     }
 
-    definePassword(username: String, password: String, passwordToken: String): Observable<any> {
-        return this.http.put('api/auth/reset-password', { username , password, passwordToken });
+    definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
+        return this.http.put('api/auth/reset-password', { username , password, passwordToken, oldPassword });
     }
 
     verifyUsername(userId: Number, username: String, password: String, usernameToken: String): Observable<any> {
