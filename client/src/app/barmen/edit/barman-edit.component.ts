@@ -26,6 +26,8 @@ export class BarmanEditComponent implements OnInit {
 
     barmanForm: FormGroup;
 
+    passwordForm: FormGroup;
+
     oldPassword: String;
 
     startDate = new Date();
@@ -42,6 +44,21 @@ export class BarmanEditComponent implements OnInit {
     }
 
     createForm(): void {
+
+        this.barmanForm = new FormGroup({
+            lastName: new FormControl('', [Validators.required]),
+            firstName: new FormControl('', [Validators.required]),
+            nickname: new FormControl('', [Validators.required]),
+            facebook: new FormControl(''),
+            username: new FormControl('', [Validators.required, Validators.email]),
+            dateOfBirth: new FormControl('', [Validators.required]),
+            flow: new FormControl('', [Validators.required]),
+            godFather: new FormControl(''),
+            roles: new FormControl(''),
+            kommissions: new FormControl(''),
+            active: new FormControl(''),
+        });
+
         function passwordMatchValidator(g: FormGroup): ValidationErrors | null {
             return g.get('newPassword').value === g.get('newPasswordConfirm').value
                ? null : { 'passwordMismatch': true };
@@ -52,53 +69,22 @@ export class BarmanEditComponent implements OnInit {
                 ? null : { 'weakPassword': true };
         }
 
-        function passwordsValidator(g: FormGroup): ValidationErrors | null {
-            const empty = [
-                g.get('oldPassword').value.length > 0 ? 1 : 0,
-                g.get('newPassword').value.length > 0 ? 1 : 0,
-                g.get('newPasswordConfirm').value.length > 0 ? 1 : 0,
-            ];
-            const sum = empty.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            return sum < 3 ? { 'fullPassword': true } : null;
-        }
-
-        this.barmanForm = new FormGroup({
-            lastName: new FormControl('', [Validators.required]),
-            firstName: new FormControl('', [Validators.required]),
-            nickname: new FormControl('', [Validators.required]),
-            facebook: new FormControl(''),
-            username: new FormControl('', [Validators.required, Validators.email]),
-            oldPassword: new FormControl(''),
-            newPassword: new FormControl(''),
-            newPasswordConfirm: new FormControl(''),
-            dateOfBirth: new FormControl('', [Validators.required]),
-            flow: new FormControl('', [Validators.required]),
-            godFather: new FormControl(''),
-            roles: new FormControl(''),
-            kommissions: new FormControl(''),
-            active: new FormControl(''),
-        }, [ passwordMatchValidator, passwordRegExValidator, passwordsValidator ]);
+        this.passwordForm = new FormGroup({
+            oldPassword: new FormControl('', [Validators.required]),
+            newPassword: new FormControl('', [Validators.required]),
+            newPasswordConfirm: new FormControl('', [Validators.required]),
+        }, [ passwordMatchValidator, passwordRegExValidator ]);
 
         this.startDate.setFullYear(this.startDate.getFullYear() - 20);
     }
 
     getErrorMessage(): String {
-        return this.barmanForm.hasError('fullPassword') ? 'Pour une modification de mot de passe, \
-                tous les champs mot de passe doivent être remplis.' :
-            this.barmanForm.hasError('passwordMismatch') ? 'Les nouveaux mots de passe ne correspondent pas.' :
-            this.barmanForm.hasError('weakPassword') ? 'Le mot de passe doit contenir au moins 8 caractères \
-                et doit avoir 1 minuscule, 1 majuscule et 1 chiffre.' :
-            '';
-    }
-
-    emptyPasswords(): Boolean {
-        const empty = [
-            this.barmanForm.get('oldPassword').value.length > 0 ? 1 : 0,
-            this.barmanForm.get('newPassword').value.length > 0 ? 1 : 0,
-            this.barmanForm.get('newPasswordConfirm').value.length > 0 ? 1 : 0,
-        ];
-        const sum = empty.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        return sum === 0 ? true : false;
+        if (this.passwordForm.hasError('passwordMismatch')) {
+            return 'Les nouveaux mots de passe ne correspondent pas.';
+        } else if (this.passwordForm.hasError('weakPassword')) {
+            return 'Le nouveau mot de passe doit contenir au moins 8 caractères et doit avoir 1 minuscule, 1 majuscule et 1 chiffre.';
+        }
+        return '';
     }
 
     ngOnInit(): void {
@@ -143,28 +129,33 @@ export class BarmanEditComponent implements OnInit {
         });
     }
 
+    updatePassword(): void {
+        this.meService.resetPassword(this.currentBarman.connection.username,
+            this.passwordForm.value.newPassword,
+            this.passwordForm.value.oldPassword).subscribe(() => {
+                this.toasterService.showToaster('Modification(s) du mot de passe enregistré');
+                this.router.navigate(['/dashboard-barman']);
+                this.authService.me().subscribe();
+            });
+    }
+
     edit(): void {
         this.prepareSaving();
-        if (this.isMe()) {
-            if (this.barman) {
+        if (Object.keys(this.barman).length > 0) {
+            if (this.isMe()) {
                 this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: this.barman })).subscribe(() => {
                     this.toasterService.showToaster('Modification(s) enregistrée(s)');
                     this.router.navigate(['/barmen']);
                     this.authService.me().subscribe();
                 });
-            }
-            if (this.barmanForm.value.newPassword) {
-                this.meService.resetPassword(this.currentBarman.connection.username,
-                    this.barmanForm.value.newPassword,
-                    this.barmanForm.value.oldPassword).subscribe(() => {
-                        this.toasterService.showToaster('Modification(s) du mot de passe enregistré');
-                    });
+            } else {
+                this.barmanService.update(this.barman).subscribe(() => {
+                    this.toasterService.showToaster('Barman modifié');
+                    this.router.navigate(['/barmen']);
+                });
             }
         } else {
-            this.barmanService.update(this.barman).subscribe(() => {
-                this.toasterService.showToaster('Barman modifié');
-                this.router.navigate(['/barmen']);
-            });
+            this.toasterService.showToaster('Les données n\'ont pas été modifiées. Merci d\'essayer à nouveau');
         }
     }
 
@@ -207,8 +198,6 @@ export class BarmanEditComponent implements OnInit {
                     break;
             }
         });
-        // Prevent empty barman due to password update
-        this.barman = Object.keys(this.barman).length > 0 ? this.barman : undefined;
     }
 
     prepareAssociationChanges(current, updated): AssociationChanges {

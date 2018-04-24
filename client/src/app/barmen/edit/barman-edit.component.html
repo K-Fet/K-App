@@ -29,21 +29,6 @@
                 <mat-form-field>
                     <input matInput placeholder="Username (adresse email)" formControlName="username">
                 </mat-form-field>
-                <mat-form-field fxFlex.gt-xs="45">
-                    <input matInput type="password" placeholder="Mot de passe actuel" formControlName="oldPassword">
-                </mat-form-field>
-                <div *ngIf="isMe()" fxLayout.xs="column">
-                    <mat-form-field fxFlex.gt-xs="45">
-                        <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="newPassword">
-                    </mat-form-field>
-                    <div fxFlex></div>
-                    <mat-form-field fxFlex.gt-xs="45">
-                        <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
-                    </mat-form-field>
-                </div>
-                <span class="mat-error" *ngIf="barmanForm.invalid && !emptyPasswords()">
-                    {{getErrorMessage()}}
-                </span>
                 <div *ngxPermissionsOnly="['barman:write']" fxLayout="column">
                     <h4>Informations relative à la K-Fêt</h4>
                     <mat-form-field>
@@ -71,6 +56,31 @@
                 </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
+                </div>
+            </form>
+            <mat-divider></mat-divider>
+            <form [formGroup]="passwordForm" fxLayout="column" (ngSubmit)="updatePassword()" *ngIf="isMe()" fxLayout="column">
+                <h4>Modification du mot de passe</h4>
+                <mat-form-field fxFlex>
+                    <input matInput type="password" placeholder="Mot de passe actuel" formControlName="oldPassword">
+                </mat-form-field>
+                <div fxLayout.xs="column">
+                    <mat-form-field fxFlex.gt-xs="45">
+                        <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="newPassword">
+                    </mat-form-field>
+                    <div fxFlex></div>
+                    <mat-form-field fxFlex.gt-xs="45">
+                        <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
+                    </mat-form-field>
+                </div>
+                <span class="mat-error" *ngIf="passwordForm.invalid 
+                    && passwordForm.controls['oldPassword'].dirty
+                    && passwordForm.controls['newPassword'].dirty
+                    && passwordForm.controls['newPasswordConfirm'].dirty">
+                    {{getErrorMessage()}}
+                </span>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="submit" [disabled]="!passwordForm.dirty || !passwordForm.valid">Modifier</button>
                 </div>
             </form>
         </mat-card-content>
