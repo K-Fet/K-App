@@ -29,7 +29,7 @@ import { SpecialAccountNewComponent } from './special-accounts/new/special-accou
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
-import { TemplateNewComponent } from './templates/new/templates-new.component';
+// import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
 
 const generateData = (permissions: Array<String>) => {
