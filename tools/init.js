@@ -93,7 +93,7 @@ async function startEverything() {
 
     if (config.backup) {
         console.log('Launching backup task...');
-        await systemStartAndEnable('kapp.timer');
+        await systemStartAndEnable('kapp-save.timer');
         console.log('Backup task launched');
     }
 

@@ -93,8 +93,8 @@ async function definePassword(req, res) {
             .error(createUserError('WeakPassword',
                 'Password must be at least 8 characters, with at least 1 uppercase, 1 lowercase and 1 digit'))
             .required(),
-        oldPassword: Joi.string(),
-        passwordToken: Joi.string(),
+        oldPassword: Joi.string().allow(null),
+        passwordToken: Joi.string().allow(null),
     });
 
     const { error } = schema.validate(req.body);
