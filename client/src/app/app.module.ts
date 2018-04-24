@@ -49,6 +49,9 @@ import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confi
 import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { TemplatesListComponent } from './templates/list/templates-list.component';
+import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateViewComponent } from './templates/view/template-view.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
@@ -109,6 +112,9 @@ import { MaterialModule } from './_helpers/material.module';
         EqualValidator,
         DefinePasswordComponent,
         UsernameVerificationComponent,
+        TemplatesListComponent,
+        TemplateNewComponent,
+        TemplateViewComponent,
     ],
     entryComponents: [
         CodeDialogComponent,

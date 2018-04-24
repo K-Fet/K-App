@@ -1,0 +1,49 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+        <mat-card-header>
+            <mat-card-title fxLayout="row">
+                <a mat-button routerLink="/templates"><mat-icon>arrow_back</mat-icon></a>
+                <section  class="mat-typography">
+                    <h1>Ajouter un Template</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="templateForm" fxLayout="column" fxLayoutAlign="center">
+                <mat-form-field>
+                    <input matInput placeholder="Nom du template" [(ngModel)]="name" formControlName="nameFormControl" required>
+                </mat-form-field>
+                <form [formGroup]="serviceForm">
+                    <h4>Ajouter un service</h4>
+                    <mat-form-field>
+                        De : <input matInput type="time" [(ngModel)]="startAt" formControlName="startFormControl" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        à : <input matInput type="time" [(ngModel)]="endAt"formControlName="endFormControl" required >
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-select matInput placeholder="Choisir un jour" [(ngModel)]="selectedDay" formControlName="dayFormControl" name="day" required>
+                            <mat-option *ngFor="let day of WEEK_DAY" [value]="day.id">
+                                {{ day.value }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput type="number" placeholder="Nombre max de barmen" [(ngModel)]="nbMax" min="0" formControlName="nbMaxFormControl" required>
+                    </mat-form-field>
+                </form>
+            </form>
+            <mat-card-content>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="75" mat-button type="button" (click)="addService()"
+                        [disabled]="!serviceForm.valid">Ajouter un service au template</button>
+                </div>
+            </mat-card-content>
+
+        </mat-card-content>
+        <mat-card-content>
+            <p *ngIf="services"> Services present</p>
+            <p *ngIf="!services">Veuillez spécifier un ou plusieurs services</p>
+        </mat-card-content>
+    </mat-card>
+</div>

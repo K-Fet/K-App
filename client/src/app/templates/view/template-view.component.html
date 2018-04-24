@@ -1,0 +1,34 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+        <mat-card-header>
+            <mat-card-title fxLayout="row">
+                <a mat-button routerLink="/templates"><mat-icon>arrow_back</mat-icon></a>
+                <section class="mat-typography">
+                    <h1>{{template?.name}}</h1>
+                </section>
+            </mat-card-title>
+            <div fxFlex></div>
+            <button mat-mini-fab color="primary" (click)="openConfirmationDialog()" *ngxPermissionsOnly="['template:write']">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-list>
+                <h3 mat-subheader>Services</h3>
+                <div *ngIf="template.services?.length !== 0; else elseBlock">
+                    <mat-list-item *ngFor="let service of services">
+                        <p mat-line> 
+                            <span class="first-letter-uppercase">{{service.startAt | date:'EEEE' }}</span> de 
+                                {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h</p>
+                        <p mat-line> {{service.nbMax}} barmen maximum</p>
+                    </mat-list-item>
+                </div>
+                <ng-template #elseBlock>
+                    <mat-list-item>
+                        <p>Semaine de mi juillet</p>
+                    </mat-list-item>
+                </ng-template>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+</div>

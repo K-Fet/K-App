@@ -90,6 +90,7 @@ export class OpenServicesComponent implements OnInit {
     getLastServiceDate(): Date {
         if (this.servicesFormArray.controls.length > 0) {
             const lastIndex = this.servicesFormArray.controls.length - 1;
+
             return (this.servicesFormArray.controls[lastIndex] as FormGroup).controls.startAtFormControl.value;
         } else {
             return null;

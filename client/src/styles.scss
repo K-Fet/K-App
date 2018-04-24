@@ -10,3 +10,11 @@ body {
 .max-width {
     max-width: 1192px;
 }
+
+.first-letter-uppercase {
+    display: inline-block;
+}
+
+.first-letter-uppercase::first-letter {
+    text-transform: uppercase;
+}

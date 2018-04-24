@@ -28,6 +28,9 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { TemplatesListComponent } from './templates/list/templates-list.component';
+// import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateViewComponent } from './templates/view/template-view.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -78,6 +81,11 @@ const routes: Routes = [
     { path: 'specialaccounts/new', component: SpecialAccountNewComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['specialaccount:write']) },
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
+    { path: 'templates', component: TemplatesListComponent, canActivate: [NgxPermissionsGuard],
+        data: generateData(['template:read']) },
+    // { path: 'templates/new', component: TemplateNewComponent },
+    { path: 'templates/:id', component: TemplateViewComponent, canActivate: [NgxPermissionsGuard],
+        data: generateData(['template:read']) },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' },
 ];

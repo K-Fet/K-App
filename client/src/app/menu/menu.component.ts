@@ -89,6 +89,15 @@ export class MenuComponent implements OnDestroy, OnInit {
                 },
             ],
         },
+        {
+            links: [
+                {
+                    name: 'Templates',
+                    route: '/templates',
+                    permissions: ['template:write'],
+                },
+            ],
+        },
     ];
 
     mobileQuery: MediaQueryList;

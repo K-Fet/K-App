@@ -18,7 +18,9 @@
                         <button type="button" mat-icon-button (click)="removeService(service)">
                             <mat-icon>delete</mat-icon>
                         </button>
-                        {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                        <span class="first-letter-uppercase">
+                            {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                        </span>
                     </mat-list-item>
                 </mat-list>
                 <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
