@@ -29,14 +29,21 @@
                 <mat-form-field>
                     <input matInput placeholder="Username (adresse email)" formControlName="username">
                 </mat-form-field>
-                <div class=isme *ngIf="isMe()">
-                    <mat-form-field>
-                        <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="password">
+                <mat-form-field fxFlex.gt-xs="45">
+                    <input matInput type="password" placeholder="Mot de passe actuel" formControlName="oldPassword">
+                </mat-form-field>
+                <div *ngIf="isMe()" fxLayout.xs="column">
+                    <mat-form-field fxFlex.gt-xs="45">
+                        <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="newPassword">
                     </mat-form-field>
-                    <mat-form-field>
-                        <input matInput type="password" placeholder="Ancien mot de passe" formControlName="oldPassword">
+                    <div fxFlex></div>
+                    <mat-form-field fxFlex.gt-xs="45">
+                        <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
                     </mat-form-field>
                 </div>
+                <span class="mat-error" *ngIf="barmanForm.invalid && !emptyPasswords()">
+                    {{getErrorMessage()}}
+                </span>
                 <div *ngxPermissionsOnly="['barman:write']" fxLayout="column">
                     <h4>Informations relative à la K-Fêt</h4>
                     <mat-form-field>

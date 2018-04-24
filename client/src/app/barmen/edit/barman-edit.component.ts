@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, BarmanService,
     KommissionService, MeService, RoleService, ToasterService } from '../../_services';
@@ -26,7 +26,7 @@ export class BarmanEditComponent implements OnInit {
 
     barmanForm: FormGroup;
 
-    oldPassword: string;
+    oldPassword: String;
 
     startDate = new Date();
 
@@ -36,38 +36,76 @@ export class BarmanEditComponent implements OnInit {
                 private toasterService: ToasterService,
                 private route: ActivatedRoute,
                 private router: Router,
-                private fb: FormBuilder,
                 private authService: AuthService,
                 private meService: MeService) {
         this.createForm();
     }
 
     createForm(): void {
-        this.barmanForm = this.fb.group({
+        function passwordMatchValidator(g: FormGroup): ValidationErrors | null {
+            return g.get('newPassword').value === g.get('newPasswordConfirm').value
+               ? null : { 'passwordMismatch': true };
+        }
+
+        function passwordRegExValidator(g: FormGroup): ValidationErrors | null {
+            return g.get('newPassword').value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
+                ? null : { 'weakPassword': true };
+        }
+
+        function passwordsValidator(g: FormGroup): ValidationErrors | null {
+            const empty = [
+                g.get('oldPassword').value.length > 0 ? 1 : 0,
+                g.get('newPassword').value.length > 0 ? 1 : 0,
+                g.get('newPasswordConfirm').value.length > 0 ? 1 : 0,
+            ];
+            const sum = empty.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+            return sum < 3 ? { 'fullPassword': true } : null;
+        }
+
+        this.barmanForm = new FormGroup({
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl(''),
             username: new FormControl('', [Validators.required, Validators.email]),
-            password: new FormControl(''),
             oldPassword: new FormControl(''),
+            newPassword: new FormControl(''),
+            newPasswordConfirm: new FormControl(''),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
             godFather: new FormControl(''),
             roles: new FormControl(''),
             kommissions: new FormControl(''),
             active: new FormControl(''),
-        });
+        }, [ passwordMatchValidator, passwordRegExValidator, passwordsValidator ]);
+
         this.startDate.setFullYear(this.startDate.getFullYear() - 20);
+    }
+
+    getErrorMessage(): String {
+        return this.barmanForm.hasError('fullPassword') ? 'Pour une modification de mot de passe, \
+                tous les champs mot de passe doivent être remplis.' :
+            this.barmanForm.hasError('passwordMismatch') ? 'Les nouveaux mots de passe ne correspondent pas.' :
+            this.barmanForm.hasError('weakPassword') ? 'Le mot de passe doit contenir au moins 8 caractères \
+                et doit avoir 1 minuscule, 1 majuscule et 1 chiffre.' :
+            '';
+    }
+
+    emptyPasswords(): Boolean {
+        const empty = [
+            this.barmanForm.get('oldPassword').value.length > 0 ? 1 : 0,
+            this.barmanForm.get('newPassword').value.length > 0 ? 1 : 0,
+            this.barmanForm.get('newPasswordConfirm').value.length > 0 ? 1 : 0,
+        ];
+        const sum = empty.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+        return sum === 0 ? true : false;
     }
 
     ngOnInit(): void {
         // Get barman information and fill up form
         this.route.params.subscribe(params => {
-            this.barman.id = params['id'];
-            this.barmanService.getById(+this.barman.id).subscribe(barman => {
+            this.barmanService.getById(params['id']).subscribe(barman => {
                 this.currentBarman = barman;
-                this.barman.id = barman.id;
 
                 this.barmanForm.controls.lastName.setValue(barman.lastName);
                 this.barmanForm.controls.firstName.setValue(barman.firstName);
@@ -108,13 +146,19 @@ export class BarmanEditComponent implements OnInit {
     edit(): void {
         this.prepareSaving();
         if (this.isMe()) {
-            this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: this.barman })).subscribe(() => {
-                this.toasterService.showToaster('Modification(s) enregistrée(s)');
-                this.router.navigate(['/barmen']);
-                this.authService.me().subscribe();
-            });
-            if (this.barmanForm.controls.password.value.dirty()) {
-                this.meService.resetPassword(this.connectedUser.barman.connection, this.oldPassword);
+            if (this.barman) {
+                this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: this.barman })).subscribe(() => {
+                    this.toasterService.showToaster('Modification(s) enregistrée(s)');
+                    this.router.navigate(['/barmen']);
+                    this.authService.me().subscribe();
+                });
+            }
+            if (this.barmanForm.value.newPassword) {
+                this.meService.resetPassword(this.currentBarman.connection.username,
+                    this.barmanForm.value.newPassword,
+                    this.barmanForm.value.oldPassword).subscribe(() => {
+                        this.toasterService.showToaster('Modification(s) du mot de passe enregistré');
+                    });
             }
         } else {
             this.barmanService.update(this.barman).subscribe(() => {
@@ -126,10 +170,6 @@ export class BarmanEditComponent implements OnInit {
 
     prepareSaving(): void {
         const values = this.barmanForm.value;
-        this.currentBarman.connection.password = null;
-        if (this.barmanForm.controls.oldPassword.value.dirty()) {
-            this.oldPassword = this.barmanForm.controls.oldPassword.value;
-        }
         Object.keys(this.currentBarman).forEach(key => {
             switch (key) {
                 case 'connection':
@@ -167,6 +207,8 @@ export class BarmanEditComponent implements OnInit {
                     break;
             }
         });
+        // Prevent empty barman due to password update
+        this.barman = Object.keys(this.barman).length > 0 ? this.barman : undefined;
     }
 
     prepareAssociationChanges(current, updated): AssociationChanges {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser, ConnectionInformation } from '../_models';
+import { ConnectedUser } from '../_models';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
@@ -27,12 +27,11 @@ export class MeService {
         return this.http.put('/api/me', body);
     }
 
-    resetPassword(connexion: ConnectionInformation, oldPassword: string): Observable<any> {
+    resetPassword(username: String, newPassword: String, oldPassword: String): Observable<any> {
         const body = {
-            username: connexion.username,
-            password: connexion.password,
+            username: username,
+            password: newPassword,
             oldPassword: oldPassword,
-            passwordToken: undefined,
         };
         return this.http.put('/api/auth/reset-password', body);
     }
