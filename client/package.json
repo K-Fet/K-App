@@ -1,6 +1,6 @@
 {
-    "name": "K-App",
-    "version": "1.0.0-beta.3",
+    "name": "K-App-front",
+    "version": "1.0.0",
     "description":
         "K-App provide a large panel of useful tools for associations",
     "contributors": [
