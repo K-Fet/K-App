@@ -36,9 +36,9 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'publicUrl',
-            message: 'What is the public url? (e.g.: `https://example.com/`)',
+            message: 'What is the DNS ? (e.g.: `example.com`)',
             validate: input => {
-                return !!input || 'A public url is required for emails';
+                return !!input || 'A DNS is required for emails (and Caddy)';
             }
         }
     ];
@@ -84,7 +84,7 @@ After=network.target mysql.service
 
 Environment=PORT=%i
 Environment=HOSTNAME=${config.proxy ? 'localhost' : ''}
-Environment=PUBLIC_URL=${config.app.publicUrl}
+Environment=PUBLIC_URL=https://${config.app.publicUrl}/
 
 Environment=DB_HOST=${config.mysql.host}
 Environment=DB_USER=${config.mysql.app.username}

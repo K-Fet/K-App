@@ -28,8 +28,8 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'adminUsername',
-            message: 'Username for admin (used to connect)?',
-            default: 'admin',
+            message: 'Username (email) for admin?',
+            valid: input => !!input,
         },
         {
             type: 'password',
@@ -51,7 +51,7 @@ async function askQuestions(configObj) {
 
     configObj.account = {
         admin: {
-            password: answers.adminPassword || crypto.randomBytes(20)
+            password: answers.adminPassword || crypto.randomBytes(10)
                 .toString('hex'),
             code: answers.adminCode,
             username: answers.adminUsername,

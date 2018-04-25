@@ -37,7 +37,7 @@ async function askQuestions(configObj) {
         }
     ];
 
-    console.log('Configuring JWT:');
+    console.log('Configuring Email:');
     const answers = await inquirer.prompt(questions);
 
     configObj.email = {

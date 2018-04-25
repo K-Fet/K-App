@@ -7,6 +7,7 @@ const util = require('util');
 
 
 const writeFile = util.promisify(fs.writeFile);
+const readFile = util.promisify(fs.readFile);
 const exec = util.promisify(child_process.exec);
 
 /**
@@ -35,7 +36,7 @@ async function overwriteOrNot(file, data) {
             type: 'confirm',
             name: 'overwrite',
             message: `The file '${file}' already exists, overwrite ?`,
-            default: false
+            default: false,
         }]);
 
         if (!overwrite) return true;
@@ -46,6 +47,21 @@ async function overwriteOrNot(file, data) {
 
     await writeFile(file, data, 'utf8');
     return false;
+}
+
+/**
+ * Read a file as UTF-8.
+ * Return empty string if failed to read.
+ *
+ * @param file Path to the file
+ * @return {String}
+ */
+async function readUTF8File(file) {
+    try {
+        return readFile(file, 'utf8');
+    } catch (e) {
+        return '';
+    }
 }
 
 /**
@@ -76,5 +92,6 @@ module.exports = {
     overwriteOrNot,
     createDirDeep,
     systemdDaemonReload,
-    systemStartAndEnable
+    systemStartAndEnable,
+    readUTF8File,
 };
