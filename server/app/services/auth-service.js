@@ -227,9 +227,15 @@ async function resetPassword(usernameDirty, currTransaction) {
         transaction: currTransaction,
     });
 
-    if (!co) throw createUserError('UnknownUser', 'Unable to find provided username');
+    if (!co) {
+        await transaction.rollback();
+        throw createUserError('UnknownUser', 'Unable to find provided username');
+    }
 
-    if (co.usernameToken) throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
+    if (co.usernameToken) {
+        await transaction.rollback();
+        throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
+    }
 
     const passwordToken = await generateToken(128);
 
@@ -239,6 +245,8 @@ async function resetPassword(usernameDirty, currTransaction) {
         }, { transaction });
     } catch (err) {
         logger.error('Error while creating reset password token %o', err);
+
+        // Do not rollback if the parent sent a transaction AND we generate a ServerError
         if (currTransaction) throw err;
 
         await transaction.rollback();
@@ -250,10 +258,7 @@ async function resetPassword(usernameDirty, currTransaction) {
     } catch (err) {
         logger.error('Error while sending reset password mail at %s, %o', username, err);
 
-        if (!currTransaction) {
-            await transaction.rollback();
-        }
-
+        await transaction.rollback();
         throw createUserError('MailerError', 'Unable to send email to the provided address');
     }
 
