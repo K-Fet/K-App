@@ -37,6 +37,8 @@ async function load(config) {
             systemdFile,
         ),
         firstPort: matchInFile(/proxy\s\/api\slocalhost:(\d{2,6})/, caddyFile),
+        instances: matchInFile(/proxy\s\/api(\slocalhost:\d{2,6})*\slocalhost:(\d{2,6})/, caddyFile, 2) -
+        matchInFile(/proxy\s\/api\slocalhost:(\d{2,6})/, caddyFile) + 1,
     };
 
     config.mysql = {
@@ -78,17 +80,18 @@ async function load(config) {
  *
  * @param regex {RegExp}
  * @param file {String}
+ * @param match {Number}
  * @return {String|Number}
  */
-function matchInFile(regex, file) {
+function matchInFile(regex, file, match = 1) {
     const res = file.match(regex);
 
-    if (!res || !res[1]) return undefined;
+    if (!res || !res[match]) return undefined;
 
     // Try to parse to number
-    const val = res[1] * 1;
+    const val = res[match] * 1;
 
-    if (isNaN(val)) return res[1];
+    if (isNaN(val)) return res[match];
     return val;
 }
 
