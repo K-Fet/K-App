@@ -37,13 +37,6 @@ async function askQuestions(configObj) {
             message: 'Do you to install Caddy Server?',
             default: false,
             when: answers => answers.proxyServer === 'Caddy Server'
-        },
-        {
-            type: 'input',
-            name: 'siteAddress',
-            message: 'What is your site\'s address?',
-            validate: input => !!input || 'You must provide an address',
-            when: answers => answers.proxyServer === 'Caddy Server'
         }
     ];
 
@@ -59,8 +52,7 @@ async function askQuestions(configObj) {
     switch (answers.proxyServer) {
         case 'Caddy Server':
             configObj.proxy.caddy = {
-                install: answers.caddyInstall,
-                serverAddress: answers.siteAddress
+                install: answers.caddyInstall
             };
             break;
         case 'Nginx':
@@ -88,7 +80,6 @@ function confirmConfig(config) {
 
     if (config.proxy.caddy) {
         console.log(`|   |-- Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
-        console.log(`|   |-- Server address: ${config.proxy.caddy.serverAddress}`);
     }
 }
 
@@ -120,7 +111,7 @@ async function configureCaddy(config) {
     }
 
     const caddyFile = `
-${config.proxy.caddy.serverAddress} { # Your site's address
+${config.app.publicUrl} { # Your site's address
 
     # Serve client app
     root ${clientFolder}

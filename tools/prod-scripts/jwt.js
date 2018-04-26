@@ -14,7 +14,8 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'jwtSecret',
-            message: 'Do you have a specific JWT secret (a new one will be generated otherwise)?'
+            message: 'Do you have a specific JWT secret (a new one will be generated otherwise)?',
+            default: configObj.jwt && configObj.jwt.secret
         },
     ];
 
