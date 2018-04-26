@@ -26,7 +26,7 @@ async function load(config) {
     const systemdFile = await readUTF8File('/etc/systemd/system/kapp@.service');
     const timerFile = await readUTF8File('/etc/systemd/system/kapp-save.timer');
     const backupFile = await readUTF8File('/etc/systemd/system/kapp-save.service');
-    const caddyFile = await readUTF8File('/etc/systemd/system/caddy.service');
+    const caddyFile = await readUTF8File('/srv/caddy/Caddyfile');
 
     config.proxy = {};
 
