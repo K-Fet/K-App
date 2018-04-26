@@ -2,6 +2,7 @@
 /* eslint-disable no-console,require-jsdoc */
 const inquirer = require('inquirer');
 const crypto = require('crypto');
+const Joi = require('joi');
 const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../../server/app/models');
@@ -29,7 +30,7 @@ async function askQuestions(configObj) {
             type: 'input',
             name: 'adminUsername',
             message: 'Username (email) for admin?',
-            valid: input => !!input,
+            valid: input => Joi.validate(input, Joi.string().email(), { presence: 'required' }),
         },
         {
             type: 'password',
