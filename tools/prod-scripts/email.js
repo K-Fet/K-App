@@ -13,13 +13,14 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'host',
-            message: 'SMTP hostname?'
+            message: 'SMTP hostname?',
+            default: configObj.email && configObj.email.host
         },
         {
             type: 'input',
             name: 'port',
             message: 'Port of the SMTP server?',
-            default: 587,
+            default: configObj.email && configObj.email.port || 587,
             validate: input => {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
@@ -28,12 +29,15 @@ async function askQuestions(configObj) {
         {
             type: 'input',
             name: 'user',
-            message: 'Username (email) to use?'
+            message: 'Username (email) to use?',
+            default: configObj.email && configObj.email.user
         },
         {
             type: 'password',
             name: 'pass',
-            message: 'Password for the email?'
+            message: 'Password for the email?',
+            mask: '*',
+            default: configObj.email && configObj.email.pass
         }
     ];
 

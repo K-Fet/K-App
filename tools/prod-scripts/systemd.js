@@ -17,30 +17,30 @@ async function askQuestions(configObj) {
             type: 'input',
             name: 'instanceNum',
             message: 'How many instances do you want to use?',
-            default: 4,
+            default: configObj.app && configObj.app.instances || 4,
             validate: input => {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
-            }
+            },
         },
         {
             type: 'input',
             name: 'firstPort',
             message: 'What is the port of the first instance?',
-            default: 3000,
+            default: configObj.app && configObj.app.firstPort || 3000,
             validate: input => {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
-            }
+            },
         },
         {
             type: 'input',
             name: 'publicUrl',
-            message: 'What is the DNS ? (e.g.: `example.com`)',
+            message: configObj.app && configObj.app.publicUrl || 'What is the DNS ? (e.g.: `example.com`)',
             validate: input => {
                 return !!input || 'A DNS is required for emails (and Caddy)';
-            }
-        }
+            },
+        },
     ];
 
     console.log('Configuring application:');
@@ -49,7 +49,7 @@ async function askQuestions(configObj) {
     configObj.app = {
         instances: answers.instanceNum,
         firstPort: answers.firstPort,
-        publicUrl: answers.publicUrl
+        publicUrl: answers.publicUrl,
     };
 }
 
@@ -130,5 +130,5 @@ WantedBy=multi-user.target
 module.exports = {
     askQuestions,
     confirmConfig,
-    configure
+    configure,
 };

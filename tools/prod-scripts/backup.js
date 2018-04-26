@@ -17,35 +17,34 @@ async function askQuestions(configObj) {
             type: 'confirm',
             name: 'useBackup',
             message: 'Do you want to setup a automatic backup?',
-            default: true
+            default: true,
         },
         {
             type: 'input',
             name: 'backupDir',
             message: 'Where do you want your backups?',
-            default: path.resolve(__dirname, '..', '..', 'backups'),
-            when: answers => answers.useBackup
+            default: configObj.backup && configObj.backup.dir || path.resolve(__dirname, '..', '..', 'backups'),
+            when: answers => answers.useBackup,
         },
         {
             type: 'list',
             name: 'frequency',
             choices: ['daily', 'hourly', 'weekly', 'monthly'],
             message: 'How often would you want to make a backup?',
-            default: 'daily',
-            when: answers => answers.useBackup
+            default: configObj.backup && configObj.backup.frequency || 'daily',
+            when: answers => answers.useBackup,
         },
         {
             type: 'input',
             name: 'deleteAfter',
-            choices: ['daily', 'hourly', 'weekly', 'monthly'],
             message: 'Delete backup after how many days (0 for never)?',
-            default: 30,
+            default: configObj.backup && configObj.backup.deleteAfter || 30,
             when: answers => answers.useBackup,
             valid: input => {
                 if (input >>> 0 === parseFloat(input)) return true;
                 return 'You must enter a positive integer';
-            }
-        }
+            },
+        },
     ];
 
     console.log('Configuring Backups:');
@@ -56,7 +55,7 @@ async function askQuestions(configObj) {
     configObj.backup = {
         dir: answers.backupDir,
         frequency: answers.frequency,
-        deleteAfter: answers.deleteAfter
+        deleteAfter: answers.deleteAfter,
     };
 }
 
@@ -125,5 +124,5 @@ Environment=KEEP_BACKUPS_FOR=${config.backup.deleteAfter}
 module.exports = {
     askQuestions,
     confirmConfig,
-    configure
+    configure,
 };

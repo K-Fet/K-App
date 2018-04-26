@@ -22,6 +22,7 @@ const mysql = require('./prod-scripts/mysql');
 const proxy = require('./prod-scripts/proxy');
 const systemd = require('./prod-scripts/systemd');
 const { systemStartAndEnable } = require('./prod-scripts/util');
+const { load } = require('./prod-scripts/loader');
 
 
 const config = {};
@@ -59,7 +60,7 @@ async function confirmConfig() {
         type: 'confirm',
         name: 'continue',
         message: 'Do you to proceed with the installation?',
-        default: true
+        default: true,
     }]);
 
     return answers.continue;
@@ -78,7 +79,7 @@ async function startEverything() {
         type: 'confirm',
         name: 'start',
         message: 'Do you want to start everything needed? (NodeJS, Caddy, Backups, etc.)',
-        default: true
+        default: true,
     }]);
 
     if (!answers.start) return;
@@ -107,6 +108,8 @@ async function startEverything() {
 }
 
 async function main() {
+    await load(config);
+
     do await askAll(); while (!await confirmConfig());
 
     console.log('Starting installation...');

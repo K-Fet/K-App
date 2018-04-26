@@ -16,45 +16,48 @@ async function askQuestions(configObj) {
             type: 'input',
             name: 'dbHost',
             message: 'Hostname?',
-            default: 'localhost'
+            default: configObj.mysql && configObj.mysql.host || 'localhost',
         },
         {
             type: 'input',
             name: 'dbUser',
             message: 'Privileged username (to create database and users)?',
-            default: 'root'
+            default: 'root',
         },
         {
             type: 'password',
             name: 'dbPassword',
-            message: 'Password?'
+            message: 'Password?',
         },
         {
             type: 'input',
             name: 'dbName',
             message: 'Database name to use?',
-            default: 'kapp'
-        }
+            default: configObj.mysql && configObj.mysql.database || 'kapp',
+        },
     ];
 
     console.log('Configuring Database:');
     const answers = await inquirer.prompt(questions);
 
+    const currApp = configObj.mysql && configObj.mysql.app;
+    const currBackup = configObj.mysql && configObj.mysql.backup;
+
     configObj.mysql = {
         root: {
             username: answers.dbUser,
-            password: answers.dbPassword
+            password: answers.dbPassword,
         },
         app: {
-            username: `kapp-u-${ Math.floor(Math.random() * 9000) + 1000}`,
-            password: crypto.randomBytes(32).toString('hex')
+            username: currApp && currApp.username || `kapp-u-${ Math.floor(Math.random() * 9000) + 1000}`,
+            password: currApp && currApp.password || crypto.randomBytes(32).toString('hex'),
         },
         backup: {
-            username: `kapp-b-${ Math.floor(Math.random() * 9000) + 1000}`,
-            password: crypto.randomBytes(32).toString('hex')
+            username: currBackup && currBackup.username || `kapp-b-${ Math.floor(Math.random() * 9000) + 1000}`,
+            password: currBackup && currBackup.password || crypto.randomBytes(32).toString('hex'),
         },
         host: answers.dbHost,
-        database: answers.dbName
+        database: answers.dbName,
     };
 }
 
@@ -82,7 +85,7 @@ async function configure(config) {
     const co = await mysql.createConnection({
         host: config.mysql.host,
         user: config.mysql.root.username,
-        password: config.mysql.root.password
+        password: config.mysql.root.password,
     });
 
     try {
@@ -103,7 +106,7 @@ async function configure(config) {
             type: 'confirm',
             name: 'doContinue',
             message: `The database ${database} already exists, overwrite (WARNING: Everything will be deleted)?`,
-            default: false
+            default: false,
         }]);
 
         if (!doContinue) {
@@ -136,5 +139,5 @@ async function configure(config) {
 module.exports = {
     askQuestions,
     confirmConfig,
-    configure
+    configure,
 };
