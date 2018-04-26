@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable no-console,camelcase */
 
-if (require.main === module) {
+if (require.main !== module) {
     console.error('This script must be run alone.');
     process.exit(1);
 }
