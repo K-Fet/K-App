@@ -13,6 +13,22 @@ To run the project you will need:
 After installing NodeJS,
 you have to install `node-gyp` as recommended [here](https://www.npmjs.com/package/node-gyp#installation).
 
+## Releasing a new version
+
+The project uses _git tag_ to update itself.
+In order to update the server, just release a new version with 
+the script:
+
+```bash
+./tools/release.sh <version>
+```
+
+> `<version>` must be a SemVer version
+
+
+After that, a new tag is created and you just have to update the server with the `tools/update.sh` script.
+
+
 ## Clone the sources and install dependencies
 
 ```bash
