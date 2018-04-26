@@ -29,7 +29,7 @@ import { SpecialAccountNewComponent } from './special-accounts/new/special-accou
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
-// import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
@@ -94,8 +94,9 @@ const routes: Routes = [
         data: generateData('specialaccount:write') },
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
     { path: 'templates', component: TemplatesListComponent, canActivate: [NgxPermissionsGuard],
-        data: generateData('template:read') },
-    // { path: 'templates/new', component: TemplateNewComponent },
+        data: generateData(['template:read']) },
+    { path: 'templates/new', component: TemplateNewComponent,canActivate: [NgxPermissionsGuard],
+        data: generateData(['template:write']) },
     { path: 'templates/:id', component: TemplateViewComponent, canActivate: [NgxPermissionsGuard],
         data: generateData('template:read') },
     { path: '404', component: NotFoundComponent },

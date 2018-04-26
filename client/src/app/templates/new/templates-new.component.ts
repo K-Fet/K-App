@@ -42,6 +42,8 @@ export class TemplateNewComponent {
         { id: '6', value: 'Samedi' },
         { id: '7', value: 'Dimanche' } ];
 
+    
+
     constructor(
         private fb: FormBuilder
     ) {
@@ -78,7 +80,7 @@ export class TemplateNewComponent {
             startAt: this.toNumber(this.startAt, this.selectedDay),
             endAt: this.toNumber(this.endAt, this.selectedDay),
         };
-        this.services.push(val);
-
+        console.log(this.services.push(val));
+        console.log("coucou");
     }
 }

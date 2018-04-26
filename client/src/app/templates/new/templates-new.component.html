@@ -39,11 +39,11 @@
                         [disabled]="!serviceForm.valid">Ajouter un service au template</button>
                 </div>
             </mat-card-content>
-
         </mat-card-content>
         <mat-card-content>
-            <p *ngIf="services"> Services present</p>
-            <p *ngIf="!services">Veuillez spécifier un ou plusieurs services</p>
+            <p *ngIf="services; else elseBlock"> Services present</p>
+            <ng-template #elseBlock>
+coucou            </ng-template>
         </mat-card-content>
     </mat-card>
 </div>
