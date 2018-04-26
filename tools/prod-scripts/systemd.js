@@ -85,6 +85,7 @@ After=network.target mysql.service
 Environment=PORT=%i
 Environment=HOSTNAME=${config.proxy ? 'localhost' : ''}
 Environment=PUBLIC_URL=https://${config.app.publicUrl}/
+Environment=TRUSTED_PROXY=${config.proxy ? 'loopback' : ''}
 
 Environment=DB_HOST=${config.mysql.host}
 Environment=DB_USER=${config.mysql.app.username}

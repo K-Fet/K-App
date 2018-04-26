@@ -106,7 +106,7 @@ async function configureCaddy(config) {
     let backendList = '';
 
     for (let i = 0; i < config.app.instances; i++) {
-        // TODO When proxy is not on localhost
+        // Let's consider we are always on the same machine
         backendList += `localhost:${config.app.firstPort + i} `;
     }
 
