@@ -20,7 +20,7 @@ In order to update the server, just release a new version with
 the script:
 
 ```bash
-./tools/release.sh <version>
+node ./tools/release.js <version>
 ```
 
 > `<version>` must be a SemVer version
