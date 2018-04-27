@@ -39,7 +39,7 @@ async function hasEnoughPermissions(userPerms, wantedPerms) {
         if (perms.length !== wantedPerms.add.length) throw createPermissionError();
 
         for (const p of perms) {
-            if (userPerms.includes(p.name)) throw createPermissionError();
+            if (!userPerms.includes(p.name)) throw createPermissionError();
         }
     }
 
@@ -55,7 +55,7 @@ async function hasEnoughPermissions(userPerms, wantedPerms) {
         if (perms.length !== wantedPerms.remove.length) throw createPermissionError();
 
         for (const p of perms) {
-            if (userPerms.includes(p.name)) throw createPermissionError();
+            if (!userPerms.includes(p.name)) throw createPermissionError();
         }
     }
 }

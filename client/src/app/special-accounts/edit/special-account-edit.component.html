@@ -45,7 +45,9 @@
                 <h4 *ngxPermissionsOnly="['specialaccount:write']">Permissions</h4>
                 <div *ngxPermissionsOnly="['specialaccount:write']">
                     <div *ngFor="let permission of permissions">
-                        <mat-checkbox [(ngModel)]="permission.isChecked" [ngModelOptions]="{standalone: true}">
+                        <mat-checkbox [(ngModel)]="permission.isChecked"
+                                      [ngModelOptions]="{standalone: true}"
+                                      [disabled]="permission.permission.disabled">
                             {{permission.permission.name}}
                         </mat-checkbox>
                     </div>
@@ -69,7 +71,7 @@
                             <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
                         </mat-form-field>
                     </div>
-                    <span class="mat-error" *ngIf="passwordForm.invalid 
+                    <span class="mat-error" *ngIf="passwordForm.invalid
                         && passwordForm.controls['oldPassword'].dirty
                         && passwordForm.controls['newPassword'].dirty
                         && passwordForm.controls['newPasswordConfirm'].dirty">
