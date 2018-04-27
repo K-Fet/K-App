@@ -26,8 +26,20 @@ function createServerError(name, message) {
     return e;
 }
 
+/**
+ * Create a new permission error.
+ *
+ * @return {Error} error
+ */
+function createPermissionError() {
+    const e = new Error();
+    e.code = 'permission_denied';
+    return e;
+}
+
 
 module.exports = {
     createUserError,
     createServerError,
+    createPermissionError,
 };

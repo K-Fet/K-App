@@ -1,7 +1,8 @@
 const specialAccountService = require('../services/special-account-service');
+const permissionService = require('../services/permission-service');
 const { SpecialAccount, ConnectionInformation } = require('../models');
 const { SpecialAccountSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
+const { createUserError, createPermissionError } = require('../../utils');
 
 /**
  * Fetch all SpecialAccount from the database
@@ -44,11 +45,15 @@ async function createSpecialAccount(req, res) {
             include: [
                 {
                     model: ConnectionInformation,
-                    as: 'connection'
-                }
-            ]
-        }
+                    as: 'connection',
+                },
+            ],
+        },
     );
+
+    if (newAccount._embedded) {
+        await permissionService.hasEnoughPermissions(req.user.permissions, newAccount._embedded.permissions);
+    }
 
     newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, newAccount._embedded);
 
@@ -85,27 +90,29 @@ async function updateSpecialAccount(req, res) {
     if (error) throw createUserError('BadRequest', error.message);
 
     if (newUser.code && !req.user.permissions.include('specialaccount:force-code-reset')) {
-        const err = createUserError('PermissionError', 'You don\'t have enough permissions!');
-        err.code = 'permissions_denied';
-        throw err;
+        throw createPermissionError();
     }
 
     let newSpecialAccount = new SpecialAccount(
         {
             ...newUser,
-            _embedded: undefined
+            _embedded: undefined,
         },
         {
             include: [
                 {
                     model: ConnectionInformation,
                     as: 'connection',
-                }
-            ]
-        }
+                },
+            ],
+        },
     );
 
     const specialAccountId = req.params.id;
+
+    if (newUser._embedded) {
+        await permissionService.hasEnoughPermissions(req.user.permissions, newUser._embedded.permissions);
+    }
 
     newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId,
         newSpecialAccount, newUser._embedded);
@@ -133,5 +140,5 @@ module.exports = {
     createSpecialAccount,
     getSpecialAccountById,
     updateSpecialAccount,
-    deleteSpecialAccount
+    deleteSpecialAccount,
 };
