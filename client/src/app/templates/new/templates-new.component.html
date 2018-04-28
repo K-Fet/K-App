@@ -11,10 +11,10 @@
         <mat-card-content>
             <form [formGroup]="generalFormGroup" fxLayout="column">
                <mat-vertical-stepper formArrayName="generalFormArray" linear>
-                   <mat-step formGroupName="0" [stepControl]="generalFormArray.get([0])" label="TemplateName">
+                   <mat-step formGroupName="0" [stepControl]="generalFormArray.get([0])" label="Nom du template">
                         <div fxLayout="column" fxLayoutAlign="center">
                             <mat-form-field>
-                                <input matInput placeholder="Nom du template" [(ngModel)]="name" formControlName="templateNameFormGroup" required>
+                                <input matInput placeholder="Nom du template" formControlName="templateNameFormControl" required>
                             </mat-form-field>
                         </div>
                    </mat-step>
@@ -27,37 +27,32 @@
                                             <button mat-icon-button (click)="removeServiceForm(i)" >
                                                 <mat-icon fxFlex="10px">remove</mat-icon>
                                             </button>
-                                            <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startAtFormControl.value">
-                                                {{getControls()[i].controls.startAtFormControl.value | date:'EEEE':'':'fr'}}
-                                                de {{getControls()[i].controls.startAtFormControl.value | date:'H'}}h
-                                                à {{getControls()[i].controls.endAtFormControl.value | date:'H'}}h
+                                            <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startFormControl.value">
+                                                {{WEEK_DAY[getControls()[i].controls.startDayFormControl.value].value}}
+                                                de {{getControls()[i].controls.startFormControl.value}}
+                                                à {{getControls()[i].controls.endFormControl.value}}
                                             </span>
-                                            <span class="mat-error" *ngIf="!getControls()[i].controls.startAtFormControl.value">
-                                                Service à définir !
+                                            <span class="mat-error" *ngIf="!getControls()[i].controls.startFormControl.value">
+                                                    Service à définir !
                                             </span>
-                                            <ng-template #elseBlock>
-                                                Non défini...
-                                            </ng-template>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <div fxLayout="column" fxLayoutAlign="center">
                                         <mat-form-field>
-                                            <input matInput type="number" placeholder="Nombre max de barmen" [(ngModel)]="nbMax" min="0" formControlName="nbMaxFormControl" required>
+                                            <input matInput type="number" placeholder="Nombre max de barmen" min="0" formControlName="nbMaxFormControl" required>
                                         </mat-form-field>
                                         <mat-form-field>
-                                            <mat-placeholder>Début de service</mat-placeholder>
-                                            <mat-select matInput placeholder="Choisir un jour" formControlName="startDayFormControl" required>
+                                            <mat-select matInput placeholder="Début de service" formControlName="startDayFormControl" required>
                                                 <mat-option *ngFor="let day of WEEK_DAY" [value]="day.id">
                                                     {{ day.value }}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                         <mat-form-field>
-                                            De : <input matInput type="time" formControlName="startFormControl" required>
+                                            <input matInput type="time" formControlName="startFormControl" required>
                                         </mat-form-field>
                                         <mat-form-field>
-                                            <mat-placeholder>Fin de service</mat-placeholder>
-                                            <mat-select matInput placeholder="Choisir un jour" formControlName="endDayFormControl" required>
+                                            <mat-select matInput placeholder="Fin de service" formControlName="endDayFormControl" required>
                                                 <mat-option *ngFor="let day of WEEK_DAY" [value]="day.id">
                                                     {{ day.value }}
                                                 </mat-option>
@@ -77,7 +72,7 @@
                        </div>
                    </mat-step>
                </mat-vertical-stepper>
-               <button fxFlex="50" mat-button type="button"  
+               <button fxFlex="50" mat-button type="button" (click)="addTemplate()" 
                 [disabled]="!generalFormGroup.valid">Créer le template</button>
             </form>  
         </mat-card-content>

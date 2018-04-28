@@ -1,58 +1,42 @@
 import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-//import { Template } from '../../_models/index';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Template } from '../../_models/index';
+import { TemplateService } from '../../_services/template.service';
+import { ToasterService } from '../../_services/toaster.service';
+import { Router } from '@angular/router';
 
 @Component({
     templateUrl: './templates-new.component.html',
 })
 
 export class TemplateNewComponent {
-   /*
-    name: String;
-    template: Template = new Template();
 
-    startAt: Date;
-    endAt: Date;
-    selectedDay: Number;
-    nbMax: Number;
-
-    services: Array<{
-        nbMax: Number,
-        startAt: {
-            day: Number,
-            hours: Number,
-            minutes: Number
-        },
-        endAt: {
-            day: Number,
-            hours: Number,
-            minutes: Number
-        }
-    }>;
-*/
     templateNameFormGroup: FormGroup;
     servicesFormArray: FormArray;
     generalFormArray: FormArray;
     generalFormGroup: FormGroup;
 
     WEEK_DAY = [
-        { id: '1', value: 'Lundi' },
-        { id: '2', value: 'Mardi' },
-        { id: '3', value: 'Mercredi' },
-        { id: '4', value: 'Jeudi' },
-        { id: '5', value: 'Vendredi' },
-        { id: '6', value: 'Samedi' },
-        { id: '7', value: 'Dimanche' } ];
+        { id: '0', value: 'Lundi' },
+        { id: '1', value: 'Mardi' },
+        { id: '2', value: 'Mercredi' },
+        { id: '3', value: 'Jeudi' },
+        { id: '4', value: 'Vendredi' },
+        { id: '5', value: 'Samedi' },
+        { id: '6', value: 'Dimanche' } ];
 
     constructor(
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private templateService: TemplateService,
+        private toasterService: ToasterService,
+        private router: Router
     ) {
         this.createForms();
     }
 
     createForms(): void {
         this.templateNameFormGroup = this.fb.group({
-            templateNameFormControl: ['', [Validators.required]],
+            templateNameFormControl: ['', Validators.required],
         });
         this.servicesFormArray = this.fb.array([]);
         this.generalFormArray = this.fb.array([
@@ -62,7 +46,6 @@ export class TemplateNewComponent {
         this.generalFormGroup = this.fb.group({
             generalFormArray: this.generalFormArray,
         });
-
     }
 
     addServiceForm(nbMax: Number, startAt: Date, endAt: Date, startDay: Number, endDay: Number): void {
@@ -100,20 +83,34 @@ export class TemplateNewComponent {
         this.servicesFormArray.removeAt(+fromGroupId);
     }
 
-
-   /* toNumber(date: Date, selectedDay): { day: Number, hours: Number, minutes: Number } {
+    toNumber(date: Date, selectedDay): { day: Number, hours: Number, minutes: Number } {
         return {
             day: selectedDay,
             hours: date.getHours(),
             minutes: date.getMinutes(),
         };
-    }*/
+    }
 
-  /*  addService(): void {
-        const val = {
-            nbMax: this.nbMax,
-            startAt: this.toNumber(this.startAt, this.selectedDay),
-            endAt: this.toNumber(this.endAt, this.selectedDay),
+    addTemplate(): void {
+        const template = new Template();
+        template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
+        template.services = this.servicesFormArray.controls.map(formGroup => {
+            return this.prepareService((formGroup as FormGroup).controls);
+        });
+        this.templateService.create(template).subscribe(() => {
+            this.toasterService.showToaster('Template créé');
+            this.router.navigate(['/templates']);
+        });
+    }
+
+    prepareService(controls): {nbMax: Number,
+        startAt: {day: Number, hours: Number, minutes: Number},
+        endAt: {day: Number, hours: Number, minutes: Number}} {
+        return {
+            nbMax: controls.nbMaxFormControl.value,
+            startAt: this.toNumber(controls.startAtFormControl.value, controls.startDayFormControl.value),
+            endAt: this.toNumber(controls.endFormControl.value, controls.endDayFormControl.value),
         };
-    } */
+    }
+
 }

@@ -8,7 +8,7 @@ export class Template {
     services: Array<{
         nbMax?: Number,
         name?: String,
-        categoryId: Number,
+        categoryId?: Number,
         startAt: {
             day: Number,
             hours: Number,
