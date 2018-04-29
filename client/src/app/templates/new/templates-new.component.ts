@@ -83,11 +83,11 @@ export class TemplateNewComponent {
         this.servicesFormArray.removeAt(+fromGroupId);
     }
 
-    toNumber(date: Date, selectedDay): { day: Number, hours: Number, minutes: Number } {
+    toNumber(date: String, selectedDay): { day: Number, hours: Number, minutes: Number } {
         return {
             day: selectedDay,
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
+            hours: Number(date.split(':')[0]),
+            minutes: Number(date.split(':')[1]),
         };
     }
 
@@ -108,7 +108,7 @@ export class TemplateNewComponent {
         endAt: {day: Number, hours: Number, minutes: Number}} {
         return {
             nbMax: controls.nbMaxFormControl.value,
-            startAt: this.toNumber(controls.startAtFormControl.value, controls.startDayFormControl.value),
+            startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),
             endAt: this.toNumber(controls.endFormControl.value, controls.endDayFormControl.value),
         };
     }
