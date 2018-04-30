@@ -1,10 +1,12 @@
 const authService = require('../services/auth-service');
 const barmanService = require('../services/barman-service');
+const userService = require('../services/user-service');
 const specialAccountService = require('../services/special-account-service');
 const { createUserError, parseStartAndEnd } = require('../../utils');
 const { Barman, SpecialAccount, ConnectionInformation } = require('../models');
 const { BarmanSchema, SpecialAccountSchema } = require('../models/schemas');
 const Joi = require('joi');
+const logger = require('../../logger');
 
 /**
  * Send information about the connected user.
@@ -34,6 +36,18 @@ async function updateMe(req, res) {
 
         const { error } = schema.validate(newSA);
         if (error) throw createUserError('BadRequest', error.message);
+
+        const code = req.body.code;
+
+        if (!code) {
+            throw createUserError('BadRequest', 'body.code is missing');
+        }
+
+        if (!await userService.checkCode(req.user.userId, code)) {
+            throw createUserError('CodeError', 'The code provided is wrong');
+        }
+
+        logger.info(`Secure action at ${req.method} ${req.originalUrl} done by user id ${req.user.userId}`);
 
         let newSpecialAccount = new SpecialAccount(
             {
