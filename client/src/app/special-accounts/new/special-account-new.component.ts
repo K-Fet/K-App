@@ -53,7 +53,7 @@ export class SpecialAccountNewComponent implements OnInit {
     openDialog(): void {
         const dialogRef = this.dialog.open(CodeDialogComponent, {
             width: '350px',
-            data: { message: 'Ajout d\'un compte special' },
+            data: { message: 'Ajout d\'un compte special. Votre code ?' },
         });
 
         dialogRef.afterClosed().subscribe(code => {
@@ -67,7 +67,7 @@ export class SpecialAccountNewComponent implements OnInit {
         const specialAccount = this.prepareEditing();
 
         this.specialAccountService.create(specialAccount, code).subscribe(() => {
-            this.toasterService.showToaster('Compte special modifié');
+            this.toasterService.showToaster('Compte special ajouté');
             this.router.navigate(['/specialaccounts']);
         });
     }
