@@ -1,4 +1,5 @@
 const roleService = require('../services/role-service');
+const permissionService = require('../services/permission-service');
 const { Role } = require('../models');
 const { RoleSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
@@ -26,7 +27,7 @@ async function getAllRoles(req, res) {
 async function createRole(req, res) {
     const schema = RoleSchema.requiredKeys(
         'name',
-        'description'
+        'description',
     );
 
     const { error } = schema.validate(req.body);
@@ -35,8 +36,13 @@ async function createRole(req, res) {
 
     let newRole = new Role({
         ...req.body,
-        _embedded: undefined // Remove the only external object
+        _embedded: undefined, // Remove the only external object
     });
+
+
+    if (req.body._embedded) {
+        await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
+    }
 
     newRole = await roleService.createRole(newRole, req.body._embedded);
 
@@ -76,10 +82,15 @@ async function updateRole(req, res) {
 
     let newRole = new Role({
         ...req.body,
-        _embedded: undefined // Remove the only external object
+        _embedded: undefined, // Remove the only external object
     });
 
     const roleId = req.params.id;
+
+
+    if (req.body._embedded) {
+        await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
+    }
 
     newRole = await roleService.updateRole(roleId, newRole, req.body._embedded);
 
@@ -107,5 +118,5 @@ module.exports = {
     createRole,
     updateRole,
     getRoleById,
-    deleteRole
+    deleteRole,
 };

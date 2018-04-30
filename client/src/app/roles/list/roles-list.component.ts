@@ -31,7 +31,7 @@ export class RolesListComponent implements OnInit {
 
     ngOnInit(): void {
         this.update();
-        if (!this.ngxPermissionsService.getPermissions()['specialaccount:write']) {
+        if (!this.ngxPermissionsService.getPermissions()['role:write']) {
             this.displayedColumns = ['name', 'description'];
         }
     }
