@@ -22,6 +22,9 @@ async function getAllServices(start, end) {
                 ]
             }
         },
+        order: [
+            ['startAt', 'ASC'],
+        ],
         include: [
             {
                 model: Barman,

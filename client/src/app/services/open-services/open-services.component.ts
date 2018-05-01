@@ -7,6 +7,8 @@ import * as moment from 'moment';
 // tslint:disable-next-line:no-duplicate-imports
 import { Moment } from 'moment';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-open-services',
@@ -28,6 +30,7 @@ export class OpenServicesComponent implements OnInit {
                 private toasterService: ToasterService,
                 private serviceService: ServiceService,
                 private formBuilder: FormBuilder,
+                public dialog: MatDialog,
                 private router: Router) {
         this.createForms();
     }
@@ -152,9 +155,31 @@ export class OpenServicesComponent implements OnInit {
         const services: Array<Service> = this.servicesFormArray.controls.map(formGroup => {
             return this.prepareService((formGroup as FormGroup).controls);
         });
+
+        this.serviceService.get(moment(services[0].startAt), moment(services[services.length - 1].endAt))
+        .subscribe(actualServices => {
+            if (actualServices.length !== 0) {
+                const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                    width: '350px',
+                    data: { title: 'Des services existent déjà ...',
+                        message: `Il existe actuellement ${actualServices.length} service(s)
+                         sur le lapse de temps envisagé. Êtes-vous sur de vouloir créer les services?` },
+                });
+                dialogRef.afterClosed().subscribe(result => {
+                    if (result) {
+                        this.callServer(services);
+                    }
+                });
+            } else {
+                this.callServer(services);
+            }
+        });
+    }
+
+    callServer(services: any): void {
         this.serviceService.create(services).subscribe(() => {
             this.toasterService.showToaster('Nouveaux services enregistrés');
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/']);
         });
     }
 
