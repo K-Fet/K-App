@@ -36,11 +36,17 @@ export class MenuComponent implements OnDestroy, OnInit {
             ],
         },
         {
+            name: 'Services',
             links: [
                 {
-                    name: 'Mes services',
-                    route: '/dashboard-barman',
-                    permissions: ['BARMAN'],
+                    name: 'Planning',
+                    route: '/services-explorer',
+                    permissions: ['service:read'],
+                },
+                {
+                    name: 'Ouvrir les services',
+                    route: '/open-services',
+                    permissions: ['SERVICE_MANAGER'],
                 },
             ],
         },
@@ -86,15 +92,6 @@ export class MenuComponent implements OnDestroy, OnInit {
                     name: 'Comptes spéciaux',
                     route: '/specialaccounts',
                     permissions: ['specialaccount:read'],
-                },
-            ],
-        },
-        {
-            links: [
-                {
-                    name: 'Ouvrir les services',
-                    route: '/open-services',
-                    permissions: ['SERVICE_MANAGER'],
                 },
             ],
         },
