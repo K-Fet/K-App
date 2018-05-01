@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Kommission } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
@@ -10,38 +10,54 @@ import { KommissionService } from '../../_services/kommission.service';
 })
 
 export class KommissionEditComponent implements OnInit {
-    id: String;
-    name: String;
-    description: String;
 
-    nameFormControl: FormControl = new FormControl('', [Validators.required]);
-    descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
+    updatedKommission: Kommission = new Kommission();
+
+    kommissionForm: FormGroup;
+
+    createForm(): void {
+        this.kommissionForm = new FormGroup({
+                name: new FormControl('', [Validators.required]),
+                description: new FormControl('', [Validators.required]),
+        });
+    }
 
     constructor(
         private kommissionService: KommissionService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
-        private router: Router
-    ) {}
+        private router: Router){
+            this.createForm();
+    }
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
-            this.id = params['id'];
-            this.kommissionService.getById(+this.id).subscribe(kommission => {
-                this.name = kommission.name as String;
-                this.description = kommission.description;
+            this.updatedKommission.id = params['id'];
+            this.kommissionService.getById(+this.updatedKommission.id).subscribe(kommission => {
+                this.updatedKommission.name = kommission.name;
+                this.updatedKommission.description = kommission.description;
+
+                this.kommissionForm.controls.description.setValue(this.updatedKommission.description);
+                this.kommissionForm.controls.name.setValue(this.updatedKommission.name);
+                
             });
         });
     }
 
     edit(): void {
-        const kommission = new Kommission();
-        kommission.id = +this.id;
-        kommission.name = this.name;
-        kommission.description = this.description;
+        const kommission = this.prepareEditing();
         this.kommissionService.update(kommission).subscribe(() => {
             this.toasterService.showToaster('Kommission modifiée');
             this.router.navigate(['/kommissions']);
         });
+    }
+
+    prepareEditing(): Kommission {
+        const values = this.kommissionForm.value;
+        const kommission = new Kommission();
+        kommission.id = this.updatedKommission.id;
+        kommission.name = values.name;
+        kommission.description = values.description;
+        return kommission;
     }
 }

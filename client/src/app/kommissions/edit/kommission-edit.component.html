@@ -9,24 +9,21 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <form #modifyForm="ngForm" fxLayout="column">
+            <form [formGroup]="kommissionForm" fxLayout="column" (ngSubmit)="edit()">
                 <mat-form-field>
-                    <input matInput placeholder="Nom du rôle"
-                    autocorrect="off" required [(ngModel)]="name" name="name">
-                    <mat-error *ngIf="nameFormControl.hasError('required')">
-                    Nom <strong>requis</strong>
+                    <input matInput placeholder="Nom du rôle" autocorrect="off"  formControlName="name">
+                    <mat-error *ngIf="kommissionForm.get('name').hasError('required')">
+                        Nom <strong>requis</strong>
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
-                    <textarea matInput placeholder="Description"
-                    [(ngModel)]="description" required name="description"></textarea>
-                    <mat-error *ngIf="descriptionFormControl.hasError('required')">
-                    Description <strong>requise</strong>
+                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                    <mat-error *ngIf="kommissionForm.get('description').hasError('required')">
+                        Description <strong>requise</strong>
                     </mat-error>
                 </mat-form-field>
                 <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="edit()" 
-                    [disabled]="!modifyForm.valid">Modifier</button>
+                    <button fxFlex="50" mat-button type="submit" [disabled]="!kommissionForm.valid || !kommissionForm.dirty">Modifier</button>
                 </div>
             </form>
         </mat-card-content>
