@@ -104,4 +104,14 @@ export class RoleEditComponent implements OnInit {
 
         return role;
     }
+
+    disable(): Boolean {
+         const add = this.permissions.filter(permission => {
+            return permission.isChecked && permission.initial !== permission.isChecked;
+        });
+        const remove = this.permissions.filter(permission => {
+            return !permission.isChecked && permission.initial !== permission.isChecked;
+        });
+        return add.length === 0 && remove.length === 0;
+    }
 }
