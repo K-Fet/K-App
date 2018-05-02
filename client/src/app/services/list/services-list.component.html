@@ -15,9 +15,15 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="header">
-                    <mat-form-field>
-                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des services">
-                    </mat-form-field>
+                    <form [formGroup]="searchFormGroup">
+                        <mat-form-field>
+                            <input matInput formControlName="search" placeholder="Rechercher des services" [owlDateTime]="dt1">
+                            <span matPrefix class="trigger" [owlDateTimeTrigger]="dt1">
+                                <mat-icon>add</mat-icon>
+                            </span>
+                            <owl-date-time #dt1></owl-date-time>
+                        </mat-form-field>
+                    </form>
                 </div>
                 <div class="mat-elevation-z3">
                     <mat-table #table [dataSource]="servicesData" matSort>

@@ -9,6 +9,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
     templateUrl: './services-list.component.html',
@@ -18,6 +19,7 @@ export class ServiceListComponent implements OnInit {
 
     displayedColumns = ['date', 'start', 'end', 'action'];
     servicesData: MatTableDataSource<Service>;
+    searchFormGroup: FormGroup;
 
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -26,7 +28,8 @@ export class ServiceListComponent implements OnInit {
                 private toasterService: ToasterService,
                 private router: Router,
                 private dialog: MatDialog,
-                private ngxPermissionsService: NgxPermissionsService) {
+                private ngxPermissionsService: NgxPermissionsService,
+                private formBuilder: FormBuilder) {
     }
 
     ngOnInit(): void {
@@ -34,6 +37,15 @@ export class ServiceListComponent implements OnInit {
         if (!this.ngxPermissionsService.getPermissions()['service:write']) {
             this.displayedColumns = ['date', 'start', 'end'];
         }
+        this.searchFormGroup = this.formBuilder.group({
+            search: new FormControl(''),
+        });
+        this.searchFormGroup.valueChanges.subscribe(value => {
+            value = value.trim(); // Remove whitespace
+            value = value.toLowerCase(); // Datasource defaults to lowercase matches
+            this.servicesData.filter = value;
+            console.log('Yes');
+        });
     }
 
     update(): void {
@@ -50,18 +62,12 @@ export class ServiceListComponent implements OnInit {
         this.router.navigate(['/services', service.id, 'edit']);
     }
 
-    delete(role: Service): void {
-        this.serviceService.delete(role.id)
+    delete(service: Service): void {
+        this.serviceService.delete(service.id)
         .subscribe(() => {
             this.toasterService.showToaster('Service supprimé');
             this.update();
         });
-    }
-
-    applyFilter(filterValue: string): void {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.servicesData.filter = filterValue;
     }
 
     openConfirmationDialog(service: Service): void {
