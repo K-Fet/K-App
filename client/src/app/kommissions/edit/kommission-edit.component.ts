@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Kommission } from '../../_models/index';
 import { ToasterService } from '../../_services/toaster.service';
@@ -17,8 +17,8 @@ export class KommissionEditComponent implements OnInit {
 
     createForm(): void {
         this.kommissionForm = new FormGroup({
-                name: new FormControl('', [Validators.required]),
-                description: new FormControl('', [Validators.required]),
+            name: new FormControl('', [Validators.required]),
+            description: new FormControl('', [Validators.required]),
         });
     }
 
@@ -26,8 +26,8 @@ export class KommissionEditComponent implements OnInit {
         private kommissionService: KommissionService,
         private toasterService: ToasterService,
         private route: ActivatedRoute,
-        private router: Router){
-            this.createForm();
+        private router: Router) {
+        this.createForm();
     }
 
     ngOnInit(): void {
@@ -39,7 +39,7 @@ export class KommissionEditComponent implements OnInit {
 
                 this.kommissionForm.controls.description.setValue(this.updatedKommission.description);
                 this.kommissionForm.controls.name.setValue(this.updatedKommission.name);
-                
+
             });
         });
     }
