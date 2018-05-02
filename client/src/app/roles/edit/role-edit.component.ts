@@ -40,24 +40,24 @@ export class RoleEditComponent implements OnInit {
                     initial: false,
                 });
             });
-        });
-        this.route.params.subscribe(params => {
-            this.id = params['id'];
-            this.roleService.getById(+this.id).subscribe(role => {
-                this.name = role.name;
-                this.description = role.description;
-                if (role.permissions) {
-                    role.permissions.forEach(rolePermission => {
-                        if (this.permissions) {
-                            this.permissions.filter(permission => {
-                                return rolePermission.id === permission.permission.id;
-                            }).forEach(permission => {
-                                permission.isChecked = true;
-                                permission.initial = true;
-                            });
-                        }
-                    });
-                }
+            this.route.params.subscribe(params => {
+                this.id = params['id'];
+                this.roleService.getById(+this.id).subscribe(role => {
+                    this.name = role.name;
+                    this.description = role.description;
+                    if (role.permissions) {
+                        role.permissions.forEach(rolePermission => {
+                            if (this.permissions) {
+                                this.permissions.filter(permission => {
+                                    return rolePermission.id === permission.permission.id;
+                                }).forEach(permission => {
+                                    permission.isChecked = true;
+                                    permission.initial = true;
+                                });
+                            }
+                        });
+                    }
+                });
             });
         });
     }
@@ -103,5 +103,15 @@ export class RoleEditComponent implements OnInit {
         }
 
         return role;
+    }
+
+    disable(): Boolean {
+        const add = this.permissions.filter(permission => {
+            return permission.isChecked && permission.initial !== permission.isChecked;
+        });
+        const remove = this.permissions.filter(permission => {
+            return !permission.isChecked && permission.initial !== permission.isChecked;
+        });
+        return add.length === 0 && remove.length === 0;
     }
 }

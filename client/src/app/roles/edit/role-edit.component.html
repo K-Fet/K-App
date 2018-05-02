@@ -34,7 +34,7 @@
                 </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="button" (click)="edit()"
-                    [disabled]="!modifyForm.valid">Modifier</button>
+                    [disabled]="!modifyForm.valid || (modifyForm.valid && !modifyForm.dirty && disable())">Modifier</button>
                 </div>
             </form>
         </mat-card-content>
