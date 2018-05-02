@@ -48,6 +48,11 @@ export class MenuComponent implements OnDestroy, OnInit {
                     route: '/open-services',
                     permissions: ['SERVICE_MANAGER'],
                 },
+                {
+                    name: 'Liste des services',
+                    route: '/services-manager',
+                    permissions: ['SERVICE_MANAGER'],
+                },
             ],
         },
         {

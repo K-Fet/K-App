@@ -32,6 +32,7 @@ import { TemplatesListComponent } from './templates/list/templates-list.componen
 // import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { ServiceListComponent } from './services/list/services-list.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -68,6 +69,8 @@ const routes: Routes = [
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['service:write']) },
     { path: 'services-explorer', component: ServiceExplorerComponent, canActivate: [NgxPermissionsGuard],
+        data: generateData(['service:read']) },
+    { path: 'services-manager', component: ServiceListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['service:read']) },
     { path: 'barmen', component: BarmenListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['barman:read']) },
