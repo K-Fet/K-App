@@ -5,6 +5,7 @@ import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/m
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { DatePipe } from '@angular/common';
 
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
@@ -27,7 +28,8 @@ export class ServiceListComponent implements OnInit {
                 private toasterService: ToasterService,
                 private router: Router,
                 private dialog: MatDialog,
-                private ngxPermissionsService: NgxPermissionsService) {
+                private ngxPermissionsService: NgxPermissionsService,
+                private datePipe: DatePipe) {
     }
 
     ngOnInit(): void {
@@ -62,7 +64,8 @@ export class ServiceListComponent implements OnInit {
     openConfirmationDialog(service: Service): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '350px',
-            data: { title: 'Confirmation', message: `Confirmez-vous la suppression du service suivant: ${service.startAt} ?` },
+            data: { title: 'Confirmation', message:
+                `Confirmez-vous la suppression du service du ${ this.transformServiceToDate(service) } ?` },
         });
 
         dialogRef.afterClosed().subscribe(choice => {
@@ -70,5 +73,11 @@ export class ServiceListComponent implements OnInit {
                 this.delete(service);
             }
         });
+    }
+
+    transformServiceToDate(date: Service): String {
+        return `${this.datePipe.transform(date.startAt, 'EEEE d LLLL')} de
+            ${this.datePipe.transform(date.startAt, 'H')}h à
+            ${this.datePipe.transform(date.endAt, 'H')}h`;
     }
 }

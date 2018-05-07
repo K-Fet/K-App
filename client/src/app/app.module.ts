@@ -2,14 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 // Forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-    MatDatetimepickerModule,
-    MatNativeDatetimeModule,
-  } from '@mat-datetimepicker/core';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
@@ -138,8 +134,6 @@ import { MaterialModule } from './_helpers/material.module';
         routing,
         FormsModule,
         ReactiveFormsModule,
-        MatNativeDatetimeModule,
-        MatDatetimepickerModule,
         NgxPermissionsModule.forRoot(),
     ],
     bootstrap: [AppComponent],
@@ -156,6 +150,7 @@ import { MaterialModule } from './_helpers/material.module';
         PermissionService,
         MeService,
         EditGuard,
+        DatePipe,
         {
             provide: LOCALE_ID, useValue: 'fr',
         },
