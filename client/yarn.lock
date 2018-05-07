@@ -181,14 +181,6 @@
   dependencies:
     tslib "^1.7.1"
 
-"@mat-datetimepicker/core@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@mat-datetimepicker/core/-/core-1.0.2.tgz#6b002ad1819e6284e50c8df5bb0e6e51cd6d5b3d"
-
-"@mat-datetimepicker/moment@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@mat-datetimepicker/moment/-/moment-1.0.2.tgz#51b81a4fd0cd118865952b663e2b0ec20da27817"
-
 "@ngtools/json-schema@1.1.0", "@ngtools/json-schema@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@ngtools/json-schema/-/json-schema-1.1.0.tgz#c3a0c544d62392acc2813a42c8a0dc6f58f86922"

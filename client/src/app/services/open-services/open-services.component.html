@@ -60,15 +60,13 @@
                                         </mat-form-field>
                                         <mat-form-field>
                                             <mat-placeholder>Début du service</mat-placeholder>
-                                            <mat-datetimepicker-toggle [for]="startDatetimePicker" matSuffix></mat-datetimepicker-toggle>
-                                            <mat-datetimepicker #startDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
-                                            <input matInput formControlName="startAtFormControl" [matDatetimepicker]="startDatetimePicker" required autocomplete="false">
+                                            <input matInput formControlName="startAtFormControl" required [owlDateTimeTrigger]="startAt" [owlDateTime]="startAt">
+                                            <owl-date-time #startAt></owl-date-time>
                                         </mat-form-field>
                                         <mat-form-field>
                                             <mat-placeholder>Fin du service</mat-placeholder>
-                                            <mat-datetimepicker-toggle [for]="endDatetimePicker" matSuffix></mat-datetimepicker-toggle>
-                                            <mat-datetimepicker #endDatetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
-                                            <input matInput formControlName="endAtFormControl" [matDatetimepicker]="endDatetimePicker" required autocomplete="false">
+                                            <input matInput formControlName="endAtFormControl" required [owlDateTimeTrigger]="endAt" [owlDateTime]="endAt">
+                                            <owl-date-time #endAt></owl-date-time>
                                         </mat-form-field>
                                     </div>
                                 </mat-expansion-panel>
