@@ -69,7 +69,7 @@ const routes: Routes = [
     { path: 'roles/:id', component: RoleEditComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['role:write']) },
     { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [NgxPermissionsGuard],
-        data: generateData(['service:write']) },
+        data: generateData(['SERVICE_PLAN']) },
     { path: 'services-explorer', component: ServiceExplorerComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['service:read']) },
     { path: 'services-manager', component: ServiceListComponent, canActivate: [NgxPermissionsGuard],
