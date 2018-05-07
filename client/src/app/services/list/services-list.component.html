@@ -9,22 +9,11 @@
                     </section>
                 </mat-card-title>
                 <div fxFlex></div>
-                <a mat-mini-fab color="primary" routerLink="/services/new" *ngxPermissionsOnly="['service:write']">
+                <a mat-mini-fab color="primary" routerLink="/services-manager/new" *ngxPermissionsOnly="['service:write']">
                     <mat-icon>add</mat-icon>
                 </a>
             </mat-card-header>
             <mat-card-content>
-                <div class="header">
-                    <form [formGroup]="searchFormGroup">
-                        <mat-form-field>
-                            <input matInput formControlName="search" placeholder="Rechercher des services" [owlDateTime]="dt1">
-                            <span matPrefix class="trigger" [owlDateTimeTrigger]="dt1">
-                                <mat-icon>add</mat-icon>
-                            </span>
-                            <owl-date-time #dt1></owl-date-time>
-                        </mat-form-field>
-                    </form>
-                </div>
                 <div class="mat-elevation-z3">
                     <mat-table #table [dataSource]="servicesData" matSort>
                         <ng-container matColumnDef="date">

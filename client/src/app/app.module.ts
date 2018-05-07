@@ -54,6 +54,8 @@ import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
+import { ServiceNewComponent } from './services/new/service-new.component';
+import { ServiceEditComponent } from './services/edit/service-edit.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
@@ -119,6 +121,8 @@ import { MaterialModule } from './_helpers/material.module';
         TemplateViewComponent,
         HomePageComponent,
         ServiceListComponent,
+        ServiceNewComponent,
+        ServiceEditComponent,
     ],
     entryComponents: [
         CodeDialogComponent,

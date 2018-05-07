@@ -9,11 +9,10 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
     templateUrl: './services-list.component.html',
-    styleUrls: ['./services-list.component.scss'],
 })
 export class ServiceListComponent implements OnInit {
 
@@ -28,8 +27,7 @@ export class ServiceListComponent implements OnInit {
                 private toasterService: ToasterService,
                 private router: Router,
                 private dialog: MatDialog,
-                private ngxPermissionsService: NgxPermissionsService,
-                private formBuilder: FormBuilder) {
+                private ngxPermissionsService: NgxPermissionsService) {
     }
 
     ngOnInit(): void {
@@ -37,15 +35,6 @@ export class ServiceListComponent implements OnInit {
         if (!this.ngxPermissionsService.getPermissions()['service:write']) {
             this.displayedColumns = ['date', 'start', 'end'];
         }
-        this.searchFormGroup = this.formBuilder.group({
-            search: new FormControl(''),
-        });
-        this.searchFormGroup.valueChanges.subscribe(value => {
-            value = value.trim(); // Remove whitespace
-            value = value.toLowerCase(); // Datasource defaults to lowercase matches
-            this.servicesData.filter = value;
-            console.log('Yes');
-        });
     }
 
     update(): void {
@@ -59,7 +48,7 @@ export class ServiceListComponent implements OnInit {
     }
 
     edit(service: Service): void {
-        this.router.navigate(['/services', service.id, 'edit']);
+        this.router.navigate(['/services-manager/', service.id]);
     }
 
     delete(service: Service): void {
@@ -73,7 +62,7 @@ export class ServiceListComponent implements OnInit {
     openConfirmationDialog(service: Service): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '350px',
-            data: { title: 'Confirmation', message: `Confirmez-vous la suppression du service suivant ? ${service.startAt} ?` },
+            data: { title: 'Confirmation', message: `Confirmez-vous la suppression du service suivant: ${service.startAt} ?` },
         });
 
         dialogRef.afterClosed().subscribe(choice => {
