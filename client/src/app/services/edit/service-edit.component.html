@@ -1,0 +1,30 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+        <mat-card-header>
+            <mat-card-title fxLayout="row">
+                <a mat-button routerLink="/services-manager"><mat-icon>arrow_back</mat-icon></a>
+                <section class="mat-typography">
+                    <h1>Modifier un service</h1>
+                </section>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="serviceForm" fxLayout="column" (ngSubmit)="edit()">
+                <mat-form-field>
+                    <input matInput placeholder="Début" formControlName="startAt" [owlDateTimeTrigger]="startAtDT" [owlDateTime]="startAtDT">
+                    <owl-date-time #startAtDT></owl-date-time>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Fin" formControlName="endAt" [owlDateTimeTrigger]="endAtDT" [owlDateTime]="endAtDT">
+                    <owl-date-time #endAtDT></owl-date-time>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Nombre max" formControlName="nbMax" min="0">
+                </mat-form-field>
+                <div fxLayoutAlign="center">
+                    <button fxFlex="50" mat-button type="submit" [disabled]="!serviceForm.valid || !serviceForm.dirty">Modifier</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
