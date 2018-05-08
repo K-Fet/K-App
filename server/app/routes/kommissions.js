@@ -8,5 +8,6 @@ router.post('/', guard.check('kommission:write'), am(kommissionController.create
 router.get('/:id(\\d+)', guard.check('kommission:read'), am(kommissionController.getKommissionById));
 router.put('/:id(\\d+)', guard.check('kommission:write'), am(kommissionController.updateKommission));
 router.post('/:id(\\d+)/delete', guard.check('kommission:write'), am(kommissionController.deleteKommission));
+router.get('/:id(\\d+)/tasks', guard.check('task:read'), am(kommissionController.getTasks));
 
 module.exports = router;

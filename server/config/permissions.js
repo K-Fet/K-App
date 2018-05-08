@@ -22,6 +22,9 @@ module.exports = {
         'specialaccount:write',
         'specialaccount:force-code-reset',
 
+        'task:read',
+        'task:write',
+
         'template:read',
         'template:write',
     ],
