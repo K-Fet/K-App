@@ -82,6 +82,8 @@ class Barman extends Model {
             onDelete: 'CASCADE',
             as: 'connection'
         });
+
+        this.belongsToMany(models.Task, { through: models.TaskKommissionWrapper, as: 'tasks' });
     }
 }
 

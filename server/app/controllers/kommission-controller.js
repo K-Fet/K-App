@@ -17,6 +17,21 @@ async function getAllKommissions(req, res) {
 }
 
 /**
+ * Get the tasks of a kommission
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
+async function getTasks(req, res) {
+    const kommissionId = req.params.id;
+
+    const kommission = await kommissionService.getKommissionById(kommissionId);
+
+    res.json(kommission.getTasks());
+}
+
+/**
  * Create a kommission.
  *
  * @param req Request
@@ -105,5 +120,6 @@ module.exports = {
     createKommission,
     updateKommission,
     getKommissionById,
-    deleteKommission
+    deleteKommission,
+    getTasks,
 };

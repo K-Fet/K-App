@@ -40,6 +40,7 @@ class Kommission extends Model {
      */
     static associate(models) {
         this.belongsToMany(models.Barman, { through: models.KommissionWrapper, as: 'barmen' });
+        this.belongsToMany(models.Task, { through: models.TaskKommissionWrapper, as: 'tasks' });
     }
 }
 

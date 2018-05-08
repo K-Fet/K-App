@@ -14,11 +14,10 @@ async function getAllTasks() {
     return Task.findAll();
 }
 
-
 /**
  * Create a task.
  *
- * @param newTask {task} partial task
+ * @param newTask {Task} partial task
  * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Task|Errors.ValidationError>} The created task with its id
  */
