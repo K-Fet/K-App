@@ -44,6 +44,7 @@
 		</mat-sidenav>
 		<mat-sidenav-content [style.paddingTop.px]="mobileQuery.matches ? 20 : 28" class="content-container">
 			<router-outlet></router-outlet>
+			<div [style.height.px]="mobileQuery.matches ? 16 : 45"></div>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
 </div>
