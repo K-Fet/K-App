@@ -5,6 +5,7 @@ const { promisify } = require('util');
 const EMAIL_CONFIG = require('../../config/mail');
 const WEB_CONFIG = require('../../config/web');
 const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
+const TRANSLATION = require('../../resources/translation/contactFormFields');
 
 const readFile = promisify(fs.readFile);
 
@@ -208,7 +209,7 @@ async function sendContactForm(formName, emails, values) {
                 case 'FORM_VALUES': {
                     let html = '<p><ul>';
                     Object.keys(values).forEach(value => {
-                        html += `<li><b>${value}</b>: ${values[value]}</li>`;
+                        html += `<li><b>${TRANSLATION[value] ? TRANSLATION[value].french : value}</b>: ${values[value]}</li>`;
                     });
                     html += '</ul></p>';
                     return html;
