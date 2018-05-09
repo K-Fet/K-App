@@ -23,7 +23,7 @@ export class ConcertContactComponent {
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
             email: new FormControl('', [Validators.required, Validators.email]),
-            phone: new FormControl('', [Validators.required, Validators.pattern(/^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/)]),
+            phone: new FormControl('', [Validators.required, Validators.pattern(/^((\+)33|0)[1-9](\d{2}){4}$/)]),
             stageName: new FormControl('', [Validators.required]),
             musicStyle: new FormControl('', [Validators.required]),
             whereListen: new FormControl('', [Validators.required]),

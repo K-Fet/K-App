@@ -21,7 +21,7 @@
                     <input matInput placeholder="Email" autocorrect="off" formControlName="email">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Téléphone portable" autocorrect="off" formControlName="lastName">
+                    <input matInput placeholder="Téléphone portable" autocorrect="off" formControlName="phone">
                     <mat-icon matSuffix>phone</mat-icon>
                 </mat-form-field>
                 <h4>Votre groupe</h4>
@@ -45,7 +45,7 @@
                 </div>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="submit"
-                    [disabled]="!(contactForm.valid || token)">Ajouter</button>
+                    [disabled]="!this.contactForm.valid || this.token === undefined">Ajouter</button>
                 </div>
             </form>
         </mat-card-content>
