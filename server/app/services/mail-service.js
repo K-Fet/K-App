@@ -187,10 +187,12 @@ async function sendWelcomeMail(email) {
 /**
  * Send a contact form mail
  *
- * @param email {String} recipient email address
+ * @param formName {String} french contact form name
+ * @param emails {String[]} recipient email address
+ * @param value {Object} form value
  * @returns {Promise<void>} Nothing
  */
-async function sendContactForm(emails, values) {
+async function sendContactForm(formName, emails, values) {
 
     const mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'contact.html'), 'utf8');
 
@@ -201,6 +203,8 @@ async function sendContactForm(emails, values) {
                     return WEB_CONFIG.publicURL;
                 case 'MAIL_USERNAME':
                     return email;
+                case 'FORM_NAME':
+                    return formName;
                 case 'FORM_VALUES': {
                     let html = '<p><ul>';
                     Object.keys(values).forEach(value => {
@@ -217,7 +221,7 @@ async function sendContactForm(emails, values) {
         const mailOptions = {
             from: CONFIG.auth.user,
             to: email,
-            subject: '[K-App] Nouveau formulaire de contact',
+            subject: `[K-App] Nouveau formulaire de contact pour un ${formName}`,
             html: currentMail,
         };
 

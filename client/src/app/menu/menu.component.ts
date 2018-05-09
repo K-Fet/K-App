@@ -45,15 +45,15 @@ export class MenuComponent implements OnDestroy, OnInit {
                 },
                 {
                     name: 'Pour un évenement | soirée',
-                    route: '/',
+                    route: '/contact/event',
                 },
                 {
                     name: 'Pour un objet perdu',
-                    route: '/',
+                    route: '/contact/lost',
                 },
                 {
                     name: 'Pour un problème avec le site',
-                    route: '/',
+                    route: '/contact/website',
                 },
             ],
         },

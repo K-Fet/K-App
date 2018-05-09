@@ -3,7 +3,7 @@ const mailService = require('../services/mail-service');
 const { createServerError, createUserError } = require('../../utils');
 const logger = require('../../logger');
 const request = require('request');
-const CONFIG = require('../../config/reCaptcha');
+const CONFIG = require('../../config/contactForm');
 
 /**
  * Verify request and send form to the appropriate user(s).
@@ -14,7 +14,7 @@ const CONFIG = require('../../config/reCaptcha');
  */
 async function sendForm(req, res) {
     const schema = Joi.object().keys({
-        contactFormName: Joi.string().valid('concert').required(),
+        contactFormName: Joi.string().valid('concert', 'event', 'lost', 'website').required(),
         values: Joi.object().required(),
         token: Joi.string().required(),
     });
@@ -26,7 +26,7 @@ async function sendForm(req, res) {
         method: 'POST',
         url: 'https://www.google.com/recaptcha/api/siteverify',
         qs: {
-            secret: CONFIG.SECRET,
+            secret: CONFIG.RECAPTCHA.SECRET,
             response: req.body.token
         }
     };
@@ -51,18 +51,16 @@ async function sendForm(req, res) {
     try {
         switch (req.body.contactFormName) {
             case 'concert':
-                await mailService.sendContactForm(CONFIG.CONCERT_MAIL, req.body.values);
+                await mailService.sendContactForm('concert', CONFIG.CONCERT_MAIL, req.body.values);
                 break;
             case 'event':
-                await mailService.sendContactForm(CONFIG.EVENT_MAIL, req.body.values);
+                await mailService.sendContactForm('évenement', CONFIG.EVENT_MAIL, req.body.values);
                 break;
             case 'lost':
-                await mailService.sendContactForm(CONFIG.LOST_MAIL, req.body.values);
+                await mailService.sendContactForm('objet perdu', CONFIG.LOST_MAIL, req.body.values);
                 break;
             case 'website':
-                await mailService.sendContactForm(CONFIG.WEBSITE_MAIL, req.body.values);
-                break;
-            default:
+                await mailService.sendContactForm('problème avec la K-App', CONFIG.WEBSITE_MAIL, req.body.values);
                 break;
         }
     } catch (err) {

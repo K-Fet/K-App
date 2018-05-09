@@ -36,6 +36,9 @@ import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
+import { WebsiteContactComponent } from './contacts/website/website-contact.component';
+import { LostContactComponent } from './contacts/lost/lost-contact.component';
+import { EventContactComponent } from './contacts/event/event-contact.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -52,6 +55,9 @@ const routes: Routes = [
     { path: 'define-password', component: DefinePasswordComponent },
     { path: 'username-verification', component: UsernameVerificationComponent },
     { path: 'contact/concert', component: ConcertContactComponent },
+    { path: 'contact/event', component: EventContactComponent },
+    { path: 'contact/lost', component: LostContactComponent },
+    { path: 'contact/website', component: WebsiteContactComponent },
     { path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['member:read']) },
     { path: 'members/new', component: MemberNewComponent, canActivate: [NgxPermissionsGuard],

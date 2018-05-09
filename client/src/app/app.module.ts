@@ -54,6 +54,9 @@ import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
+import { WebsiteContactComponent } from './contacts/website/website-contact.component';
+import { LostContactComponent } from './contacts/lost/lost-contact.component';
+import { EventContactComponent } from './contacts/event/event-contact.component';
 
 // Services
 import { AuthService, BarmanService, ContactService,
@@ -122,6 +125,9 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceNewComponent,
         ServiceEditComponent,
         ConcertContactComponent,
+        EventContactComponent,
+        LostContactComponent,
+        WebsiteContactComponent,
     ],
     entryComponents: [
         CodeDialogComponent,

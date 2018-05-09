@@ -4,7 +4,7 @@
             <mat-card-title fxLayout="row">
                 <a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon></a>
                 <section class="mat-typography">
-                    <h1>Contact pour un concert</h1>
+                    <h1>Contact pour un problème avec le site</h1>
                 </section>
             </mat-card-title>
         </mat-card-header>
@@ -17,26 +17,12 @@
                 <mat-form-field>
                     <input matInput placeholder="Prénom" autocorrect="off" formControlName="firstName">
                 </mat-form-field>
+                <h4>Le problème constaté</h4>
                 <mat-form-field>
-                    <input matInput placeholder="Email" autocorrect="off" formControlName="email">
+                    <input matInput placeholder="Nom de la page" autocorrect="off" formControlName="pageName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Téléphone portable" autocorrect="off" formControlName="phone">
-                    <mat-icon matSuffix>phone</mat-icon>
-                </mat-form-field>
-                <h4>Votre groupe</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Nom de scène" autocorrect="off" formControlName="stageName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Genre de musique ?" autocorrect="off" formControlName="musicStyle">
-                </mat-form-field>
-                <mat-form-field>
-                    <textarea matInput placeholder="Ou vous écouter ? (liens...)" formControlName="whereListen">
-                    </textarea>
-                </mat-form-field>
-                <mat-form-field>
-                    <textarea matInput placeholder="Description rapide (faîtes nous rêver!)" formControlName="description">
+                    <textarea matInput placeholder="Description rapide" autocorrect="off" formControlName="description">
                     </textarea>
                 </mat-form-field>
                 <div fxLayoutAlign="center">

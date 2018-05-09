@@ -4,10 +4,10 @@ import { ContactService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 
 @Component({
-    templateUrl: './concert-contact.component.html',
+    templateUrl: './event-contact.component.html',
 })
 
-export class ConcertContactComponent {
+export class EventContactComponent {
 
     contactForm: FormGroup;
     token: String;
@@ -25,9 +25,10 @@ export class ConcertContactComponent {
             firstName: new FormControl('', [Validators.required]),
             email: new FormControl('', [Validators.required, Validators.email]),
             phone: new FormControl('', [Validators.required, Validators.pattern(/^((\+)33|0)[1-9](\d{2}){4}$/)]),
-            stageName: new FormControl('', [Validators.required]),
-            musicStyle: new FormControl('', [Validators.required]),
-            whereListen: new FormControl('', [Validators.required]),
+            eventName: new FormControl('', [Validators.required]),
+            association: new FormControl('', [Validators.required]),
+            startDate: new FormControl('', [Validators.required]),
+            endDate: new FormControl('', [Validators.required]),
             description: new FormControl('', [Validators.required]),
         });
     }
@@ -37,7 +38,7 @@ export class ConcertContactComponent {
     }
 
     send(): void {
-        this.contactService.send('concert', this.contactForm.value, this.token).subscribe(() => {
+        this.contactService.send('event', this.contactForm.value, this.token).subscribe(() => {
             this.toasterService.showToaster('Votre demande a bien été enregistrée. Nous y donnerons suite dès que possible!');
             this.router.navigate(['/']);
         });
