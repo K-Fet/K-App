@@ -184,6 +184,47 @@ async function sendWelcomeMail(email) {
     await transporter.sendMail(mailOptions);
 }
 
+/**
+ * Send a contact form mail
+ *
+ * @param email {String} recipient email address
+ * @returns {Promise<void>} Nothing
+ */
+async function sendContactForm(emails, values) {
+
+    const mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'contact.html'), 'utf8');
+
+    for (const email of emails) {
+        const currentMail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
+            switch (replaceToken) {
+                case 'MAIL_WEBSITE':
+                    return WEB_CONFIG.publicURL;
+                case 'MAIL_USERNAME':
+                    return email;
+                case 'FORM_VALUES': {
+                    let html = '<p><ul>';
+                    Object.keys(values).forEach(value => {
+                        html += `<li><b>${value}</b>: ${values[value]}</li>`;
+                    });
+                    html += '</ul></p>';
+                    return html;
+                }
+            }
+        });
+
+        const transporter = nodemailer.createTransport(CONFIG);
+        // Setup email data with unicode symbols
+        const mailOptions = {
+            from: CONFIG.auth.user,
+            to: email,
+            subject: '[K-App] Nouveau formulaire de contact',
+            html: currentMail,
+        };
+
+        await transporter.sendMail(mailOptions);
+    }
+}
+
 
 module.exports = {
     sendPasswordResetMail,
@@ -191,4 +232,5 @@ module.exports = {
     sendUsernameUpdateInformationMail,
     sendUsernameConfirmation,
     sendWelcomeMail,
+    sendContactForm,
 };

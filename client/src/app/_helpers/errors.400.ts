@@ -17,4 +17,5 @@ export const ERRORS400 = {
     'BadUsername': 'L\'username n\'est pas disponible',
     'WeakPassword': 'Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre et plus de 8 charactères.',
     'UnknownPasswordToken': 'Token inconnu: le token utilisé n\'existe pas ou n\'est plus valide',
+    'captchaVerificationFail': 'Erreur dans la validation du captcha côté serveur, merci d\'essayer à nouveau',
 };
