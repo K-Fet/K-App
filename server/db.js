@@ -42,7 +42,7 @@ logger.debug('Models loaded: %s', modelNameList);
 logger.debug('Synchronising the database...');
 
 sequelize._syncPromise = sequelize
-    .sync({ alter: true })
+    .sync()
     .then(() => {
         logger.debug('Database is synchronised with sequelize, synchronising permissions');
         return syncPermissions();
