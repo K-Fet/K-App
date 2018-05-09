@@ -31,7 +31,7 @@ export class MembersListComponent implements OnInit {
 
     ngOnInit(): void {
         this.update();
-        if (!this.ngxPermissionsService.getPermissions()['specialaccount:write']) {
+        if (!this.ngxPermissionsService.getPermissions()['member:write']) {
             this.displayedColumns = ['lastName', 'firstName', 'school'];
         }
         this.media.subscribe((change: MediaChange) => {
