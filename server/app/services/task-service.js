@@ -4,17 +4,6 @@ const { createUserError, createServerError, cleanObject, setEmbeddedAssociations
 const sequelize = require('../../db');
 
 /**
- * Return all task of the app.
- *
- * @returns {Promise<Array>} Tasks
- */
-async function getAllTasks() {
-
-    logger.verbose('Task service: get all tasks');
-    return Task.findAll();
-}
-
-/**
  * Create a task.
  *
  * @param newTask {Task} partial task
@@ -27,6 +16,8 @@ async function createTask(newTask, _embedded) {
 
     const transaction = await sequelize.transaction();
     try {
+        newTask.kommissionId = _embedded.kommissionId;
+        delete _embedded.kommissionId;
         await newTask.save({ transaction });
     } catch (err) {
         logger.warn('Task service: Error while creating task', err);
@@ -44,7 +35,18 @@ async function createTask(newTask, _embedded) {
     }
 
     await transaction.commit();
-    return newTask;
+    return newTask.reload({
+        include: [
+            {
+                model: Barman,
+                as: 'barmen'
+            },
+            {
+                model: Kommission,
+                as: 'kommission'
+            }
+        ]
+    });
 }
 
 
@@ -66,7 +68,7 @@ async function getTaskById(taskId) {
             },
             {
                 model: Kommission,
-                as: 'kommissions'
+                as: 'kommission'
             }
         ]
     });
@@ -101,12 +103,15 @@ async function updateTask(taskId, updatedTask, _embedded) {
     const transaction = await sequelize.transaction();
 
     try {
+
         await currentTask.update(cleanObject({
             name: updatedTask.name,
             description: updatedTask.description,
             deadline: updatedTask.deadline,
             state: updatedTask.state,
+            kommissionId: _embedded ? _embedded.kommissionId : undefined,
         }), { transaction });
+        if (_embedded && _embedded.kommissionId) delete _embedded.kommissionId;
     } catch (err) {
         logger.warn('Task Service : error while updating a task', err);
         await transaction.rollback();
@@ -125,7 +130,18 @@ async function updateTask(taskId, updatedTask, _embedded) {
     }
 
     await transaction.commit();
-    await currentTask.reload();
+    await currentTask.reload({
+        include: [
+            {
+                model: Barman,
+                as: 'barmen'
+            },
+            {
+                model: Kommission,
+                as: 'kommission'
+            }
+        ]
+    });
     return currentTask;
 }
 
@@ -150,7 +166,6 @@ async function deleteTask(taskId) {
 
 
 module.exports = {
-    getAllTasks,
     createTask,
     updateTask,
     getTaskById,

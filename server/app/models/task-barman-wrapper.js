@@ -12,7 +12,10 @@ class TaskBarmanWrapper extends Model {
      * @returns {Model}
      */
     static init(sequelize) {
-        return super.init({}, { sequelize });
+        return super.init({}, {
+            sequelize,
+            updatedAt: false
+        });
     }
 }
 

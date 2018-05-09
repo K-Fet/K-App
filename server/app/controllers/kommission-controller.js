@@ -1,5 +1,5 @@
 const kommissionService = require('../services/kommission-service');
-const { Kommission } = require('../models');
+const { Barman, Kommission } = require('../models');
 const { KommissionSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
 
@@ -28,7 +28,14 @@ async function getTasks(req, res) {
 
     const kommission = await kommissionService.getKommissionById(kommissionId);
 
-    res.json(kommission.getTasks());
+    res.json(await kommission.getTasks({
+        include: [
+            {
+                model: Barman,
+                as: 'barmen'
+            }
+        ]
+    }));
 }
 
 /**

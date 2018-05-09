@@ -83,7 +83,7 @@ class Barman extends Model {
             as: 'connection'
         });
 
-        this.belongsToMany(models.Task, { through: models.TaskKommissionWrapper, as: 'tasks' });
+        this.belongsToMany(models.Task, { through: models.TaskBarmanWrapper, as: 'tasks' });
     }
 }
 

@@ -1,20 +1,8 @@
 const taskService = require('../services/task-service');
+const kommissionService = require('../services/kommission-service');
 const { Task } = require('../models');
 const { TaskSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
-
-/**
- * Fetch all the tasks from the database.
- *
- * @param req Request
- * @param res Response
- * @return {Promise.<void>} Nothing
- */
-async function getAllTasks(req, res) {
-    const tasks = await taskService.getAllTasks();
-
-    res.json(tasks);
-}
 
 /**
  * Create a task.
@@ -28,12 +16,14 @@ async function createTask(req, res) {
         'name',
         'deadline',
         'state',
-        '_embedded', // Prevent not associated tasks
+        '_embedded',
+        '_embedded.kommissionId',
     );
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
+    await kommissionService.getKommissionById(req.body._embedded.kommissionId);
 
     let newTask = new Task({
         ...req.body,
@@ -75,6 +65,8 @@ async function updateTask(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
+    if (req.body._embedded && req.body._embedded.kommissionId) await kommissionService.getKommissionById(req.body._embedded.kommissionId);
+
     let newTask = new Task({
         ...req.body,
         _embedded: undefined // Remove the only external object
@@ -103,7 +95,6 @@ async function deleteTask(req, res) {
 }
 
 module.exports = {
-    getAllTasks,
     createTask,
     updateTask,
     getTaskById,

@@ -14,6 +14,13 @@ class Task extends Model {
      * @returns {Model}
      */
     static init(sequelize) {
+        // eslint-disable-next-line
+        this.prototype.toJSON = function () {
+            const values = Object.assign({}, this.get());
+            delete values.kommissionId;
+            return values;
+        };
+
         return super.init({
             id: {
                 type: DataTypes.INTEGER,
@@ -44,7 +51,12 @@ class Task extends Model {
      */
     static associate(models) {
         this.belongsToMany(models.Barman, { through: models.TaskBarmanWrapper, as: 'barmen' });
-        this.belongsToMany(models.Kommission, { through: models.TaskKommissionWrapper, as: 'kommissions' });
+        this.belongsTo(models.Kommission, {
+            as: 'kommission',
+            foreignKey: {
+                allowNull: false
+            }
+        });
     }
 }
 
@@ -56,7 +68,7 @@ const TaskSchema = Joi.object().keys({
     state: Joi.string().valid('Not started', 'In progress', 'Done', 'Abandoned'),
     _embedded: Joi.object().keys({
         barmen: AssociationChangesSchema,
-        kommissions: AssociationChangesSchema,
+        kommissionId: Joi.number().integer(),
     })
 });
 
