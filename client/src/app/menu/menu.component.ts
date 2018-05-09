@@ -10,12 +10,12 @@ interface Link {
     name: String;
     route: String;
     permissions?: Array<String>;
-    accountType?: String;
 }
 
 interface SubMenu {
     name?: String;
     links: Array<Link>;
+    accountType?: String;
 }
 
 @Component({
@@ -31,6 +31,28 @@ export class MenuComponent implements OnDestroy, OnInit {
             links: [
                 {
                     name: 'Accueil',
+                    route: '/',
+                },
+            ],
+        },
+        {
+            name: 'Contacts',
+            accountType: 'guest',
+            links: [
+                {
+                    name: 'Pour un concert',
+                    route: '/contact/concert',
+                },
+                {
+                    name: 'Pour un évenement | soirée',
+                    route: '/',
+                },
+                {
+                    name: 'Pour un objet perdu',
+                    route: '/',
+                },
+                {
+                    name: 'Pour un problème avec le site',
                     route: '/',
                 },
             ],
@@ -142,9 +164,6 @@ export class MenuComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         this.authService.$currentUser.subscribe(user => {
             this.user = user;
-            if (this.user.isGuest) {
-                this.sideNav.opened = false;
-            }
         });
     }
 
@@ -153,6 +172,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     }
 
     isVisible(subMenu: SubMenu): Boolean {
+        if (subMenu.accountType === 'guest' && !this.user.isGuest()) return false;
         for (const link of subMenu.links) {
             if (!link.permissions) return true;
             for (const perm of link.permissions) {

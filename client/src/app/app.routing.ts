@@ -35,6 +35,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
+import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -50,6 +51,7 @@ const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'define-password', component: DefinePasswordComponent },
     { path: 'username-verification', component: UsernameVerificationComponent },
+    { path: 'contact/concert', component: ConcertContactComponent },
     { path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['member:read']) },
     { path: 'members/new', component: MemberNewComponent, canActivate: [NgxPermissionsGuard],

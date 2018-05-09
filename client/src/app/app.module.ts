@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 // Routes
 import { routing } from './app.routing';
@@ -52,11 +53,12 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
+import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
 
 // Services
-import { AuthService, BarmanService, KommissionService,
-    MemberService, MeService, PermissionService, RoleService,
-    ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
+import { AuthService, BarmanService, ContactService,
+    KommissionService, MemberService, MeService, PermissionService,
+    RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -119,6 +121,7 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceListComponent,
         ServiceNewComponent,
         ServiceEditComponent,
+        ConcertContactComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
@@ -135,6 +138,7 @@ import { MaterialModule } from './_helpers/material.module';
         FormsModule,
         ReactiveFormsModule,
         NgxPermissionsModule.forRoot(),
+        ReCaptchaModule,
     ],
     bootstrap: [AppComponent],
     providers: [
@@ -150,6 +154,7 @@ import { MaterialModule } from './_helpers/material.module';
         PermissionService,
         MeService,
         EditGuard,
+        ContactService,
         DatePipe,
         {
             provide: LOCALE_ID, useValue: 'fr',
