@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
     templateUrl: './barmen-list.component.html',
@@ -21,7 +22,8 @@ export class BarmenListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private barmanService: BarmanService,
-                private router: Router) {
+                private router: Router,
+                public media: ObservableMedia) {
     }
 
     ngOnInit(): void {
@@ -29,6 +31,13 @@ export class BarmenListComponent implements OnInit {
             this.barmenData = new MatTableDataSource(barmen);
             this.barmenData.paginator = this.paginator;
             this.barmenData.sort = this.sort;
+        });
+        this.media.subscribe((change: MediaChange) => {
+            if (change.mqAlias === 'xs' && this.displayedColumns.includes('lastName')) {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('lastName'), 1);
+            } else if (!this.displayedColumns.includes('lastName')) {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('nickname') + 1, 0, 'lastName');
+            }
         });
     }
 
