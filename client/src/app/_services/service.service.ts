@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Barman, Day, Service } from '../_models';
-import { Observable } from 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import * as moment from 'moment';
 // tslint:disable-next-line:no-duplicate-imports

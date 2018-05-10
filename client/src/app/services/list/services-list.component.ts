@@ -6,10 +6,6 @@ import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DatePipe } from '@angular/common';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 import { FormGroup } from '@angular/forms';
 
 @Component({

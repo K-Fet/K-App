@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SpecialAccount } from '../_models';
-
-import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs';
 
 @Injectable()

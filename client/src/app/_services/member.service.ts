@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Member } from '../_models';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
 import { Observable } from 'rxjs';
 
 @Injectable()
