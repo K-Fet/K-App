@@ -25,7 +25,8 @@ router.use('/kommissions', require('./kommissions'));
 router.use('/permissions', require('./permissions'));
 router.use('/roles', require('./roles'));
 router.use('/services', require('./services'));
-router.use('/specialaccounts', require('./special-account'));
+router.use('/specialaccounts', require('./special-accounts'));
+router.use('/tasks', require('./tasks'));
 router.use('/templates', require('./templates'));
 
 // Error handling
