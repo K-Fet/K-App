@@ -55,12 +55,13 @@ import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
+import { TasksListComponent } from './tasks/list/tasks-list.component';
 
 // Services
 import {
   AuthService, BarmanService, KommissionService,
   LoaderService, MemberService, MeService, PermissionService,
-  RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService,
+  RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService,
 } from './_services';
 
 // Guards
@@ -130,11 +131,12 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     LoaderComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    TasksListComponent
   ],
   entryComponents: [
     CodeDialogComponent,
     ConfirmationDialogComponent,
-    ResetPasswordDialogComponent,
+    ResetPasswordDialogComponent
   ],
   imports: [
     CommonModule,
@@ -145,7 +147,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     routing,
     FormsModule,
     ReactiveFormsModule,
-    NgxPermissionsModule.forRoot(),
+    NgxPermissionsModule.forRoot()
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -157,6 +159,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     RoleService,
     ToasterService,
     TemplateService,
+    TaskService,
     SpecialAccountService,
     PermissionService,
     LoaderService,
@@ -165,16 +168,16 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     ActiveGuard,
     DatePipe,
     {
-      provide: LOCALE_ID, useValue: 'fr',
+      provide: LOCALE_ID, useValue: 'fr'
     },
     {
       provide: ErrorHandler,
-      useClass: ErrorsHandler,
+      useClass: ErrorsHandler
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestInterceptor,
-      multi: true,
+      multi: true
     },
   ],
 })
