@@ -279,20 +279,14 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
     const username = usernameDirty.toLowerCase();
     const user = await ConnectionInformation.findOne({ where: { username } });
 
-    let isValid = false;
+    if (!user) throw createUserError('UnknownUser', 'Unable to find provided username');
 
-    if (user) {
-        if (passwordToken) {
-            isValid = await verify(user.passwordToken, passwordToken);
-        } else if (oldPassword) {
-            isValid = await verify(user.password, oldPassword);
-        } else {
-            throw createServerError('ServerError', 'Missing parameter');
-        }
-    }
-
-    if (!isValid) {
-        throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    if (passwordToken) {
+        if (!await verify(user.passwordToken, passwordToken)) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
+    } else if (oldPassword) {
+        if (!await verify(user.password, oldPassword)) throw createUserError('LoginError', 'Bad username/password combination');
+    } else {
+        throw createServerError('ServerError', 'Missing parameter');
     }
 
     if (user.usernameToken) {
