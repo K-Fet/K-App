@@ -52,17 +52,18 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
+import { LoaderComponent } from './loader/loader.component';
 
 // Services
 import { AuthService, BarmanService, KommissionService,
-    MemberService, MeService, PermissionService, RoleService,
-    ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
+    LoaderService, MemberService, MeService, PermissionService,
+    RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
 
 // Helpers
-import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { RequestInterceptor } from './_helpers/request.interceptor';
 import { EqualValidator } from './_helpers/equal-validator.directive';
 import { ErrorsHandler } from './_helpers/error.handler';
 
@@ -119,6 +120,7 @@ import { MaterialModule } from './_helpers/material.module';
         ServiceListComponent,
         ServiceNewComponent,
         ServiceEditComponent,
+        LoaderComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
@@ -148,6 +150,7 @@ import { MaterialModule } from './_helpers/material.module';
         TemplateService,
         SpecialAccountService,
         PermissionService,
+        LoaderService,
         MeService,
         EditGuard,
         DatePipe,
@@ -160,7 +163,7 @@ import { MaterialModule } from './_helpers/material.module';
         },
         {
             provide: HTTP_INTERCEPTORS,
-            useClass: JwtInterceptor,
+            useClass: RequestInterceptor,
             multi: true,
         },
     ],
