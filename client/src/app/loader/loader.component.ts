@@ -5,7 +5,7 @@ import { LoaderService } from '../_services/loader.service';
 import { LoaderState } from '../_models/loader';
 
 @Component({
-    selector: 'angular-loader',
+    selector: 'http-loader',
     templateUrl: 'loader.component.html',
     styleUrls: ['loader.component.css'],
 })
