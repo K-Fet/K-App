@@ -9,7 +9,64 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            salut
+            <form [formGroup]="generalFormGroup" fxLayout="column">
+                <div formArrayName="generalFormArray">
+                    <div formGroupName="0" [formGroup]="generalFormArray.get([0])">
+                        <h4>Nom du template</h4>
+                        <mat-form-field>
+                            <input matInput placeholder="Nom du template" formControlName="templateNameFormControl">
+                        </mat-form-field>
+                    </div>
+                    <div formGroupName="1" formArrayName="generalFormArray.get([1])">
+                        <mat-accordion>
+                            <div *ngFor="let serviceForm of getControls(); let i = index;" [formGroupName]="i"> 
+                                <mat-expansion-panel> 
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title fxLayoutAlign="start center">
+                                                <button mat-icon-button (click)="removeServiceForm(i)" >
+                                                    <mat-icon fxFlex="10px">remove</mat-icon>
+                                                </button>
+                                                <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startFormControl.value">
+                                                    {{WEEK_DAY[getControls()[i].controls.startDayFormControl.value].value}}
+                                                    de {{getControls()[i].controls.startFormControl.value}}
+                                                    à {{getControls()[i].controls.endFormControl.value}}
+                                                </span>
+                                                <span class="mat-error" *ngIf="!getControls()[i].controls.startFormControl.value">
+                                                        Service à définir !
+                                                </span>
+                                            </mat-panel-title>
+                                        </mat-expansion-panel-header>
+                                        <div fxLayout="column" fxLayoutAlign="center">
+                                            <mat-form-field>
+                                                <input matInput type="number" placeholder="Nombre max de barmen" min="0" formControlName="nbMaxFormControl" required>
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <mat-select matInput placeholder="Début de service" formControlName="startDayFormControl" required>
+                                                    <mat-option *ngFor="let day of WEEK_DAY" [value]="day.id">
+                                                        {{ day.value }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <input matInput type="time" formControlName="startFormControl" required>
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <mat-select matInput placeholder="Fin de service" formControlName="endDayFormControl" required>
+                                                    <mat-option *ngFor="let day of WEEK_DAY" [value]="day.id">
+                                                        {{ day.value }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <input matInput type="time" formControlName="endFormControl" required >
+                                            </mat-form-field>
+                                        </div>
+                                </mat-expansion-panel>
+                            </div>
+                    </mat-accordion>
+                </div>
+            </div>
+            </form>
         </mat-card-content>
     </mat-card>
 </div>

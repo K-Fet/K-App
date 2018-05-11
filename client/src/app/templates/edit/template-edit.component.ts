@@ -3,6 +3,9 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { TemplateService } from '../../_services/template.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Template } from '../../_models/Template';
+import * as moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { Moment } from 'moment';
 
 @Component({
     templateUrl: './template-edit.component.html',
@@ -14,6 +17,7 @@ export class TemplateEditComponent implements OnInit {
     servicesFormArray: FormArray;
     generalFormArray: FormArray;
     generalFormGroup: FormGroup;
+    servicesFormGroup: FormGroup;
 
     WEEK_DAY = [
         { id: '0', value: 'Lundi' },
@@ -49,23 +53,33 @@ export class TemplateEditComponent implements OnInit {
     ngOnInit(): void {
         this.route.params.subscribe(params => {
             this.templateService.getById(params['id']).subscribe(template => {
+                this.templateNameFormGroup.controls.templateNameFormControl.setValue(template.name);
                 (template as Template).services.forEach(service => {
-                    // modifier pour chaque service le startAt et endAt
-                //   this.addServiceForm(service.nbMax, startAt, endAt);
-              //  this.sortServiceForm();
+                    const startAt: Moment = moment().isoWeekday(+service.startAt.day).set({
+                        'hour': +service.startAt.hours,
+                        'minute': +service.startAt.minutes,
+                        'second': 0,
+                        'millisecond': 0,
+                    });
+                    const endAt: Moment = moment().isoWeekday(+service.endAt.day).set({
+                        'hour': +service.endAt.hours,
+                        'minute': +service.endAt.minutes,
+                        'second': 0,
+                        'millisecond': 0,
+                    });
+                    this.addServiceForm(service.nbMax, startAt, endAt, service.startAt.day, service.endAt.day);
                 });
+                this.sortServiceForm();
+            });
+        });
 
-
-            })
-        })
-        
     }
 
-    addServiceForm(nbMax: Number, startAt: Date, endAt: Date, startDay: Number, endDay: Number): void {
+    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment, startDay: Number, endDay: Number): void {
         const serviceFormGroup = this.fb.group({
-            startFormControl: [startAt, Validators.required],
+            startFormControl: [startAt ? startAt.toDate() : '', Validators.required],
             startDayFormControl: [startDay, Validators.required],
-            endFormControl: [endAt, Validators.required],
+            endFormControl: [endAt ? endAt.toDate() : '', Validators.required],
             endDayFormControl: [endDay, Validators.required],
             nbMaxFormControl: [nbMax, Validators.required],
         });
