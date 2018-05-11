@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
+import { LoaderService } from '../_services/loader.service';
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export class RequestInterceptor implements HttpInterceptor {
+
+    constructor(private loaderService: LoaderService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this.loaderService.show();
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (currentUser && currentUser.jwt) {
             request = request.clone({
@@ -15,6 +19,6 @@ export class JwtInterceptor implements HttpInterceptor {
                 },
             });
         }
-        return next.handle(request);
+        return next.handle(request).finally(() => this.loaderService.hide());
     }
 }
