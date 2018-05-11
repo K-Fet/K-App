@@ -37,4 +37,8 @@ export class TemplatesListComponent implements OnInit {
         this.router.navigate(['/templates', template.id]);
     }
 
+    edit(template: Template): void {
+        this.router.navigate(['/templates', template.id, 'edit']);
+    }
+
 }

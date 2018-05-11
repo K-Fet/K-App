@@ -78,6 +78,7 @@ registerLocaleData(localeFr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
 
 @NgModule({
     declarations: [
@@ -117,6 +118,7 @@ import { MaterialModule } from './_helpers/material.module';
         TemplatesListComponent,
         TemplateNewComponent,
         TemplateViewComponent,
+        TemplateEditComponent,
         HomePageComponent,
         ServiceListComponent,
         ServiceNewComponent,
