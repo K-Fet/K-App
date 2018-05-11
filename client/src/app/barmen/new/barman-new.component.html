@@ -18,12 +18,11 @@
                     <input matInput placeholder="Prénom" formControlName="firstName">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput [matDatepicker]="picker" placeholder="Date de naissance" formControlName="dateOfBirth">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+                    <input matInput placeholder="Date de naissance" formControlName="dateOfBirth" [owlDateTimeTrigger]="dateOfBirthDT" [owlDateTime]="dateOfBirthDT">
+                    <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" [startAt]="startDate" #dateOfBirthDT></owl-date-time>
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput placeholder="Facebook" formControlName="facebook">
+                    <input matInput placeholder="Facebook (un lien URL)" formControlName="facebook">
                 </mat-form-field>
                 <h4>Informations de connection</h4>
                 <mat-form-field>
