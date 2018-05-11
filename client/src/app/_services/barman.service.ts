@@ -46,6 +46,6 @@ export class BarmanService {
     }
 
     delete(id: Number): Observable<Barman> {
-        return this.http.delete<Barman>(`/api/barmen/${id}`);
+        return this.http.post<Barman>(`/api/barmen/${id}/delete`, null);
     }
 }
