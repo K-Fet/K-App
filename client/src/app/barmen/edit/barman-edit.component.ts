@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService, BarmanService,
-    KommissionService, MeService, RoleService, ToasterService } from '../../_services';
+import {
+    AuthService, BarmanService,
+    KommissionService, MeService, RoleService, ToasterService,
+} from '../../_services';
 import { AssociationChanges, Barman, ConnectedUser, Kommission, Role } from '../../_models';
 
 @Component({
@@ -49,8 +51,8 @@ export class BarmanEditComponent implements OnInit {
             lastName: new FormControl('', [Validators.required]),
             firstName: new FormControl('', [Validators.required]),
             nickname: new FormControl('', [Validators.required]),
-            facebook: new FormControl('',
-                [Validators.pattern(/(https?:\/\/)?([\w\.]*)facebook\.com\/([a-zA-Z0-9_]*)$/)]),
+            facebook: new FormControl('', [Validators.pattern(
+                /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w\-]*\/)*([\w\-.]+)(\/)?/i)]),
             username: new FormControl('', [Validators.required, Validators.email]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),
@@ -62,7 +64,7 @@ export class BarmanEditComponent implements OnInit {
 
         function passwordMatchValidator(g: FormGroup): ValidationErrors | null {
             return g.get('newPassword').value === g.get('newPasswordConfirm').value
-               ? null : { 'passwordMismatch': true };
+                ? null : { 'passwordMismatch': true };
         }
 
         function passwordRegExValidator(g: FormGroup): ValidationErrors | null {
@@ -74,7 +76,7 @@ export class BarmanEditComponent implements OnInit {
             oldPassword: new FormControl('', [Validators.required]),
             newPassword: new FormControl('', [Validators.required]),
             newPasswordConfirm: new FormControl('', [Validators.required]),
-        }, [ passwordMatchValidator, passwordRegExValidator ]);
+        }, [passwordMatchValidator, passwordRegExValidator]);
 
         this.startDate.setFullYear(this.startDate.getFullYear() - 20);
     }
@@ -175,20 +177,26 @@ export class BarmanEditComponent implements OnInit {
                     break;
                 case 'godFather':
                     if (this.barmanForm.controls.godFather.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) {
+                            this.barman._embedded = {};
+                        }
                         this.barman._embedded.godFather = this.selectedGodFather;
                     }
                     break;
                 case 'kommissions':
                     if (this.barmanForm.controls.kommissions.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) {
+                            this.barman._embedded = {};
+                        }
                         this.barman._embedded.kommissions = this.prepareAssociationChanges(
                             this.currentBarman.kommissions, this.barmanForm.controls.kommissions.value);
                     }
                     break;
                 case 'roles':
                     if (this.barmanForm.controls.roles.dirty) {
-                        if (!this.barman._embedded) { this.barman._embedded = {}; }
+                        if (!this.barman._embedded) {
+                            this.barman._embedded = {};
+                        }
                         this.barman._embedded.roles = this.prepareAssociationChanges(
                             this.currentBarman.roles, this.barmanForm.controls.roles.value);
                     }
