@@ -94,7 +94,8 @@ const BarmanSchema = Joi.object().keys({
     connection: ConnectionInformationSchema,
     active: Joi.boolean(),
     nickname: Joi.string(),
-    facebook: Joi.string().uri(),
+    // eslint-disable-next-line
+    facebook: Joi.string().regex(/(https?:\/\/)?([\w\.]*)facebook\.com\/([a-zA-Z0-9_]*)$/),
     dateOfBirth: Joi.string().isoDate(),
     flow: Joi.string(),
 
