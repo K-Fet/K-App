@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Barman, Service } from '../_models';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 
@@ -46,6 +42,6 @@ export class BarmanService {
     }
 
     delete(id: Number): Observable<Barman> {
-        return this.http.delete<Barman>(`/api/barmen/${id}`);
+        return this.http.post<Barman>(`/api/barmen/${id}/delete`, null);
     }
 }

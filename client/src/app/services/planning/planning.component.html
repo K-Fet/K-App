@@ -7,7 +7,7 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div>
+        <div fxLayout="row">
             <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
                 <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)"
                 [color]="day.active ? 'accent' : 'primary'">

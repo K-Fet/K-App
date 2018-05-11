@@ -41,7 +41,7 @@ export class BarmanNewComponent implements OnInit {
             firstName: new FormControl('', [Validators.required]),
             nickname: new FormControl('', [Validators.required]),
             facebook: new FormControl('',
-                [Validators.pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/)]),
+                [Validators.pattern(/(https?:\/\/)?([\w\.]*)facebook\.com\/([a-zA-Z0-9_]*)$/)]),
             username: new FormControl('', [Validators.required, Validators.email]),
             dateOfBirth: new FormControl('', [Validators.required]),
             flow: new FormControl('', [Validators.required]),

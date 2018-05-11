@@ -5,10 +5,7 @@ import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/m
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
+import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
     templateUrl: './roles-list.component.html',
@@ -26,7 +23,8 @@ export class RolesListComponent implements OnInit {
                 private toasterService: ToasterService,
                 private router: Router,
                 private dialog: MatDialog,
-                private ngxPermissionsService: NgxPermissionsService) {
+                private ngxPermissionsService: NgxPermissionsService,
+                public media: ObservableMedia) {
     }
 
     ngOnInit(): void {
@@ -34,6 +32,13 @@ export class RolesListComponent implements OnInit {
         if (!this.ngxPermissionsService.getPermissions()['role:write']) {
             this.displayedColumns = ['name', 'description'];
         }
+        this.media.subscribe((change: MediaChange) => {
+            if ((change.mqAlias === 'sm' || change.mqAlias === 'xs') && this.displayedColumns.includes('description')) {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('description'), 1);
+            } else if (!this.displayedColumns.includes('description') && change.mqAlias !== 'xs' && change.mqAlias !== 'sm') {
+                this.displayedColumns.splice(this.displayedColumns.indexOf('name') + 1, 0, 'description');
+            }
+        });
     }
 
     update(): void {
