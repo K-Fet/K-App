@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/of';
 import { ConnectedUser } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { roles } from '../_helpers/roles';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -45,7 +44,7 @@ export class AuthService {
 
     login(username: string, password: string): Observable<any> {
         return this.http.post('/api/auth/login', { username, password })
-            .do((jwt: { jwt: String }) => {
+            .pipe(tap((jwt: { jwt: String }) => {
                 this.saveUser(jwt);
                 this.me().subscribe();
                 const jwtDecoded = jwt_decode(jwt.jwt);
@@ -55,30 +54,34 @@ export class AuthService {
                 setTimeout(() => {
                     this.refresh().subscribe();
                 }, 45 * 60 * 60 * 1000);
-            });
+            }));
     }
 
     logout(): Observable<any> {
         return this.http.get('/api/auth/logout')
-            .do(this.clearUser.bind(this));
+            .pipe(tap(this.clearUser.bind(this)));
     }
 
     refresh(): Observable<any> {
-        return this.http.get('/api/auth/refresh').do((newJWT: { jwt: String }) => {
-            if (newJWT) {
-                this.saveUser(newJWT);
-                const jwtDecoded = jwt_decode(newJWT.jwt);
-                this.managePermissionAndRole(jwtDecoded.permissions);
+        return this.http.get('/api/auth/refresh')
+            .pipe(
+                tap((newJWT: { jwt: String }) => {
+                    if (newJWT) {
+                        this.saveUser(newJWT);
+                        const jwtDecoded = jwt_decode(newJWT.jwt);
+                        this.managePermissionAndRole(jwtDecoded.permissions);
 
-                // Refresh token every 45 minutes
-                setTimeout(() => {
-                    this.refresh().subscribe();
-                }, 45 * 60 * 60 * 1000);
-            }
-        }).catch(err => {
-            this.clearUser();
-            return Observable.throw(err);
-        });
+                        // Refresh token every 45 minutes
+                        setTimeout(() => {
+                            this.refresh().subscribe();
+                        }, 45 * 60 * 60 * 1000);
+                    }
+                }),
+                catchError(err => {
+                    this.clearUser();
+                    return Observable.throw(err);
+                })
+            );
     }
 
     definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
@@ -117,25 +120,27 @@ export class AuthService {
 
     me(): Observable<any> {
         return this.http.get<ConnectedUser>('/api/me')
-            .do(connectedUser => {
-                if (connectedUser.barman) {
-                    this.$currentUser.next(new ConnectedUser({
-                        accountType: 'Barman',
-                        username: connectedUser.barman.connection.username,
-                        createdAt: connectedUser.barman.createdAt,
-                        barman: connectedUser.barman,
-                    }));
-                    this.ngxRolesService.addRole('BARMAN', ['']);
-                } else if (connectedUser.specialAccount) {
-                    this.$currentUser.next(new ConnectedUser({
-                        accountType: 'SpecialAccount',
-                        username: connectedUser.specialAccount.connection.username,
-                        createdAt: connectedUser.specialAccount.createdAt,
-                        specialAccount: connectedUser.specialAccount,
-                    }));
-                    this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
-                }
-            });
+            .pipe(
+                tap(connectedUser => {
+                    if (connectedUser.barman) {
+                        this.$currentUser.next(new ConnectedUser({
+                            accountType: 'Barman',
+                            username: connectedUser.barman.connection.username,
+                            createdAt: connectedUser.barman.createdAt,
+                            barman: connectedUser.barman,
+                        }));
+                        this.ngxRolesService.addRole('BARMAN', ['']);
+                    } else if (connectedUser.specialAccount) {
+                        this.$currentUser.next(new ConnectedUser({
+                            accountType: 'SpecialAccount',
+                            username: connectedUser.specialAccount.connection.username,
+                            createdAt: connectedUser.specialAccount.createdAt,
+                            specialAccount: connectedUser.specialAccount,
+                        }));
+                        this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
+                    }
+                })
+            );
     }
 
     resetPassword(username: String): Observable<any> {

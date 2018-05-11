@@ -3,10 +3,6 @@ import { Barman } from '../../_models/index';
 import { BarmanService } from '../../_services/index';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({

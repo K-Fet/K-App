@@ -5,10 +5,6 @@ import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/m
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({

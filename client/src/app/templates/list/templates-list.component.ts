@@ -3,11 +3,6 @@ import { Template } from '../../_models/index';
 import { TemplateService } from '../../_services/index';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-
 @Component({
     templateUrl: './templates-list.component.html',
     styleUrls: ['./templates-list.component.scss'],

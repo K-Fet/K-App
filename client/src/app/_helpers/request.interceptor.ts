@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/do';
+import { Observable } from 'rxjs';
 import { LoaderService } from '../_services/loader.service';
+import { finalize } from 'rxjs/operators';
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor {
@@ -19,6 +19,6 @@ export class RequestInterceptor implements HttpInterceptor {
                 },
             });
         }
-        return next.handle(request).finally(() => this.loaderService.hide());
+        return next.handle(request).pipe(finalize(() => this.loaderService.hide()));
     }
 }

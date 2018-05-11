@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Barman, Service } from '../_models';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/catch';
-
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 

@@ -28,7 +28,7 @@
                 <section class="mat-typography">
                     <h2>Ajouter mes services ...</h2>
                 </section>
-                <div>
+                <div fxLayout="row">
                     <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
                         <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
                             {{day.name}}
