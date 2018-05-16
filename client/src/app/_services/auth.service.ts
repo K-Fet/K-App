@@ -112,12 +112,6 @@ export class AuthService {
     private managePermissionAndRole(permissions: Array<string>): void {
         this.ngxPermissionsService.addPermission(permissions);
         ROLES.forEach(ROLE => {
-            console.log(ROLE);
-            console.log(permissions.filter(perm => {
-                console.log(perm);
-                console.log(ROLE.permissions.includes(perm));
-                return ROLE.permissions.includes(perm);
-            }));
             if (permissions.filter(perm => ROLE.permissions.includes(perm)).length === ROLE.permissions.length) {
                 this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
             }
