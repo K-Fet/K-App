@@ -47,7 +47,7 @@ export class PlanMyServicesComponent implements OnInit {
 
     updateDayDetails(day: Day): void {
         this.days.map(currentDay => {
-            currentDay.active = currentDay === day ? true : false;
+            currentDay.active = currentDay === day;
             return currentDay;
         });
         this.dayServices = this.days.filter(currentDay => {
@@ -97,9 +97,10 @@ export class PlanMyServicesComponent implements OnInit {
     }
 
     available(service: Service): Boolean {
-        if (!service.barmen || service.barmen.map(barman => barman.id).indexOf(this.user.barman.id)) {
-            return true;
-        }
-        return false;
+        return !service.barmen || service.barmen.filter(barman => barman.id === this.user.barman.id).length === 0;
+    }
+
+    isPasted(service): Boolean {
+        return new Service(service).isPasted();
     }
 }

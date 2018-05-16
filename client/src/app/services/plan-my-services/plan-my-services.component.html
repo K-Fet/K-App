@@ -15,7 +15,7 @@
                 </section>
                 <mat-list *ngIf="myServices">
                     <mat-list-item *ngFor="let service of myServices">
-                        <button *ngIf="!service.isPasted()" type="button" mat-icon-button (click)="removeService(service)">
+                        <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
                             <mat-icon>delete</mat-icon>
                         </button>
                         <span class="first-letter-uppercase">

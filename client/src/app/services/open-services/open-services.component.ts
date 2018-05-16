@@ -184,10 +184,10 @@ export class OpenServicesComponent implements OnInit {
     }
 
     prepareService(controls): Service {
-        return {
+        return new Service({
             startAt: controls.startAtFormControl.value,
             endAt: controls.endAtFormControl.value,
             nbMax: controls.nbMaxFormControl.value,
-        };
+        });
     }
 }
