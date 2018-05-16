@@ -1,4 +1,4 @@
-export const roles = [
+export const ROLES = [
     {
         name: 'TEMPLATE_MANAGER',
         permissions: [
