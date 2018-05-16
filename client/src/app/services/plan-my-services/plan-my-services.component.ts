@@ -95,6 +95,7 @@ export class PlanMyServicesComponent implements OnInit {
             this.updatePlanning(dayNumber);
         });
     }
+
     available(service: Service): Boolean {
         if (!service.barmen || service.barmen.map(barman => barman.id).indexOf(this.user.barman.id)) {
             return true;

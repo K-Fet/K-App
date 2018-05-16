@@ -14,4 +14,9 @@ export class Service {
     constructor(values: Object = {}) {
         Object.assign(this, values);
     }
+
+    isPasted(): Boolean {
+        const now = new Date();
+        return (this.startAt < now);
+    }
 }
