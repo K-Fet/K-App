@@ -71,12 +71,13 @@ async function updateMe(req, res) {
     }
     if (user.barman) {
         const schema = BarmanSchema.min(1);
+
         const newUser = req.body.barman;
 
         const { error } = schema.validate(newUser);
         if (error) throw createUserError('BadRequest', error.message);
 
-        if (newUser.barman.active) throw createUserError('BadRequest', 'Active field is not allowed throw PUT /me');
+        if (newUser.active) throw createUserError('BadRequest', 'Active field is not allowed throw PUT /me');
 
         let newBarman = new Barman(
             {
@@ -106,8 +107,6 @@ async function updateMe(req, res) {
  * @returns {Promise<void>}
  */
 async function getBarmanService(req, res) {
-
-
     const { start, end } = parseStartAndEnd(req.query);
     const services = await barmanService.getBarmanServices(req.barman.id, start, end);
 
@@ -126,7 +125,6 @@ async function addBarmanService(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    if (!req.barman.active) throw createUserError('NotActive', 'Provided barman is not an active barman');
     const servicesId = req.body;
 
     await barmanService.createServiceBarman(req.barman.id, servicesId);
@@ -146,7 +144,6 @@ async function removeBarmanService(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    if (!req.barman.active) throw createUserError('NotActive', 'Provided barman is not an active barman');
     const servicesId = req.body;
 
     await barmanService.deleteServiceBarman(req.barman.id, servicesId);
