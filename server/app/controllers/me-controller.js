@@ -76,6 +76,8 @@ async function updateMe(req, res) {
         const { error } = schema.validate(newUser);
         if (error) throw createUserError('BadRequest', error.message);
 
+        if (newUser.barman.active) throw createUserError('BadRequest', 'Active field is not allowed throw PUT /me');
+
         let newBarman = new Barman(
             {
                 ...newUser,
@@ -124,6 +126,7 @@ async function addBarmanService(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
+    if(!req.barman.active) throw createUserError('NotActive', 'Provided barman is not an active barman');
     const servicesId = req.body;
 
     await barmanService.createServiceBarman(req.barman.id, servicesId);

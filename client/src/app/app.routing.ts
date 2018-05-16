@@ -35,6 +35,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
+import { ActiveGuard } from './_guards/active.guard';
 
 const generateData = (permissions: Array<String>) => {
     return {
@@ -68,7 +69,7 @@ const routes: Routes = [
         data: generateData(['role:write']) },
     { path: 'roles/:id', component: RoleEditComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['role:write']) },
-    { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [NgxPermissionsGuard],
+    { path: 'services/plan-my-services', component: PlanMyServicesComponent, canActivate: [NgxPermissionsGuard, ActiveGuard],
         data: generateData(['SERVICE_PLAN']) },
     { path: 'services-explorer', component: ServiceExplorerComponent, canActivate: [NgxPermissionsGuard],
         data: generateData(['service:read']) },

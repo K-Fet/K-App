@@ -18,8 +18,8 @@ export class ServiceExplorerComponent implements OnInit {
         });
     }
 
-    isBarman(): Boolean {
-        if (this.user.isBarman()) return true;
+    isActive(): Boolean {
+        if (this.user.isBarman() && this.user.barman.active) return true;
         return false;
     }
 }
