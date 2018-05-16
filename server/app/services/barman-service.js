@@ -1,7 +1,7 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Op } = require('sequelize');
-const { ConnectionInformation, Barman, Kommission, Role } = require('../models');
+const { ConnectionInformation, Barman, Kommission, Role, Service } = require('../models');
 const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
 const authService = require('./auth-service');
 const mailService = require('./mail-service');
@@ -291,27 +291,38 @@ async function getBarmanServices(barmanId, startDate, endDate) {
  * Create a service for a barman
  *
  * @param barmanId {number} barman id
- * @param servicesId {number<Array>} service ids
+ * @param servicesId {Array<number>} service ids
  * @returns {Promise<Errors.ValidationError>} an error or nothing
  */
 async function createServiceBarman(barmanId, servicesId) {
 
     logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
 
-    const transaction = await sequelize.transaction();
-
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    try {
-        await barman.addService(servicesId, { transaction });
-    } catch (err) {
-        await transaction.rollback();
-        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+
+    const count = await Service.count({
+        where: {
+            id: {
+                [Op.in]: servicesId,
+            },
+            startAt: {
+                [Op.gt]: Date.now(),
+            },
+        },
+    });
+
+    if (count !== servicesId.length) {
+        throw createUserError('TooOldEvent', 'You cannot edit services that are already pasted');
     }
 
-    await transaction.commit();
+    try {
+        await barman.addService(servicesId);
+    } catch (err) {
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+    }
 }
 
 /**
@@ -326,20 +337,30 @@ async function deleteServiceBarman(barmanId, servicesId) {
 
     logger.verbose('Barman service: delete a Service for the barman ', barmanId, servicesId);
 
-    const transaction = await sequelize.transaction();
-
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-    try {
-        await barman.removeServices(servicesId, { transaction });
-    } catch (err) {
-        await transaction.rollback();
-        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+    const count = await Service.count({
+        where: {
+            id: {
+                [Op.in]: servicesId,
+            },
+            startAt: {
+                [Op.gt]: Date.now(),
+            },
+        },
+    });
+
+    if (count !== servicesId.length) {
+        throw createUserError('TooOldEvent', 'You cannot edit services that are already pasted');
     }
 
-    await transaction.commit();
+    try {
+        await barman.removeServices(servicesId);
+    } catch (err) {
+        throw createUserError('UnknownServices', 'Unable to associate barman with provided services');
+    }
 }
 
 module.exports = {
