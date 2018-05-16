@@ -15,25 +15,25 @@
 #==============================================================================
 
 # directory to put the backup files
-BACKUP_DIR=${!BACKUP_DIR:=/srv/kapp/backups}        # Default backup dir '/srv/kapp/backups'
+${BACKUP_DIR:=/srv/kapp/backups}        # Default backup dir '/srv/kapp/backups'
 
 # MYSQL Parameters
-MYSQL_UNAME=${!MYSQL_UNAME:=root}                   # Default username to 'root'
-MYSQL_PWORD=${!MYSQL_PWORD:=}                       # Default password to ''
-MYSQL_DATABASE_NAME=${!MYSQL_DATABASE_NAME:=kapp}   # Default database to 'kapp'
+${MYSQL_UNAME:=root}                   # Default username to 'root'
+${MYSQL_PWORD:=}                       # Default password to ''
+${MYSQL_DATABASE_NAME:=kapp}   # Default database to 'kapp'
 
 # include mysql and mysqldump binaries for cron bash user
 PATH=$PATH:/usr/local/mysql/bin
 
 # Number of days to keep backups
-KEEP_BACKUPS_FOR=${!KEEP_BACKUPS_FOR:=30}           # Default is 30 days
+${KEEP_BACKUPS_FOR:=30}           # Default is 30 days
 
 #==============================================================================
 # METHODS
 #==============================================================================
 
 # YYYY-MM-DD
-TIMESTAMP=$(date +%F)
+TIMESTAMP="$(date +%F)-$(date +%T)"
 
 function delete_old_backups() {
   if [ -z "$KEEP_BACKUPS_FOR" ]; then
