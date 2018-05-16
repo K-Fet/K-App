@@ -59,9 +59,9 @@ async function updateMe(req, res) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         );
 
         newSpecialAccount = await specialAccountService
@@ -70,14 +70,14 @@ async function updateMe(req, res) {
         res.json({ specialAccount: newSpecialAccount, barman: undefined });
     }
     if (user.barman) {
-        const schema = BarmanSchema.min(1);
+        const schema = BarmanSchema
+            .forbiddenKeys('active')
+            .min(1);
 
         const newUser = req.body.barman;
 
         const { error } = schema.validate(newUser);
         if (error) throw createUserError('BadRequest', error.message);
-
-        if (newUser.active) throw createUserError('BadRequest', 'Active field is not allowed throw PUT /me');
 
         let newBarman = new Barman(
             {
@@ -89,12 +89,12 @@ async function updateMe(req, res) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         );
 
-        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman);
+        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman, null);
 
         res.json({ specialAccount: undefined, barman: newBarman });
     }
