@@ -4,7 +4,7 @@ import { ConnectedUser } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
-import { roles } from '../_helpers/roles';
+import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -111,9 +111,9 @@ export class AuthService {
 
     private managePermissionAndRole(permissions: Array<string>): void {
         this.ngxPermissionsService.addPermission(permissions);
-        roles.forEach(role => {
-            if (permissions.filter(perm => role.permissions.includes(perm)).length === role.permissions.length) {
-                this.ngxRolesService.addRole(role.name, role.permissions);
+        ROLES.forEach(ROLE => {
+            if (permissions.filter(perm => ROLE.permissions.includes(perm)).length === ROLE.permissions.length) {
+                this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
             }
         });
     }
