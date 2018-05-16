@@ -20,13 +20,11 @@ export class MyServicesComponent implements OnInit {
     ngOnInit(): void {
         this.authService.$currentUser.subscribe((user: ConnectedUser) => {
             this.user = user;
-            if (this.user.barman) {
-                this.serviceService.getWeek().subscribe(week => {
-                    this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                        this.myServices = services.length > 0 ? services : undefined;
-                    });
+            this.serviceService.getWeek().subscribe(week => {
+                this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
+                    this.myServices = services.length > 0 ? services : undefined;
                 });
-            }
+            });
         });
     }
 }

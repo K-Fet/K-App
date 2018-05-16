@@ -269,6 +269,8 @@ async function getBarmanServices(barmanId, startDate, endDate) {
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
+    if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
+
     return barman.getServices({
         where: {
             startAt: {
@@ -301,6 +303,8 @@ async function createServiceBarman(barmanId, servicesId) {
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
 
 
     const count = await Service.count({
@@ -340,6 +344,8 @@ async function deleteServiceBarman(barmanId, servicesId) {
     const barman = await Barman.findById(barmanId);
 
     if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
+
+    if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
 
     const count = await Service.count({
         where: {

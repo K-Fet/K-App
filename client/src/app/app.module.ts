@@ -61,6 +61,7 @@ import { AuthService, BarmanService, KommissionService,
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
+import { ActiveGuard } from './_guards/active.guard';
 
 // Helpers
 import { RequestInterceptor } from './_helpers/request.interceptor';
@@ -153,6 +154,7 @@ import { MaterialModule } from './_helpers/material.module';
         LoaderService,
         MeService,
         EditGuard,
+        ActiveGuard,
         DatePipe,
         {
             provide: LOCALE_ID, useValue: 'fr',

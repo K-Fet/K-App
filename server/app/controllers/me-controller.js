@@ -59,9 +59,9 @@ async function updateMe(req, res) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         );
 
         newSpecialAccount = await specialAccountService
@@ -70,7 +70,10 @@ async function updateMe(req, res) {
         res.json({ specialAccount: newSpecialAccount, barman: undefined });
     }
     if (user.barman) {
-        const schema = BarmanSchema.min(1);
+        const schema = BarmanSchema
+            .forbiddenKeys('active')
+            .min(1);
+
         const newUser = req.body.barman;
 
         const { error } = schema.validate(newUser);
@@ -86,12 +89,12 @@ async function updateMe(req, res) {
                     {
                         model: ConnectionInformation,
                         as: 'connection',
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         );
 
-        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman);
+        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman, null);
 
         res.json({ specialAccount: undefined, barman: newBarman });
     }
@@ -104,8 +107,6 @@ async function updateMe(req, res) {
  * @returns {Promise<void>}
  */
 async function getBarmanService(req, res) {
-
-
     const { start, end } = parseStartAndEnd(req.query);
     const services = await barmanService.getBarmanServices(req.barman.id, start, end);
 
