@@ -47,9 +47,11 @@
                                 </ng-template>
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                             </p>
-                            <span mat-line *ngIf="service.barmen" class="mat-caption">
+                            <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                                 Avec
-                                <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                                <span *ngFor="let barman of service.barmen; let idx = index">
+                                    {{barman.nickname}}<span *ngIf="service.barmen.length != (idx+1)">, </span>
+                                </span>
                             </span>
                             <span mat-line *ngIf="!service.barmen" class="mat-caption">
                                 Aucun barmen pour le moment...
