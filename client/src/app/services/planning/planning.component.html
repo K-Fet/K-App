@@ -9,8 +9,7 @@
     <mat-card-content>
         <div fxLayout="row">
             <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
-                <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)"
-                [color]="day.active ? 'accent' : 'primary'">
+                <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
                     {{day.name}}
                 </button>
             </div>
@@ -22,7 +21,9 @@
                         De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                     </span>
                     <span mat-line *ngIf="service.barmen" class="mat-caption">
-                        Avec <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                        Avec <span *ngFor="let barman of service.barmen; let idx = index" >{{barman.nickname}}
+                        <span *ngIf="service.barmen.length != (index+1)">, </span>
+                    </span>
                     </span>
                     <span mat-line *ngIf="!service.barmen" class="mat-caption">
                         Aucun barmen pour le moment...
@@ -30,8 +31,8 @@
                 </mat-list-item>
             </mat-list>
             <p *ngIf="!dayServices">
-                Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a 
-                surement pas encore ouvert les services pour cette semaine.
+                Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a surement pas encore ouvert les services
+                pour cette semaine.
             </p>
         </div>
     </mat-card-content>
