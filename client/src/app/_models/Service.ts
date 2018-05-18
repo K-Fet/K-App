@@ -21,6 +21,6 @@ export class Service {
     }
 
     isPasted(): Boolean {
-        return this.startAt.getTime() < Date.now();
+        return this.endAt.getTime() < Date.now();
     }
 }
