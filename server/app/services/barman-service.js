@@ -312,7 +312,7 @@ async function createServiceBarman(barmanId, servicesId) {
             id: {
                 [Op.in]: servicesId,
             },
-            startAt: {
+            endAt: {
                 [Op.gt]: Date.now(),
             },
         },
@@ -352,7 +352,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
             id: {
                 [Op.in]: servicesId,
             },
-            startAt: {
+            endAt: {
                 [Op.gt]: Date.now(),
             },
         },

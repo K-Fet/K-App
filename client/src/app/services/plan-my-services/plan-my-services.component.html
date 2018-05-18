@@ -39,7 +39,7 @@
                     <mat-list *ngIf="dayServices">
                         <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
                             <p mat-line>
-                                <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
+                                <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
                                     <mat-icon>add</mat-icon>
                                 </button>
                                 <ng-template #elseBlock>
