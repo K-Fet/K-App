@@ -14,6 +14,8 @@ async function createTask(newTask, _embedded) {
 
     logger.verbose('Task service: creating a new task named %s', newTask.name);
 
+    if (!await Kommission.findById(_embedded.kommissionId)) throw createUserError('UnknownKommission', 'This kommission does not exist');
+
     const transaction = await sequelize.transaction();
     try {
         newTask.kommissionId = _embedded.kommissionId;
@@ -97,6 +99,12 @@ async function updateTask(taskId, updatedTask, _embedded) {
     const currentTask = await Task.findById(taskId);
 
     if (!currentTask) throw createUserError('UnknownTask', 'This task does not exist');
+
+    if (_embedded && _embedded.kommissionId) {
+        const currentKommission = await Kommission.findById(_embedded.kommissionId);
+
+        if (!currentKommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
+    }
 
     logger.verbose('Task service: updating task named %s %s', currentTask.id, currentTask.name);
 

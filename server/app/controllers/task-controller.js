@@ -65,8 +65,6 @@ async function updateTask(req, res) {
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
 
-    if (req.body._embedded && req.body._embedded.kommissionId) await kommissionService.getKommissionById(req.body._embedded.kommissionId);
-
     let newTask = new Task({
         ...req.body,
         _embedded: undefined // Remove the only external object
