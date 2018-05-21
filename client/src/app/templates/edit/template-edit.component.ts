@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TemplateService } from '../../_services/template.service';
+import { TemplateService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Template } from '../../_models/Template';
 import * as moment from 'moment';
-// tslint:disable-next-line:no-duplicate-imports
-import { Moment } from 'moment';
 
 @Component({
     templateUrl: './template-edit.component.html',
@@ -18,6 +16,10 @@ export class TemplateEditComponent implements OnInit {
     generalFormArray: FormArray;
     generalFormGroup: FormGroup;
     servicesFormGroup: FormGroup;
+    templateId: Number;
+
+    selectedStartDay: Array<String>;
+    selectedEndDay: Array<String>;
 
     WEEK_DAY = [
         { id: '0', value: 'Lundi' },
@@ -31,7 +33,9 @@ export class TemplateEditComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private templateService: TemplateService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router,
+        private toasterService: ToasterService
     ) {
         this.createForms();
     }
@@ -52,36 +56,41 @@ export class TemplateEditComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe(params => {
-            this.templateService.getById(params['id']).subscribe(template => {
+            this.templateId = params['id'];
+            this.templateService.getById(params['id']).subscribe((template: Template) => {
                 this.templateNameFormGroup.controls.templateNameFormControl.setValue(template.name);
-                (template as Template).services.forEach(service => {
-                    const startAt: Moment = moment().isoWeekday(+service.startAt.day).set({
-                        'hour': +service.startAt.hours,
-                        'minute': +service.startAt.minutes,
-                        'second': 0,
-                        'millisecond': 0,
-                    });
-                    const endAt: Moment = moment().isoWeekday(+service.endAt.day).set({
-                        'hour': +service.endAt.hours,
-                        'minute': +service.endAt.minutes,
-                        'second': 0,
-                        'millisecond': 0,
-                    });
-                    this.addServiceForm(service.nbMax, startAt, endAt, service.startAt.day, service.endAt.day);
-                });
+                this.addServiceFormFromTemplate(template);
                 this.sortServiceForm();
             });
         });
 
     }
 
-    addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment, startDay: Number, endDay: Number): void {
+    addServiceFormFromTemplate(template: Template): void {
+        template.services.forEach(service => {
+            const startTime = moment().hour(service.startAt.hours as number).minute(service.startAt.minutes as number);
+            const endTime = moment().hour(service.endAt.hours as number).minute(service.endAt.minutes as number);
+            const serviceFormGroup = this.fb.group({
+                startFormControl: [startTime.format('HH:mm'), Validators.required],
+                startDayFormControl: [service.startAt.day.toString(), Validators.required],
+                endFormControl: [endTime.format('HH:mm'), Validators.required],
+                endDayFormControl: [service.endAt.day.toString(), Validators.required],
+                nbMaxFormControl: [service.nbMax, Validators.required],
+            });
+            serviceFormGroup.valueChanges.subscribe(() => {
+                this.sortServiceForm();
+            });
+            this.servicesFormArray.push(serviceFormGroup);
+        });
+    }
+
+    addEmptyServiceForm(): void {
         const serviceFormGroup = this.fb.group({
-            startFormControl: [startAt ? startAt.toDate() : '', Validators.required],
-            startDayFormControl: [startDay, Validators.required],
-            endFormControl: [endAt ? endAt.toDate() : '', Validators.required],
-            endDayFormControl: [endDay, Validators.required],
-            nbMaxFormControl: [nbMax, Validators.required],
+            startFormControl: ['', Validators.required],
+            startDayFormControl: ['', Validators.required],
+            endFormControl: ['', Validators.required],
+            endDayFormControl: ['', Validators.required],
+            nbMaxFormControl: ['', Validators.required],
         });
         serviceFormGroup.valueChanges.subscribe(() => {
             this.sortServiceForm();
@@ -89,13 +98,48 @@ export class TemplateEditComponent implements OnInit {
         this.servicesFormArray.push(serviceFormGroup);
     }
 
+    updateTemplate(): void {
+        const template = new Template();
+        template.id = this.templateId;
+        template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
+        template.services = this.servicesFormArray.controls.map(formGroup => {
+            return this.prepareService((formGroup as FormGroup).controls);
+        });
+        this.templateService.update(template).subscribe(() => {
+            this.toasterService.showToaster('Template modifié');
+            this.router.navigate(['/templates']);
+        });
+    }
+
+    prepareService(controls): {nbMax: Number,
+        startAt: {day: Number, hours: Number, minutes: Number},
+        endAt: {day: Number, hours: Number, minutes: Number}} {
+        return {
+            nbMax: controls.nbMaxFormControl.value,
+            startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),
+            endAt: this.toNumber(controls.endFormControl.value, controls.endDayFormControl.value),
+        };
+    }
+
     sortServiceForm(): void {
         this.servicesFormArray.controls.sort((a, b) => {
-            const aStartAt = (a as FormGroup).controls.startAtFormControl.value;
-            const bStartAt = (b as FormGroup).controls.startAtFormControl.value;
-            if (aStartAt < bStartAt) {
+            const aValue = (a as FormGroup).value;
+            const bValue = (b as FormGroup).value;
+            const aStartAt = moment().isoWeekday(aValue.startDayFormControl).set({
+                'hour': aValue.startFormControl ? aValue.startFormControl.split(':')[0] : 0,
+                'minute': aValue.startFormControl ? aValue.startFormControl.split(':')[1] : 0,
+                'second': 0,
+                'millisecond': 0,
+            });
+            const bStartAt = moment().isoWeekday(bValue.startDayFormControl).set({
+                'hour': bValue.startFormControl ? bValue.startFormControl.split(':')[0] : 0,
+                'minute': bValue.startFormControl ? bValue.startFormControl.split(':')[1] : 0,
+                'second': 0,
+                'millisecond': 0,
+            });
+            if (aStartAt.isBefore(bStartAt)) {
                 return -1;
-            } else if (aStartAt > bStartAt) {
+            } else if (aStartAt.isAfter(bStartAt)) {
                 return 1;
             }
             return 0;

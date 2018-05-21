@@ -7,7 +7,6 @@ export class Template {
     deletedAt?: Date;
     services: Array<{
         nbMax?: Number,
-        name?: String,
         startAt: {
             day: Number,
             hours: Number,
