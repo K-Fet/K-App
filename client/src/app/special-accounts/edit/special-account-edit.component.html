@@ -12,10 +12,10 @@
             <h4>Mise à jour des informations</h4>
             <form [formGroup]="specialAccountForm" fxLayout="column" (ngSubmit)="openDialog()">
                 <mat-form-field>
-                    <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                    <input matInput placeholder="Adresse email" formControlName="username">
                     <mat-hint align="start">Un email de vérification sera envoyé si vous changez ce champ.</mat-hint>
                     <mat-error *ngIf="specialAccountForm.get('username').hasError('email')">
-                            Le Username doit être un email valide.
+                        Doit être un email valide.
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>

@@ -11,11 +11,11 @@
         <mat-card-content>
             <form [formGroup]="specialAccountForm" fxLayout="column">
                 <p>Le nouvel utilisateur sera invité à définir son mot de passe grâce à un email de
-                    vérification envoyé automatiquement sur son adresse email (username)).</p>
+                    vérification envoyé automatiquement sur son adresse email.</p>
                 <mat-form-field>
-                    <input matInput placeholder="Username (doit être un email)" formControlName="username">
+                    <input matInput placeholder="Adresse email" formControlName="username">
                     <mat-error *ngIf="specialAccountForm.get('username').hasError('email')">
-                        Le Username doit être un email valide.
+                        Doit être un email valide.
                     </mat-error>
                 </mat-form-field>
                 <mat-form-field>
