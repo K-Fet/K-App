@@ -43,7 +43,9 @@
                                     <mat-icon>add</mat-icon>
                                 </button>
                                 <ng-template #elseBlock>
-                                    <mat-icon>check_circle</mat-icon>
+                                    <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
                                 </ng-template>
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                                 <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
