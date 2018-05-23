@@ -60,7 +60,7 @@ async function getTaskById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateTask(req, res) {
-    const schema = TaskSchema.min(1);
+    const schema = TaskSchema.min(1).forbiddenKeys('_embedded.kommissionId');
 
     const { error } = schema.validate(req.body);
     if (error) throw createUserError('BadRequest', error.message);
