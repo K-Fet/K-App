@@ -46,6 +46,7 @@
                                     <mat-icon>check_circle</mat-icon>
                                 </ng-template>
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                                <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
                             </p>
                             <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                                 Avec

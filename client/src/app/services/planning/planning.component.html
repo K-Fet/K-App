@@ -20,6 +20,7 @@
                 <mat-list-item *ngFor="let service of dayServices">
                     <span mat-line>
                         De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                        <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
                     </span>
                     <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                         Avec <span *ngFor="let barman of service.barmen; let idx = index">{{barman.nickname}}<span *ngIf="service.barmen.length != (idx+1)">, </span>
@@ -31,7 +32,7 @@
                 </mat-list-item>
             </mat-list>
             <p *ngIf="!dayServices">
-                Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a 
+                Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a
                 surement pas encore ouvert les services pour cette semaine.
             </p>
         </div>

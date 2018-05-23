@@ -103,4 +103,8 @@ export class PlanMyServicesComponent implements OnInit {
     isPasted(service): Boolean {
         return new Service(service).isPasted();
     }
+
+    getColor(service: Service): Object {
+        return service.barmen ? service.barmen.length >= service.nbMax ? 'red' : 'green' : 'green';
+    }
 }
