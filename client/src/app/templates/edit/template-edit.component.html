@@ -27,15 +27,18 @@
                                                 <button mat-icon-button (click)="removeServiceForm(i)" >
                                                     <mat-icon fxFlex="10px">remove</mat-icon>
                                                 </button>
-                                                <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startDayFormControl.value
-                                                    && getControls()[i].controls.startFormControl.value">
+                                                <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startFormControl.value
+                                                        && getControls()[i].controls.startDayFormControl.value
+                                                        && getControls()[i].controls.endFormControl.value; else elseBlock">
                                                     {{findWeekDay(getControls()[i].controls.startDayFormControl.value)}}
                                                     de {{getControls()[i].controls.startFormControl.value}}
                                                     à {{getControls()[i].controls.endFormControl.value}}
                                                 </span>
-                                                <span class="mat-error" *ngIf="!getControls()[i].controls.startFormControl.value">
+                                                <ng-template #elseBlock>
+                                                    <span class="mat-error">
                                                         Service à définir !
-                                                </span>
+                                                    </span>
+                                                </ng-template>
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
                                         <div fxLayout="column" fxLayoutAlign="center">

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Template, TemplateServiceUnit } from '../../_models/index';
+import { Template, TemplateDateUnit, TemplateServiceUnit } from '../../_models/index';
 import { TemplateService } from '../../_services/template.service';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
@@ -17,13 +17,13 @@ export class TemplateNewComponent {
     generalFormGroup: FormGroup;
 
     WEEK_DAY = [
-        { id: '0', value: 'Lundi' },
-        { id: '1', value: 'Mardi' },
-        { id: '2', value: 'Mercredi' },
-        { id: '3', value: 'Jeudi' },
-        { id: '4', value: 'Vendredi' },
-        { id: '5', value: 'Samedi' },
-        { id: '6', value: 'Dimanche' } ];
+        { id: '1', value: 'Lundi' },
+        { id: '2', value: 'Mardi' },
+        { id: '3', value: 'Mercredi' },
+        { id: '4', value: 'Jeudi' },
+        { id: '5', value: 'Vendredi' },
+        { id: '6', value: 'Samedi' },
+        { id: '7', value: 'Dimanche' } ];
 
     constructor(
         private fb: FormBuilder,
@@ -83,11 +83,11 @@ export class TemplateNewComponent {
         this.servicesFormArray.removeAt(+fromGroupId);
     }
 
-    toNumber(date: String, selectedDay): { day: Number, hours: Number, minutes: Number } {
+    toNumber(date: String, selectedDay): TemplateDateUnit {
         return {
             day: selectedDay,
-            hours: Number(date.split(':')[0]),
-            minutes: Number(date.split(':')[1]),
+            hours: +date.split(':')[0],
+            minutes: +date.split(':')[1],
         };
     }
 
@@ -111,4 +111,7 @@ export class TemplateNewComponent {
         };
     }
 
+    findWeekDay(dayId: String): String {
+        return this.WEEK_DAY.find(day => day.id === dayId).value;
+    }
 }
