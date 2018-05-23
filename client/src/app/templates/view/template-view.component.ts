@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Service, Template } from '../../_models';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import * as moment from 'moment';
 
 @Component({
     templateUrl: './template-view.component.html',
@@ -34,10 +35,10 @@ export class TemplateViewComponent implements OnInit {
     }
 
     toDate(val): Date {
-        const date = new Date();
-        date.setDate(val.day);
-        date.setHours(val.hours);
-        date.setMinutes(val.minutes);
+        const date = moment().isoWeekday(val.day).set({
+            'hour': val.hours,
+            'minute': val.minutes,
+        }).toDate();
         return date;
     }
 

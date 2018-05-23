@@ -20,6 +20,10 @@ export class TemplateService {
         return this.http.post<Template>('/api/templates', template);
     }
 
+    update(template: Template): Observable<Template> {
+        return this.http.put<Template>(`/api/templates/${template.id}`, template);
+    }
+
     delete(id: Number): Observable<Template> {
         return this.http.post<Template>(`api/templates/${id}/delete`, null);
     }

@@ -1,3 +1,15 @@
+export interface TemplateDateUnit {
+    day: Number;
+    hours: Number;
+    minutes: Number;
+}
+
+export interface TemplateServiceUnit {
+    nbMax: Number;
+    startAt: TemplateDateUnit;
+    endAt: TemplateDateUnit;
+}
+
 export class Template {
 
     id: Number;
@@ -5,21 +17,7 @@ export class Template {
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
-    services: Array<{
-        nbMax?: Number,
-        name?: String,
-        categoryId: Number,
-        startAt: {
-            day: Number,
-            hours: Number,
-            minutes: Number
-        },
-        endAt: {
-            day: Number,
-            hours: Number,
-            minutes: Number
-        }
-    }>;
+    services: Array<TemplateServiceUnit>;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

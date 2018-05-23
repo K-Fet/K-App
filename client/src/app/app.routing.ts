@@ -29,8 +29,9 @@ import { SpecialAccountNewComponent } from './special-accounts/new/special-accou
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
 import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
-// import { TemplateNewComponent } from './templates/new/templates-new.component';
+import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
@@ -95,9 +96,12 @@ const routes: Routes = [
     { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
     { path: 'templates', component: TemplatesListComponent, canActivate: [NgxPermissionsGuard],
         data: generateData('template:read') },
-    // { path: 'templates/new', component: TemplateNewComponent },
+    { path: 'templates/new', component: TemplateNewComponent, canActivate: [NgxPermissionsGuard],
+        data: generateData('template:write') },
     { path: 'templates/:id', component: TemplateViewComponent, canActivate: [NgxPermissionsGuard],
         data: generateData('template:read') },
+    { path: 'templates/:id/edit', component: TemplateEditComponent, canActivate: [NgxPermissionsGuard],
+        data: generateData('template:write') },
     { path: '404', component: NotFoundComponent },
     { path: '**', redirectTo: '/404' },
 ];
