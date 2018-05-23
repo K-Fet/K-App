@@ -207,3 +207,10 @@ fabric.properties
 
 # Ignore backups
 backups/
+
+# Ignore VS Code config file
+.vscode/*
+ !.vscode/settings.json
+ !.vscode/tasks.json
+ !.vscode/launch.json
+ !.vscode/extensions.json

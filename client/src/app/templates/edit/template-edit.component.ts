@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TemplateService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Template } from '../../_models/Template';
+import { Template, TemplateDateUnit, TemplateServiceUnit } from '../../_models/Template';
 import * as moment from 'moment';
 
 @Component({
@@ -22,13 +22,13 @@ export class TemplateEditComponent implements OnInit {
     selectedEndDay: Array<String>;
 
     WEEK_DAY = [
-        { id: '0', value: 'Lundi' },
-        { id: '1', value: 'Mardi' },
-        { id: '2', value: 'Mercredi' },
-        { id: '3', value: 'Jeudi' },
-        { id: '4', value: 'Vendredi' },
-        { id: '5', value: 'Samedi' },
-        { id: '6', value: 'Dimanche' } ];
+        { id: '1', value: 'Lundi' },
+        { id: '2', value: 'Mardi' },
+        { id: '3', value: 'Mercredi' },
+        { id: '4', value: 'Jeudi' },
+        { id: '5', value: 'Vendredi' },
+        { id: '6', value: 'Samedi' },
+        { id: '7', value: 'Dimanche' } ];
 
     constructor(
         private fb: FormBuilder,
@@ -68,8 +68,10 @@ export class TemplateEditComponent implements OnInit {
 
     addServiceFormFromTemplate(template: Template): void {
         template.services.forEach(service => {
-            const startTime = moment().hour(service.startAt.hours as number).minute(service.startAt.minutes as number);
-            const endTime = moment().hour(service.endAt.hours as number).minute(service.endAt.minutes as number);
+            const startTime = moment().isoWeekday(service.startAt.day.toString())
+                .hour(service.startAt.hours as number).minute(service.startAt.minutes as number);
+            const endTime = moment().isoWeekday(service.endAt.day.toString())
+                .hour(service.endAt.hours as number).minute(service.endAt.minutes as number);
             const serviceFormGroup = this.fb.group({
                 startFormControl: [startTime.format('HH:mm'), Validators.required],
                 startDayFormControl: [service.startAt.day.toString(), Validators.required],
@@ -111,9 +113,7 @@ export class TemplateEditComponent implements OnInit {
         });
     }
 
-    prepareService(controls): {nbMax: Number,
-        startAt: {day: Number, hours: Number, minutes: Number},
-        endAt: {day: Number, hours: Number, minutes: Number}} {
+    prepareService(controls): TemplateServiceUnit {
         return {
             nbMax: controls.nbMaxFormControl.value,
             startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),
@@ -125,13 +125,13 @@ export class TemplateEditComponent implements OnInit {
         this.servicesFormArray.controls.sort((a, b) => {
             const aValue = (a as FormGroup).value;
             const bValue = (b as FormGroup).value;
-            const aStartAt = moment().isoWeekday(aValue.startDayFormControl).set({
+            const aStartAt = moment().isoWeekday(+aValue.startDayFormControl).set({
                 'hour': aValue.startFormControl ? aValue.startFormControl.split(':')[0] : 0,
                 'minute': aValue.startFormControl ? aValue.startFormControl.split(':')[1] : 0,
                 'second': 0,
                 'millisecond': 0,
             });
-            const bStartAt = moment().isoWeekday(bValue.startDayFormControl).set({
+            const bStartAt = moment().isoWeekday(+bValue.startDayFormControl).set({
                 'hour': bValue.startFormControl ? bValue.startFormControl.split(':')[0] : 0,
                 'minute': bValue.startFormControl ? bValue.startFormControl.split(':')[1] : 0,
                 'second': 0,
@@ -154,11 +154,15 @@ export class TemplateEditComponent implements OnInit {
         this.servicesFormArray.removeAt(+fromGroupId);
     }
 
-    toNumber(date: String, selectedDay): { day: Number, hours: Number, minutes: Number; } {
+    toNumber(date: String, selectedDay): TemplateDateUnit {
         return {
             day: selectedDay,
-            hours: Number(date.split(':')[0]),
-            minutes: Number(date.split(':')[1]),
+            hours: +date.split(':')[0],
+            minutes: +date.split(':')[1],
         };
+    }
+
+    findWeekDay(dayId: String): String {
+        return this.WEEK_DAY.find(day => day.id === dayId).value;
     }
 }

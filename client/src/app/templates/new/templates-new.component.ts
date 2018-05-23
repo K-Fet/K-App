@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Template } from '../../_models/index';
+import { Template, TemplateServiceUnit } from '../../_models/index';
 import { TemplateService } from '../../_services/template.service';
 import { ToasterService } from '../../_services/toaster.service';
 import { Router } from '@angular/router';
@@ -103,9 +103,7 @@ export class TemplateNewComponent {
         });
     }
 
-    prepareService(controls): {nbMax: Number,
-        startAt: {day: Number, hours: Number, minutes: Number},
-        endAt: {day: Number, hours: Number, minutes: Number}} {
+    prepareService(controls): TemplateServiceUnit {
         return {
             nbMax: controls.nbMaxFormControl.value,
             startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),

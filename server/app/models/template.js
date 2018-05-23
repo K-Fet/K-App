@@ -69,9 +69,9 @@ class TemplateUnit extends Model {
                 // eslint-disable-next-line
                 get() {
                     const startAt = this.getDataValue('startAt');
-
+                    const day = startAt.getDay() === 0 ? 7 : startAt.getDay();
                     return {
-                        day: startAt.getDay(),
+                        day: day,
                         hours: startAt.getHours(),
                         minutes: startAt.getMinutes(),
                     };
@@ -81,7 +81,7 @@ class TemplateUnit extends Model {
                     const date = new Date();
                     const currDay = date.getDay();
 
-                    date.setDate(date.getDate() + (val.day - currDay));
+                    date.setDate(currDay + (val.day - 1 - currDay));
                     date.setHours(val.hours);
                     date.setMinutes(val.minutes);
 
@@ -95,9 +95,9 @@ class TemplateUnit extends Model {
                 // eslint-disable-next-line
                 get() {
                     const endAt = this.getDataValue('endAt');
-
+                    const day = endAt.getDay() === 0 ? 7 : endAt.getDay();
                     return {
-                        day: endAt.getDay(),
+                        day: day,
                         hours: endAt.getHours(),
                         minutes: endAt.getMinutes(),
                     };
@@ -107,7 +107,7 @@ class TemplateUnit extends Model {
                     const date = new Date();
                     const currDay = date.getDay();
 
-                    date.setDate(date.getDate() + (val.day - currDay));
+                    date.setDate(date.getDate() + (val.day - 1 - currDay));
                     date.setHours(val.hours);
                     date.setMinutes(val.minutes);
 
