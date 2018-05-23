@@ -53,7 +53,6 @@ class Barman extends Model {
             active: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                defaultValue: true
             }
         }, {
             sequelize,

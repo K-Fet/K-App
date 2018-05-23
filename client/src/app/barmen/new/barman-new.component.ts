@@ -111,5 +111,6 @@ export class BarmanNewComponent implements OnInit {
                 }
             }
         });
+        this.barman.active = this.barmanForm.controls.active.value || false;
     }
 }

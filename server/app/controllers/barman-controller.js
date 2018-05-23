@@ -32,7 +32,8 @@ async function createBarman(req, res) {
         'connection.username',
         'nickname',
         'dateOfBirth',
-        'flow'
+        'flow',
+        'active'
     );
 
     const { error } = schema.validate(req.body);
