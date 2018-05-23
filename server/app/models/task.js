@@ -14,12 +14,6 @@ class Task extends Model {
      * @returns {Model}
      */
     static init(sequelize) {
-        // eslint-disable-next-line
-        this.prototype.toJSON = function () {
-            const values = Object.assign({}, this.get());
-            delete values.kommissionId;
-            return values;
-        };
 
         return super.init({
             id: {
@@ -57,6 +51,16 @@ class Task extends Model {
                 allowNull: false
             }
         });
+    }
+
+    /**
+     * Convert task model into JSON document in order to send it to the client
+     * @returns {String}
+     */
+    toJSON() {
+        const values = Object.assign({}, this.get());
+        delete values.kommissionId;
+        return values;
     }
 }
 

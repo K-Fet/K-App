@@ -14,6 +14,8 @@ async function createTask(newTask, _embedded) {
 
     logger.verbose('Task service: creating a new task named %s', newTask.name);
 
+    if (!await Kommission.findById(_embedded.kommissionId)) throw createUserError('UnknownKommission', 'This kommission does not exist');
+
     const transaction = await sequelize.transaction();
     try {
         newTask.kommissionId = _embedded.kommissionId;
@@ -89,7 +91,6 @@ async function getTaskById(taskId) {
  *
  * @param taskId {number} Task id
  * @param updatedTask {Task} Updated task, constructed from the request.
- * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<Task>} The updated task
  */
 async function updateTask(taskId, updatedTask, _embedded) {
@@ -109,9 +110,7 @@ async function updateTask(taskId, updatedTask, _embedded) {
             description: updatedTask.description,
             deadline: updatedTask.deadline,
             state: updatedTask.state,
-            kommissionId: _embedded ? _embedded.kommissionId : undefined,
         }), { transaction });
-        if (_embedded && _embedded.kommissionId) delete _embedded.kommissionId;
     } catch (err) {
         logger.warn('Task Service : error while updating a task', err);
         await transaction.rollback();
