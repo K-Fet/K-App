@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <mat-list *ngIf="dayServices">
-                        <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
+                        <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center" class="mat-list-item-word-wrap">
                             <p mat-line>
                                 <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
                                     <mat-icon>add</mat-icon>
@@ -53,7 +53,8 @@
                             <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                                 Avec
                                 <span *ngFor="let barman of service.barmen; let idx = index">
-                                    {{barman.nickname}}<span *ngIf="service.barmen.length != (idx+1)">, </span>
+                                    {{barman.nickname}}
+                                    <span *ngIf="service.barmen.length != (idx+1)">, </span>
                                 </span>
                             </span>
                             <span mat-line *ngIf="!service.barmen" class="mat-caption">
