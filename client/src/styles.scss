@@ -19,3 +19,12 @@ body {
 .first-letter-uppercase::first-letter {
     text-transform: uppercase;
 }
+
+.mat-list-item.mat-list-item-word-wrap {
+    height: initial !important;
+    margin-bottom: 15px;
+    .mat-line {
+        word-wrap: break-word !important;
+        white-space: pre-wrap !important;
+    }
+}
