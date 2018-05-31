@@ -125,7 +125,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
         ServiceNewComponent,
         ServiceEditComponent,
         LoaderComponent,
-        BarmanServiceNumberComponent
+        BarmanServiceNumberComponent,
     ],
     entryComponents: [
         CodeDialogComponent,
