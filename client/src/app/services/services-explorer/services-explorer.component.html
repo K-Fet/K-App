@@ -6,5 +6,6 @@
             <app-my-services fxFlex *ngIf="isActive()"></app-my-services>
             <app-planning fxFlex></app-planning>
         </div>
+        <app-barman-service-number *ngIf="hasServiceWritePerm()"></app-barman-service-number>
     </div>
 </div>

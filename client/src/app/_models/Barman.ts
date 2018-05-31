@@ -1,4 +1,4 @@
-import { AssociationChanges, ConnectionInformation, Kommission, Role } from './index';
+import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } from './index';
 
 export class Barman {
 
@@ -20,6 +20,7 @@ export class Barman {
     godFather: Barman;
     kommissions: Array<Kommission>;
     roles: Array<Role>;
+    services: Array<Service>;
 
     _embedded: {
         godFather?: Number;
