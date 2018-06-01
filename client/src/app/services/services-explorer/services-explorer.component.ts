@@ -20,12 +20,10 @@ export class ServiceExplorerComponent implements OnInit {
     }
 
     isActive(): Boolean {
-        if (this.user.isBarman() && this.user.barman.active) return true;
-        return false;
+        return this.user.isBarman() && this.user.barman.active;
     }
 
     hasServiceWritePerm(): Boolean {
-        if (this.ngxPermissionsService.getPermissions()['service:write']) return true;
-        return false;
+        return this.ngxPermissionsService.getPermissions()['service:write'] !== undefined;
     }
 }
