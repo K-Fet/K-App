@@ -5,153 +5,151 @@ const Joi = require('joi');
  * This class represents a template for a list of services for a week.
  */
 class Template extends Model {
-
-    /**
+  /**
      * Initialization function.
      *
      * @param sequelize
      * @returns {Model}
      */
-    static init(sequelize) {
-        return super.init({
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
+  static init(sequelize) {
+    return super.init({
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-        }, {
-            sequelize,
-        });
-    }
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    }, {
+      sequelize,
+    });
+  }
 
 
-    /**
+  /**
      * Set associations for the model.
      *
      * @param models
      */
-    static associate(models) {
-        this.hasMany(models.TemplateUnit, { onDelete: 'CASCADE', as: 'services' });
-    }
+  static associate(models) {
+    this.hasMany(models.TemplateUnit, { onDelete: 'CASCADE', as: 'services' });
+  }
 }
 
 /**
  * This class represent an unique service for a template.
  */
 class TemplateUnit extends Model {
-
-    /**
+  /**
      * Initialization function.
      *
      * @param sequelize
      * @returns {Model}
      */
-    static init(sequelize) {
-        return super.init({
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            nbMax: {
-                type: DataTypes.INTEGER,
-                validate: { min: 1 },
-            },
+  static init(sequelize) {
+    return super.init({
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      nbMax: {
+        type: DataTypes.INTEGER,
+        validate: { min: 1 },
+      },
 
-            startAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                // eslint-disable-next-line
+      startAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        // eslint-disable-next-line
                 get() {
-                    const startAt = this.getDataValue('startAt');
-                    const day = startAt.getDay() || 7;
-                    return {
-                        day,
-                        hours: startAt.getHours(),
-                        minutes: startAt.getMinutes(),
-                    };
-                },
-                // eslint-disable-next-line
+          const startAt = this.getDataValue('startAt');
+          const day = startAt.getDay() || 7;
+          return {
+            day,
+            hours: startAt.getHours(),
+            minutes: startAt.getMinutes(),
+          };
+        },
+        // eslint-disable-next-line
                 set(val) {
-                    const date = new Date();
-                    const currDay = date.getDay();
+          const date = new Date();
+          const currDay = date.getDay();
 
-                    date.setDate(currDay + (val.day - 1 - currDay));
-                    date.setHours(val.hours);
-                    date.setMinutes(val.minutes);
+          date.setDate(currDay + (val.day - 1 - currDay));
+          date.setHours(val.hours);
+          date.setMinutes(val.minutes);
 
-                    this.setDataValue('startAt', date);
-                },
-            },
+          this.setDataValue('startAt', date);
+        },
+      },
 
-            endAt: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                // eslint-disable-next-line
+      endAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        // eslint-disable-next-line
                 get() {
-                    const endAt = this.getDataValue('endAt');
-                    const day = endAt.getDay() || 7;
-                    return {
-                        day,
-                        hours: endAt.getHours(),
-                        minutes: endAt.getMinutes(),
-                    };
-                },
-                // eslint-disable-next-line
+          const endAt = this.getDataValue('endAt');
+          const day = endAt.getDay() || 7;
+          return {
+            day,
+            hours: endAt.getHours(),
+            minutes: endAt.getMinutes(),
+          };
+        },
+        // eslint-disable-next-line
                 set(val) {
-                    const date = new Date();
-                    const currDay = date.getDay();
+          const date = new Date();
+          const currDay = date.getDay();
 
-                    date.setDate(date.getDate() + (val.day - 1 - currDay));
-                    date.setHours(val.hours);
-                    date.setMinutes(val.minutes);
+          date.setDate(date.getDate() + (val.day - 1 - currDay));
+          date.setHours(val.hours);
+          date.setMinutes(val.minutes);
 
-                    this.setDataValue('endAt', date);
-                },
-            },
-        }, {
-            sequelize,
-        });
-    }
+          this.setDataValue('endAt', date);
+        },
+      },
+    }, {
+      sequelize,
+    });
+  }
 
 
-    /**
+  /**
      * Set associations for the model.
      *
      * @param models
      */
-    static associate(models) { // eslint-disable-line no-unused-vars
-    }
+  static associate(models) { // eslint-disable-line no-unused-vars
+  }
 }
 
 const TemplateUnitSchema = Joi.object().keys({
-    nbMax: Joi.number(),
-    startAt: Joi.object().keys({
-        day: Joi.number(),
-        hours: Joi.number(),
-        minutes: Joi.number(),
-    }),
-    endAt: Joi.object().keys({
-        day: Joi.number(),
-        hours: Joi.number(),
-        minutes: Joi.number(),
-    }),
+  nbMax: Joi.number(),
+  startAt: Joi.object().keys({
+    day: Joi.number(),
+    hours: Joi.number(),
+    minutes: Joi.number(),
+  }),
+  endAt: Joi.object().keys({
+    day: Joi.number(),
+    hours: Joi.number(),
+    minutes: Joi.number(),
+  }),
 });
 
 const TemplateSchema = Joi.object().keys({
-    id: Joi.number().integer(),
-    name: Joi.string(),
-    services: Joi.array().items(TemplateUnitSchema),
+  id: Joi.number().integer(),
+  name: Joi.string(),
+  services: Joi.array().items(TemplateUnitSchema),
 });
 
 module.exports = {
-    Template,
-    TemplateUnit,
-    TemplateSchema,
-    TemplateUnitSchema,
+  Template,
+  TemplateUnit,
+  TemplateSchema,
+  TemplateUnitSchema,
 };

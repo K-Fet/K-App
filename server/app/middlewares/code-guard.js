@@ -10,24 +10,24 @@ const { createUserError } = require('../../utils');
  * @returns {Promise<void>}
  */
 async function codeGuard(req, res, next) {
-    if (!req.body) {
-        throw createUserError('BadRequest', 'Missing body');
-    }
+  if (!req.body) {
+    throw createUserError('BadRequest', 'Missing body');
+  }
 
-    const code = req.body.code;
+  const { code } = req.body;
 
-    if (!code) {
-        throw createUserError('BadRequest', 'body.code is missing');
-    }
+  if (!code) {
+    throw createUserError('BadRequest', 'body.code is missing');
+  }
 
-    if (!await userService.checkCode(req.user.userId, code)) {
-        throw createUserError('CodeError', 'The code provided is wrong');
-    }
+  if (!await userService.checkCode(req.user.userId, code)) {
+    throw createUserError('CodeError', 'The code provided is wrong');
+  }
 
-    logger.info(`Secure action at ${req.method} ${req.originalUrl} done by user id ${req.user.userId}`);
-    next();
+  logger.info(`Secure action at ${req.method} ${req.originalUrl} done by user id ${req.user.userId}`);
+  next();
 }
 
 module.exports = {
-    codeGuard
+  codeGuard,
 };

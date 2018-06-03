@@ -5,46 +5,43 @@ beforeEach(initDatabase);
 afterEach(clearDatabase);
 
 describe('Integration::Members::GetMembers', () => {
+  test('should return members in array', async () => {
+    // Given
 
-    test('should return members in array', async () => {
-        // Given
+    await Member.bulkCreate([
+      {
+        firstName: 'John',
+        lastName: 'Smith',
+        school: 'INSA',
+        // TODO test active filter
+      },
+    ]);
 
-        await Member.bulkCreate([
-            {
-                firstName: 'John',
-                lastName: 'Smith',
-                school: 'INSA',
-                // TODO test active filter
-            },
-        ]);
+    // When
 
-        // When
+    const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
 
-        const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
+    // Then
 
-        // Then
-
-        expect(members).toEqual(
-            [
-                expect.objectContaining({
-                    firstName: 'John',
-                    lastName: 'Smith',
-                    school: 'INSA',
-                    active: true,
-                }),
-            ],
-        );
-    });
+    expect(members).toEqual([
+      expect.objectContaining({
+        firstName: 'John',
+        lastName: 'Smith',
+        school: 'INSA',
+        active: true,
+      }),
+    ]);
+  });
 
 
-    test('should return empty array', async () => {
-        // Given
-        // When
+  test('should return empty array', async () => {
+    // Given
+    // When
 
-        const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
+    const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
 
-        // Then
+    // Then
 
-        expect(members).toEqual([]);
-    });
+    expect(members).toEqual([]);
+  });
 });

@@ -32,7 +32,8 @@
         "prod": "NODE_ENV=production node server/index.js",
         "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
         "test:back": "jest --runInBand",
-        "test:front": "cd client/ && yarn build"
+        "test:front": "cd client/ && yarn build",
+        "preversion": "yarn test"
     },
     "dependencies": {
         "argon2": "0.19.2",
@@ -55,6 +56,8 @@
         "codecov": "^3.0.2",
         "concurrently": "^3.5.1",
         "eslint": "^4.18.2",
+        "eslint-config-airbnb-base": "^12.1.0",
+        "eslint-plugin-import": "^2.12.0",
         "jest": "^23.0.1",
         "node-mocks-http": "^1.7.0",
         "nodemon": "^1.17.5",

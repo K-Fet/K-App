@@ -13,19 +13,19 @@ const { isTokenRevoked } = require('../services/auth-service');
  * @param done Callback
  */
 function isRevokedCallback(req, payload, done) {
-    const tokenId = payload.jit;
+  const tokenId = payload.jit;
 
-    isTokenRevoked(tokenId)
-        .then(jit => done(null, !!jit))
-        .catch(err => done(err));
+  isTokenRevoked(tokenId)
+    .then(jit => done(null, !!jit))
+    .catch(err => done(err));
 }
 
 
 // Install the middleware
 
 router.use(jwt({
-    secret: jwtSecret,
-    isRevoked: isRevokedCallback
+  secret: jwtSecret,
+  isRevoked: isRevokedCallback,
 }));
 
 module.exports = router;

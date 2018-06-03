@@ -11,9 +11,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllKommissions(req, res) {
-    const kommissions = await kommissionService.getAllKommissions();
+  const kommissions = await kommissionService.getAllKommissions();
 
-    res.json(kommissions);
+  res.json(kommissions);
 }
 
 /**
@@ -24,18 +24,18 @@ async function getAllKommissions(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getTasks(req, res) {
-    const kommissionId = req.params.id;
+  const kommissionId = req.params.id;
 
-    const kommission = await kommissionService.getKommissionById(kommissionId);
+  const kommission = await kommissionService.getKommissionById(kommissionId);
 
-    res.json(await kommission.getTasks({
-        include: [
-            {
-                model: Barman,
-                as: 'barmen'
-            }
-        ]
-    }));
+  res.json(await kommission.getTasks({
+    include: [
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+    ],
+  }));
 }
 
 /**
@@ -46,23 +46,23 @@ async function getTasks(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createKommission(req, res) {
-    const schema = KommissionSchema.requiredKeys(
-        'name',
-        'description'
-    );
+  const schema = KommissionSchema.requiredKeys(
+    'name',
+    'description',
+  );
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
 
-    let newKommission = new Kommission({
-        ...req.body,
-        _embedded: undefined // Remove the only external object
-    });
+  let newKommission = new Kommission({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    newKommission = await kommissionService.createKommission(newKommission, req.body._embedded);
+  newKommission = await kommissionService.createKommission(newKommission, req.body._embedded);
 
-    res.json(newKommission);
+  res.json(newKommission);
 }
 
 
@@ -74,11 +74,11 @@ async function createKommission(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getKommissionById(req, res) {
-    const kommissionId = req.params.id;
+  const kommissionId = req.params.id;
 
-    const kommission = await kommissionService.getKommissionById(kommissionId);
+  const kommission = await kommissionService.getKommissionById(kommissionId);
 
-    res.json(kommission);
+  res.json(kommission);
 }
 
 
@@ -90,21 +90,21 @@ async function getKommissionById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateKommission(req, res) {
-    const schema = KommissionSchema.min(1);
+  const schema = KommissionSchema.min(1);
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newKommission = new Kommission({
-        ...req.body,
-        _embedded: undefined // Remove the only external object
-    });
+  let newKommission = new Kommission({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    const kommissionId = req.params.id;
+  const kommissionId = req.params.id;
 
-    newKommission = await kommissionService.updateKommission(kommissionId, newKommission, req.body._embedded);
+  newKommission = await kommissionService.updateKommission(kommissionId, newKommission, req.body._embedded);
 
-    res.json(newKommission);
+  res.json(newKommission);
 }
 
 /**
@@ -115,18 +115,18 @@ async function updateKommission(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteKommission(req, res) {
-    const kommissionId = req.params.id;
+  const kommissionId = req.params.id;
 
-    const kommission = await kommissionService.deleteKommission(kommissionId);
+  const kommission = await kommissionService.deleteKommission(kommissionId);
 
-    res.json(kommission);
+  res.json(kommission);
 }
 
 module.exports = {
-    getAllKommissions,
-    createKommission,
-    updateKommission,
-    getKommissionById,
-    deleteKommission,
-    getTasks,
+  getAllKommissions,
+  createKommission,
+  updateKommission,
+  getKommissionById,
+  deleteKommission,
+  getTasks,
 };

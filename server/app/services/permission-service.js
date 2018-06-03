@@ -9,9 +9,8 @@ const { Op } = require('sequelize');
  * @returns {Promise<Array>} Permissions
  */
 async function getAllPermissions() {
-
-    logger.verbose('Permission service: get all permissions');
-    return Permission.findAll();
+  logger.verbose('Permission service: get all permissions');
+  return Permission.findAll();
 }
 
 
@@ -25,43 +24,43 @@ async function getAllPermissions() {
  * @return {Promise<void>} Nothing
  */
 async function hasEnoughPermissions(userPerms, wantedPerms) {
-    if (!wantedPerms) return;
+  if (!wantedPerms) return;
 
-    if (wantedPerms.add) {
-        const perms = await Permission.findAll({
-            where: {
-                id: {
-                    [Op.in]: wantedPerms.add,
-                },
-            },
-        });
+  if (wantedPerms.add) {
+    const perms = await Permission.findAll({
+      where: {
+        id: {
+          [Op.in]: wantedPerms.add,
+        },
+      },
+    });
 
-        if (perms.length !== wantedPerms.add.length) throw createPermissionError();
+    if (perms.length !== wantedPerms.add.length) throw createPermissionError();
 
-        for (const p of perms) {
-            if (!userPerms.includes(p.name)) throw createPermissionError();
-        }
-    }
+    perms.forEach((p) => {
+      if (!userPerms.includes(p.name)) throw createPermissionError();
+    });
+  }
 
-    if (wantedPerms.remove) {
-        const perms = await Permission.findAll({
-            where: {
-                id: {
-                    [Op.in]: wantedPerms.remove,
-                },
-            },
-        });
+  if (wantedPerms.remove) {
+    const perms = await Permission.findAll({
+      where: {
+        id: {
+          [Op.in]: wantedPerms.remove,
+        },
+      },
+    });
 
-        if (perms.length !== wantedPerms.remove.length) throw createPermissionError();
+    if (perms.length !== wantedPerms.remove.length) throw createPermissionError();
 
-        for (const p of perms) {
-            if (!userPerms.includes(p.name)) throw createPermissionError();
-        }
-    }
+    perms.forEach((p) => {
+      if (!userPerms.includes(p.name)) throw createPermissionError();
+    });
+  }
 }
 
 
 module.exports = {
-    getAllPermissions,
-    hasEnoughPermissions,
+  getAllPermissions,
+  hasEnoughPermissions,
 };

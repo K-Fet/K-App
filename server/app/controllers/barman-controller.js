@@ -12,9 +12,9 @@ const Joi = require('joi');
  * @return {Promise.<void>} Nothing
  */
 async function getAllBarmen(req, res) {
-    const barmen = await barmanService.getAllBarmen();
+  const barmen = await barmanService.getAllBarmen();
 
-    res.json(barmen);
+  res.json(barmen);
 }
 
 /**
@@ -25,40 +25,40 @@ async function getAllBarmen(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createBarman(req, res) {
-    const schema = BarmanSchema.requiredKeys(
-        'firstName',
-        'lastName',
-        'connection',
-        'connection.username',
-        'nickname',
-        'dateOfBirth',
-        'flow',
-        'active'
-    );
+  const schema = BarmanSchema.requiredKeys(
+    'firstName',
+    'lastName',
+    'connection',
+    'connection.username',
+    'nickname',
+    'dateOfBirth',
+    'flow',
+    'active',
+  );
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const newUser = req.body;
+  const newUser = req.body;
 
-    let newBarman = new Barman(
+  let newBarman = new Barman(
+    {
+      ...newUser,
+      _embedded: undefined, // Remove the only external object
+    },
+    {
+      include: [
         {
-            ...newUser,
-            _embedded: undefined, // Remove the only external object
+          model: ConnectionInformation,
+          as: 'connection',
         },
-        {
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                }
-            ]
-        }
-    );
+      ],
+    },
+  );
 
-    newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
+  newBarman = await barmanService.createBarman(newBarman, newUser._embedded);
 
-    res.json(newBarman);
+  res.json(newBarman);
 }
 
 /**
@@ -69,11 +69,11 @@ async function createBarman(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getBarmanById(req, res) {
-    const barmanId = req.params.id;
+  const barmanId = req.params.id;
 
-    const barman = await barmanService.getBarmanById(barmanId);
+  const barman = await barmanService.getBarmanById(barmanId);
 
-    res.json(barman);
+  res.json(barman);
 }
 
 /**
@@ -83,32 +83,32 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
-    const schema = BarmanSchema.min(1);
-    const newUser = req.body;
+  const schema = BarmanSchema.min(1);
+  const newUser = req.body;
 
-    const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(newUser);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newBarman = new Barman(
+  let newBarman = new Barman(
+    {
+      ...newUser,
+      _embedded: undefined, // Remove the only external object
+    },
+    {
+      include: [
         {
-            ...newUser,
-            _embedded: undefined, // Remove the only external object
+          model: ConnectionInformation,
+          as: 'connection',
         },
-        {
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                }
-            ]
-        }
-    );
+      ],
+    },
+  );
 
-    const barmanId = req.params.id;
+  const barmanId = req.params.id;
 
-    newBarman = await barmanService.updateBarmanById(barmanId, newBarman, newUser._embedded);
+  newBarman = await barmanService.updateBarmanById(barmanId, newBarman, newUser._embedded);
 
-    res.json(newBarman);
+  res.json(newBarman);
 }
 
 /**
@@ -119,12 +119,11 @@ async function updateBarman(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteBarman(req, res) {
-    const barmanId = req.params.id;
+  const barmanId = req.params.id;
 
-    const barman = await barmanService.deleteBarmanById(barmanId);
+  const barman = await barmanService.deleteBarmanById(barmanId);
 
-    res.json(barman);
-
+  res.json(barman);
 }
 
 /**
@@ -135,12 +134,12 @@ async function deleteBarman(req, res) {
  * @returns {Promise<void>} Nothing
  */
 async function getServicesBarman(req, res) {
-    const barmanId = req.params.id;
+  const barmanId = req.params.id;
 
-    const { start, end } = parseStartAndEnd(req.query);
-    const services = await barmanService.getBarmanServices(barmanId, start, end);
+  const { start, end } = parseStartAndEnd(req.query);
+  const services = await barmanService.getBarmanServices(barmanId, start, end);
 
-    res.json(services);
+  res.json(services);
 }
 
 /**
@@ -151,18 +150,18 @@ async function getServicesBarman(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createServiceBarman(req, res) {
-    const barmanId = req.params.id;
+  const barmanId = req.params.id;
 
-    const schema = Joi.array().items(Joi.number().integer().required()).required();
+  const schema = Joi.array().items(Joi.number().integer().required()).required();
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const servicesId = req.body;
+  const servicesId = req.body;
 
-    await barmanService.createServiceBarman(barmanId, servicesId);
+  await barmanService.createServiceBarman(barmanId, servicesId);
 
-    res.send();
+  res.send();
 }
 
 /**
@@ -173,28 +172,27 @@ async function createServiceBarman(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteServiceBarman(req, res) {
+  const barmanId = req.params.id;
 
-    const barmanId = req.params.id;
+  const schema = Joi.array().items(Joi.number().integer().required()).required();
 
-    const schema = Joi.array().items(Joi.number().integer().required()).required();
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const servicesId = req.body;
 
-    const servicesId = req.body;
+  await barmanService.deleteServiceBarman(barmanId, servicesId);
 
-    await barmanService.deleteServiceBarman(barmanId, servicesId);
-
-    res.send();
+  res.send();
 }
 
 module.exports = {
-    getAllBarmen,
-    createBarman,
-    getBarmanById,
-    updateBarman,
-    deleteBarman,
-    getServicesBarman,
-    createServiceBarman,
-    deleteServiceBarman
+  getAllBarmen,
+  createBarman,
+  getBarmanById,
+  updateBarman,
+  deleteBarman,
+  getServicesBarman,
+  createServiceBarman,
+  deleteServiceBarman,
 };

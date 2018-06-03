@@ -5,7 +5,6 @@ beforeEach(initDatabase);
 afterEach(clearDatabase);
 
 describe('Integration::Members::PutMember', () => {
-
-    test('noop', async () => {
-    });
+  test('noop', async () => {
+  });
 });

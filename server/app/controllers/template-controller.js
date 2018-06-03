@@ -12,9 +12,9 @@ const Joi = require('joi');
  * @return {Promise<void>} Nothing
  */
 async function getAllTemplates(req, res) {
-    const templates = await templateService.getAllTemplates();
+  const templates = await templateService.getAllTemplates();
 
-    res.json(templates);
+  res.json(templates);
 }
 
 /**
@@ -25,34 +25,34 @@ async function getAllTemplates(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createTemplate(req, res) {
-    const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
-        'startAt',
-        'endAt',
-        'nbMax',
-    );
+  const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
+    'startAt',
+    'endAt',
+    'nbMax',
+  );
 
-    const schema = TemplateSchema.keys({
-        services: Joi.array().items(strictTemplateUnitSchema).min(1),
-    }).requiredKeys(
-        'name',
-        'services',
-    );
+  const schema = TemplateSchema.keys({
+    services: Joi.array().items(strictTemplateUnitSchema).min(1),
+  }).requiredKeys(
+    'name',
+    'services',
+  );
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newTemplate = new Template(req.body, {
-        include: [
-            {
-                model: TemplateUnit,
-                as: 'services',
-            }
-        ]
-    });
+  let newTemplate = new Template(req.body, {
+    include: [
+      {
+        model: TemplateUnit,
+        as: 'services',
+      },
+    ],
+  });
 
-    newTemplate = await templateService.createTemplate(newTemplate);
+  newTemplate = await templateService.createTemplate(newTemplate);
 
-    res.json(newTemplate);
+  res.json(newTemplate);
 }
 
 /**
@@ -63,11 +63,11 @@ async function createTemplate(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function getTemplateById(req, res) {
-    const templateId = req.params.id;
+  const templateId = req.params.id;
 
-    const template = await templateService.getTemplateById(templateId);
+  const template = await templateService.getTemplateById(templateId);
 
-    res.json(template);
+  res.json(template);
 }
 
 /**
@@ -78,41 +78,43 @@ async function getTemplateById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateTemplate(req, res) {
-    const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
-        'startAt',
-        'endAt',
-        'nbMax',
-    );
+  const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
+    'startAt',
+    'endAt',
+    'nbMax',
+  );
 
-    const schema = TemplateSchema.keys({
-        services: Joi.array().items(strictTemplateUnitSchema).min(1),
-    }).requiredKeys(
-        'name',
-        'services',
-    );
+  const schema = TemplateSchema.keys({
+    services: Joi.array().items(strictTemplateUnitSchema).min(1),
+  }).requiredKeys(
+    'name',
+    'services',
+  );
 
-    const { error } = schema.validate(req.body);
+  const { error } = schema.validate(req.body);
 
-    if (error) throw createUserError('BadRequest', error.message);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newTemplate = new Template(
-        req.body,
+  let newTemplate = new Template(
+    req.body,
+    {
+      include: [
         {
-            include: [
-                {
-                    model: TemplateUnit,
-                    as: 'services',
-                }
-            ]
-        }
-    );
+          model: TemplateUnit,
+          as: 'services',
+        },
+      ],
+    },
+  );
 
-    const templateId = req.params.id;
+  const templateId = req.params.id;
 
-    newTemplate = await templateService.updateTemplateById(templateId,
-        newTemplate);
+  newTemplate = await templateService.updateTemplateById(
+    templateId,
+    newTemplate,
+  );
 
-    res.json(newTemplate);
+  res.json(newTemplate);
 }
 
 /**
@@ -123,17 +125,17 @@ async function updateTemplate(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function deleteTemplate(req, res) {
-    const templateId = req.params.id;
+  const templateId = req.params.id;
 
-    const template = await templateService.deleteTemplateById(templateId);
+  const template = await templateService.deleteTemplateById(templateId);
 
-    res.json(template);
+  res.json(template);
 }
 
 module.exports = {
-    getAllTemplates,
-    createTemplate,
-    getTemplateById,
-    updateTemplate,
-    deleteTemplate
+  getAllTemplates,
+  createTemplate,
+  getTemplateById,
+  updateTemplate,
+  deleteTemplate,
 };
