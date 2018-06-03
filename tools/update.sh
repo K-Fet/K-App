@@ -46,6 +46,12 @@ yarn run install:prod
 # Build assets for client
 yarn run build
 
+# Migrate database schema
+# In case of a failed migration, we do not stop the application because
+# The database will still be working but will not handle new cases.
+# Anyway, the error will be logged
+yarn run migrate
+
 # Restart all instance of the app
 systemctl restart 'kapp@*'
 
