@@ -59,13 +59,15 @@ async function updateMember(memberId, updatedMember) {
 
   logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
 
-  return currentMember.update({
+  await currentMember.update({
     email: updatedMember.email,
     firstName: updatedMember.firstName,
     lastName: updatedMember.lastName,
     school: updatedMember.school,
     active: updatedMember.active,
   });
+
+  return currentMember.reload();
 }
 
 /**

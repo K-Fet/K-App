@@ -1,6 +1,8 @@
 const logger = require('../../logger');
 const { Barman, Kommission, Task } = require('../models');
-const { createUserError, createServerError, cleanObject, setAssociations } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, setAssociations,
+} = require('../../utils');
 const sequelize = require('../../db');
 
 /**
@@ -17,7 +19,9 @@ async function createTask(newTask, _embedded) {
 
   const transaction = await sequelize.transaction();
   try {
+    // eslint-disable-next-line no-param-reassign
     newTask.kommissionId = _embedded.kommissionId;
+    // eslint-disable-next-line no-param-reassign
     delete _embedded.kommissionId;
     await newTask.save({ transaction });
   } catch (err) {
@@ -83,6 +87,7 @@ async function getTaskById(taskId) {
  *
  * @param taskId {number} Task id
  * @param updatedTask {Task} Updated task, constructed from the request.
+ * @param _embedded {Object} Embedded object
  * @return {Promise<Task>} The updated task
  */
 async function updateTask(taskId, updatedTask, _embedded) {

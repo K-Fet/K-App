@@ -1,7 +1,9 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Role, Barman, Permission } = require('../models/');
-const { createUserError, createServerError, cleanObject, setAssociations } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, setAssociations,
+} = require('../../utils');
 
 /**
  * Return all roles of the app.
@@ -103,8 +105,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
   await setAssociations(_embedded, currentRole, null, transaction);
 
   await transaction.commit();
-  await currentRole.reload();
-  return currentRole;
+  return currentRole.reload();
 }
 
 /**

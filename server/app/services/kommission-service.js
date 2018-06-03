@@ -112,8 +112,7 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
   await setAssociations(_embedded, currentKommission, null, transaction);
 
   await transaction.commit();
-  await currentKommission.reload();
-  return currentKommission;
+  return currentKommission.reload();
 }
 
 /**

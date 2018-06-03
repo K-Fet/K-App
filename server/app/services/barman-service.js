@@ -38,9 +38,12 @@ async function createBarman(newBarman, _embedded) {
     // 3. For most of providers (for us at least), it is treated the same
     //
     // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+
+    // eslint-disable-next-line no-param-reassign
     newBarman.connection.username = newBarman.connection.username.toLowerCase();
 
     const co = await newBarman.connection.save({ transaction });
+    // eslint-disable-next-line no-param-reassign
     newBarman.connectionId = co.id;
     await newBarman.save({ transaction });
 
@@ -177,8 +180,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
 
   await transaction.commit();
-  await currentBarman.reload();
-  return currentBarman;
+  return currentBarman.reload();
 }
 
 /**

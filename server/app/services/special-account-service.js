@@ -3,7 +3,9 @@ const sequelize = require('../../db');
 const authService = require('./auth-service');
 const mailService = require('./mail-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');
-const { createUserError, createServerError, cleanObject, hash, setAssociations } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, hash, setAssociations,
+} = require('../../utils');
 
 /**
  * Return all specialAccounts of the app
@@ -46,6 +48,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     // 3. For most of providers (for us at least), it is treated the same
     //
     // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+    /* eslint-disable no-param-reassign */
     newSpecialAccount.connection.username = newSpecialAccount.connection.username.toLowerCase();
 
     newSpecialAccount.code = await hash(newSpecialAccount.code);
@@ -57,6 +60,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     await authService.resetPassword(co.username, transaction);
     // Remove critic fields
     newSpecialAccount.code = undefined;
+    /* eslint-enable no-param-reassign */
   } catch (err) {
     if (err.userError) throw err;
 
@@ -146,9 +150,6 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
       const co = await currentSpecialAccount.getConnection();
 
       await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
-
-      // Remove this association before reloading
-      updatedSpecialAccount.connection = undefined;
     }
   } catch (err) {
     if (err.userError) throw err;
@@ -161,8 +162,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
   await setAssociations(_embedded, currentSpecialAccount, null, transaction, true);
 
   await transaction.commit();
-  await currentSpecialAccount.reload();
-  return currentSpecialAccount;
+  return currentSpecialAccount.reload();
 }
 
 /**
