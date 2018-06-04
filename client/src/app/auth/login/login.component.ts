@@ -7,48 +7,48 @@ import { Router } from '@angular/router';
 import { ConnectedUser } from '../../_models';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
+  selector: 'app-login',
+  templateUrl: './login.component.html',
 })
 
 export class LoginComponent {
-    user: ConnectedUser;
-    loginForm: FormGroup;
+  user: ConnectedUser;
+  loginForm: FormGroup;
 
-    constructor(private authService: AuthService,
-                private toasterService: ToasterService,
-                private router: Router,
-                private fb: FormBuilder,
-                private matDialog: MatDialog) {
-        this.createForm();
-    }
+  constructor(private authService: AuthService,
+              private toasterService: ToasterService,
+              private router: Router,
+              private fb: FormBuilder,
+              private matDialog: MatDialog) {
+    this.createForm();
+  }
 
-    createForm(): void {
-        this.loginForm = this.fb.group({
-            username: new FormControl('', [Validators.required]),
-            password: new FormControl('', [Validators.required]),
+  createForm(): void {
+    this.loginForm = this.fb.group({
+      username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+    });
+  }
+
+  login(): void {
+    this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
+      .subscribe(() => {
+        this.authService.$currentUser.subscribe((user) => {
+          this.user = user;
+          this.router.navigate(['/']);
         });
-    }
+      });
+  }
 
-    login(): void {
-        this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
-        .subscribe(() => {
-            this.authService.$currentUser.subscribe(user => {
-                this.user = user;
-                this.router.navigate(['/']);
-            });
+  openDialog(): void {
+    const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
+
+    dialogRef.afterClosed().subscribe((username) => {
+      if (username) {
+        this.authService.resetPassword(username).subscribe(() => {
+          this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
         });
-    }
-
-    openDialog(): void {
-        const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
-
-        dialogRef.afterClosed().subscribe(username => {
-            if (username) {
-                this.authService.resetPassword(username).subscribe(() => {
-                    this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
-                });
-            }
-        });
-    }
+      }
+    });
+  }
 }

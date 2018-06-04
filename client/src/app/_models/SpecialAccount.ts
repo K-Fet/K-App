@@ -2,21 +2,21 @@ import { AssociationChanges, ConnectionInformation, Permission } from './index';
 
 export class SpecialAccount {
 
-    id: Number;
-    description: String;
-    createdAt: Date;
-    code: Number;
-    password: String;
+  id: Number;
+  description: String;
+  createdAt: Date;
+  code: Number;
+  password: String;
 
-    // Association
-    connection: ConnectionInformation;
-    permissions: Array<Permission>;
+  // Association
+  connection: ConnectionInformation;
+  permissions: Permission[];
 
-    _embedded: {
-        permissions?: AssociationChanges,
-    };
+  _embedded: {
+    permissions?: AssociationChanges,
+  };
 
-    constructor(values: Object = {}) {
-        Object.assign(this, values);
-    }
+  constructor(values: Object = {}) {
+    Object.assign(this, values);
+  }
 }

@@ -8,28 +8,28 @@ import { concatMap } from 'rxjs/operators';
 @Injectable()
 export class PermissionService {
 
-    constructor(private http: HttpClient,
-                private ngxPermissions: NgxPermissionsService) {}
+  constructor(private http: HttpClient,
+              private ngxPermissions: NgxPermissionsService) {}
 
-    getAll(): Observable<Array<Permission>> {
-        return this.http.get<Array<Permission>>('/api/permissions')
-            .pipe(
-                concatMap(perms => {
-                    const obs = [];
+  getAll(): Observable<Permission[]> {
+    return this.http.get<Permission[]>('/api/permissions')
+      .pipe(
+        concatMap((perms) => {
+          const obs = [];
 
-                    perms.forEach(p => {
-                        return obs.push(
-                            from(this.ngxPermissions.hasPermission(p.name as string)
-                                .then(hasP => {
-                                    p.disabled = !hasP;
-                                    return p;
-                                })
-                            )
-                        );
-                    });
-
-                    return forkJoin(obs);
-                })
+          perms.forEach((p) => {
+            return obs.push(
+              from(this.ngxPermissions.hasPermission(p.name as string)
+                .then((hasP) => {
+                  p.disabled = !hasP;
+                  return p;
+                }),
+              ),
             );
-    }
+          });
+
+          return forkJoin(obs);
+        }),
+      );
+  }
 }
