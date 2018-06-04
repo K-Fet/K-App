@@ -28,6 +28,7 @@
         "eslint:watch": "esw --watch server/",
         "lint": "yarn run eslint && cd client/ && yarn run lint",
         "install:prod": "yarn install --production --loglevel warn",
+        "migrate": "node tools/migrations/migrate.js",
         "postinstall": "cd client/ && yarn install --production=false",
         "prod": "NODE_ENV=production node server/index.js",
         "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
@@ -49,6 +50,7 @@
         "mysql2": "^1.5.1",
         "nodemailer": "^4.6.5",
         "sequelize": "^4.37.10",
+        "umzug": "^2.1.0",
         "uuid": "^3.1.0",
         "winston": "^3.0.0-rc2"
     },
