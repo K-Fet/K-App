@@ -98,8 +98,8 @@
     tslib "^1.9.0"
 
 "@angular/cdk@^6.0.0", "@angular/cdk@^6.1.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-6.2.0.tgz#034805b37ec7fdd0fe87da8bd3698f4f474f81b8"
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-6.2.1.tgz#6ac6e58e8557623e6615ebcb673d74bcc575641c"
   dependencies:
     tslib "^1.7.1"
 
@@ -170,8 +170,8 @@
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-6.0.3.tgz#7182f3824520fd5f5f6173fdee80284356d29d08"
 
 "@angular/material@^6.1.0":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-6.2.0.tgz#63cd30dc84cf9610c8fb4c16027836bfcf9fc520"
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-6.2.1.tgz#aec3387db755145b80d66d8497d4a834f88b61be"
   dependencies:
     tslib "^1.7.1"
 
@@ -235,17 +235,18 @@
   dependencies:
     arrify "^1.0.1"
 
-"@fimbul/bifrost@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@fimbul/bifrost/-/bifrost-0.6.0.tgz#5150302b63e1bd37ff95f561c3605949cb7e3770"
+"@fimbul/bifrost@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@fimbul/bifrost/-/bifrost-0.9.0.tgz#75c7d7ad0c5464f22603b715324ec89c1f50138f"
   dependencies:
-    "@fimbul/ymir" "^0.6.0"
+    "@fimbul/ymir" "^0.9.0"
     get-caller-file "^1.0.2"
     tslib "^1.8.1"
+    tsutils "^2.24.0"
 
-"@fimbul/ymir@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@fimbul/ymir/-/ymir-0.6.0.tgz#537cb15d361b7c993fe953b48c898ecdf4f671b8"
+"@fimbul/ymir@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@fimbul/ymir/-/ymir-0.9.0.tgz#64bb9c658a48b584c070e830911c3675dc8e81da"
   dependencies:
     inversify "^4.10.0"
     reflect-metadata "^0.1.12"
@@ -431,8 +432,8 @@ acorn-dynamic-import@^3.0.0:
     acorn "^5.0.0"
 
 acorn@^5.0.0:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.1.tgz#c9e50c3e3717cf897f1b071ceadbb543bbc0a8d4"
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.2.tgz#b1da1d7be2ac1b4a327fb9eab851702c5045b4e7"
 
 ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
   version "3.2.0"
@@ -1438,8 +1439,8 @@ camelcase@^4.0.0, camelcase@^4.1.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
 caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000847:
-  version "1.0.30000848"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000848.tgz#ec9c0a72ec8f9ef812e4f4b8628625af9c85ade0"
+  version "1.0.30000849"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000849.tgz#7e1aa48e6d58917dcd70aabf7e7a33514a258f91"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -7018,12 +7019,12 @@ tslint-config-airbnb@^5.9.2:
     tslint-microsoft-contrib "~5.0.1"
 
 tslint-consistent-codestyle@^1.10.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/tslint-consistent-codestyle/-/tslint-consistent-codestyle-1.13.0.tgz#82abf230bf39e01159b4e9af721d489dd5ae0e6c"
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/tslint-consistent-codestyle/-/tslint-consistent-codestyle-1.13.1.tgz#7996913453f369f7321c5b49776c2bcf837461aa"
   dependencies:
-    "@fimbul/bifrost" "^0.6.0"
+    "@fimbul/bifrost" "^0.9.0"
     tslib "^1.7.1"
-    tsutils "^2.24.0"
+    tsutils "^2.27.0"
 
 tslint-eslint-rules@^5.3.1:
   version "5.3.1"
@@ -7062,7 +7063,7 @@ tsutils@2.8.0:
   dependencies:
     tslib "^1.7.1"
 
-tsutils@^2.12.1, tsutils@^2.24.0:
+tsutils@^2.12.1, tsutils@^2.24.0, tsutils@^2.27.0:
   version "2.27.1"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.27.1.tgz#ab0276ac23664f36ce8fd4414daec4aebf4373ee"
   dependencies:
