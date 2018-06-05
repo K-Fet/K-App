@@ -8,6 +8,8 @@ addons:
   sonarcloud:
     organization: "k-fet"
 
+install: yarn install --frozen-lockfile
+
 script:
   - yarn test
   - codecov
