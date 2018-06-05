@@ -3,22 +3,22 @@ import { AuthService } from '../_services';
 import { ConnectedUser } from '../_models';
 
 @Component({
-    templateUrl: './home-page.component.html',
+  templateUrl: './home-page.component.html',
 })
 
 export class HomePageComponent implements OnInit {
 
-    private currentUser: ConnectedUser;
+  private currentUser: ConnectedUser;
 
-    constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) { }
 
-    ngOnInit(): void {
-        this.authService.$currentUser.subscribe(curUser => {
-            this.currentUser = curUser;
-        });
-    }
+  ngOnInit(): void {
+    this.authService.$currentUser.subscribe((curUser) => {
+      this.currentUser = curUser;
+    });
+  }
 
-    isConnected(): Boolean {
-        return this.currentUser.accountType === 'Guest' ? false : true;
-    }
+  isConnected(): Boolean {
+    return this.currentUser.accountType !== 'Guest';
+  }
 }

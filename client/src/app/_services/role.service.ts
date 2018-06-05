@@ -6,28 +6,29 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable()
 export class RoleService {
 
-    dataChange: BehaviorSubject<Array<Role>> = new BehaviorSubject<Array<Role>>([]);
-    get data(): Array<Role> { return this.dataChange.value; }
+  dataChange: BehaviorSubject<Role[]> = new BehaviorSubject<Role[]>([]);
 
-    constructor(private http: HttpClient) { }
+  get data(): Role[] { return this.dataChange.value; }
 
-    getAll(): Observable<Array<Role>> {
-        return this.http.get<Array<Role>>('/api/roles');
-    }
+  constructor(private http: HttpClient) { }
 
-    getById(id: number): Observable<Role> {
-        return this.http.get<Role>(`/api/roles/${id}`);
-    }
+  getAll(): Observable<Role[]> {
+    return this.http.get<Role[]>('/api/roles');
+  }
 
-    create(role: Role): Observable<Role> {
-        return this.http.post<Role>('/api/roles', role);
-    }
+  getById(id: number): Observable<Role> {
+    return this.http.get<Role>(`/api/roles/${id}`);
+  }
 
-    update(role: Role): Observable<Role> {
-        return this.http.put<Role>(`/api/roles/${role.id}`, role);
-    }
+  create(role: Role): Observable<Role> {
+    return this.http.post<Role>('/api/roles', role);
+  }
 
-    delete(id: Number): Observable<Role> {
-        return this.http.post<Role>(`/api/roles/${id}/delete`, null);
-    }
+  update(role: Role): Observable<Role> {
+    return this.http.put<Role>(`/api/roles/${role.id}`, role);
+  }
+
+  delete(id: Number): Observable<Role> {
+    return this.http.post<Role>(`/api/roles/${id}/delete`, null);
+  }
 }

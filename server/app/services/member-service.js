@@ -8,9 +8,8 @@ const { createUserError } = require('../../utils');
  * @returns {Promise<Array>} Members
  */
 async function getAllMembers() {
-
-    logger.verbose('Member service: get all members');
-    return Member.findAll();
+  logger.verbose('Member service: get all members');
+  return Member.findAll();
 }
 
 /**
@@ -20,9 +19,8 @@ async function getAllMembers() {
  * @return {Promise<Member|Errors.ValidationError>} The created member with its id
  */
 async function createMember(newMember) {
-
-    logger.verbose('Member service: creating a new member named %s %s', newMember.firstName, newMember.lastName);
-    return newMember.save();
+  logger.verbose('Member service: creating a new member named %s %s', newMember.firstName, newMember.lastName);
+  return newMember.save();
 }
 
 
@@ -33,14 +31,13 @@ async function createMember(newMember) {
  * @return {Promise<Member>} The wanted member.
  */
 async function getMemberById(memberId) {
+  logger.verbose('Member service: get member by id %d', memberId);
 
-    logger.verbose('Member service: get member by id %d', memberId);
+  const member = await Member.findById(memberId);
 
-    const member = await Member.findById(memberId);
+  if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
-    if (!member) throw createUserError('UnknownMember', 'This member does not exist');
-
-    return member;
+  return member;
 }
 
 
@@ -56,20 +53,21 @@ async function getMemberById(memberId) {
  * @return {Promise<Member>} The updated member
  */
 async function updateMember(memberId, updatedMember) {
+  const currentMember = await Member.findById(memberId);
 
-    const currentMember = await Member.findById(memberId);
+  if (!currentMember) throw createUserError('UnknownMember', 'This member does not exist');
 
-    if (!currentMember) throw createUserError('UnknownMember', 'This member does not exist');
+  logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
 
-    logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
+  await currentMember.update({
+    email: updatedMember.email,
+    firstName: updatedMember.firstName,
+    lastName: updatedMember.lastName,
+    school: updatedMember.school,
+    active: updatedMember.active,
+  });
 
-    return currentMember.update({
-        email: updatedMember.email,
-        firstName: updatedMember.firstName,
-        lastName: updatedMember.lastName,
-        school: updatedMember.school,
-        active: updatedMember.active,
-    });
+  return currentMember.reload();
 }
 
 /**
@@ -79,23 +77,22 @@ async function updateMember(memberId, updatedMember) {
  * @return {Promise<Member>} The deleted member
  */
 async function deleteMember(memberId) {
+  logger.verbose('Member service: deleting member with id %d', memberId);
 
-    logger.verbose('Member service: deleting member with id %d', memberId);
+  const member = await Member.findById(memberId);
 
-    const member = await Member.findById(memberId);
+  if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
-    if (!member) throw createUserError('UnknownMember', 'This member does not exist');
+  await member.destroy();
 
-    await member.destroy();
-
-    return member;
+  return member;
 }
 
 
 module.exports = {
-    getAllMembers,
-    createMember,
-    updateMember,
-    getMemberById,
-    deleteMember
+  getAllMembers,
+  createMember,
+  updateMember,
+  getMemberById,
+  deleteMember,
 };

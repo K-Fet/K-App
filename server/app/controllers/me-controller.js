@@ -16,9 +16,9 @@ const logger = require('../../logger');
  * @return {Promise.<{ barman: Barman, specialAccount: SpecialAccount}>} The connected user's information
  */
 async function me(req, res) {
-    const user = await authService.me(req.user.jit);
+  const user = await authService.me(req.user.jit);
 
-    res.send(user);
+  res.send(user);
 }
 
 /**
@@ -28,76 +28,82 @@ async function me(req, res) {
  * @returns {Promise<void>}
  */
 async function updateMe(req, res) {
-    const user = await authService.me(req.user.jit);
+  const user = await authService.me(req.user.jit);
 
-    if (user.specialAccount) {
-        const schema = SpecialAccountSchema.min(1);
-        const newSA = req.body.specialAccount;
+  if (user.specialAccount) {
+    const schema = SpecialAccountSchema.min(1);
+    const newSA = req.body.specialAccount;
 
-        const { error } = schema.validate(newSA);
-        if (error) throw createUserError('BadRequest', error.message);
+    const { error } = schema.validate(newSA);
+    if (error) throw createUserError('BadRequest', error.message);
 
-        const code = req.body.code;
+    const { code } = req.body;
 
-        if (!code) {
-            throw createUserError('BadRequest', 'body.code is missing');
-        }
-
-        if (!await userService.checkCode(req.user.userId, code)) {
-            throw createUserError('CodeError', 'The code provided is wrong');
-        }
-
-        logger.info(`Secure action at ${req.method} ${req.originalUrl} done by user id ${req.user.userId}`);
-
-        let newSpecialAccount = new SpecialAccount(
-            {
-                ...newSA,
-                _embedded: undefined, // Remove the only external object
-            },
-            {
-                include: [
-                    {
-                        model: ConnectionInformation,
-                        as: 'connection',
-                    },
-                ],
-            },
-        );
-
-        newSpecialAccount = await specialAccountService
-            .updateSpecialAccountById(user.specialAccount.id, newSpecialAccount);
-
-        res.json({ specialAccount: newSpecialAccount, barman: undefined });
+    if (!code) {
+      throw createUserError('BadRequest', 'body.code is missing');
     }
-    if (user.barman) {
-        const schema = BarmanSchema
-            .forbiddenKeys('active')
-            .min(1);
 
-        const newUser = req.body.barman;
-
-        const { error } = schema.validate(newUser);
-        if (error) throw createUserError('BadRequest', error.message);
-
-        let newBarman = new Barman(
-            {
-                ...newUser,
-                _embedded: undefined, // Remove the only external object
-            },
-            {
-                include: [
-                    {
-                        model: ConnectionInformation,
-                        as: 'connection',
-                    },
-                ],
-            },
-        );
-
-        newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman, null);
-
-        res.json({ specialAccount: undefined, barman: newBarman });
+    if (!await userService.checkCode(req.user.userId, code)) {
+      throw createUserError('CodeError', 'The code provided is wrong');
     }
+
+    logger.info(`Secure action at ${req.method} ${req.originalUrl} done by user id ${req.user.userId}`);
+
+    let newSpecialAccount = new SpecialAccount(
+      {
+        ...newSA,
+        _embedded: undefined, // Remove the only external object
+      },
+      {
+        include: [
+          {
+            model: ConnectionInformation,
+            as: 'connection',
+          },
+        ],
+      },
+    );
+
+    newSpecialAccount = await specialAccountService
+      .updateSpecialAccountById(user.specialAccount.id, newSpecialAccount);
+
+    res.json({
+      specialAccount: newSpecialAccount,
+      barman: undefined,
+    });
+  }
+  if (user.barman) {
+    const schema = BarmanSchema
+      .forbiddenKeys('active')
+      .min(1);
+
+    const newUser = req.body.barman;
+
+    const { error } = schema.validate(newUser);
+    if (error) throw createUserError('BadRequest', error.message);
+
+    let newBarman = new Barman(
+      {
+        ...newUser,
+        _embedded: undefined, // Remove the only external object
+      },
+      {
+        include: [
+          {
+            model: ConnectionInformation,
+            as: 'connection',
+          },
+        ],
+      },
+    );
+
+    newBarman = await barmanService.updateBarmanById(user.barman.id, newBarman, null);
+
+    res.json({
+      specialAccount: undefined,
+      barman: newBarman,
+    });
+  }
 }
 
 /**
@@ -107,10 +113,10 @@ async function updateMe(req, res) {
  * @returns {Promise<void>}
  */
 async function getBarmanService(req, res) {
-    const { start, end } = parseStartAndEnd(req.query);
-    const services = await barmanService.getBarmanServices(req.barman.id, start, end);
+  const { start, end } = parseStartAndEnd(req.query);
+  const services = await barmanService.getBarmanServices(req.barman.id, start, end);
 
-    res.json(services);
+  res.json(services);
 }
 
 /**
@@ -120,16 +126,16 @@ async function getBarmanService(req, res) {
  * @returns {Promise<void>}
  */
 async function addBarmanService(req, res) {
-    const schema = Joi.array().items(Joi.number().integer().required()).required();
+  const schema = Joi.array().items(Joi.number().integer().required()).required();
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const servicesId = req.body;
+  const servicesId = req.body;
 
-    await barmanService.createServiceBarman(req.barman.id, servicesId);
+  await barmanService.createServiceBarman(req.barman.id, servicesId);
 
-    res.send();
+  res.send();
 }
 
 /**
@@ -139,23 +145,23 @@ async function addBarmanService(req, res) {
  * @returns {Promise<void>}
  */
 async function removeBarmanService(req, res) {
-    const schema = Joi.array().items(Joi.number().integer().required()).required();
+  const schema = Joi.array().items(Joi.number().integer().required()).required();
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const servicesId = req.body;
+  const servicesId = req.body;
 
-    await barmanService.deleteServiceBarman(req.barman.id, servicesId);
+  await barmanService.deleteServiceBarman(req.barman.id, servicesId);
 
-    res.send();
+  res.send();
 }
 
 
 module.exports = {
-    me,
-    updateMe,
-    getBarmanService,
-    addBarmanService,
-    removeBarmanService,
+  me,
+  updateMe,
+  getBarmanService,
+  addBarmanService,
+  removeBarmanService,
 };

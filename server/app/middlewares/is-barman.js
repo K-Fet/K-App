@@ -9,13 +9,13 @@ const { createUserError } = require('../../utils');
  * @returns {Promise<void>}
  */
 async function isBarman(req, res, next) {
-    const user = await authService.me(req.user.jit);
-    if (user.specialAccount) next(createUserError('BadRequest', 'SpecialAccount does not have services'));
+  const user = await authService.me(req.user.jit);
+  if (user.specialAccount) next(createUserError('BadRequest', 'SpecialAccount does not have services'));
 
-    req.barman = user.barman;
-    next();
+  req.barman = user.barman;
+  next();
 }
 
 module.exports = {
-    isBarman
+  isBarman,
 };

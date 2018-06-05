@@ -55,9 +55,11 @@ import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
 
 // Services
-import { AuthService, BarmanService, KommissionService,
-    LoaderService, MemberService, MeService, PermissionService,
-    RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
+import {
+  AuthService, BarmanService, KommissionService,
+  LoaderService, MemberService, MeService, PermissionService,
+  RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService,
+} from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -72,104 +74,104 @@ import { ErrorsHandler } from './_helpers/error.handler';
 
 // tslint:disable-next-line:no-duplicate-imports
 import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
+import fr from '@angular/common/locales/fr';
 
-registerLocaleData(localeFr, 'fr');
+registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
 import { TemplateEditComponent } from './templates/edit/template-edit.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        MenuComponent,
-        LoginComponent,
-        MenuComponent,
-        MembersListComponent,
-        MemberNewComponent,
-        MemberEditComponent,
-        ServiceExplorerComponent,
-        MyServicesComponent,
-        PlanningComponent,
-        PlanMyServicesComponent,
-        BarmenListComponent,
-        BarmanNewComponent,
-        BarmanViewComponent,
-        BarmanEditComponent,
-        KommissionEditComponent,
-        KommissionNewComponent,
-        KommissionsListComponent,
-        RoleEditComponent,
-        RoleNewComponent,
-        RolesListComponent,
-        CodeDialogComponent,
-        NotFoundComponent,
-        OpenServicesComponent,
-        WeekPickerComponent,
-        SpecialAccountListComponent,
-        SpecialAccountNewComponent,
-        SpecialAccountEditComponent,
-        ConfirmationDialogComponent,
-        ResetPasswordDialogComponent,
-        EqualValidator,
-        DefinePasswordComponent,
-        UsernameVerificationComponent,
-        TemplatesListComponent,
-        TemplateNewComponent,
-        TemplateViewComponent,
-        TemplateEditComponent,
-        HomePageComponent,
-        ServiceListComponent,
-        ServiceNewComponent,
-        ServiceEditComponent,
-        LoaderComponent,
-    ],
-    entryComponents: [
-        CodeDialogComponent,
-        ConfirmationDialogComponent,
-        ResetPasswordDialogComponent,
-    ],
-    imports: [
-        CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        MaterialModule,
-        HttpClientModule,
-        routing,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxPermissionsModule.forRoot(),
-    ],
-    bootstrap: [AppComponent],
-    providers: [
-        AuthService,
-        MemberService,
-        BarmanService,
-        ServiceService,
-        KommissionService,
-        RoleService,
-        ToasterService,
-        TemplateService,
-        SpecialAccountService,
-        PermissionService,
-        LoaderService,
-        MeService,
-        EditGuard,
-        ActiveGuard,
-        DatePipe,
-        {
-            provide: LOCALE_ID, useValue: 'fr',
-        },
-        {
-            provide: ErrorHandler,
-            useClass: ErrorsHandler,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: RequestInterceptor,
-            multi: true,
-        },
-    ],
+  declarations: [
+    AppComponent,
+    MenuComponent,
+    LoginComponent,
+    MenuComponent,
+    MembersListComponent,
+    MemberNewComponent,
+    MemberEditComponent,
+    ServiceExplorerComponent,
+    MyServicesComponent,
+    PlanningComponent,
+    PlanMyServicesComponent,
+    BarmenListComponent,
+    BarmanNewComponent,
+    BarmanViewComponent,
+    BarmanEditComponent,
+    KommissionEditComponent,
+    KommissionNewComponent,
+    KommissionsListComponent,
+    RoleEditComponent,
+    RoleNewComponent,
+    RolesListComponent,
+    CodeDialogComponent,
+    NotFoundComponent,
+    OpenServicesComponent,
+    WeekPickerComponent,
+    SpecialAccountListComponent,
+    SpecialAccountNewComponent,
+    SpecialAccountEditComponent,
+    ConfirmationDialogComponent,
+    ResetPasswordDialogComponent,
+    EqualValidator,
+    DefinePasswordComponent,
+    UsernameVerificationComponent,
+    TemplatesListComponent,
+    TemplateNewComponent,
+    TemplateViewComponent,
+    TemplateEditComponent,
+    HomePageComponent,
+    ServiceListComponent,
+    ServiceNewComponent,
+    ServiceEditComponent,
+    LoaderComponent,
+  ],
+  entryComponents: [
+    CodeDialogComponent,
+    ConfirmationDialogComponent,
+    ResetPasswordDialogComponent,
+  ],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    MaterialModule,
+    HttpClientModule,
+    routing,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPermissionsModule.forRoot(),
+  ],
+  bootstrap: [AppComponent],
+  providers: [
+    AuthService,
+    MemberService,
+    BarmanService,
+    ServiceService,
+    KommissionService,
+    RoleService,
+    ToasterService,
+    TemplateService,
+    SpecialAccountService,
+    PermissionService,
+    LoaderService,
+    MeService,
+    EditGuard,
+    ActiveGuard,
+    DatePipe,
+    {
+      provide: LOCALE_ID, useValue: 'fr',
+    },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorsHandler,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

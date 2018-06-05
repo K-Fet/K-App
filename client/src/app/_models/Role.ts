@@ -2,18 +2,18 @@ import { AssociationChanges, Permission } from './index';
 
 export class Role {
 
-    id: Number;
-    name: String;
-    description: String;
+  id: Number;
+  name: String;
+  description: String;
 
-    // Association
-    permissions: Array<Permission>;
+  // Association
+  permissions: Permission[];
 
-    _embedded: {
-        permissions?: AssociationChanges,
-    };
+  _embedded: {
+    permissions?: AssociationChanges,
+  };
 
-    constructor(values: Object = {}) {
-        Object.assign(this, values);
-    }
+  constructor(values: Object = {}) {
+    Object.assign(this, values);
+  }
 }

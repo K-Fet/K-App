@@ -7,10 +7,10 @@
  * @return {Error} Error
  */
 function createUserError(name, message) {
-    const e = new Error(message);
-    e.name = name;
-    e.userError = true;
-    return e;
+  const e = new Error(message);
+  e.name = name;
+  e.userError = true;
+  return e;
 }
 
 /**
@@ -21,9 +21,9 @@ function createUserError(name, message) {
  * @return {Error} Error
  */
 function createServerError(name, message) {
-    const e = new Error(message);
-    e.name = name;
-    return e;
+  const e = new Error(message);
+  e.name = name;
+  return e;
 }
 
 /**
@@ -32,14 +32,14 @@ function createServerError(name, message) {
  * @return {Error} error
  */
 function createPermissionError() {
-    const e = new Error();
-    e.code = 'permission_denied';
-    return e;
+  const e = new Error();
+  e.code = 'permission_denied';
+  return e;
 }
 
 
 module.exports = {
-    createUserError,
-    createServerError,
-    createPermissionError,
+  createUserError,
+  createServerError,
+  createPermissionError,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const router = require('express').Router();
 const guard = require('express-jwt-permissions')();
 const am = require('../../utils/async-middleware');

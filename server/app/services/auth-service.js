@@ -4,9 +4,13 @@ const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
 const { jwtSecret, expirationDuration } = require('../../config/jwt');
-const { verify, createUserError, createServerError, generateToken, hash } = require('../../utils');
+const {
+  verify, createUserError, createServerError, generateToken, hash,
+} = require('../../utils');
 
-const { ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission } = require('../models');
+const {
+  ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission,
+} = require('../models');
 const mailService = require('./mail-service');
 
 /**
@@ -16,12 +20,76 @@ const mailService = require('./mail-service');
  * @returns {Promise<Boolean>} Return true if the token does not exist or is revoked
  */
 async function isTokenRevoked(tokenId) {
-    logger.info('Auth service: is token revoked');
+  logger.info('Auth service: is token revoked');
 
-    const token = await JWT.findById(tokenId);
+  const token = await JWT.findById(tokenId);
 
-    return !token || token.revoked;
+  return !token || token.revoked;
 }
+
+
+/**
+ * Create a new JWT including permissions.
+ *
+ * @param user {ConnectionInformation} User
+ * @returns {Promise<String>} Return a JWT.
+ */
+async function createJWT(user) {
+  // Sign with default (HMAC SHA256)
+  const id = uuidv4();
+
+  await user.createJwt({
+    id,
+  });
+
+  const barman = await user.getBarman({
+    include: [
+      {
+        model: Role,
+        as: 'roles',
+        include: [
+          {
+            model: Permission,
+            as: 'permissions',
+          },
+        ],
+      },
+    ],
+  });
+
+  let permissions = [];
+
+  if (barman) {
+    permissions = [...new Set(barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)), []))];
+  } else {
+    const specialAccount = await user.getSpecialAccount({
+      include: [
+        {
+          model: Permission,
+          as: 'permissions',
+        },
+      ],
+    });
+    if (!specialAccount) {
+      throw createServerError(
+        'UnknownUser',
+        'This user has no barman or special account linked, this should not exist!',
+      );
+    }
+
+    permissions = specialAccount.permissions.map(p => p.name);
+  }
+
+  logger.info(`Creating a new JWT ${user.id}, with permissions : ${permissions.join(', ')}`);
+
+  return jwt.sign({
+    jit: id,
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration),
+    permissions,
+    userId: user.id,
+  }, jwtSecret);
+}
+
 
 /**
  * Log a member and create a JWT Token.
@@ -33,109 +101,29 @@ async function isTokenRevoked(tokenId) {
  * @returns {Promise<String>} JWT Signed token
  */
 async function login(usernameDirty, password) {
-    const username = usernameDirty.toLowerCase();
+  const username = usernameDirty.toLowerCase();
 
-    const user = await ConnectionInformation.findOne({ where: { username } });
+  const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (!user) throw createUserError('LoginError', 'Bad username/password combination');
+  if (!user) throw createUserError('LoginError', 'Bad username/password combination');
 
-    if (!user.password) throw createUserError('UndefinedPassword', 'You must define password. Please, check your email.');
+  if (!user.password) throw createUserError('UndefinedPassword', 'You must define password. Please, check your email.');
 
-    if (user.usernameToken) {
-        throw createUserError('UnverifiedUsername', 'A valid email is required to use the app, you could change your ');
-    }
+  if (user.usernameToken) {
+    throw createUserError('UnverifiedUsername', 'A valid email is required to use the app, you could change your ');
+  }
 
-    if (!await verify(user.password, password)) throw createUserError('LoginError', 'Bad username/password combination');
+  if (!await verify(user.password, password)) throw createUserError('LoginError', 'Bad username/password combination');
 
-    if (user.passwordToken) {
-        await user.update({ passwordToken: null });
-    }
+  if (user.passwordToken) {
+    await user.update({ passwordToken: null });
+  }
 
-    delete user.password;
-    delete user.usernameToken;
-    delete user.passwordToken;
+  delete user.password;
+  delete user.usernameToken;
+  delete user.passwordToken;
 
-    return createJWT(user);
-}
-
-/**
- * Refresh a token and revoked the old one.
- *
- * @param currentTokenId {String} Current token id
- * @returns {Promise<String>} The newly created token
- */
-async function refresh(currentTokenId) {
-    // Revoke old token
-    const token = await logout(currentTokenId);
-
-    // Get user to create a new token.
-    // Here we don't really need transaction
-    // because current token is already revoked
-    const user = await token.getConnection();
-
-    return createJWT(user);
-}
-
-
-/**
- * Create a new JWT including permissions.
- *
- * @param user {ConnectionInformation} User
- * @returns {Promise<String>} Return a JWT.
- */
-async function createJWT(user) {
-
-    // Sign with default (HMAC SHA256)
-    const id = uuidv4();
-
-    await user.createJwt({
-        id,
-    });
-
-    const barman = await user.getBarman({
-        include: [
-            {
-                model: Role,
-                as: 'roles',
-                include: [
-                    {
-                        model: Permission,
-                        as: 'permissions',
-                    },
-                ],
-            },
-        ],
-    });
-
-    let permissions = [];
-
-    if (barman) {
-        permissions = [...new Set(barman.roles.reduce((a, b) => a.concat(b.permissions.map(p => p.name)), []))];
-    } else {
-        const specialAccount = await user.getSpecialAccount({
-            include: [
-                {
-                    model: Permission,
-                    as: 'permissions',
-                },
-            ],
-        });
-        if (!specialAccount) {
-            throw createServerError('UnknownUser',
-                'This user has no barman or special account linked, this should not exist!');
-        }
-
-        permissions = specialAccount.permissions.map(p => p.name);
-    }
-
-    logger.info(`Creating a new JWT ${user.id}, with permissions : ${permissions.join(', ')}`);
-
-    return jwt.sign({
-        jit: id,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration),
-        permissions,
-        userId: user.id,
-    }, jwtSecret);
+  return createJWT(user);
 }
 
 
@@ -147,14 +135,33 @@ async function createJWT(user) {
  * @throws An error if the token could not be find.
  */
 async function logout(tokenId) {
-    const token = await JWT.findById(tokenId);
+  const token = await JWT.findById(tokenId);
 
-    if (!token) throw createUserError('LogoutError', 'This token does not exist');
+  if (!token) throw createUserError('LogoutError', 'This token does not exist');
 
-    await token.update({ revoked: true });
+  await token.update({ revoked: true });
 
-    return token;
+  return token;
 }
+
+/**
+ * Refresh a token and revoked the old one.
+ *
+ * @param currentTokenId {String} Current token id
+ * @returns {Promise<String>} The newly created token
+ */
+async function refresh(currentTokenId) {
+  // Revoke old token
+  const token = await logout(currentTokenId);
+
+  // Get user to create a new token.
+  // Here we don't really need transaction
+  // because current token is already revoked
+  const user = await token.getConnection();
+
+  return createJWT(user);
+}
+
 
 /**
  * Logout a member by revoking his token.
@@ -164,49 +171,49 @@ async function logout(tokenId) {
  * @throws An error if the token could not be find.
  */
 async function me(tokenId) {
-    const token = await JWT.findById(tokenId);
-    if (!token) throw createUserError('UnknownUser', 'This token does not exist');
+  const token = await JWT.findById(tokenId);
+  if (!token) throw createUserError('UnknownUser', 'This token does not exist');
 
-    const co = await token.getConnection({
-        attributes: [],
+  const co = await token.getConnection({
+    attributes: [],
+    include: [
+      {
+        model: Barman,
+        as: 'barman',
         include: [
-            {
-                model: Barman,
-                as: 'barman',
-                include: [
-                    {
-                        model: ConnectionInformation,
-                        as: 'connection',
-                        attributes: [ 'id', 'username' ],
-                    },
-                    {
-                        model: Kommission,
-                        as: 'kommissions',
-                    },
-                    {
-                        model: Role,
-                        as: 'roles',
-                    },
-                ],
-            },
-            {
-                model: SpecialAccount,
-                as: 'specialAccount',
-                attributes: { exclude: [ 'code' ] },
-                include: [
-                    {
-                        model: ConnectionInformation,
-                        as: 'connection',
-                        attributes: [ 'id', 'username' ],
-                    },
-                ],
-            },
+          {
+            model: ConnectionInformation,
+            as: 'connection',
+            attributes: ['id', 'username'],
+          },
+          {
+            model: Kommission,
+            as: 'kommissions',
+          },
+          {
+            model: Role,
+            as: 'roles',
+          },
         ],
-    });
+      },
+      {
+        model: SpecialAccount,
+        as: 'specialAccount',
+        attributes: { exclude: ['code'] },
+        include: [
+          {
+            model: ConnectionInformation,
+            as: 'connection',
+            attributes: ['id', 'username'],
+          },
+        ],
+      },
+    ],
+  });
 
-    if (!co) throw createServerError('UnknownUser', 'This token has no connection, this should not exist!');
+  if (!co) throw createServerError('UnknownUser', 'This token has no connection, this should not exist!');
 
-    return co;
+  return co;
 }
 
 
@@ -219,50 +226,50 @@ async function me(tokenId) {
  * @returns {Promise<void>}
  */
 async function resetPassword(usernameDirty, currTransaction) {
-    const username = usernameDirty.toLowerCase();
-    const transaction = currTransaction || await sequelize.transaction();
+  const username = usernameDirty.toLowerCase();
+  const transaction = currTransaction || await sequelize.transaction();
 
-    const co = await ConnectionInformation.findOne({
-        where: { username },
-        transaction: currTransaction,
-    });
+  const co = await ConnectionInformation.findOne({
+    where: { username },
+    transaction: currTransaction,
+  });
 
-    if (!co) {
-        await transaction.rollback();
-        throw createUserError('UnknownUser', 'Unable to find provided username');
-    }
+  if (!co) {
+    await transaction.rollback();
+    throw createUserError('UnknownUser', 'Unable to find provided username');
+  }
 
-    if (co.usernameToken) {
-        await transaction.rollback();
-        throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
-    }
+  if (co.usernameToken) {
+    await transaction.rollback();
+    throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
+  }
 
-    const passwordToken = await generateToken(128);
+  const passwordToken = await generateToken(128);
 
-    try {
-        await co.update({
-            passwordToken: await hash(passwordToken),
-        }, { transaction });
-    } catch (err) {
-        logger.error('Error while creating reset password token %o', err);
+  try {
+    await co.update({
+      passwordToken: await hash(passwordToken),
+    }, { transaction });
+  } catch (err) {
+    logger.error('Error while creating reset password token %o', err);
 
-        // Do not rollback if the parent sent a transaction AND we generate a ServerError
-        if (currTransaction) throw err;
+    // Do not rollback if the parent sent a transaction AND we generate a ServerError
+    if (currTransaction) throw err;
 
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while resetting password');
-    }
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while resetting password');
+  }
 
-    try {
-        await mailService.sendPasswordResetMail(username, passwordToken);
-    } catch (err) {
-        logger.error('Error while sending reset password mail at %s, %o', username, err);
+  try {
+    await mailService.sendPasswordResetMail(username, passwordToken);
+  } catch (err) {
+    logger.error('Error while sending reset password mail at %s, %o', username, err);
 
-        await transaction.rollback();
-        throw createUserError('MailerError', 'Unable to send email to the provided address');
-    }
+    await transaction.rollback();
+    throw createUserError('MailerError', 'Unable to send email to the provided address');
+  }
 
-    if (!currTransaction) await transaction.commit();
+  if (!currTransaction) await transaction.commit();
 }
 
 /**
@@ -276,43 +283,49 @@ async function resetPassword(usernameDirty, currTransaction) {
  * @returns {Promise<void>} Nothing
  */
 async function definePassword(usernameDirty, passwordToken, newPassword, oldPassword) {
-    const username = usernameDirty.toLowerCase();
-    const user = await ConnectionInformation.findOne({ where: { username } });
+  const username = usernameDirty.toLowerCase();
+  const user = await ConnectionInformation.findOne({ where: { username } });
 
-    if (!user) throw createUserError('UnknownUser', 'Unable to find provided username');
+  if (!user) throw createUserError('UnknownUser', 'Unable to find provided username');
 
-    if (passwordToken) {
-        if (!await verify(user.passwordToken, passwordToken)) throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
-    } else if (oldPassword) {
-        if (!await verify(user.password, oldPassword)) throw createUserError('LoginError', 'Bad username/password combination');
-    } else {
-        throw createServerError('ServerError', 'Missing parameter');
+  if (passwordToken) {
+    if (!await verify(user.passwordToken, passwordToken)) {
+      throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
     }
-
-    if (user.usernameToken) {
-        throw createUserError('UnverifiedUsername',
-            'A verified email is required, if you can not gain access to your account, contact an administrator');
+  } else if (oldPassword) {
+    if (!await verify(user.password, oldPassword)) {
+      throw createUserError('LoginError', 'Bad username/password combination');
     }
+  } else {
+    throw createServerError('ServerError', 'Missing parameter');
+  }
 
-    const transaction = await sequelize.transaction();
-    try {
-        await user.update({
-            password: await hash(newPassword),
-            passwordToken: null,
-        }, { transaction });
+  if (user.usernameToken) {
+    throw createUserError(
+      'UnverifiedUsername',
+      'A verified email is required, if you can not gain access to your account, contact an administrator',
+    );
+  }
 
-        await JWT.update({ revoked: true }, {
-            transaction,
-            where: {
-                connectionId: user.id,
-            },
-        });
-    } catch (e) {
-        logger.warn('AuthService: Error while defining password: %o', e);
-        await transaction.rollback();
-    }
+  const transaction = await sequelize.transaction();
+  try {
+    await user.update({
+      password: await hash(newPassword),
+      passwordToken: null,
+    }, { transaction });
 
-    await transaction.commit();
+    await JWT.update({ revoked: true }, {
+      transaction,
+      where: {
+        connectionId: user.id,
+      },
+    });
+  } catch (e) {
+    logger.warn('AuthService: Error while defining password: %o', e);
+    await transaction.rollback();
+  }
+
+  await transaction.commit();
 }
 
 /**
@@ -323,40 +336,42 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
  * @returns {Promise<void>} Nothing
  */
 async function updateUsername(currentUsername, newUsername) {
-    const co = await ConnectionInformation.findOne({
-        where: {
-            username: currentUsername.toLowerCase(),
-        },
-    });
+  const co = await ConnectionInformation.findOne({
+    where: {
+      username: currentUsername.toLowerCase(),
+    },
+  });
 
-    if (!co) throw createUserError('UnknownUser', 'This User does not exist');
+  if (!co) throw createUserError('UnknownUser', 'This User does not exist');
 
-    if (co.passwordToken) throw createUserError('UndefinedPassword', 'You must define a password. Please, check your email.');
+  if (co.passwordToken) {
+    throw createUserError('UndefinedPassword', 'You must define a password. Please, check your email.');
+  }
 
-    const usernameToken = await generateToken(128);
+  const usernameToken = await generateToken(128);
 
-    const transaction = await sequelize.transaction();
+  const transaction = await sequelize.transaction();
 
-    try {
-        await co.update({
-            usernameToken: await hash(usernameToken + newUsername),
-        }, { transaction });
-    } catch (err) {
-        logger.error('Error while creating reset password token %o', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while change username');
-    }
+  try {
+    await co.update({
+      usernameToken: await hash(usernameToken + newUsername),
+    }, { transaction });
+  } catch (err) {
+    logger.error('Error while creating reset password token %o', err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while change username');
+  }
 
-    try {
-        await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
-        await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
-    } catch (err) {
-        logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
-        transaction.rollback();
-        throw createUserError('MailerError', 'Unable to send email to the provided address');
-    }
+  try {
+    await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
+    await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
+  } catch (err) {
+    logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
+    transaction.rollback();
+    throw createUserError('MailerError', 'Unable to send email to the provided address');
+  }
 
-    await transaction.commit();
+  await transaction.commit();
 }
 
 /**
@@ -369,64 +384,64 @@ async function updateUsername(currentUsername, newUsername) {
  * @returns {Promise<void>} Nothing
  */
 async function usernameVerify(userId, username, password, usernameToken) {
-    const co = await ConnectionInformation.findById(userId);
+  const co = await ConnectionInformation.findById(userId);
 
-    if (!co ||
-        !await verify(co.password, password) ||
-        !await verify(co.usernameToken, usernameToken + username)
-    ) {
-        throw createUserError('VerificationError', 'Bad token/password/new email combination.');
-    }
+  if (!co ||
+    !await verify(co.password, password) ||
+    !await verify(co.usernameToken, usernameToken + username)
+  ) {
+    throw createUserError('VerificationError', 'Bad token/password/new email combination.');
+  }
 
-    const transaction = await sequelize.transaction();
+  const transaction = await sequelize.transaction();
 
-    try {
-        await co.update({
-            // We force the email to lowercase for multiple reasons:
-            // 1. We can profit of the unique index of mysql
-            // 2. It's easier to make request case sensitive than insensitive
-            // 3. For most of providers (for us at least), it is treated the same
-            //
-            // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
-            username: username.toLowerCase(),
-            usernameToken: null,
-        }, { transaction });
+  try {
+    await co.update({
+      // We force the email to lowercase for multiple reasons:
+      // 1. We can profit of the unique index of mysql
+      // 2. It's easier to make request case sensitive than insensitive
+      // 3. For most of providers (for us at least), it is treated the same
+      //
+      // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
+      username: username.toLowerCase(),
+      usernameToken: null,
+    }, { transaction });
 
-        // Revoke all current JWTs
+    // Revoke all current JWTs
 
-        await JWT.update({ revoked: true }, {
-            transaction,
-            where: {
-                connectionId: co.id,
-            },
-        });
-    } catch (err) {
-        logger.error('Error while creating reset password token %o', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while change username');
-    }
+    await JWT.update({ revoked: true }, {
+      transaction,
+      where: {
+        connectionId: co.id,
+      },
+    });
+  } catch (err) {
+    logger.error('Error while creating reset password token %o', err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while change username');
+  }
 
-    try {
-        await mailService.sendUsernameConfirmation(username);
-    } catch (err) {
-        logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
-        transaction.rollback();
-        throw createUserError('MailerError', 'Unable to send email to the provided address');
-    }
+  try {
+    await mailService.sendUsernameConfirmation(username);
+  } catch (err) {
+    logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
+    transaction.rollback();
+    throw createUserError('MailerError', 'Unable to send email to the provided address');
+  }
 
-    await transaction.commit();
+  await transaction.commit();
 }
 
 
 module.exports = {
-    isTokenRevoked,
-    login,
-    refresh,
-    logout,
-    me,
-    createJWT,
-    resetPassword,
-    definePassword,
-    updateUsername,
-    usernameVerify,
+  isTokenRevoked,
+  login,
+  refresh,
+  logout,
+  me,
+  createJWT,
+  resetPassword,
+  definePassword,
+  updateUsername,
+  usernameVerify,
 };

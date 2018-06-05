@@ -11,22 +11,22 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function login(req, res) {
-    const schema = Joi.object().keys({
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-    });
+  const schema = Joi.object().keys({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  });
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
 
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    const jwt = await authService.login(username, password);
+  const jwt = await authService.login(username, password);
 
-    res.json({
-        jwt,
-    });
+  res.json({
+    jwt,
+  });
 }
 
 /**
@@ -37,11 +37,11 @@ async function login(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function refresh(req, res) {
-    const jwt = await authService.refresh(req.user.jit);
+  const jwt = await authService.refresh(req.user.jit);
 
-    res.json({
-        jwt,
-    });
+  res.json({
+    jwt,
+  });
 }
 
 
@@ -53,9 +53,9 @@ async function refresh(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function logout(req, res) {
-    await authService.logout(req.user.jit);
+  await authService.logout(req.user.jit);
 
-    res.send({});
+  res.send({});
 }
 
 /**
@@ -66,16 +66,16 @@ async function logout(req, res) {
  * @returns {Promise<void>} Nothing
  */
 async function resetPassword(req, res) {
-    const schema = Joi.object().keys({
-        username: Joi.string().required(),
-    });
+  const schema = Joi.object().keys({
+    username: Joi.string().required(),
+  });
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    await authService.resetPassword(req.body.username);
+  await authService.resetPassword(req.body.username);
 
-    res.send({});
+  res.send({});
 }
 
 /**
@@ -86,33 +86,37 @@ async function resetPassword(req, res) {
  * @returns {Promise<void>} Nothing
  */
 async function definePassword(req, res) {
-    const schema = Joi.object().keys({
-        username: Joi.string().email().required(),
-        password: Joi.string()
-            .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
-            .error(createUserError('WeakPassword',
-                'Password must be at least 8 characters, with at least 1 uppercase, 1 lowercase and 1 digit'))
-            .required(),
-        oldPassword: Joi.string().allow(null),
-        passwordToken: Joi.string().allow(null),
-    });
+  const schema = Joi.object().keys({
+    username: Joi.string().email().required(),
+    password: Joi.string()
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
+      .error(createUserError(
+        'WeakPassword',
+        'Password must be at least 8 characters, with at least 1 uppercase, 1 lowercase and 1 digit',
+      ))
+      .required(),
+    oldPassword: Joi.string().allow(null),
+    passwordToken: Joi.string().allow(null),
+  });
 
-    const { error } = schema.validate(req.body);
-    if (error) {
-        if (error.userError) throw error;
+  const { error } = schema.validate(req.body);
+  if (error) {
+    if (error.userError) throw error;
 
-        throw createUserError('BadRequest', error.message);
-    }
+    throw createUserError('BadRequest', error.message);
+  }
 
-    const { username, password, oldPassword, passwordToken } = req.body;
+  const {
+    username, password, oldPassword, passwordToken,
+  } = req.body;
 
-    if (!passwordToken && !oldPassword) {
-        throw createUserError('BadRequest', 'Missing passwordToken or oldPassword field');
-    }
+  if (!passwordToken && !oldPassword) {
+    throw createUserError('BadRequest', 'Missing passwordToken or oldPassword field');
+  }
 
-    await authService.definePassword(username, passwordToken, password, oldPassword);
+  await authService.definePassword(username, passwordToken, password, oldPassword);
 
-    res.send({});
+  res.send({});
 }
 
 /**
@@ -123,28 +127,30 @@ async function definePassword(req, res) {
  * @returns {Promise<void>} Nothing
  */
 async function usernameVerify(req, res) {
-    const schema = Joi.object().keys({
-        userId: Joi.number().integer().required(),
-        username: Joi.string().email().required(),
-        password: Joi.string().required(),
-        usernameToken: Joi.string().required()
-    });
+  const schema = Joi.object().keys({
+    userId: Joi.number().integer().required(),
+    username: Joi.string().email().required(),
+    password: Joi.string().required(),
+    usernameToken: Joi.string().required(),
+  });
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const { userId, username, password, usernameToken } = req.body;
-    await authService.usernameVerify(userId, username, password, usernameToken);
+  const {
+    userId, username, password, usernameToken,
+  } = req.body;
+  await authService.usernameVerify(userId, username, password, usernameToken);
 
-    res.send({});
+  res.send({});
 }
 
 
 module.exports = {
-    login,
-    logout,
-    refresh,
-    resetPassword,
-    definePassword,
-    usernameVerify,
+  login,
+  logout,
+  refresh,
+  resetPassword,
+  definePassword,
+  usernameVerify,
 };

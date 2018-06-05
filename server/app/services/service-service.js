@@ -12,47 +12,37 @@ const { createUserError, createServerError, cleanObject } = require('../../utils
  * @returns {Promise<Array>} Services
  */
 async function getAllServices(start, end) {
-    logger.verbose('Service service: get all services');
-    return Service.findAll({
-        where: {
-            startAt: {
-                [Op.and]: [
-                    { [Op.gte]: start },
-                    { [Op.lte]: end }
-                ]
-            }
-        },
-        order: [
-            ['startAt', 'ASC'],
+  logger.verbose('Service service: get all services');
+  return Service.findAll({
+    where: {
+      startAt: {
+        [Op.and]: [
+          { [Op.gte]: start },
+          { [Op.lte]: end },
         ],
-        include: [
-            {
-                model: Barman,
-                as: 'barmen',
-            }
-        ]
-    });
+      },
+    },
+    order: [
+      ['startAt', 'ASC'],
+    ],
+    include: [
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+    ],
+  });
 }
 
 /**
  * Create a service.
  *
  * @param serviceArray {Array<Service>} service list
- * @return {Promise<Service|Errors.ValidationError>} The created service with its id
+ * @return {Promise<Array<Service>|Errors.ValidationError>} The created service with its id
  */
 async function createService(serviceArray) {
-
-    const services = [];
-    for (const service of serviceArray) {
-        const newService = new Service({
-            startAt: service.startAt,
-            endAt: service.endAt,
-            nbMax: service.nbMax,
-        });
-        logger.verbose('Service service: creating a new service, start: \'%s\', end \'%s\'.', newService.startAt.toString(), newService.endAt.toString());
-        services.push(newService.save());
-    }
-    return Promise.all(services);
+  logger.verbose(`Creating ${serviceArray.length} services`);
+  return Service.bulkCreate(serviceArray);
 }
 
 /**
@@ -62,21 +52,20 @@ async function createService(serviceArray) {
  * @return {Promise<Service>} The wanted service.
  */
 async function getServiceById(serviceId) {
+  logger.verbose('Service service: get service by id %d', serviceId);
 
-    logger.verbose('Service service: get service by id %d', serviceId);
+  const service = await Service.findById(serviceId, {
+    include: [
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+    ],
+  });
 
-    const service = await Service.findById(serviceId, {
-        include: [
-            {
-                model: Barman,
-                as: 'barmen',
-            }
-        ]
-    });
+  if (!service) throw createUserError('UnknownService', 'This service does not exist');
 
-    if (!service) throw createUserError('UnknownService', 'This service does not exist');
-
-    return service;
+  return service;
 }
 
 /**
@@ -91,30 +80,28 @@ async function getServiceById(serviceId) {
  * @return {Promise<Service>} The updated service
  */
 async function updateService(serviceId, updatedService) {
+  let currentService = await Service.findById(serviceId);
 
-    let currentService = await Service.findById(serviceId);
+  if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
-    if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
+  logger.verbose('Service service: updating service named %s', currentService.name);
+  const transaction = await sequelize.transaction();
+  try {
+    await currentService.update(cleanObject({
+      startAt: updatedService.startAt,
+      endAt: updatedService.endAt,
+      nbMax: updatedService.nbMax,
+    }), { transaction });
+  } catch (err) {
+    logger.warn('Service service: Error while updating service', err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while updating service');
+  }
+  await transaction.commit();
 
-    logger.verbose('Service service: updating service named %s', currentService.name);
-    const transaction = await sequelize.transaction();
-    try {
-        await currentService.update(cleanObject({
-            startAt: updatedService.startAt,
-            endAt: updatedService.endAt,
-            nbMax: updatedService.nbMax
-        }), { transaction });
+  currentService = await Service.findById(serviceId);
 
-    } catch (err) {
-        logger.warn('Service service: Error while updating service', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while updating service');
-    }
-    await transaction.commit();
-
-    currentService = await Service.findById(serviceId);
-
-    return currentService;
+  return currentService;
 }
 
 /**
@@ -124,22 +111,21 @@ async function updateService(serviceId, updatedService) {
  * @return {Promise<Service>} The deleted service
  */
 async function deleteService(serviceId) {
+  logger.verbose('Service service: deleting service with id %d', serviceId);
 
-    logger.verbose('Service service: deleting service with id %d', serviceId);
+  const service = await Service.findById(serviceId);
 
-    const service = await Service.findById(serviceId);
+  if (!service) throw createUserError('UnknownService', 'This service does not exist');
 
-    if (!service) throw createUserError('UnknownService', 'This service does not exist');
+  await service.destroy();
 
-    await service.destroy();
-
-    return service;
+  return service;
 }
 
 module.exports = {
-    getAllServices,
-    createService,
-    updateService,
-    getServiceById,
-    deleteService,
+  getAllServices,
+  createService,
+  updateService,
+  getServiceById,
+  deleteService,
 };

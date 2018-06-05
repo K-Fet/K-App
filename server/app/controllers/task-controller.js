@@ -12,27 +12,27 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function createTask(req, res) {
-    const schema = TaskSchema.requiredKeys(
-        'name',
-        'deadline',
-        'state',
-        '_embedded',
-        '_embedded.kommissionId',
-    );
+  const schema = TaskSchema.requiredKeys(
+    'name',
+    'deadline',
+    'state',
+    '_embedded',
+    '_embedded.kommissionId',
+  );
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    await kommissionService.getKommissionById(req.body._embedded.kommissionId);
+  await kommissionService.getKommissionById(req.body._embedded.kommissionId);
 
-    let newTask = new Task({
-        ...req.body,
-        _embedded: undefined // Remove the only external object
-    });
+  let newTask = new Task({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    newTask = await taskService.createTask(newTask, req.body._embedded);
+  newTask = await taskService.createTask(newTask, req.body._embedded);
 
-    res.json(newTask);
+  res.json(newTask);
 }
 
 
@@ -44,11 +44,11 @@ async function createTask(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getTaskById(req, res) {
-    const taskId = req.params.id;
+  const taskId = req.params.id;
 
-    const task = await taskService.getTaskById(taskId);
+  const task = await taskService.getTaskById(taskId);
 
-    res.json(task);
+  res.json(task);
 }
 
 
@@ -60,21 +60,21 @@ async function getTaskById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateTask(req, res) {
-    const schema = TaskSchema.min(1).forbiddenKeys('_embedded.kommissionId');
+  const schema = TaskSchema.min(1).forbiddenKeys('_embedded.kommissionId');
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newTask = new Task({
-        ...req.body,
-        _embedded: undefined // Remove the only external object
-    });
+  let newTask = new Task({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    const taskId = req.params.id;
+  const taskId = req.params.id;
 
-    newTask = await taskService.updateTask(taskId, newTask, req.body._embedded);
+  newTask = await taskService.updateTask(taskId, newTask, req.body._embedded);
 
-    res.json(newTask);
+  res.json(newTask);
 }
 
 /**
@@ -85,16 +85,16 @@ async function updateTask(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteTask(req, res) {
-    const taskId = req.params.id;
+  const taskId = req.params.id;
 
-    const task = await taskService.deleteTask(taskId);
+  const task = await taskService.deleteTask(taskId);
 
-    res.json(task);
+  res.json(task);
 }
 
 module.exports = {
-    createTask,
-    updateTask,
-    getTaskById,
-    deleteTask,
+  createTask,
+  updateTask,
+  getTaskById,
+  deleteTask,
 };

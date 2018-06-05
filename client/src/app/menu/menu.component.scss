@@ -1,30 +1,30 @@
 .main-nav {
-    position: fixed;
-    top: 0px;
-    left: 0;
-    width: 100%  !important;
-    z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  z-index: 5;
 }
 
 .sidenav-container {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .sidenav {
-    width: 256px;
-    border-right: 1px solid rgba(0, 0, 0, 0.14);
+  width: 256px;
+  border-right: 1px solid rgba(0, 0, 0, .14);
 }
 
 .content-container {
-    padding-top: 16px;
-    padding-left: 16px;
-    padding-right: 16px;
+  padding-top: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .connectedUserInformation {
-    padding: 0px 20px 0px 20px;
+  padding: 0 20px 0 20px;
 }

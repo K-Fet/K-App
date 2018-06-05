@@ -5,7 +5,5 @@ beforeEach(initDatabase);
 afterEach(clearDatabase);
 
 describe('Integration::Members::GetMemberById', () => {
-
-    test('noop', async () => {
-    });
+  test('noop', async () => {});
 });
