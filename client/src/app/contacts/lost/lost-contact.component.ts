@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContactService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   templateUrl: './lost-contact.component.html',
@@ -11,6 +12,7 @@ export class LostContactComponent {
 
   contactForm: FormGroup;
   token: String;
+  siteKey: String = environment.RECAPTACHA_SITE_KEY;
 
   constructor(private fb: FormBuilder,
               private contactService: ContactService,

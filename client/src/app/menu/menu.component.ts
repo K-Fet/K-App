@@ -132,6 +132,16 @@ export class MenuComponent implements OnDestroy, OnInit {
         },
       ],
     },
+    {
+      name: 'Contacts',
+      accountType: 'connectedUser',
+      links: [
+        {
+          name: 'Pour un problème avec le site',
+          route: '/contact/website',
+        },
+      ],
+    },
   ];
 
   mobileQuery: MediaQueryList;
@@ -174,6 +184,7 @@ export class MenuComponent implements OnDestroy, OnInit {
 
   isVisible(subMenu: SubMenu): Boolean {
     if (subMenu.accountType === 'guest' && !this.user.isGuest()) return false;
+    if (subMenu.accountType === 'connectedUser' && this.user.isGuest()) return false;
     for (const link of subMenu.links) {
       if (!link.permissions) return true;
       for (const perm of link.permissions) {
