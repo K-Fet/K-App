@@ -1,88 +1,95 @@
 {
-    "name": "k-app",
-    "version": "1.0.3",
-    "description": "K-App provide a large panel of useful tools for associations",
-    "contributors": [
-        "Corentin Giraud <corentin.giraud@insa-lyon.fr>",
-        "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
-        "Baptiste Viry",
-        "Clément Guittat",
-        "Mickael Gadou"
+  "name": "k-app",
+  "version": "1.1.2",
+  "description": "K-App provide a large panel of useful tools for associations",
+  "contributors": [
+    "Corentin Giraud <corentin.giraud@insa-lyon.fr>",
+    "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
+    "Baptiste Viry",
+    "Clément Guittat",
+    "Mickael Gadou"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/K-Fet/K-App"
+  },
+  "bugs": {
+    "url": "https://github.com/K-Fet/K-App/issues"
+  },
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "build": "cd client/ && yarn run build:prod",
+    "build:dev": "cd client/ && yarn run build",
+    "dev": "concurrently --kill-others \"yarn run dev:back\" \"yarn run dev:front\"",
+    "dev:back": "nodemon --watch server --watch server/index.js --inspect",
+    "dev:front": "cd client/ && yarn start",
+    "eslint": "eslint server/",
+    "eslint:watch": "esw --watch server/",
+    "lint": "yarn run eslint && cd client/ && yarn run lint",
+    "install:prod": "yarn install --production --loglevel warn",
+    "migrate": "node tools/migrations/migrate.js",
+    "postinstall": "cd client/ && yarn install --production=false",
+    "prod": "NODE_ENV=production node server/index.js",
+    "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
+    "test:back": "jest --runInBand",
+    "test:front": "cd client/ && yarn build",
+    "preversion": "yarn test"
+  },
+  "dependencies": {
+    "argon2": "0.19.2",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.2",
+    "express": "^4.16.2",
+    "express-jwt": "^5.3.1",
+    "express-jwt-permissions": "^1.2.0",
+    "inquirer": "^5.0.1",
+    "joi": "^13.3.0",
+    "jsonwebtoken": "^8.2.0",
+    "morgan": "^1.9.0",
+    "mysql2": "^1.5.1",
+    "nodemailer": "^4.6.5",
+    "sequelize": "^4.37.10",
+    "umzug": "^2.1.0",
+    "uuid": "^3.1.0",
+    "winston": "^3.0.0-rc2"
+  },
+  "devDependencies": {
+    "codecov": "^3.0.2",
+    "concurrently": "^3.5.1",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "jest": "^23.0.1",
+    "node-mocks-http": "^1.7.0",
+    "nodemon": "^1.17.5",
+    "opn": "^5.3.0",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "sqlite3": "^4.0.0"
+  },
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "client/",
+      "tools/"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/K-Fet/K-App"
-    },
-    "bugs": {
-        "url": "https://github.com/K-Fet/K-App/issues"
-    },
-    "license": "Apache-2.0",
-    "private": true,
-    "scripts": {
-        "build": "cd client/ && yarn run build:prod",
-        "build:dev": "cd client/ && yarn run build",
-        "dev": "concurrently --kill-others \"yarn run dev:back\" \"yarn run dev:front\"",
-        "dev:back": "nodemon --watch server --watch server/index.js --inspect",
-        "dev:front": "cd client/ && yarn start",
-        "eslint": "eslint server/",
-        "eslint:watch": "esw --watch server/",
-        "lint": "yarn run eslint && cd client/ && yarn run lint",
-        "install:prod": "yarn install --production --loglevel warn",
-        "postinstall": "cd client/ && yarn install --production=false",
-        "prod": "NODE_ENV=production node server/index.js",
-        "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
-        "test:back": "jest --runInBand",
-        "test:front": "cd client/ && yarn build"
-    },
-    "dependencies": {
-        "argon2": "0.16.2",
-        "body-parser": "^1.18.2",
-        "compression": "^1.7.2",
-        "express": "^4.16.2",
-        "express-jwt": "^5.3.1",
-        "express-jwt-permissions": "^1.1.0",
-        "inquirer": "^5.0.1",
-        "joi": "^13.1.2",
-        "jsonwebtoken": "^8.2.0",
-        "morgan": "^1.9.0",
-        "mysql2": "^1.5.1",
-        "nodemailer": "^4.6.3",
-        "sequelize": "^4.36.0",
-        "uuid": "^3.1.0",
-        "winston": "^3.0.0-rc2"
-    },
-    "devDependencies": {
-        "codecov": "^3.0.0",
-        "concurrently": "^3.5.1",
-        "eslint": "^4.18.2",
-        "jest": "^22.3.0",
-        "node-mocks-http": "^1.6.6",
-        "nodemon": "^1.17.1",
-        "opn": "^5.3.0",
-        "request": "^2.83.0",
-        "request-promise-native": "^1.0.5",
-        "sqlite3": "^3.1.13"
-    },
-    "main": "server/index.js",
-    "engines": {
-        "node": ">=8.9.0"
-    },
-    "nodemonConfig": {
-        "ignore": [
-            "**/test/**",
-            "client/",
-            "tools/"
-        ],
-        "delay": "2500"
-    },
-    "jest": {
-        "collectCoverageFrom": [
-            "<rootDir>/server/**/*.js"
-        ],
-        "testRegex": "(/__tests__/.*|/server/tests/(int).*)\\.jsx?$",
-        "coveragePathIgnorePatterns": [
-            "app/routes/",
-            "app/models/"
-        ]
-    }
+    "delay": "2500"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/server/**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "app/routes/",
+      "app/models/"
+    ],
+    "testRegex": "(/__tests__/.*|/server/tests/(int).*)\\.jsx?$"
+  }
 }

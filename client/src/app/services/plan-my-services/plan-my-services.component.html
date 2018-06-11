@@ -15,7 +15,7 @@
                 </section>
                 <mat-list *ngIf="myServices">
                     <mat-list-item *ngFor="let service of myServices">
-                        <button type="button" mat-icon-button (click)="removeService(service)">
+                        <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
                             <mat-icon>delete</mat-icon>
                         </button>
                         <span class="first-letter-uppercase">
@@ -28,7 +28,7 @@
                 <section class="mat-typography">
                     <h2>Ajouter mes services ...</h2>
                 </section>
-                <div>
+                <div fxLayout="row">
                     <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
                         <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
                             {{day.name}}
@@ -37,19 +37,25 @@
                 </div>
                 <div>
                     <mat-list *ngIf="dayServices">
-                        <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center">
+                        <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center" class="mat-list-item-word-wrap">
                             <p mat-line>
-                                <button *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
+                                <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
                                     <mat-icon>add</mat-icon>
                                 </button>
                                 <ng-template #elseBlock>
-                                    <mat-icon>check_circle</mat-icon>
+                                    <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
                                 </ng-template>
                                 De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                                <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
                             </p>
-                            <span mat-line *ngIf="service.barmen" class="mat-caption">
+                            <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                                 Avec
-                                <span *ngFor="let barman of service.barmen">{{barman.nickname}}</span>
+                                <span *ngFor="let barman of service.barmen; let idx = index">
+                                    {{barman.nickname}}
+                                    <span *ngIf="service.barmen.length != (idx+1)">, </span>
+                                </span>
                             </span>
                             <span mat-line *ngIf="!service.barmen" class="mat-caption">
                                 Aucun barmen pour le moment...

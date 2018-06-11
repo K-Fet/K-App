@@ -53,6 +53,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
+import { LoaderComponent } from './loader/loader.component';
 import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
 import { WebsiteContactComponent } from './contacts/website/website-contact.component';
 import { LostContactComponent } from './contacts/lost/lost-contact.component';
@@ -60,14 +61,15 @@ import { EventContactComponent } from './contacts/event/event-contact.component'
 
 // Services
 import { AuthService, BarmanService, ContactService,
-    KommissionService, MemberService, MeService, PermissionService,
+    KommissionService, LoaderService, MemberService, MeService, PermissionService,
     RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
+import { ActiveGuard } from './_guards/active.guard';
 
 // Helpers
-import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { RequestInterceptor } from './_helpers/request.interceptor';
 import { EqualValidator } from './_helpers/equal-validator.directive';
 import { ErrorsHandler } from './_helpers/error.handler';
 
@@ -75,105 +77,110 @@ import { ErrorsHandler } from './_helpers/error.handler';
 
 // tslint:disable-next-line:no-duplicate-imports
 import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
+import fr from '@angular/common/locales/fr';
 
-registerLocaleData(localeFr, 'fr');
+registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        MenuComponent,
-        LoginComponent,
-        MenuComponent,
-        MembersListComponent,
-        MemberNewComponent,
-        MemberEditComponent,
-        ServiceExplorerComponent,
-        MyServicesComponent,
-        PlanningComponent,
-        PlanMyServicesComponent,
-        BarmenListComponent,
-        BarmanNewComponent,
-        BarmanViewComponent,
-        BarmanEditComponent,
-        KommissionEditComponent,
-        KommissionNewComponent,
-        KommissionsListComponent,
-        RoleEditComponent,
-        RoleNewComponent,
-        RolesListComponent,
-        CodeDialogComponent,
-        NotFoundComponent,
-        OpenServicesComponent,
-        WeekPickerComponent,
-        SpecialAccountListComponent,
-        SpecialAccountNewComponent,
-        SpecialAccountEditComponent,
-        ConfirmationDialogComponent,
-        ResetPasswordDialogComponent,
-        EqualValidator,
-        DefinePasswordComponent,
-        UsernameVerificationComponent,
-        TemplatesListComponent,
-        TemplateNewComponent,
-        TemplateViewComponent,
-        HomePageComponent,
-        ServiceListComponent,
-        ServiceNewComponent,
-        ServiceEditComponent,
-        ConcertContactComponent,
-        EventContactComponent,
-        LostContactComponent,
-        WebsiteContactComponent,
-    ],
-    entryComponents: [
-        CodeDialogComponent,
-        ConfirmationDialogComponent,
-        ResetPasswordDialogComponent,
-    ],
-    imports: [
-        CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        MaterialModule,
-        HttpClientModule,
-        routing,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxPermissionsModule.forRoot(),
-        ReCaptchaModule,
-    ],
-    bootstrap: [AppComponent],
-    providers: [
-        AuthService,
-        MemberService,
-        BarmanService,
-        ServiceService,
-        KommissionService,
-        RoleService,
-        ToasterService,
-        TemplateService,
-        SpecialAccountService,
-        PermissionService,
-        MeService,
-        EditGuard,
-        ContactService,
-        DatePipe,
-        {
-            provide: LOCALE_ID, useValue: 'fr',
-        },
-        {
-            provide: ErrorHandler,
-            useClass: ErrorsHandler,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: JwtInterceptor,
-            multi: true,
-        },
-    ],
+  declarations: [
+    AppComponent,
+    MenuComponent,
+    LoginComponent,
+    MenuComponent,
+    MembersListComponent,
+    MemberNewComponent,
+    MemberEditComponent,
+    ServiceExplorerComponent,
+    MyServicesComponent,
+    PlanningComponent,
+    PlanMyServicesComponent,
+    BarmenListComponent,
+    BarmanNewComponent,
+    BarmanViewComponent,
+    BarmanEditComponent,
+    KommissionEditComponent,
+    KommissionNewComponent,
+    KommissionsListComponent,
+    RoleEditComponent,
+    RoleNewComponent,
+    RolesListComponent,
+    CodeDialogComponent,
+    NotFoundComponent,
+    OpenServicesComponent,
+    WeekPickerComponent,
+    SpecialAccountListComponent,
+    SpecialAccountNewComponent,
+    SpecialAccountEditComponent,
+    ConfirmationDialogComponent,
+    ResetPasswordDialogComponent,
+    EqualValidator,
+    DefinePasswordComponent,
+    UsernameVerificationComponent,
+    TemplatesListComponent,
+    TemplateNewComponent,
+    TemplateViewComponent,
+    TemplateEditComponent,
+    HomePageComponent,
+    ServiceListComponent,
+    ServiceNewComponent,
+    ServiceEditComponent,
+    LoaderComponent,
+    ConcertContactComponent,
+    EventContactComponent,
+    LostContactComponent,
+    WebsiteContactComponent,
+  ],
+  entryComponents: [
+    CodeDialogComponent,
+    ConfirmationDialogComponent,
+    ResetPasswordDialogComponent,
+  ],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    MaterialModule,
+    HttpClientModule,
+    routing,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPermissionsModule.forRoot(),
+    ReCaptchaModule,
+  ],
+  bootstrap: [AppComponent],
+  providers: [
+    AuthService,
+    MemberService,
+    BarmanService,
+    ServiceService,
+    KommissionService,
+    RoleService,
+    ToasterService,
+    TemplateService,
+    SpecialAccountService,
+    PermissionService,
+    LoaderService,
+    MeService,
+    ContactService,
+    EditGuard,
+    ActiveGuard,
+    DatePipe,
+    {
+      provide: LOCALE_ID, useValue: 'fr',
+    },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorsHandler,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptor,
+      multi: true,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

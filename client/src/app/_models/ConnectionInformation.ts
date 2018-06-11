@@ -1,9 +1,9 @@
 export class ConnectionInformation {
 
-    id?: Number;
-    username?: String;
+  id?: Number;
+  username?: String;
 
-    constructor(values: Object = {}) {
-        Object.assign(this, values);
-    }
+  constructor(values: Object = {}) {
+    Object.assign(this, values);
+  }
 }

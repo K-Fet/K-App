@@ -11,9 +11,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllMembers(req, res) {
-    const members = await memberService.getAllMembers();
+  const members = await memberService.getAllMembers();
 
-    res.json(members);
+  res.json(members);
 }
 
 /**
@@ -24,20 +24,20 @@ async function getAllMembers(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createMember(req, res) {
-    const reqMember = req.body.member;
-    const schema = MemberSchema.requiredKeys(
-        'firstName',
-        'lastName'
-    );
+  const reqMember = req.body.member;
+  const schema = MemberSchema.requiredKeys(
+    'firstName',
+    'lastName',
+  );
 
-    const { error } = schema.validate(reqMember);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(reqMember);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newMember = new Member(reqMember);
+  let newMember = new Member(reqMember);
 
-    newMember = await memberService.createMember(newMember);
+  newMember = await memberService.createMember(newMember);
 
-    res.json(newMember);
+  res.json(newMember);
 }
 
 
@@ -49,11 +49,11 @@ async function createMember(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getMemberById(req, res) {
-    const memberId = req.params.id;
+  const memberId = req.params.id;
 
-    const member = await memberService.getMemberById(memberId);
+  const member = await memberService.getMemberById(memberId);
 
-    res.json(member);
+  res.json(member);
 }
 
 
@@ -65,19 +65,19 @@ async function getMemberById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateMember(req, res) {
-    const reqMember = req.body.member;
-    const schema = MemberSchema.min(1);
+  const reqMember = req.body.member;
+  const schema = MemberSchema.min(1);
 
-    const { error } = schema.validate(reqMember);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(reqMember);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    let newMember = new Member(reqMember);
+  let newMember = new Member(reqMember);
 
-    const memberId = req.params.id;
+  const memberId = req.params.id;
 
-    newMember = await memberService.updateMember(memberId, newMember);
+  newMember = await memberService.updateMember(memberId, newMember);
 
-    res.json(newMember);
+  res.json(newMember);
 }
 
 /**
@@ -88,18 +88,18 @@ async function updateMember(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteMember(req, res) {
-    const memberId = req.params.id;
+  const memberId = req.params.id;
 
-    const member = await memberService.deleteMember(memberId);
+  const member = await memberService.deleteMember(memberId);
 
-    res.json(member);
+  res.json(member);
 }
 
 
 module.exports = {
-    getAllMembers,
-    createMember,
-    updateMember,
-    getMemberById,
-    deleteMember
+  getAllMembers,
+  createMember,
+  updateMember,
+  getMemberById,
+  deleteMember,
 };

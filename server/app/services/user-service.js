@@ -9,18 +9,17 @@ const { createUserError, verify } = require('../../utils');
  * @returns {Promise<boolean>} Return true if the code is correct
  */
 async function checkCode(userId, code) {
+  const user = await ConnectionInformation.findById(userId);
 
-    const user = await ConnectionInformation.findById(userId);
+  const account = await user.getSpecialAccount();
 
-    const account = await user.getSpecialAccount();
+  if (!account) {
+    throw createUserError('NotSpecialAccount', 'Only special accounts with permissions can do this action');
+  }
 
-    if (!account) {
-        throw createUserError('NotSpecialAccount', 'Only special accounts with permissions can do this action');
-    }
-
-    return verify(account.code, code.toString());
+  return verify(account.code, code.toString());
 }
 
 module.exports = {
-    checkCode
+  checkCode,
 };

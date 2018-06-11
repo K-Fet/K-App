@@ -12,9 +12,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllRoles(req, res) {
-    const roles = await roleService.getAllRoles();
+  const roles = await roleService.getAllRoles();
 
-    res.json(roles);
+  res.json(roles);
 }
 
 /**
@@ -25,28 +25,28 @@ async function getAllRoles(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createRole(req, res) {
-    const schema = RoleSchema.requiredKeys(
-        'name',
-        'description',
-    );
+  const schema = RoleSchema.requiredKeys(
+    'name',
+    'description',
+  );
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
-
-
-    let newRole = new Role({
-        ...req.body,
-        _embedded: undefined, // Remove the only external object
-    });
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
 
-    if (req.body._embedded) {
-        await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
-    }
+  let newRole = new Role({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    newRole = await roleService.createRole(newRole, req.body._embedded);
 
-    res.json(newRole);
+  if (req.body._embedded) {
+    await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
+  }
+
+  newRole = await roleService.createRole(newRole, req.body._embedded);
+
+  res.json(newRole);
 }
 
 
@@ -58,11 +58,11 @@ async function createRole(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getRoleById(req, res) {
-    const roleId = req.params.id;
+  const roleId = req.params.id;
 
-    const role = await roleService.getRoleById(roleId);
+  const role = await roleService.getRoleById(roleId);
 
-    res.json(role);
+  res.json(role);
 }
 
 
@@ -74,27 +74,27 @@ async function getRoleById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateRole(req, res) {
-    const schema = RoleSchema.min(1);
+  const schema = RoleSchema.min(1);
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
-
-
-    let newRole = new Role({
-        ...req.body,
-        _embedded: undefined, // Remove the only external object
-    });
-
-    const roleId = req.params.id;
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
 
-    if (req.body._embedded) {
-        await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
-    }
+  let newRole = new Role({
+    ...req.body,
+    _embedded: undefined, // Remove the only external object
+  });
 
-    newRole = await roleService.updateRole(roleId, newRole, req.body._embedded);
+  const roleId = req.params.id;
 
-    res.json(newRole);
+
+  if (req.body._embedded) {
+    await permissionService.hasEnoughPermissions(req.user.permissions, req.body._embedded.permissions);
+  }
+
+  newRole = await roleService.updateRole(roleId, newRole, req.body._embedded);
+
+  res.json(newRole);
 }
 
 /**
@@ -105,18 +105,18 @@ async function updateRole(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteRole(req, res) {
-    const roleId = req.params.id;
+  const roleId = req.params.id;
 
-    const role = await roleService.deleteRole(roleId);
+  const role = await roleService.deleteRole(roleId);
 
-    res.json(role);
+  res.json(role);
 }
 
 
 module.exports = {
-    getAllRoles,
-    createRole,
-    updateRole,
-    getRoleById,
-    deleteRole,
+  getAllRoles,
+  createRole,
+  updateRole,
+  getRoleById,
+  deleteRole,
 };

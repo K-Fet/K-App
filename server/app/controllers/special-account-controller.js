@@ -12,9 +12,9 @@ const { createUserError, createPermissionError } = require('../../utils');
  * @return {Promise<void>} Nothing
  */
 async function getAllSpecialAccounts(req, res) {
-    const specialAccount = await specialAccountService.getAllSpecialAccounts();
+  const specialAccount = await specialAccountService.getAllSpecialAccounts();
 
-    res.json(specialAccount);
+  res.json(specialAccount);
 }
 
 /**
@@ -25,39 +25,39 @@ async function getAllSpecialAccounts(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createSpecialAccount(req, res) {
-    const schema = SpecialAccountSchema.requiredKeys(
-        'code',
-        'connection',
-        'connection.username',
-    );
+  const schema = SpecialAccountSchema.requiredKeys(
+    'code',
+    'connection',
+    'connection.username',
+  );
 
-    const { error } = schema.validate(req.body.specialAccount);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body.specialAccount);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const newAccount = req.body.specialAccount;
+  const newAccount = req.body.specialAccount;
 
-    let newSpecialAccount = new SpecialAccount(
+  let newSpecialAccount = new SpecialAccount(
+    {
+      ...newAccount,
+      _embedded: undefined, // Remove the only external object
+    },
+    {
+      include: [
         {
-            ...newAccount,
-            _embedded: undefined,  // Remove the only external object
+          model: ConnectionInformation,
+          as: 'connection',
         },
-        {
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                },
-            ],
-        },
-    );
+      ],
+    },
+  );
 
-    if (newAccount._embedded) {
-        await permissionService.hasEnoughPermissions(req.user.permissions, newAccount._embedded.permissions);
-    }
+  if (newAccount._embedded) {
+    await permissionService.hasEnoughPermissions(req.user.permissions, newAccount._embedded.permissions);
+  }
 
-    newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, newAccount._embedded);
+  newSpecialAccount = await specialAccountService.createSpecialAccount(newSpecialAccount, newAccount._embedded);
 
-    res.json(newSpecialAccount);
+  res.json(newSpecialAccount);
 }
 
 /**
@@ -68,11 +68,11 @@ async function createSpecialAccount(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function getSpecialAccountById(req, res) {
-    const specialAccountId = req.params.id;
+  const specialAccountId = req.params.id;
 
-    const specialAccount = await specialAccountService.getSpecialAccountById(specialAccountId);
+  const specialAccount = await specialAccountService.getSpecialAccountById(specialAccountId);
 
-    res.json(specialAccount);
+  res.json(specialAccount);
 }
 
 /**
@@ -83,41 +83,43 @@ async function getSpecialAccountById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateSpecialAccount(req, res) {
-    const schema = SpecialAccountSchema.min(1);
-    const newUser = req.body.specialAccount;
+  const schema = SpecialAccountSchema.min(1);
+  const newUser = req.body.specialAccount;
 
-    const { error } = schema.validate(newUser);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(newUser);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    if (newUser.code && !req.user.permissions.include('specialaccount:force-code-reset')) {
-        throw createPermissionError();
-    }
+  if (newUser.code && !req.user.permissions.include('specialaccount:force-code-reset')) {
+    throw createPermissionError();
+  }
 
-    let newSpecialAccount = new SpecialAccount(
+  let newSpecialAccount = new SpecialAccount(
+    {
+      ...newUser,
+      _embedded: undefined,
+    },
+    {
+      include: [
         {
-            ...newUser,
-            _embedded: undefined,
+          model: ConnectionInformation,
+          as: 'connection',
         },
-        {
-            include: [
-                {
-                    model: ConnectionInformation,
-                    as: 'connection',
-                },
-            ],
-        },
-    );
+      ],
+    },
+  );
 
-    const specialAccountId = req.params.id;
+  const specialAccountId = req.params.id;
 
-    if (newUser._embedded) {
-        await permissionService.hasEnoughPermissions(req.user.permissions, newUser._embedded.permissions);
-    }
+  if (newUser._embedded) {
+    await permissionService.hasEnoughPermissions(req.user.permissions, newUser._embedded.permissions);
+  }
 
-    newSpecialAccount = await specialAccountService.updateSpecialAccountById(specialAccountId,
-        newSpecialAccount, newUser._embedded);
+  newSpecialAccount = await specialAccountService.updateSpecialAccountById(
+    specialAccountId,
+    newSpecialAccount, newUser._embedded,
+  );
 
-    res.json(newSpecialAccount);
+  res.json(newSpecialAccount);
 }
 
 /**
@@ -128,17 +130,17 @@ async function updateSpecialAccount(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function deleteSpecialAccount(req, res) {
-    const specialAccountId = req.params.id;
+  const specialAccountId = req.params.id;
 
-    const specialAccount = await specialAccountService.deleteSpecialAccountById(specialAccountId);
+  const specialAccount = await specialAccountService.deleteSpecialAccountById(specialAccountId);
 
-    res.json(specialAccount);
+  res.json(specialAccount);
 }
 
 module.exports = {
-    getAllSpecialAccounts,
-    createSpecialAccount,
-    getSpecialAccountById,
-    updateSpecialAccount,
-    deleteSpecialAccount,
+  getAllSpecialAccounts,
+  createSpecialAccount,
+  getSpecialAccountById,
+  updateSpecialAccount,
+  deleteSpecialAccount,
 };

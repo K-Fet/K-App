@@ -3,30 +3,28 @@ import { AuthService, BarmanService, ServiceService } from '../../_services';
 import { ConnectedUser, Service } from '../../_models';
 
 @Component({
-    selector: 'app-my-services',
-    templateUrl: './my-services.component.html',
+  selector: 'app-my-services',
+  templateUrl: './my-services.component.html',
 })
 
 export class MyServicesComponent implements OnInit {
 
-    myServices: Array<Service>;
-    user: ConnectedUser;
+  myServices: Service[];
+  user: ConnectedUser;
 
-    constructor(private authService: AuthService,
-                private barmanService: BarmanService,
-                private serviceService: ServiceService) {
-    }
+  constructor(private authService: AuthService,
+              private barmanService: BarmanService,
+              private serviceService: ServiceService) {
+  }
 
-    ngOnInit(): void {
-        this.authService.$currentUser.subscribe((user: ConnectedUser) => {
-            this.user = user;
-            if (this.user.barman) {
-                this.serviceService.getWeek().subscribe(week => {
-                    this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe(services => {
-                        this.myServices = services.length > 0 ? services : undefined;
-                    });
-                });
-            }
+  ngOnInit(): void {
+    this.authService.$currentUser.subscribe((user: ConnectedUser) => {
+      this.user = user;
+      this.serviceService.getWeek().subscribe((week) => {
+        this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe((services) => {
+          this.myServices = services.length > 0 ? services : undefined;
         });
-    }
+      });
+    });
+  }
 }

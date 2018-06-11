@@ -3,25 +3,25 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-dialog-overview-example-dialog',
-    templateUrl: './code-dialog.component.html',
+  selector: 'app-dialog-overview-example-dialog',
+  templateUrl: './code-dialog.component.html',
 })
 export class CodeDialogComponent {
 
-    code: number;
-    form: FormGroup;
+  code: number;
+  form: FormGroup;
 
-    constructor(
-        public dialogRef: MatDialogRef<CodeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private fb: FormBuilder) {
+  constructor(
+    public dialogRef: MatDialogRef<CodeDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private fb: FormBuilder) {
 
-        this.form = this.fb.group({
-            codeFormControl: ['', [ Validators.required, Validators.pattern(/^[0-9]{4,}$/) ]],
-        });
-    }
+    this.form = this.fb.group({
+      codeFormControl: ['', [Validators.required, Validators.pattern(/^[0-9]{4,}$/)]],
+    });
+  }
 
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
