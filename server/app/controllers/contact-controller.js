@@ -27,16 +27,16 @@ async function sendForm(req, res) {
   try {
     switch (req.body.contactFormName) {
       case 'concert':
-        await mailService.sendContactForm('concert', CONFIG.CONCERT_MAIL, req.body.values);
+        await mailService.sendContactFormV2('concert', CONFIG.CONCERT_MAIL, req.body.values);
         break;
       case 'event':
-        await mailService.sendContactForm('évenement', CONFIG.EVENT_MAIL, req.body.values);
+        await mailService.sendContactFormV2('évenement | soirée', CONFIG.EVENT_MAIL, req.body.values);
         break;
       case 'lost':
-        await mailService.sendContactForm('objet perdu', CONFIG.LOST_MAIL, req.body.values);
+        await mailService.sendContactFormV2('objet perdu', CONFIG.LOST_MAIL, req.body.values);
         break;
       case 'website':
-        await mailService.sendContactForm('problème avec la K-App', CONFIG.WEBSITE_MAIL, req.body.values);
+        await mailService.sendContactFormV2('problème avec la K-App', CONFIG.WEBSITE_MAIL, req.body.values);
         break;
       default:
         break;

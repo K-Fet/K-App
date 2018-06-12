@@ -6,7 +6,8 @@ const EMAIL_CONFIG = require('../../config/mail');
 const WEB_CONFIG = require('../../config/web');
 
 const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
-const TRANSLATION = require('../../resources/translation/contactFormFields');
+const TRANSLATION = require('../../resources/contact-form-field-translations');
+const EMAIL_TEMPLATES = require('../../resources/email-templates');
 
 const readFile = promisify(fs.readFile);
 
@@ -239,6 +240,63 @@ async function sendContactForm(formName, emails, values) {
   }
 }
 
+/**
+ * Create mail template from ressource
+ *
+ * @param emailBody {String} mail body from ressources/email/body.js
+ * @returns {String} mail template
+ */
+function createMailTempalte(emailBody) {
+  return EMAIL_TEMPLATES.HEADER + emailBody + EMAIL_TEMPLATES.FOOTER;
+}
+
+async function sendMail(to, subject, html) {
+  const transporter = nodemailer.createTransport(CONFIG);
+
+  const mailOptions = {
+    from: CONFIG.auth.user,
+    to,
+    subject,
+    html,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
+async function sendContactFormV2(formName, emails, values) {
+  const emailTemplate = createMailTempalte(EMAIL_TEMPLATES.CONTACT)
+    .replace(REGEX_TOKEN, (matches, replaceToken) => {
+      switch (replaceToken) {
+        case 'FORM_NAME':
+          return formName;
+        case 'FORM_VALUES': {
+          let html = '<p><ul>';
+          Object.keys(values).forEach((value) => {
+            html += `<li><b>${TRANSLATION[value] ? TRANSLATION[value].french : value}</b>: ${values[value]}</li>`;
+          });
+          html += '</ul></p>';
+          return html;
+        }
+        default:
+          return matches;
+      }
+    });
+
+  // eslint-disable-next-line
+  for (const email of emails) {
+    const currentMail = emailTemplate.replace(REGEX_TOKEN, (matches, replaceToken) => {
+      switch (replaceToken) {
+        case 'MAIL_USERNAME':
+          return email;
+        default:
+          return null;
+      }
+    });
+
+    // eslint-disable-next-line
+    await sendMail(email, `[K-App] Nouveau formulaire de contact pour un ${formName}`, currentMail);
+  }
+}
 
 module.exports = {
   sendPasswordResetMail,
@@ -247,4 +305,5 @@ module.exports = {
   sendUsernameConfirmation,
   sendWelcomeMail,
   sendContactForm,
+  sendContactFormV2,
 };
