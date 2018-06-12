@@ -10,15 +10,15 @@ const { TaskSchema } = require('./task');
 const { TemplateSchema, TemplateUnitSchema } = require('./template');
 
 module.exports = {
-    BarmanSchema,
-    ConnectionInformationSchema,
-    AssociationChangesSchema,
-    KommissionSchema,
-    RoleSchema,
-    MemberSchema,
-    ServiceSchema,
-    SpecialAccountSchema,
-    TaskSchema,
-    TemplateSchema,
-    TemplateUnitSchema,
+  BarmanSchema,
+  ConnectionInformationSchema,
+  AssociationChangesSchema,
+  KommissionSchema,
+  RoleSchema,
+  MemberSchema,
+  ServiceSchema,
+  SpecialAccountSchema,
+  TaskSchema,
+  TemplateSchema,
+  TemplateUnitSchema,
 };

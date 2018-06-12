@@ -8,12 +8,12 @@ const permissionService = require('../services/permission-service');
  * @return {Promise.<void>} Nothing
  */
 async function getAllPermissions(req, res) {
-    const permissions = await permissionService.getAllPermissions();
+  const permissions = await permissionService.getAllPermissions();
 
-    res.json(permissions);
+  res.json(permissions);
 }
 
 
 module.exports = {
-    getAllPermissions,
+  getAllPermissions,
 };

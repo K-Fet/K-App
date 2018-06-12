@@ -4,26 +4,26 @@ import { ConnectedUser } from '../../_models';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
-    templateUrl: './services-explorer.component.html',
+  templateUrl: './services-explorer.component.html',
 })
 
 export class ServiceExplorerComponent implements OnInit {
 
-    private user: ConnectedUser;
+  private user: ConnectedUser;
 
-    constructor(private authService: AuthService, private ngxPermissionsService: NgxPermissionsService) { }
+  constructor(private authService: AuthService, private ngxPermissionsService: NgxPermissionsService) { }
 
-    ngOnInit(): void {
-        this.authService.$currentUser.subscribe(user => {
-            this.user = user;
-        });
-    }
+  ngOnInit(): void {
+    this.authService.$currentUser.subscribe((user) => {
+      this.user = user;
+    });
+  }
 
-    isActive(): Boolean {
-        return this.user.isBarman() && this.user.barman.active;
-    }
+  isActive(): Boolean {
+    return this.user.isBarman() && this.user.barman.active;
+  }
 
-    hasServiceWritePerm(): Boolean {
-        return this.ngxPermissionsService.getPermissions()['service:write'] !== undefined;
-    }
+  hasServiceWritePerm(): Boolean {
+    return this.ngxPermissionsService.getPermissions()['service:write'] !== undefined;
+  }
 }

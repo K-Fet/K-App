@@ -1,7 +1,9 @@
 const logger = require('../../logger');
 const sequelize = require('../../db');
 const { Role, Barman, Permission } = require('../models/');
-const { createUserError, createServerError, cleanObject, setEmbeddedAssociations } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, setAssociations,
+} = require('../../utils');
 
 /**
  * Return all roles of the app.
@@ -9,9 +11,8 @@ const { createUserError, createServerError, cleanObject, setEmbeddedAssociations
  * @returns {Promise<Array>} Roles
  */
 async function getAllRoles() {
-
-    logger.verbose('Role service: get all roles');
-    return Role.findAll();
+  logger.verbose('Role service: get all roles');
+  return Role.findAll();
 }
 
 /**
@@ -22,30 +23,23 @@ async function getAllRoles() {
  * @return {Promise<Role|Errors.ValidationError>} The created role with its id
  */
 async function createRole(newRole, _embedded) {
+  logger.verbose('Role service: creating a new role named %s', newRole.name);
 
-    logger.verbose('Role service: creating a new role named %s', newRole.name);
+  const transaction = await sequelize.transaction();
 
-    const transaction = await sequelize.transaction();
+  try {
+    await newRole.save({ transaction });
+  } catch (err) {
+    logger.warn('Role service: Error while creating role', err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while creating role');
+  }
 
-    try {
-        await newRole.save({ transaction });
-    } catch (err) {
-        logger.warn('Role service: Error while creating role', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while creating role');
-    }
+  // Associations
+  await setAssociations(_embedded, newRole, null, transaction, true);
 
-    // Associations
-    if (_embedded) {
-        for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[associationKey];
-
-            await setEmbeddedAssociations(associationKey, value, newRole, transaction, true);
-        }
-    }
-
-    await transaction.commit();
-    return newRole;
+  await transaction.commit();
+  return newRole;
 }
 
 /**
@@ -55,25 +49,24 @@ async function createRole(newRole, _embedded) {
  * @return {Promise<Role>} The wanted role.
  */
 async function getRoleById(roleId) {
+  logger.verbose('Role service: get role by id %d', roleId);
 
-    logger.verbose('Role service: get role by id %d', roleId);
+  const role = await Role.findById(roleId, {
+    include: [
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+      {
+        model: Permission,
+        as: 'permissions',
+      },
+    ],
+  });
 
-    const role = await Role.findById(roleId, {
-        include: [
-            {
-                model: Barman,
-                as: 'barmen'
-            },
-            {
-                model: Permission,
-                as: 'permissions'
-            }
-        ]
-    });
+  if (!role) throw createUserError('UnknownRole', 'This role does not exist');
 
-    if (!role) throw createUserError('UnknownRole', 'This role does not exist');
-
-    return role;
+  return role;
 }
 
 /**
@@ -89,38 +82,30 @@ async function getRoleById(roleId) {
  * @return {Promise<Role>} The updated role
  */
 async function updateRole(roleId, updatedRole, _embedded) {
+  const currentRole = await Role.findById(roleId);
 
-    const currentRole = await Role.findById(roleId);
+  if (!currentRole) throw createUserError('UnknownRole', 'This role does not exist');
 
-    if (!currentRole) throw createUserError('UnknownRole', 'This role does not exist');
+  logger.verbose('Role service: updating role named %s', currentRole.name);
 
-    logger.verbose('Role service: updating role named %s', currentRole.name);
+  const transaction = await sequelize.transaction();
 
-    const transaction = await sequelize.transaction();
+  try {
+    await currentRole.update(cleanObject({
+      name: updatedRole.name,
+      description: updatedRole.description,
+    }), { transaction });
+  } catch (err) {
+    logger.warn('Role service: Error while updating role', err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while updating role');
+  }
 
-    try {
-        await currentRole.update(cleanObject({
-            name: updatedRole.name,
-            description: updatedRole.description
-        }), { transaction });
+  // Associations
+  await setAssociations(_embedded, currentRole, null, transaction);
 
-    } catch (err) {
-        logger.warn('Role service: Error while updating role', err);
-        await transaction.rollback();
-        throw createServerError('ServerError', 'Error while updating role');
-    }
-
-    // Associations
-    if (_embedded) {
-        for (const associationKey of Object.keys(_embedded)) {
-            const value = _embedded[associationKey];
-
-            await setEmbeddedAssociations(associationKey, value, currentRole, transaction);
-        }
-    }
-    await transaction.commit();
-    await currentRole.reload();
-    return currentRole;
+  await transaction.commit();
+  return currentRole.reload();
 }
 
 /**
@@ -130,22 +115,21 @@ async function updateRole(roleId, updatedRole, _embedded) {
  * @return {Promise<Role>} The deleted role
  */
 async function deleteRole(roleId) {
+  logger.verbose('Role service: deleting role with id %d', roleId);
 
-    logger.verbose('Role service: deleting role with id %d', roleId);
+  const role = await Role.findById(roleId);
 
-    const role = await Role.findById(roleId);
+  if (!role) throw createUserError('UnknownRole', 'This role does not exist');
 
-    if (!role) throw createUserError('UnknownRole', 'This role does not exist');
+  await role.destroy();
 
-    await role.destroy();
-
-    return role;
+  return role;
 }
 
 module.exports = {
-    getAllRoles,
-    createRole,
-    updateRole,
-    getRoleById,
-    deleteRole
+  getAllRoles,
+  createRole,
+  updateRole,
+  getRoleById,
+  deleteRole,
 };

@@ -12,11 +12,10 @@ const Joi = require('joi');
  * @return {Promise.<void>} Nothing
  */
 async function getAllServices(req, res) {
+  const { start, end } = parseStartAndEnd(req.query);
+  const services = await serviceService.getAllServices(start, end);
 
-    const { start, end } = parseStartAndEnd(req.query);
-    const services = await serviceService.getAllServices(start, end);
-
-    res.json(services);
+  res.json(services);
 }
 
 /**
@@ -27,18 +26,18 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
-    const schema = Joi.array().items(ServiceSchema.requiredKeys(
-        'startAt',
-        'endAt',
-        'nbMax'
-    )).min(1);
+  const schema = Joi.array().items(ServiceSchema.requiredKeys(
+    'startAt',
+    'endAt',
+    'nbMax',
+  )).min(1);
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const services = await serviceService.createService(req.body);
+  const services = await serviceService.createService(req.body);
 
-    return res.json(services);
+  return res.json(services);
 }
 
 
@@ -50,11 +49,11 @@ async function createService(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function getServiceById(req, res) {
-    const serviceId = req.params.id;
+  const serviceId = req.params.id;
 
-    const service = await serviceService.getServiceById(serviceId);
+  const service = await serviceService.getServiceById(serviceId);
 
-    res.json(service);
+  res.json(service);
 }
 
 
@@ -66,20 +65,19 @@ async function getServiceById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateService(req, res) {
+  const schema = ServiceSchema.min(1);
 
-    const schema = ServiceSchema.min(1);
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
+  let newService = new Service({
+    ...req.body,
+  });
 
-    const { error } = schema.validate(req.body);
-    if (error) throw createUserError('BadRequest', error.message);
-    let newService = new Service({
-        ...req.body
-    });
+  const serviceId = req.params.id;
 
-    const serviceId = req.params.id;
+  newService = await serviceService.updateService(serviceId, newService);
 
-    newService = await serviceService.updateService(serviceId, newService);
-
-    res.json(newService);
+  res.json(newService);
 }
 
 /**
@@ -90,17 +88,17 @@ async function updateService(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function deleteService(req, res) {
-    const serviceId = req.params.id;
+  const serviceId = req.params.id;
 
-    const service = await serviceService.deleteService(serviceId);
+  const service = await serviceService.deleteService(serviceId);
 
-    res.json(service);
+  res.json(service);
 }
 
 module.exports = {
-    getAllServices,
-    createService,
-    updateService,
-    getServiceById,
-    deleteService,
+  getAllServices,
+  createService,
+  updateService,
+  getServiceById,
+  deleteService,
 };
