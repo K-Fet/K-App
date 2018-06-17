@@ -37,6 +37,8 @@ import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { ActiveGuard } from './_guards/active.guard';
+import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
+
 
 const generateData = (permissions: String[] | String) => {
   return {
@@ -73,8 +75,12 @@ const routes: Routes = [
     data: generateData('kommission:write'),
   },
   {
-    path: 'kommissions/:id', component: KommissionEditComponent, canActivate: [NgxPermissionsGuard],
+    path: 'kommissions/:id/edit', component: KommissionEditComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('kommission:write'),
+  },
+  {
+    path: 'kommissions/:id', component: KommissionViewComponent, canActivate: [NgxPermissionsGuard],
+    data: generateData('kommission:read'),
   },
   {
     path: 'roles', component: RolesListComponent, canActivate: [NgxPermissionsGuard],

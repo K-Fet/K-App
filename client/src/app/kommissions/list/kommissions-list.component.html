@@ -32,6 +32,7 @@
                         <mat-cell *matCellDef="let kommission" >
                             <div fxLayout="row">
                                 <button mat-icon-button (click)="edit(kommission)"><mat-icon>edit</mat-icon></button>
+                                <button mat-icon-button (click)="view(kommission)"><mat-icon>zoom_in</mat-icon></button>
                                 <button color="warn" mat-icon-button (click)="openConfirmationDialog(kommission)"><mat-icon>delete</mat-icon></button>
                             </div>
                         </mat-cell>

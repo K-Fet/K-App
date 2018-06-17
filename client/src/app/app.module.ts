@@ -56,6 +56,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
 import { TasksListComponent } from './tasks/list/tasks-list.component';
+import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 
 // Services
 import {
@@ -131,6 +132,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     LoaderComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    KommissionViewComponent,
     TasksListComponent
   ],
   entryComponents: [
