@@ -27,7 +27,7 @@ async function recaptchaVerification(token) {
     }
     return true;
   } catch (error) {
-    throw createServerError('CaptchaRequestFailed', 'reCaptcha request failed, error:', error);
+    throw createServerError('CaptchaRequestFailed', 'reCaptcha request failed');
   }
 }
 

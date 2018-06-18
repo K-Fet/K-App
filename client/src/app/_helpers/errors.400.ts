@@ -17,4 +17,6 @@ export const ERRORS400 = {
   UnknownPasswordToken: 'Token inconnu: le token utilisé n\'existe pas ou n\'est plus valide',
   TooOldEvent: 'Modification impossible car la date de fin du service est passée',
   CaptchaVerificationFailed: 'Erreur dans la validation du captcha côté serveur, merci d\'essayer à nouveau',
+  VerificationError: 'Erreur de vérification',
+  NoPasswordToken: 'Erreur, votre mot de passe est surement déjà défini',
 };
