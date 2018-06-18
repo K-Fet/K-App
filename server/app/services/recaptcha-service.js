@@ -19,17 +19,16 @@ async function recaptchaVerification(token) {
     json: true,
   };
 
-  return rp(options)
-    .then((res) => {
-      if (!res.success) {
-        logger.warn('Contact controller: captcha verification failed');
-        throw createUserError('captchaVerificationFailed', 'reCaptcha verification failed');
-      }
-    })
-    .catch((error) => {
-      logger.error('Error while captcha verification, %o', error);
-      throw createServerError('captchaRequestFailed', 'reCaptcha request failed');
-    });
+  try {
+    const res = await rp(options);
+    if (!res.success) {
+      logger.warn('Contact controller: captcha verification failed');
+      throw createUserError('CaptchaVerificationFailed', 'reCaptcha verification failed');
+    }
+    return true;
+  } catch (error) {
+    throw createServerError('CaptchaRequestFailed', 'reCaptcha request failed, error:', error);
+  }
 }
 
 module.exports = {

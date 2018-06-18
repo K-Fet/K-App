@@ -16,5 +16,5 @@ export const ERRORS400 = {
   WeakPassword: 'Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre et plus de 8 charactères.',
   UnknownPasswordToken: 'Token inconnu: le token utilisé n\'existe pas ou n\'est plus valide',
   TooOldEvent: 'Modification impossible car la date de fin du service est passée',
-  captchaVerificationFailed: 'Erreur dans la validation du captcha côté serveur, merci d\'essayer à nouveau',
+  CaptchaVerificationFailed: 'Erreur dans la validation du captcha côté serveur, merci d\'essayer à nouveau',
 };

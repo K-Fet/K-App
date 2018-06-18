@@ -246,7 +246,7 @@ async function sendContactForm(formName, emails, values) {
  * @param emailBody {String} mail body from ressources/email/body.js
  * @returns {String} mail template
  */
-function createMailTempalte(emailBody) {
+function createMailTemplate(emailBody) {
   return EMAIL_TEMPLATES.HEADER + emailBody + EMAIL_TEMPLATES.FOOTER;
 }
 
@@ -264,7 +264,7 @@ async function sendMail(to, subject, html) {
 }
 
 async function sendContactFormV2(formName, emails, values) {
-  const emailTemplate = createMailTempalte(EMAIL_TEMPLATES.CONTACT)
+  const emailTemplate = createMailTemplate(EMAIL_TEMPLATES.CONTACT)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'FORM_NAME':
