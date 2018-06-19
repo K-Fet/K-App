@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ServiceService } from '../../_services';
 import { Day, Service } from '../../_models';
 import * as moment from 'moment';
-// tslint:disable-next-line:no-duplicate-imports
-import { Moment } from 'moment';
 
 @Component({
   selector: 'app-planning',
