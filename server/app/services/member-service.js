@@ -11,7 +11,7 @@ async function getAllMembers() {
   logger.verbose('Member service: get all members');
   return Member.findAll({
     order: [
-      ['name', 'ASC'],
+      ['lastName', 'ASC'],
     ],
   });
 }
