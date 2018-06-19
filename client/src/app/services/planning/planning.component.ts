@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ServiceService } from '../../_services';
 import { Day, Service } from '../../_models';
+import * as moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { Moment } from 'moment';
 
 @Component({
   selector: 'app-planning',
@@ -37,7 +40,10 @@ export class PlanningComponent implements OnInit {
       this.serviceService.getPlanning(week.start, week.end).subscribe((days) => {
         if (days.length > 0) {
           this.days = days;
-          this.updateDayDetails(this.days[0]);
+          const today = this.days.filter((day: Day) => {
+            return moment().isSame(day.date, 'day');
+          });
+          this.updateDayDetails(today[0] || this.days[0]);
         } else {
           this.days = undefined;
           this.dayServices = undefined;
