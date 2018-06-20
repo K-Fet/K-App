@@ -111,13 +111,13 @@ export class AuthService {
     });
   }
 
-  cancelEmailUpdate(userId: Number, username: String, usernameToken: String) {
+  cancelEmailUpdate(userId: Number, username: String) {
     return this.http.post('api/auth/cancel-username-verification', {
       userId,
       username,
-      usernameToken,
     });
   }
+
   private clearUser(): void {
     this.$currentUser.next(new ConnectedUser({
       accountType: 'Guest',
