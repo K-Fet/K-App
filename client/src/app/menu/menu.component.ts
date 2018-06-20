@@ -136,10 +136,14 @@ export class MenuComponent implements OnDestroy, OnInit {
 
     const hammertime = new Hammer(elementRef.nativeElement, {});
     hammertime.on('panright', () => {
-      this.sideNav.open();
+      if (!this.user.isGuest) {
+        this.sideNav.open();
+      }
     });
     hammertime.on('panleft', () => {
-      this.sideNav.close();
+      if (!this.user.isGuest) {
+        this.sideNav.close();
+      }
     });
   }
 
