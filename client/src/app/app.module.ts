@@ -55,6 +55,7 @@ import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
+import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
 
 // Services
 import {
@@ -130,6 +131,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     LoaderComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    CancelEmailUpdateComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

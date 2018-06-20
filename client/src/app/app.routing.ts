@@ -37,6 +37,7 @@ import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { ActiveGuard } from './_guards/active.guard';
+import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
 
 const generateData = (permissions: String[] | String) => {
   return {
@@ -52,6 +53,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'define-password', component: DefinePasswordComponent },
   { path: 'username-verification', component: UsernameVerificationComponent },
+  { path: 'cancel-username-update', component: CancelEmailUpdateComponent },
   {
     path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('member:read'),

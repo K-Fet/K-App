@@ -1,0 +1,12 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex="350px" fxFlex.lt-sm="95">
+    <mat-card-content>
+      <h3>Annuler le changement d'adresse mail</h3>
+      <p>Vous souhaitez annuler le changement d'adresse email. Votre adresse mail restera <strong>{{ email }}</strong>.</p>
+      <p>Veuillez confirmer cette annulation:</p>
+      <div fxLayoutAlign="center">
+        <button color="warn" mat-button (click)="cancelEmail()">ANNULER</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
