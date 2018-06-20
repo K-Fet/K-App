@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  version: 'v.1.3.0-dev',
+  version: require('../../../package.json').version + '-dev',
 };
