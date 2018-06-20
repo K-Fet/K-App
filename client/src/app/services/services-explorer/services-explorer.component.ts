@@ -24,6 +24,6 @@ export class ServiceExplorerComponent implements OnInit {
   }
 
   hasServiceWritePerm(): Boolean {
-    return this.ngxPermissionsService.getPermissions()['service:write'] !== undefined;
+    return !!this.ngxPermissionsService.getPermissions()['service:write'];
   }
 }
