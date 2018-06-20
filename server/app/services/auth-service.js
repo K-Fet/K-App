@@ -452,13 +452,6 @@ async function cancelUsernameUpdate(userId, email) {
     await co.update({
       usernameToken: null,
     }, { transaction });
-
-    await JWT.update({ revoked: true }, {
-      transaction,
-      where: {
-        connectionId: co.id,
-      },
-    });
   } catch (err) {
     logger.error('Error while creating cancel username update for %s %o', email, err);
     await transaction.rollback();
