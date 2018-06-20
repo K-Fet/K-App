@@ -136,12 +136,12 @@ export class MenuComponent implements OnDestroy, OnInit {
 
     const hammertime = new Hammer(elementRef.nativeElement, {});
     hammertime.on('panright', () => {
-      if (!this.user.isGuest) {
+      if (!this.user.isGuest()) {
         this.sideNav.open();
       }
     });
     hammertime.on('panleft', () => {
-      if (!this.user.isGuest) {
+      if (!this.user.isGuest()) {
         this.sideNav.close();
       }
     });
@@ -156,7 +156,7 @@ export class MenuComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.authService.$currentUser.subscribe((user) => {
       this.user = user;
-      if (this.user.isGuest) {
+      if (this.user.isGuest()) {
         this.sideNav.opened = false;
       }
     });
