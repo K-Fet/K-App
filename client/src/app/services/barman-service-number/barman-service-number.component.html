@@ -9,14 +9,14 @@
     <mat-card-content>
         <div class="mat-elevation-z3">
             <mat-table [dataSource]="barmenData" matSort>
-                <ng-container matColumnDef="nickname">
+                <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
-                    <mat-cell *matCellDef="let barman"> {{barman.nickname}} </mat-cell>
+                    <mat-cell *matCellDef="let barman">{{ barman.name }}</mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="number">
+                <ng-container matColumnDef="services">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de service(s) fixé(s) </mat-header-cell>
-                    <mat-cell *matCellDef="let barman"> {{ barman.services.length }} </mat-cell>
+                    <mat-cell *matCellDef="let barman">{{ barman.services }}</mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
