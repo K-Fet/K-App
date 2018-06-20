@@ -7,7 +7,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/roles/new" *ngxPermissionsOnly="['role:write']">
+            <a mat-mini-fab color="accent" routerLink="/roles/new" *ngxPermissionsOnly="['role:write']">
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -32,7 +32,7 @@
                         <mat-cell *matCellDef="let role">
                             <div fxLayout="row">
                                 <button mat-icon-button (click)="edit(role)"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button (click)="openConfirmationDialog(role)"><mat-icon>delete</mat-icon></button>
+                                <button color="warn" mat-icon-button (click)="openConfirmationDialog(role)"><mat-icon>delete</mat-icon></button>
                             </div>
                         </mat-cell>
                     </ng-container>

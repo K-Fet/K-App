@@ -9,7 +9,7 @@
                     </section>
                 </mat-card-title>
                 <div fxFlex></div>
-                <a mat-mini-fab color="primary" routerLink="/services-manager/new" *ngxPermissionsOnly="['service:write']">
+                <a mat-mini-fab color="accent" routerLink="/services-manager/new" *ngxPermissionsOnly="['service:write']">
                     <mat-icon>add</mat-icon>
                 </a>
             </mat-card-header>
@@ -32,7 +32,7 @@
                             <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
                             <mat-cell *matCellDef="let service">
                                 <button mat-icon-button (click)="edit(service)"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button (click)="openConfirmationDialog(service)"><mat-icon>delete</mat-icon></button>
+                                <button color="warn" mat-icon-button (click)="openConfirmationDialog(service)"><mat-icon>delete</mat-icon></button>
                             </mat-cell>
                         </ng-container>
                         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
