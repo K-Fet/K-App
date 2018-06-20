@@ -12,7 +12,11 @@ const {
  */
 async function getAllRoles() {
   logger.verbose('Role service: get all roles');
-  return Role.findAll();
+  return Role.findAll({
+    order: [
+      ['name', 'ASC'],
+    ],
+  });
 }
 
 /**

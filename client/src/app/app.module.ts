@@ -58,6 +58,7 @@ import { ConcertContactComponent } from './contacts/concert/concert-contact.comp
 import { WebsiteContactComponent } from './contacts/website/website-contact.component';
 import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
+import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 
 // Services
 import { AuthService, BarmanService, ContactService,
@@ -133,6 +134,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     EventContactComponent,
     LostContactComponent,
     WebsiteContactComponent,
+    BarmanServiceNumberComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

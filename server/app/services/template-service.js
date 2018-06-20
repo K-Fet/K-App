@@ -19,6 +19,9 @@ async function getAllTemplates() {
         attributes: { exclude: ['id', 'TemplateId', 'createdAt', 'updatedAt'] },
       },
     ],
+    order: [
+      ['name', 'ASC'],
+    ],
   });
 
     // Create a default template if no template was found yet.
