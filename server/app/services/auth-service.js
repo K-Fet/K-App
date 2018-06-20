@@ -357,14 +357,14 @@ async function updateUsername(currentUsername, newUsername) {
       usernameToken: await hash(usernameToken + newUsername),
     }, { transaction });
   } catch (err) {
-    logger.error('Error while creating reset password token %o', err);
+    logger.error('Error while creating username token %o', err);
     await transaction.rollback();
     throw createServerError('ServerError', 'Error while change username');
   }
 
   try {
     await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
-    await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, usernameToken, co.id);
+    await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, co.id);
   } catch (err) {
     logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
     transaction.rollback();
@@ -416,7 +416,7 @@ async function usernameVerify(userId, username, password, usernameToken) {
       },
     });
   } catch (err) {
-    logger.error('Error while creating reset password token %o', err);
+    logger.error('Error while creating username token %o', err);
     await transaction.rollback();
     throw createServerError('ServerError', 'Error while change username');
   }
@@ -428,6 +428,51 @@ async function usernameVerify(userId, username, password, usernameToken) {
     transaction.rollback();
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
+
+  await transaction.commit();
+}
+
+/**
+ * Cancel a username update request.
+ *
+ * @param userId {Number} user id
+ * @param username {String} User's login
+ * @returns {Promise<void>} Nothing
+ */
+async function cancelUsernameUpdate(userId, email) {
+  const co = await ConnectionInformation.findById(userId);
+
+  if (!co) {
+    throw createUserError('VerificationError', 'No user found for this user id.');
+  }
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    await co.update({
+      usernameToken: null,
+    }, { transaction });
+
+    await JWT.update({ revoked: true }, {
+      transaction,
+      where: {
+        connectionId: co.id,
+      },
+    });
+  } catch (err) {
+    logger.error('Error while creating cancel username update for %s %o', email, err);
+    await transaction.rollback();
+    throw createServerError('ServerError', 'Error while change username');
+  }
+
+  // TODO: wait for contact-form PR
+  // try {
+  //   await mailService.sendCancelUsernameConfirmation(username);
+  // } catch (err) {
+  //   logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
+  //   transaction.rollback();
+  //   throw createUserError('MailerError', 'Unable to send email to the provided address');
+  // }
 
   await transaction.commit();
 }
@@ -444,4 +489,5 @@ module.exports = {
   definePassword,
   updateUsername,
   usernameVerify,
+  cancelUsernameUpdate,
 };

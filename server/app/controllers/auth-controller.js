@@ -145,6 +145,29 @@ async function usernameVerify(req, res) {
   res.send({});
 }
 
+/**
+ * Verify an username.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function cancelUsernameVerify(req, res) {
+  const schema = Joi.object().keys({
+    userId: Joi.number().integer().required(),
+    username: Joi.string().email().required(),
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) throw createUserError('BadRequest', error.message);
+
+  const {
+    userId, username,
+  } = req.body;
+  await authService.cancelUsernameUpdate(userId, username);
+
+  res.send({});
+}
 
 module.exports = {
   login,
@@ -153,4 +176,5 @@ module.exports = {
   resetPassword,
   definePassword,
   usernameVerify,
+  cancelUsernameVerify,
 };

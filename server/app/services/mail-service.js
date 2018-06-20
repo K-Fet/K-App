@@ -93,7 +93,7 @@ async function sendVerifyUsernameMail(email, token, userId) {
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameUpdateInformationMail(email, newEmail, token, userId) {
+async function sendUsernameUpdateInformationMail(email, newEmail, userId) {
   let mail = await readFile(path.resolve(__dirname, '../../resources/emails', 'username-update-information.html'), 'utf8');
 
   mail = mail.replace(REGEX_TOKEN, (matches, replaceToken) => {
@@ -105,7 +105,7 @@ async function sendUsernameUpdateInformationMail(email, newEmail, token, userId)
       case 'MAIL_NEW_USERNAME':
         return newEmail;
       case 'MAIL_LINK':
-        return `${WEB_CONFIG.publicURL}/cancel-username-update?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
+        return `${WEB_CONFIG.publicURL}/cancel-username-update?userId=${userId}&username=${email}`;
       default:
         return `??${replaceToken}??`;
     }
@@ -189,7 +189,6 @@ async function sendWelcomeMail(email) {
   // Send mail with defined transport object
   await transporter.sendMail(mailOptions);
 }
-
 
 module.exports = {
   sendPasswordResetMail,
