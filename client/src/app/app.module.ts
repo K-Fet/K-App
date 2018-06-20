@@ -54,6 +54,7 @@ import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
+import { FooterComponent } from './footer/footer.component';
 
 // Services
 import {
@@ -128,6 +129,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     ServiceEditComponent,
     LoaderComponent,
     BarmanServiceNumberComponent,
+    FooterComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

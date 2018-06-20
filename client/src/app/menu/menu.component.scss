@@ -17,6 +17,7 @@
 .sidenav {
   width: 256px;
   border-right: 1px solid rgba(0, 0, 0, .14);
+  z-index: 9999;
 }
 
 .content-container {
