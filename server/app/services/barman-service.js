@@ -17,7 +17,11 @@ const mailService = require('./mail-service');
  */
 async function getAllBarmen() {
   logger.verbose('Barman service: get all barmen');
-  return Barman.findAll();
+  return Barman.findAll({
+    order: [
+      ['nickname', 'ASC'],
+    ],
+  });
 }
 
 /**

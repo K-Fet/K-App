@@ -9,7 +9,11 @@ const { createUserError } = require('../../utils');
  */
 async function getAllMembers() {
   logger.verbose('Member service: get all members');
-  return Member.findAll();
+  return Member.findAll({
+    order: [
+      ['lastName', 'ASC'],
+    ],
+  });
 }
 
 /**
