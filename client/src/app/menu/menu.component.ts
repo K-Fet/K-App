@@ -134,6 +134,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.sidenavQuery.addListener(this._mobileQueryListener);
 
+    delete Hammer.defaults.cssProps.userSelect;
     const hammertime = new Hammer(elementRef.nativeElement, {});
     hammertime.on('panright', () => {
       if (!this.user.isGuest()) {
