@@ -7,7 +7,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/kommissions/new" *ngxPermissionsOnly="['kommission:write']">
+            <a mat-mini-fab color="accent" routerLink="/kommissions/new" *ngxPermissionsOnly="['kommission:write']">
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -32,7 +32,7 @@
                         <mat-cell *matCellDef="let kommission" >
                             <div fxLayout="row">
                                 <button mat-icon-button (click)="edit(kommission)"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button (click)="openConfirmationDialog(kommission)"><mat-icon>delete</mat-icon></button>
+                                <button color="warn" mat-icon-button (click)="openConfirmationDialog(kommission)"><mat-icon>delete</mat-icon></button>
                             </div>
                         </mat-cell>
                     </ng-container>

@@ -7,7 +7,7 @@
                 </section>
             </mat-card-title>
             <div fxFlex></div>
-            <a mat-mini-fab color="primary" routerLink="/members/new" *ngxPermissionsOnly="['member:write']">
+            <a mat-mini-fab color="accent" routerLink="/members/new" *ngxPermissionsOnly="['member:write']">
                 <mat-icon>add</mat-icon>
             </a>
         </mat-card-header>
@@ -41,7 +41,7 @@
                                 <button mat-icon-button (click)="edit(member)">
                                     <mat-icon>edit</mat-icon>
                                 </button>
-                                <button mat-icon-button (click)="openDialog(member)">
+                                <button color="warn" mat-icon-button (click)="openDialog(member)">
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </div>
