@@ -1,3 +1,5 @@
+@import "~theme.scss";
+
 .footer-container {
   position: absolute;
   bottom: 0;
@@ -19,5 +21,5 @@ a {
 }
 
 .accent {
-  color: #F44336; // accent color
+  color: $warn; // accent color
 }

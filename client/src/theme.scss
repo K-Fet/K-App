@@ -9,3 +9,7 @@ $k-app-warn:    mat-palette($mat-red, 500);
 $k-app-theme: mat-light-theme($k-app-primary, $k-app-accent, $k-app-warn);
 
 @include angular-material-theme($k-app-theme);
+
+$primary: mat-color($k-app-primary);
+$accent: mat-color($k-app-accent);
+$warn: mat-color($k-app-warn);
