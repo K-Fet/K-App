@@ -1,0 +1,13 @@
+<section class="mat-typography">
+  <h2>{{ data.task.name }}</h2>
+</section>
+<p class="information">
+  Créée le: {{ data.task.createdAt | date:'d/MM/yy' }}<br>
+  <span [ngClass]="isPassed()">Deadline: {{ data.task.deadline | date:'d/MM/yy' }}</span><br>
+  <span class="">Status: {{ getState(data.task.state) }}</span><br>
+  Barmen en charge: <span *ngIf="data.task.barmen && data.task.barmen.length > 0"><span *ngFor="let barman of data.task.barmen">{{ barman.nickname }}</span></span>
+  <span *ngIf="!data.task.barmen || data.task.barmen.length === 0">aucun...</span><br><br>
+
+</p>
+<p>{{ data.task.description }}</p>
+<button mat-button (click)="openEditDialog()">Modifier</button>

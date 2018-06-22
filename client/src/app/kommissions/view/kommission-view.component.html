@@ -1,1 +1,19 @@
-<h3> En cours de construction </h3>
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <section class="mat-typography">
+          <h1>{{ kommission?.name }}</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ kommission?.description}}
+      </p>
+      <div *ngIf="kommission">
+        <app-tasks></app-tasks>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

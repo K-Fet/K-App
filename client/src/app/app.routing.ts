@@ -39,7 +39,6 @@ import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { ActiveGuard } from './_guards/active.guard';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 
-
 const generateData = (permissions: String[] | String) => {
   return {
     permissions: {

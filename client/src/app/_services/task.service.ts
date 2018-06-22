@@ -9,8 +9,8 @@ export class TaskService {
 
   constructor(private http: HttpClient) { }
 
-  getTasks(id: number) : Observable<Array<Task>> {
-    return this.http.get<Array<Task>>(`/api/kommissions/${id}/tasks`);
+  getTasks(id: Number) : Observable<Task[]> {
+    return this.http.get<Task[]>(`/api/kommissions/${id}/tasks`);
   }
 
   getById(id: Number): Observable<Task> {
@@ -22,11 +22,13 @@ export class TaskService {
   }
 
   update(task: Task): Observable<Task> {
+    const tmpTask = task;
+    delete tmpTask.barmen;
+    delete tmpTask.createdAt;
     return this.http.put<Task>(`/api/tasks/${task.id}`, task);
   }
 
-  delete(id: Number): Observable<Task>{
-      return this.http.delete<Task>(`/api/tasks/${id}`);
+  delete(id: Number): Observable<Task> {
+    return this.http.delete<Task>(`/api/tasks/${id}`);
   }
-
 }

@@ -57,6 +57,9 @@ import { BarmanServiceNumberComponent } from './services/barman-service-number/b
 import { FooterComponent } from './footer/footer.component';
 import { TasksListComponent } from './tasks/list/tasks-list.component';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
+import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.component';
+import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 
 // Services
 import {
@@ -84,7 +87,6 @@ registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { TemplateEditComponent } from './templates/edit/template-edit.component';
 
 @NgModule({
   declarations: [
@@ -133,12 +135,16 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     BarmanServiceNumberComponent,
     FooterComponent,
     KommissionViewComponent,
-    TasksListComponent
+    TasksListComponent,
+    TaskViewDialogComponent,
+    TaskEditNewDialogComponent,
   ],
   entryComponents: [
     CodeDialogComponent,
     ConfirmationDialogComponent,
-    ResetPasswordDialogComponent
+    ResetPasswordDialogComponent,
+    TaskEditNewDialogComponent,
+    TaskViewDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -149,7 +155,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     routing,
     FormsModule,
     ReactiveFormsModule,
-    NgxPermissionsModule.forRoot()
+    NgxPermissionsModule.forRoot(),
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -170,16 +176,16 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     ActiveGuard,
     DatePipe,
     {
-      provide: LOCALE_ID, useValue: 'fr'
+      provide: LOCALE_ID, useValue: 'fr',
     },
     {
       provide: ErrorHandler,
-      useClass: ErrorsHandler
+      useClass: ErrorsHandler,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestInterceptor,
-      multi: true
+      multi: true,
     },
   ],
 })
