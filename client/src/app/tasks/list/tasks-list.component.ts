@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
 
-import { Task, Kommission } from '../../_models/index';
+import { Task, Kommission, TASK_STATES } from '../../_models/index';
 import { TaskService, ToasterService, KommissionService } from '../../_services/index';
 import { TaskViewDialogComponent } from '../view/task-view.component';
 import { TaskEditNewDialogComponent } from '../edit-new/task-edit-new.component';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-tasks',
@@ -15,8 +16,12 @@ import { ActivatedRoute } from '@angular/router';
 export class TasksListComponent implements OnInit {
 
   kommission: Kommission;
+  tasks: Task[];
   tasksData: MatTableDataSource<Task>;
   displayedColumns = ['state', 'name', 'deadline'];
+  stateFilter: String[];
+  states = TASK_STATES;
+  stateSelected: FormControl;
 
   constructor (private taskService: TaskService,
                private toasterService: ToasterService,
@@ -34,10 +39,22 @@ export class TasksListComponent implements OnInit {
         this.refresh();
       });
     });
+    this.stateSelected = new FormControl('');
+    this.stateSelected.valueChanges.subscribe((value) => {
+      this.filterByState(value);
+    });
+  }
+
+  filterByState(states: String[]) {
+    const filteredTasks = states.length !== 0 ? this.tasks.filter(t => states.includes(t.state)) : this.tasks;
+    this.tasksData = new MatTableDataSource(filteredTasks);
+    this.tasksData.paginator = this.paginator;
+    this.tasksData.sort = this.sort;
   }
 
   refresh () {
     this.taskService.getTasks(this.kommission.id).subscribe((tasks) => {
+      this.tasks = tasks;
       this.tasksData = new MatTableDataSource(this.sortByState(tasks));
       this.tasksData.paginator = this.paginator;
       this.tasksData.sort = this.sort;

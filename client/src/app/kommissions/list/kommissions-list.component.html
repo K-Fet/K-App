@@ -37,7 +37,7 @@
             </mat-cell>
           </ng-container>
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="view(row)"></mat-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="view(row)" class="komRow"></mat-row>
         </mat-table>
         <mat-paginator #paginator
             [pageIndex]="0"

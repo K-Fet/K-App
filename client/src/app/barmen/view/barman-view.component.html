@@ -46,7 +46,7 @@
                 <mat-divider></mat-divider>
                 <h3 mat-subheader>Kommission(s)</h3>
                 <div *ngIf="barman.kommissions?.length !== 0; else elseBlock">
-                    <mat-list-item *ngFor="let komission of barman.kommission">
+                    <mat-list-item *ngFor="let kommission of barman.kommissions">
                         <p matLine>{{kommission.name}} depuis le {{kommission.KommissionWrapper.createdAt |  date:'d MMM y'}}</p>
                     </mat-list-item>
                 </div>

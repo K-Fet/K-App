@@ -2,6 +2,7 @@
   <mat-card fxFlex class="max-width">
     <mat-card-header>
       <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/kommissions"><mat-icon>arrow_back</mat-icon></a>
         <section class="mat-typography">
           <h1>{{ kommission?.name }}</h1>
         </section>
@@ -10,6 +11,20 @@
     <mat-card-content>
       <p>
         {{ kommission?.description}}
+      </p>
+      <section class="mat-typography">
+          <h2>Effectif</h2>
+        </section>
+      <p>
+        Les(le/la) barmen(an/aid) actifs de la kommission sont: <span *ngFor="let barman of getBarmen(true)">{{ barman.nickname }}</span>
+      </p>
+      <p>
+        Les vieux de la kommission sont: 
+        <span *ngFor="let barman of getBarmen(false)">
+          <a [routerLink]="'/barmen/' + barman.id">
+            {{ barman.nickname }}
+          </a>
+        </span>
       </p>
       <div *ngIf="kommission">
         <app-tasks></app-tasks>

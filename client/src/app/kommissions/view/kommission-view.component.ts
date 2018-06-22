@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { KommissionService } from '../../_services';
-import { ActivatedRoute/*, Router */} from '@angular/router';
-import { Kommission } from '../../_models';
+import { ActivatedRoute } from '@angular/router';
+import { Kommission, Barman } from '../../_models';
 
 @Component({
   templateUrl: './kommission-view.component.html',
@@ -22,5 +22,9 @@ export class KommissionViewComponent implements OnInit {
         this.kommission = kommission;
       });
     });
+  }
+
+  getBarmen(active: Boolean): Barman[] {
+    return this.kommission.barmen.filter(b => b.active === active);
   }
 }

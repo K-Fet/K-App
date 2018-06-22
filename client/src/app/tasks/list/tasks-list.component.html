@@ -7,6 +7,13 @@
       <button mat-icon-button (click)="openNewDialog(task)"><mat-icon>add</mat-icon></button>
   </div>
 </div>
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-form-field fxFlex.gt-xs="200px">
+    <mat-select placeholder="Filtrer par status" multiple [formControl]="stateSelected">
+      <mat-option *ngFor="let state of states" [value]="state.value">{{ state.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 <mat-table #table [dataSource]="tasksData" matSort>
   <ng-container matColumnDef="state">
     <mat-header-cell *matHeaderCellDef mat-sort-header> État </mat-header-cell>

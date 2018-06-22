@@ -66,6 +66,7 @@ export class TaskEditNewDialogComponent implements OnInit {
         barmen: { add: selectedBarmen },
         kommissionId: this.data.kommission.id,
       };
+      if (selectedBarmen.length === 0) delete task._embedded.barmen;
       this.taskService.create(task).subscribe(() => {
         this.toasterService.showToaster('Tâche ajoutée');
         this.dialogRef.close(true);
