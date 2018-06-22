@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TaskService, ToasterService } from '../../_services';
+import { TaskService, ToasterService, KommissionService } from '../../_services';
 import { Barman, Task, AssociationChanges, Kommission } from '../../_models';
 import { TASK_STATES } from '../../_models/Task';
 
@@ -23,7 +23,8 @@ export class TaskEditNewDialogComponent implements OnInit {
               private fb: FormBuilder,
               private taskService: TaskService,
               private toasterService: ToasterService,
-              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission}) {
+              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission},
+              private kommissionService: KommissionService) {
     if (data.task) {
       this.oldTask = data.task;
     }
@@ -40,7 +41,9 @@ export class TaskEditNewDialogComponent implements OnInit {
   }
 
   ngOnInit () {
-    this.barmen = this.data.kommission.barmen.filter(b => b.active);
+    this.kommissionService.getById(+this.data.kommission.id).subscribe((kommission) => {
+      this.barmen = kommission.barmen.filter(b => b.active);
+    });
     this.createForm();
   }
 

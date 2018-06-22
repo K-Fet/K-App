@@ -87,6 +87,7 @@ registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
+import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
 
 @NgModule({
   declarations: [
@@ -138,6 +139,7 @@ import { MaterialModule } from './_helpers/material.module';
     TasksListComponent,
     TaskViewDialogComponent,
     TaskEditNewDialogComponent,
+    MyTasksComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

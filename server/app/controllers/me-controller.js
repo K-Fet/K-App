@@ -3,7 +3,12 @@ const barmanService = require('../services/barman-service');
 const userService = require('../services/user-service');
 const specialAccountService = require('../services/special-account-service');
 const { createUserError, parseStartAndEnd } = require('../../utils');
-const { Barman, SpecialAccount, ConnectionInformation } = require('../models');
+const {
+  Barman,
+  SpecialAccount,
+  ConnectionInformation,
+  Kommission,
+} = require('../models');
 const { BarmanSchema, SpecialAccountSchema } = require('../models/schemas');
 const Joi = require('joi');
 const logger = require('../../logger');
@@ -157,6 +162,27 @@ async function removeBarmanService(req, res) {
   res.send();
 }
 
+/**
+ *
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+async function getBarmanTasks(req, res) {
+  const tasks = await req.barman.getTasks({
+    include: [
+      {
+        model: Kommission,
+        as: 'kommission',
+      },
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+    ],
+  });
+  res.json(tasks);
+}
 
 module.exports = {
   me,
@@ -164,4 +190,5 @@ module.exports = {
   getBarmanService,
   addBarmanService,
   removeBarmanService,
+  getBarmanTasks,
 };

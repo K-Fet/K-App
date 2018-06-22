@@ -149,7 +149,6 @@ async function deleteTask(taskId) {
   return task;
 }
 
-
 module.exports = {
   createTask,
   updateTask,

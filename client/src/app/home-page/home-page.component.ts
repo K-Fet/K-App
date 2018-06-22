@@ -18,6 +18,15 @@ export class HomePageComponent implements OnInit {
     });
   }
 
+  getName(): String {
+    if (this.currentUser.specialAccount) {
+      return this.currentUser.specialAccount.connection.username;
+    } if (this.currentUser.barman) {
+      return this.currentUser.barman.nickname;
+    }
+    return '';
+  }
+
   isConnected(): Boolean {
     return this.currentUser.accountType !== 'Guest';
   }

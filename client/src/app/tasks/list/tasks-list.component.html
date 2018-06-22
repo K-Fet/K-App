@@ -25,7 +25,7 @@
   </ng-container>
   <ng-container matColumnDef="deadline">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Date limite </mat-header-cell>
-    <mat-cell *matCellDef="let task"> {{ task.deadline | date:'d/MM/yy' }} </mat-cell>
+    <mat-cell *matCellDef="let task"> {{ task.deadline | date:'dd/MM/yy' }} </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openViewDialog(row)" class="taskRow" [ngClass]="getPanelClass(row)"></mat-row>
