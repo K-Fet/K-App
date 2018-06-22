@@ -22,24 +22,28 @@ $abandoned: #E0E0E0;
 $done: #AED581;
 
 .notStarted {
+  
   mat-dialog-container {
     background: $notStarted;
   }
 }
 
 .inProgress {
+  
   mat-dialog-container {
     background: $inProgress;
   }
 }
 
 .abandoned {
+  
   mat-dialog-container {
     background: $abandoned;
   }
 }
 
 .done {
+  
   mat-dialog-container {
     background: $done;
   }
