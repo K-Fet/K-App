@@ -27,7 +27,7 @@
         </span>
       </p>
       <div *ngIf="kommission">
-        <app-tasks></app-tasks>
+        <app-tasks *ngxPermissionsOnly="['task:read']"></app-tasks>
       </div>
     </mat-card-content>
   </mat-card>

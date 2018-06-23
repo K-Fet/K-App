@@ -37,15 +37,18 @@
 					<mat-card-header>
 						<mat-card-title>
 							<section class="mat-typography">
-									<h1>Bonjour, {{ getName() }}!</h1>
+									<h1>Bonjour {{ getName() }}!</h1>
 							</section>
 						</mat-card-title>
+						<mat-card-subtitle>Cela fait maintenat {{ getSeniority() }} que tu fais parti de l'association A.R.G.I.L</mat-card-subtitle>
 					</mat-card-header>
 				</mat-card>
 			</div>
 			<div fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
-				<app-my-tasks fxFlex></app-my-tasks>
-				<app-my-services fxFlex></app-my-services>
+				<div fxFlex *ngxPermissionsOnly="['task:read']">
+					<app-my-tasks fxFlex *ngIf="currentUser.isBarman()"></app-my-tasks>
+				</div>
+				<app-my-services fxFlex *ngIf="currentUser.isBarman()"></app-my-services>
 			</div>
 		</div> 
 	</div>

@@ -7,6 +7,7 @@ import { TaskViewDialogComponent } from '../view/task-view.component';
 @Component({
   selector: 'app-my-tasks',
   templateUrl: './my-tasks.component.html',
+  styleUrls: ['./my-tasks.component.scss'],
 })
 
 export class MyTasksComponent implements OnInit {
@@ -30,25 +31,20 @@ export class MyTasksComponent implements OnInit {
 
   refresh(): void {
     this.barmanService.getTasks().subscribe((tasks: Task[]) => {
-      console.log('Yes');
       this.tasksGroupByKommissions = tasks.length > 0 ? this.prepareTasks(tasks) : undefined;
-      console.log(this.tasksGroupByKommissions);
     });
   }
 
   prepareTasks(tasks: Task[]) {
     const tasksGroupByKommissions: Kommission[] = [];
     tasks.forEach((task) => {
-      console.log(tasksGroupByKommissions.indexOf(task.kommission));
       if (tasksGroupByKommissions.indexOf(task.kommission) === -1) {
         const newTasks: Task[] = [];
         newTasks.push(task);
-        console.log(newTasks);
         tasksGroupByKommissions.push({
           ...task.kommission,
           tasks: newTasks,
         });
-        console.log(tasksGroupByKommissions);
       } else {
         tasksGroupByKommissions[tasksGroupByKommissions.indexOf(task.kommission)].tasks.push(task);
       }

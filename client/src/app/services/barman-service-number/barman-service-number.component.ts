@@ -33,17 +33,20 @@ export class BarmanServiceNumberComponent implements OnInit {
     this.barmanService.getAll().subscribe((barmen) => {
       this.serviceService.getWeek().subscribe((week) => {
         const services$: Observable<Service[]>[] = [];
-        barmen.filter(barman => barman.active).forEach((barman) => {
+        const activeBarmen = barmen.filter(barman => barman.active);
+        activeBarmen.forEach((barman) => {
           services$.push(this.barmanService.getServices(barman.id, week.start, week.end));
         });
         forkJoin(services$).subscribe((services) => {
           barmanDataTable = [];
-          barmen.forEach((barman) => {
+          activeBarmen.forEach((barman) => {
             barmanDataTable.push({
               name: barman.nickname,
-              services: services[barmen.indexOf(barman)].length,
+              services: services[activeBarmen.indexOf(barman)].length,
             });
+            console.log(barmanDataTable);
           });
+          console.log('barmanDataTable');
           this.barmenData.data = barmanDataTable;
         });
       });
