@@ -24,6 +24,9 @@
 	<button type="button" mat-icon-button (click)="logout()" *ngIf="!user.isGuest()">
 		<mat-icon>power_settings_new</mat-icon>
 	</button>
+	<button type="button" mat-icon-button routerLink="login" *ngIf="user.isGuest()">
+			<mat-icon>power_settings_new</mat-icon>
+		</button>
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
 	<mat-sidenav #snav [fixedTopGap]="mobileQuery.matches ? 56 : 64" [mode]="sidenavQuery.matches ? 'over' : 'side'"

@@ -43,6 +43,7 @@ import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
+import { PresentationComponent } from './presentation/presentation.component';
 
 const generateData = (permissions: String[] | String) => {
   return {
@@ -55,6 +56,7 @@ const generateData = (permissions: String[] | String) => {
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
+  { path: 'presentation', component: PresentationComponent },
   { path: 'login', component: LoginComponent },
   { path: 'define-password', component: DefinePasswordComponent },
   { path: 'username-verification', component: UsernameVerificationComponent },
