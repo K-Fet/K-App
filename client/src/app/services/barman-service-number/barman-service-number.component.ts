@@ -44,9 +44,7 @@ export class BarmanServiceNumberComponent implements OnInit {
               name: barman.nickname,
               services: services[activeBarmen.indexOf(barman)].length,
             });
-            console.log(barmanDataTable);
           });
-          console.log('barmanDataTable');
           this.barmenData.data = barmanDataTable;
         });
       });

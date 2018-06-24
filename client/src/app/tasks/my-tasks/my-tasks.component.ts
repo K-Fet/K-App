@@ -3,6 +3,7 @@ import { Task, ConnectedUser, Kommission } from '../../_models';
 import { AuthService, BarmanService } from '../../_services';
 import { MatDialog } from '@angular/material';
 import { TaskViewDialogComponent } from '../view/task-view.component';
+import { getPanelClass } from '../tasks.helpers';
 
 @Component({
   selector: 'app-my-tasks',
@@ -53,8 +54,7 @@ export class MyTasksComponent implements OnInit {
   }
 
   openViewDialog(kommission: Kommission, task: Task): void {
-    const panelClass = this.getPanelClass(task);
-    console.log(task);
+    const panelClass = getPanelClass(task);
     const viewDialogRef = this.dialog.open(TaskViewDialogComponent, {
       panelClass,
       data: { task, kommission },
@@ -63,20 +63,5 @@ export class MyTasksComponent implements OnInit {
     viewDialogRef.afterClosed().subscribe(() => {
       this.refresh();
     });
-  }
-
-  getPanelClass(task: Task) {
-    switch (task.state) {
-      case 'Not started':
-        return 'notStarted';
-      case 'In progress':
-        return 'inProgress';
-      case 'Abandoned':
-        return 'abandoned';
-      case 'Done':
-        return 'done';
-      default:
-        return '';
-    }
   }
 }

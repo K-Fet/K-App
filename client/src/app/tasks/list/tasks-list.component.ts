@@ -7,6 +7,7 @@ import { TaskViewDialogComponent } from '../view/task-view.component';
 import { TaskEditNewDialogComponent } from '../edit-new/task-edit-new.component';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { getPanelClass } from '../tasks.helpers';
 
 @Component({
   selector: 'app-tasks',
@@ -97,7 +98,7 @@ export class TasksListComponent implements OnInit {
   }
 
   openViewDialog(task: Task): void {
-    const panelClass = this.getPanelClass(task);
+    const panelClass = getPanelClass(task);
     const viewDialogRef = this.dialog.open(TaskViewDialogComponent, {
       panelClass,
       data: { task, kommission: this.kommission },
@@ -106,36 +107,6 @@ export class TasksListComponent implements OnInit {
     viewDialogRef.afterClosed().subscribe(() => {
       this.refresh();
     });
-  }
-
-  getPanelClass(task: Task) {
-    switch (task.state) {
-      case 'Not started':
-        return 'notStarted';
-      case 'In progress':
-        return 'inProgress';
-      case 'Abandoned':
-        return 'abandoned';
-      case 'Done':
-        return 'done';
-      default:
-        return '';
-    }
-  }
-
-  getFrenchState(task: Task) {
-    switch (task.state) {
-      case 'Not started':
-        return 'Non commencée';
-      case 'In progress':
-        return 'En cours';
-      case 'Abandoned':
-        return 'Abandonnée';
-      case 'Done':
-        return 'Terminée';
-      default:
-        return '';
-    }
   }
 
   openNewDialog() {
