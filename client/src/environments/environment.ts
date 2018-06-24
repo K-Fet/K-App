@@ -6,4 +6,5 @@
 export const environment = {
   production: false,
   RECAPTACHA_SITE_KEY: '6LfIS1gUAAAAAFkoY2ZaADhMNwfLAjFOFHRQTRGS', // For localhost domains
+  VERSION: require('../../../package.json').version + '-dev',
 };

@@ -59,6 +59,7 @@ import { WebsiteContactComponent } from './contacts/website/website-contact.comp
 import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
+import { FooterComponent } from './footer/footer.component';
 
 // Services
 import { AuthService, BarmanService, ContactService,
@@ -135,6 +136,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     LostContactComponent,
     WebsiteContactComponent,
     BarmanServiceNumberComponent,
+    FooterComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

@@ -17,6 +17,7 @@
 .sidenav {
   width: 256px;
   border-right: 1px solid rgba(0, 0, 0, .14);
+  z-index: 9999;
 }
 
 .content-container {
@@ -27,4 +28,13 @@
 
 .connectedUserInformation {
   padding: 0 20px 0 20px;
+}
+
+.header {
+  font-family: "MedievalSharp", cursive;
+  cursor: pointer;
+}
+
+.footer {
+  height: 180px;
 }

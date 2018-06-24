@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="main-nav" fxLayout="row" fxLayoutAlign="start center">
 	<button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-	<h1 fxFlex fxFlexOffset="15px" (click)="redirectHome()">K-App</h1>
+	<h1 fxFlex fxFlexOffset="15px" (click)="redirectHome()" class="header">K-App</h1>
 	<mat-menu #personnalInformation="matMenu" [overlapTrigger]="false">
 		<div *ngIf="user?.barman" class="connectedUserInformation">
 			<h4>Compte Barman {{user.barman.nickname}}</h4>
@@ -43,6 +43,6 @@
 	</mat-sidenav>
 	<mat-sidenav-content [style.marginTop.px]="mobileQuery.matches ? 56 : 64" class="content-container">
 		<router-outlet></router-outlet>
-		<div style="height: 128px;"></div>
+		<div class="footer"></div>
 	</mat-sidenav-content>
 </mat-sidenav-container>
