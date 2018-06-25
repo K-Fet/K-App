@@ -113,7 +113,7 @@ async function updateTask(taskId, updatedTask, _embedded) {
   }
 
   // Associations
-  await setAssociations(_embedded, currentTask, null, transaction, false);
+  await setAssociations(_embedded, currentTask, null, transaction);
 
   await transaction.commit();
   await currentTask.reload({
