@@ -10,7 +10,7 @@ import { FormControl } from '@angular/forms';
 import { getPanelClass } from '../tasks.helpers';
 
 @Component({
-  selector: 'app-tasks',
+  selector: 'app-tasks-list',
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.scss'],
 })
@@ -107,6 +107,16 @@ export class TasksListComponent implements OnInit {
     viewDialogRef.afterClosed().subscribe(() => {
       this.refresh();
     });
+  }
+
+  // For template usage
+  getPanelClass(task: Task) {
+    return getPanelClass(task);
+  }
+
+  // For template usage
+  getFrenchState(task: Task) {
+    return this.states.find(s => s.value === task.state).name || 'Unknown state';
   }
 
   openNewDialog() {
