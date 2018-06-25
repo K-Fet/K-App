@@ -442,7 +442,7 @@ async function usernameVerify(userId, username, password, usernameToken) {
  * @param username {String} User's login
  * @returns {Promise<void>} Nothing
  */
-async function cancelUsernameUpdate(userId, email) {
+async function cancelUsernameUpdate(userId, username) {
   const co = await ConnectionInformation.findById(userId);
 
   if (!co) {
@@ -456,19 +456,18 @@ async function cancelUsernameUpdate(userId, email) {
       usernameToken: null,
     }, { transaction });
   } catch (err) {
-    logger.error('Error while creating cancel username update for %s %o', email, err);
+    logger.error('Error while creating cancel username update for %s %o', username, err);
     await transaction.rollback();
     throw createServerError('ServerError', 'Error while change username');
   }
 
-  // TODO: wait for contact-form PR
-  // try {
-  //   await mailService.sendCancelUsernameConfirmation(username);
-  // } catch (err) {
-  //   logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
-  //   transaction.rollback();
-  //   throw createUserError('MailerError', 'Unable to send email to the provided address');
-  // }
+  try {
+    await mailService.sendCancelUsernameConfirmation(username);
+  } catch (err) {
+    logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
+    transaction.rollback();
+    throw createUserError('MailerError', 'Unable to send email to the provided address');
+  }
 
   await transaction.commit();
 }
