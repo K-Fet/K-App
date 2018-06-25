@@ -11,29 +11,29 @@ const mysqlConf = require('../prod-scripts/mysql');
  * @return {Promise<Sequelize>} Sequelize instance
  */
 async function getSequelizeInstance() {
-    const conf = {};
-    await mysqlConf.askQuestions(conf);
+  const conf = {};
+  await mysqlConf.askQuestions(conf);
 
-    const sequelize = new Sequelize({
-        host: conf.mysql.host,
-        username: conf.mysql.root.username,
-        password: conf.mysql.root.password,
-        database: conf.mysql.database,
-        dialect: process.env.DB_DIALECT || 'mysql',
-        define: {
-            charset: 'utf8',
-            collate: 'utf8_general_ci',
-        },
-    });
+  const sequelize = new Sequelize({
+    host: conf.mysql.host,
+    username: conf.mysql.root.username,
+    password: conf.mysql.root.password,
+    database: conf.mysql.database,
+    dialect: process.env.DB_DIALECT || 'mysql',
+    define: {
+      charset: 'utf8',
+      collate: 'utf8_general_ci',
+    },
+  });
 
-    try {
-        await sequelize.authenticate();
-    } catch (e) {
-        console.error('Error while authenticate sequelize: %o', e);
-        throw new Error('Unable to authenticate in sequelize, please check your credentials');
-    }
+  try {
+    await sequelize.authenticate();
+  } catch (e) {
+    console.error('Error while authenticate sequelize: %o', e);
+    throw new Error('Unable to authenticate in sequelize, please check your credentials');
+  }
 
-    return sequelize;
+  return sequelize;
 }
 
 /**
@@ -43,18 +43,18 @@ async function getSequelizeInstance() {
  * @return {Promise<Umzug|*>} Umzug instance
  */
 async function getUmzugInstance(sequelize) {
-    return new Umzug({
-        storage: 'sequelize',
-        storageOptions: {
-            sequelize,
+  return new Umzug({
+    storage: 'sequelize',
+    storageOptions: {
+      sequelize,
 
-        },
-        migrations: {
-            params: [sequelize.getQueryInterface(), Sequelize],
-            path: __dirname,
-            pattern: /^\d+-[\w-]+\.js$/,
-        },
-    });
+    },
+    migrations: {
+      params: [sequelize.getQueryInterface(), Sequelize],
+      path: __dirname,
+      pattern: /^\d+-[\w-]+\.js$/,
+    },
+  });
 }
 
 /**
@@ -63,21 +63,21 @@ async function getUmzugInstance(sequelize) {
  * @return {Promise<void>}
  */
 async function main() {
-    console.log('Migration started');
+  console.log('Migration started');
 
-    const sequelize = await getSequelizeInstance();
-    const umzug = await getUmzugInstance(sequelize);
+  const sequelize = await getSequelizeInstance();
+  const umzug = await getUmzugInstance(sequelize);
 
-    const migrations = await umzug.up();
+  const migrations = await umzug.up();
 
-    console.log(`Migration done, applied ${migrations.length} update scripts:`);
+  console.log(`Migration done, applied ${migrations.length} update scripts:`);
 
-    for (const m of migrations) {
-        console.log(`\t- ${m.file}`);
-    }
+  for (const m of migrations) {
+    console.log(`\t- ${m.file}`);
+  }
 }
 
 
 main()
-    .catch(e => console.error('Error while migrating database: %o', e))
-    .then(() => process.exit(0));
+  .catch(e => console.error('Error while migrating database: %o', e))
+  .then(() => process.exit(0));
