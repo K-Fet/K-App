@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 // Guards
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { EditGuard } from './_guards/edit.guard';
+import { ActiveGuard } from './_guards/active.guard';
 
 // Components
 import { LoginComponent } from './auth/login/login.component';
@@ -36,7 +37,10 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
-import { ActiveGuard } from './_guards/active.guard';
+import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
+import { WebsiteContactComponent } from './contacts/website/website-contact.component';
+import { LostContactComponent } from './contacts/lost/lost-contact.component';
+import { EventContactComponent } from './contacts/event/event-contact.component';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 
 const generateData = (permissions: String[] | String) => {
@@ -53,6 +57,10 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'define-password', component: DefinePasswordComponent },
   { path: 'username-verification', component: UsernameVerificationComponent },
+  { path: 'contact/concert', component: ConcertContactComponent },
+  { path: 'contact/event', component: EventContactComponent },
+  { path: 'contact/lost', component: LostContactComponent },
+  { path: 'contact/website', component: WebsiteContactComponent },
   {
     path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('member:read'),

@@ -27,6 +27,10 @@ function checkout_last_release() {
     git checkout ${latestTag}
 }
 
+function load_front_env_variables() {
+    export RECAPTACHA_SITE_KEY=$(grep -oP 'RECAPTACHA_SITE_KEY=\K(.+)$' /etc/systemd/system/kapp@.service)
+}
+
 #==============================================================================
 # RUN SCRIPT
 #==============================================================================
@@ -44,6 +48,7 @@ checkout_last_release
 yarn run install:prod
 
 # Build assets for client
+load_front_env_variables
 yarn run build
 
 # Migrate database schema

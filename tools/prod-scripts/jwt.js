@@ -9,23 +9,22 @@ const crypto = require('crypto');
  * @return {Promise<void>}
  */
 async function askQuestions(configObj) {
+  const questions = [
+    {
+      type: 'input',
+      name: 'jwtSecret',
+      message: 'Do you have a specific JWT secret (a new one will be generated otherwise)?',
+      default: configObj.jwt && configObj.jwt.secret,
+    },
+  ];
 
-    const questions = [
-        {
-            type: 'input',
-            name: 'jwtSecret',
-            message: 'Do you have a specific JWT secret (a new one will be generated otherwise)?',
-            default: configObj.jwt && configObj.jwt.secret
-        },
-    ];
+  console.log('Configuring JWT:');
+  const answers = await inquirer.prompt(questions);
 
-    console.log('Configuring JWT:');
-    const answers = await inquirer.prompt(questions);
-
-    configObj.jwt = {
-        secret: answers.jwtSecret || crypto.randomBytes(32).toString('hex'),
-        isNew: !answers.jwtSecret
-    };
+  configObj.jwt = {
+    secret: answers.jwtSecret || crypto.randomBytes(32).toString('hex'),
+    isNew: !answers.jwtSecret,
+  };
 }
 
 /**
@@ -34,12 +33,12 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('|-- JWT config:');
-    console.log(`|   |-- Use a new JWT secret: ${config.jwt.isNew ? 'Yes' : 'No'}`);
+  console.log('|-- JWT config:');
+  console.log(`|   |-- Use a new JWT secret: ${config.jwt.isNew ? 'Yes' : 'No'}`);
 }
 
 
 module.exports = {
-    askQuestions,
-    confirmConfig
+  askQuestions,
+  confirmConfig,
 };

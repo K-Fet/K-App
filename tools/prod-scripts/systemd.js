@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console,require-jsdoc */
+/* eslint-disable no-console,require-jsdoc,no-param-reassign,no-mixed-operators,no-bitwise */
 const inquirer = require('inquirer');
 const path = require('path');
 const appPackage = require('../../package');
@@ -12,45 +12,62 @@ const { overwriteOrNot, systemdDaemonReload } = require('./util');
  * @return {Promise<void>}
  */
 async function askQuestions(configObj) {
-    const questions = [
-        {
-            type: 'input',
-            name: 'instanceNum',
-            message: 'How many instances do you want to use?',
-            default: configObj.app && configObj.app.instances || 4,
-            validate: input => {
-                if (input >>> 0 === parseFloat(input)) return true;
-                return 'You must enter a positive integer';
-            },
-        },
-        {
-            type: 'input',
-            name: 'firstPort',
-            message: 'What is the port of the first instance?',
-            default: configObj.app && configObj.app.firstPort || 3000,
-            validate: input => {
-                if (input >>> 0 === parseFloat(input)) return true;
-                return 'You must enter a positive integer';
-            },
-        },
-        {
-            type: 'input',
-            name: 'publicUrl',
-            message: configObj.app && configObj.app.publicUrl || 'What is the DNS ? (e.g.: `example.com`)',
-            validate: input => {
-                return !!input || 'A DNS is required for emails (and Caddy)';
-            },
-        },
-    ];
+  const questions = [
+    {
+      type: 'input',
+      name: 'instanceNum',
+      message: 'How many instances do you want to use?',
+      default: configObj.app && configObj.app.instances || 4,
+      validate: (input) => {
+        if (input >>> 0 === parseFloat(input)) return true;
+        return 'You must enter a positive integer';
+      },
+    },
+    {
+      type: 'input',
+      name: 'firstPort',
+      message: 'What is the port of the first instance?',
+      default: configObj.app && configObj.app.firstPort || 3000,
+      validate: (input) => {
+        if (input >>> 0 === parseFloat(input)) return true;
+        return 'You must enter a positive integer';
+      },
+    },
+    {
+      type: 'input',
+      name: 'publicUrl',
+      default: configObj.app && configObj.app.publicUrl,
+      message: 'What is the DNS ? (e.g.: `example.com`)',
+      validate: input => !!input || 'A DNS is required for emails (and Caddy)',
+    },
+    {
+      type: 'input',
+      name: 'recaptachaSecret',
+      message: 'What is the Recaptacha Secret?',
+      default: configObj.app && configObj.app.recaptacha && configObj.app.recaptacha.secret,
+      validate: input => !!input || 'A Recaptacha secret is required for contact forms!',
+    },
+    {
+      type: 'input',
+      name: 'recaptachaSiteKey',
+      message: 'What is the Recaptacha Site Key?',
+      default: configObj.app && configObj.app.recaptacha && configObj.app.recaptacha.siteKey,
+      validate: input => !!input || 'A Recaptacha site key is required for contact forms!',
+    },
+  ];
 
-    console.log('Configuring application:');
-    const answers = await inquirer.prompt(questions);
+  console.log('Configuring application:');
+  const answers = await inquirer.prompt(questions);
 
-    configObj.app = {
-        instances: answers.instanceNum,
-        firstPort: answers.firstPort,
-        publicUrl: answers.publicUrl,
-    };
+  configObj.app = {
+    instances: answers.instanceNum,
+    firstPort: answers.firstPort,
+    publicUrl: answers.publicUrl,
+    recaptacha: {
+      secret: answers.recaptachaSecret,
+      siteKey: answers.recaptachaSiteKey,
+    },
+  };
 }
 
 /**
@@ -59,9 +76,9 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('|-- Application config:');
-    console.log(`|   |-- Number of instances: ${config.app.instances}`);
-    console.log(`|   |-- Starting port of instances: ${config.app.firstPort}`);
+  console.log('|-- Application config:');
+  console.log(`|   |-- Number of instances: ${config.app.instances}`);
+  console.log(`|   |-- Starting port of instances: ${config.app.firstPort}`);
 }
 
 
@@ -72,9 +89,9 @@ function confirmConfig(config) {
  * @return {Promise<void>}
  */
 async function configure(config) {
-    const root = path.resolve(__dirname, '..', '..');
+  const root = path.resolve(__dirname, '..', '..');
 
-    const serviceFile = `
+  const serviceFile = `
 [Unit]
 Description=${appPackage.description}
 Documentation=${appPackage.repository}
@@ -97,6 +114,9 @@ Environment=EMAIL_HOST=${config.email.host}
 Environment=EMAIL_PORT=${config.email.port}
 Environment=EMAIL_USER=${config.email.user}
 Environment=EMAIL_PASS=${config.email.pass}
+
+Environment=RECAPTACHA_SITE_KEY=${config.app.recaptacha.siteKey}
+Environment=RECAPTACHA_SECRET=${config.app.recaptacha.secret}
 
 Environment=JWT_SECRET=${config.jwt.secret}
 
@@ -123,13 +143,13 @@ ProtectKernelModules=yes
 WantedBy=multi-user.target
 `;
 
-    await overwriteOrNot('/etc/systemd/system/kapp@.service', serviceFile);
+  await overwriteOrNot('/etc/systemd/system/kapp@.service', serviceFile);
 
-    await systemdDaemonReload();
+  await systemdDaemonReload();
 }
 
 module.exports = {
-    askQuestions,
-    confirmConfig,
-    configure,
+  askQuestions,
+  confirmConfig,
+  configure,
 };

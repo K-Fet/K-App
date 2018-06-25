@@ -11,52 +11,51 @@ const { overwriteOrNot, createDirDeep } = require('./util');
  * @return {Promise<void>}
  */
 async function askQuestions(configObj) {
+  const questions = [
+    {
+      type: 'confirm',
+      name: 'useBackup',
+      message: 'Do you want to setup a automatic backup?',
+      default: true,
+    },
+    {
+      type: 'input',
+      name: 'backupDir',
+      message: 'Where do you want your backups?',
+      default: configObj.backup && configObj.backup.dir || path.resolve(__dirname, '..', '..', 'backups'),
+      when: answers => answers.useBackup,
+    },
+    {
+      type: 'list',
+      name: 'frequency',
+      choices: ['daily', 'hourly', 'weekly', 'monthly'],
+      message: 'How often would you want to make a backup?',
+      default: configObj.backup && configObj.backup.frequency || 'daily',
+      when: answers => answers.useBackup,
+    },
+    {
+      type: 'input',
+      name: 'deleteAfter',
+      message: 'Delete backup after how many days (0 for never)?',
+      default: configObj.backup && configObj.backup.deleteAfter || 30,
+      when: answers => answers.useBackup,
+      valid: (input) => {
+        if (input >>> 0 === parseFloat(input)) return true;
+        return 'You must enter a positive integer';
+      },
+    },
+  ];
 
-    const questions = [
-        {
-            type: 'confirm',
-            name: 'useBackup',
-            message: 'Do you want to setup a automatic backup?',
-            default: true,
-        },
-        {
-            type: 'input',
-            name: 'backupDir',
-            message: 'Where do you want your backups?',
-            default: configObj.backup && configObj.backup.dir || path.resolve(__dirname, '..', '..', 'backups'),
-            when: answers => answers.useBackup,
-        },
-        {
-            type: 'list',
-            name: 'frequency',
-            choices: ['daily', 'hourly', 'weekly', 'monthly'],
-            message: 'How often would you want to make a backup?',
-            default: configObj.backup && configObj.backup.frequency || 'daily',
-            when: answers => answers.useBackup,
-        },
-        {
-            type: 'input',
-            name: 'deleteAfter',
-            message: 'Delete backup after how many days (0 for never)?',
-            default: configObj.backup && configObj.backup.deleteAfter || 30,
-            when: answers => answers.useBackup,
-            valid: input => {
-                if (input >>> 0 === parseFloat(input)) return true;
-                return 'You must enter a positive integer';
-            },
-        },
-    ];
+  console.log('Configuring Backups:');
+  const answers = await inquirer.prompt(questions);
 
-    console.log('Configuring Backups:');
-    const answers = await inquirer.prompt(questions);
+  if (!answers.useBackup) return;
 
-    if (!answers.useBackup) return;
-
-    configObj.backup = {
-        dir: answers.backupDir,
-        frequency: answers.frequency,
-        deleteAfter: answers.deleteAfter,
-    };
+  configObj.backup = {
+    dir: answers.backupDir,
+    frequency: answers.frequency,
+    deleteAfter: answers.deleteAfter,
+  };
 }
 
 
@@ -66,14 +65,14 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('|-- Backup config:');
-    if (!config.backup) {
-        console.log('|   |-- Do not backup!');
-        return;
-    }
-    console.log(`|   |-- Location for backups: ${config.backup.dir}`);
-    console.log(`|   |-- Frequency: ${config.backup.frequency}`);
-    console.log(`|   |-- Delete backups after: ${config.backup.deleteAfter} days`);
+  console.log('|-- Backup config:');
+  if (!config.backup) {
+    console.log('|   |-- Do not backup!');
+    return;
+  }
+  console.log(`|   |-- Location for backups: ${config.backup.dir}`);
+  console.log(`|   |-- Frequency: ${config.backup.frequency}`);
+  console.log(`|   |-- Delete backups after: ${config.backup.deleteAfter} days`);
 }
 
 
@@ -84,9 +83,9 @@ function confirmConfig(config) {
  * @return {Promise<void>}
  */
 async function configure(config) {
-    if (!config.backup) return;
+  if (!config.backup) return;
 
-    const timerFile = `
+  const timerFile = `
 [Unit]
 Description=Timer for daily backup of %i
 
@@ -98,7 +97,7 @@ Persistent=true
 WantedBy=timers.target
 `;
 
-    const backupFile = `
+  const backupFile = `
 [Unit]
 Description=Schedule of a backup of the k-app database
 
@@ -115,14 +114,14 @@ Environment=KEEP_BACKUPS_FOR=${config.backup.deleteAfter}
 
 
     // Create backup folder
-    await createDirDeep(config.backup.dir);
+  await createDirDeep(config.backup.dir);
 
-    await overwriteOrNot('/etc/systemd/system/kapp-save.timer', timerFile);
-    await overwriteOrNot('/etc/systemd/system/kapp-save.service', backupFile);
+  await overwriteOrNot('/etc/systemd/system/kapp-save.timer', timerFile);
+  await overwriteOrNot('/etc/systemd/system/kapp-save.service', backupFile);
 }
 
 module.exports = {
-    askQuestions,
-    confirmConfig,
-    configure,
+  askQuestions,
+  confirmConfig,
+  configure,
 };

@@ -16,11 +16,11 @@ const exec = util.promisify(child_process.exec);
  * @param pathToCreate
  */
 function createDirDeep(pathToCreate) {
-    pathToCreate.split(path.sep).reduce((currentPath, folder) => {
-        currentPath += folder + path.sep;
-        if (!fs.existsSync(currentPath)) fs.mkdirSync(currentPath);
-        return currentPath;
-    }, '');
+  pathToCreate.split(path.sep).reduce((currentPath, folder) => {
+    currentPath += folder + path.sep;
+    if (!fs.existsSync(currentPath)) fs.mkdirSync(currentPath);
+    return currentPath;
+  }, '');
 }
 
 /**
@@ -31,22 +31,21 @@ function createDirDeep(pathToCreate) {
  * @return {Promise<boolean>} If the file overwrite another
  */
 async function overwriteOrNot(file, data) {
-    if (fs.existsSync(file)) {
-        const { overwrite } = await inquirer.prompt([{
-            type: 'confirm',
-            name: 'overwrite',
-            message: `The file '${file}' already exists, overwrite ?`,
-            default: false,
-        }]);
+  if (fs.existsSync(file)) {
+    const { overwrite } = await inquirer.prompt([{
+      type: 'confirm',
+      name: 'overwrite',
+      message: `The file '${file}' already exists, overwrite ?`,
+      default: false,
+    }]);
 
-        if (!overwrite) return true;
+    if (!overwrite) return true;
+  } else {
+    createDirDeep(path.dirname(file));
+  }
 
-    } else {
-        createDirDeep(path.dirname(file));
-    }
-
-    await writeFile(file, data, 'utf8');
-    return false;
+  await writeFile(file, data, 'utf8');
+  return false;
 }
 
 /**
@@ -57,11 +56,11 @@ async function overwriteOrNot(file, data) {
  * @return {String}
  */
 async function readUTF8File(file) {
-    try {
-        return readFile(file, 'utf8');
-    } catch (e) {
-        return '';
-    }
+  try {
+    return readFile(file, 'utf8');
+  } catch (e) {
+    return '';
+  }
 }
 
 /**
@@ -70,10 +69,10 @@ async function readUTF8File(file) {
  * @return {Promise<void>}
  */
 async function systemdDaemonReload() {
-    console.log('Reloading systemd');
-    const { stderr } = await exec('systemctl daemon-reload');
-    if (stderr) return console.error('Error while reloading systemd', stderr);
-    console.log('Systemd reloaded');
+  console.log('Reloading systemd');
+  const { stderr } = await exec('systemctl daemon-reload');
+  if (stderr) return console.error('Error while reloading systemd', stderr);
+  console.log('Systemd reloaded');
 }
 
 /**
@@ -83,15 +82,15 @@ async function systemdDaemonReload() {
  * @return {Promise<void>}
  */
 async function systemStartAndEnable(serviceName) {
-    const { stderr } = await exec(`systemctl enable --now ${serviceName}`);
-    if (stderr) return console.error(`Error while enabling and starting service ${serviceName}`, stderr);
+  const { stderr } = await exec(`systemctl enable --now ${serviceName}`);
+  if (stderr) return console.error(`Error while enabling and starting service ${serviceName}`, stderr);
 }
 
 
 module.exports = {
-    overwriteOrNot,
-    createDirDeep,
-    systemdDaemonReload,
-    systemStartAndEnable,
-    readUTF8File,
+  overwriteOrNot,
+  createDirDeep,
+  systemdDaemonReload,
+  systemStartAndEnable,
+  readUTF8File,
 };

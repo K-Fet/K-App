@@ -86,6 +86,11 @@ Here are a list _(usually updated)_ of all the environment variables:
 * `EMAIL_USER`: Email used to send mail.
 * `EMAIL_PASS`: Password of the email.
 
+###### Recaptacha
+
+* `RECAPTACHA_SITE_KEY`: Key used in client side at compilation time (not needed in dev).
+* `RECAPTCHA_SECRET`: Secret for the server side (not needed in dev).
+
 ###### JWT
 
 * `JWT_SECRET`: JWT secret to use (default: `devModeSecret` only in development)

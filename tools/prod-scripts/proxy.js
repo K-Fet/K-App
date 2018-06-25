@@ -16,52 +16,51 @@ const CADDY_SSL_PATH = '/etc/ssl/caddy';
  * @return {Promise<void>}
  */
 async function askQuestions(configObj) {
+  const questions = [
+    {
+      type: 'confirm',
+      name: 'useProxy',
+      message: 'Do you want to use a proxy (for HTTPS, Load balancing, ...)?',
+      default: true,
+    },
+    {
+      type: 'list',
+      name: 'proxyServer',
+      choices: ['Caddy Server', 'Nginx', 'Other'],
+      message: 'Which proxy do you want to use?',
+      when: answers => answers.useProxy,
+    },
+    {
+      type: 'confirm',
+      name: 'caddyInstall',
+      message: 'Do you to install Caddy Server?',
+      default: false,
+      when: answers => answers.proxyServer === 'Caddy Server',
+    },
+  ];
 
-    const questions = [
-        {
-            type: 'confirm',
-            name: 'useProxy',
-            message: 'Do you want to use a proxy (for HTTPS, Load balancing, ...)?',
-            default: true,
-        },
-        {
-            type: 'list',
-            name: 'proxyServer',
-            choices: ['Caddy Server', 'Nginx', 'Other'],
-            message: 'Which proxy do you want to use?',
-            when: answers => answers.useProxy
-        },
-        {
-            type: 'confirm',
-            name: 'caddyInstall',
-            message: 'Do you to install Caddy Server?',
-            default: false,
-            when: answers => answers.proxyServer === 'Caddy Server'
-        }
-    ];
+  console.log('Configuring Proxy:');
+  const answers = await inquirer.prompt(questions);
 
-    console.log('Configuring Proxy:');
-    const answers = await inquirer.prompt(questions);
+  if (!answers.useProxy) return;
 
-    if (!answers.useProxy) return;
+  configObj.proxy = {
+    title: answers.proxyServer,
+  };
 
-    configObj.proxy = {
-        title: answers.proxyServer
-    };
-
-    switch (answers.proxyServer) {
-        case 'Caddy Server':
-            configObj.proxy.caddy = {
-                install: answers.caddyInstall
-            };
-            break;
-        case 'Nginx':
-            configObj.proxy.nginx = true;
-            break;
-        case 'Other':
-            configObj.proxy.other = true;
-            break;
-    }
+  switch (answers.proxyServer) {
+    case 'Caddy Server':
+      configObj.proxy.caddy = {
+        install: answers.caddyInstall,
+      };
+      break;
+    case 'Nginx':
+      configObj.proxy.nginx = true;
+      break;
+    case 'Other':
+      configObj.proxy.other = true;
+      break;
+  }
 }
 
 
@@ -71,16 +70,16 @@ async function askQuestions(configObj) {
  * @param config
  */
 function confirmConfig(config) {
-    console.log('|-- Proxy config:');
-    if (!config.proxy) {
-        console.log('|   |-- Do not use proxy!');
-        return;
-    }
-    console.log(`|   |-- Proxy used: ${config.proxy.title}`);
+  console.log('|-- Proxy config:');
+  if (!config.proxy) {
+    console.log('|   |-- Do not use proxy!');
+    return;
+  }
+  console.log(`|   |-- Proxy used: ${config.proxy.title}`);
 
-    if (config.proxy.caddy) {
-        console.log(`|   |-- Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
-    }
+  if (config.proxy.caddy) {
+    console.log(`|   |-- Install caddy: ${config.proxy.caddy.install ? 'Yes' : 'No'}`);
+  }
 }
 
 
@@ -91,26 +90,25 @@ function confirmConfig(config) {
  * @return {Promise<void>}
  */
 async function configure(config) {
-    if (!config.proxy || !config.proxy.caddy) return;
+  if (!config.proxy || !config.proxy.caddy) return;
 
-    await configureCaddy(config);
+  await configureCaddy(config);
 }
 
 
 async function configureCaddy(config) {
+  if (config.proxy.caddy.install) await caddyInstallation();
 
-    if (config.proxy.caddy.install) await caddyInstallation();
+  const clientFolder = path.resolve(__dirname, '../../client/dist/');
 
-    const clientFolder = path.resolve(__dirname, '../../client/dist/');
+  let backendList = '';
 
-    let backendList = '';
+  for (let i = 0; i < config.app.instances; i++) {
+    // Let's consider we are always on the same machine
+    backendList += `localhost:${config.app.firstPort + i} `;
+  }
 
-    for (let i = 0; i < config.app.instances; i++) {
-        // Let's consider we are always on the same machine
-        backendList += `localhost:${config.app.firstPort + i} `;
-    }
-
-    const caddyFile = `
+  const caddyFile = `
 ${config.app.publicUrl} { # Your site's address
 
     # Serve client app
@@ -145,18 +143,18 @@ ${config.app.publicUrl} { # Your site's address
 }
 `;
 
-    await overwriteOrNot(CADDYFILE_PATH, caddyFile);
-    await exec(`chown root:www-data ${CADDYFILE_PATH}`);
-    await exec(`chmod 444 ${CADDYFILE_PATH}`);
+  await overwriteOrNot(CADDYFILE_PATH, caddyFile);
+  await exec(`chown root:www-data ${CADDYFILE_PATH}`);
+  await exec(`chmod 444 ${CADDYFILE_PATH}`);
 }
 
 
 async function caddyInstallation() {
-    console.log('Installing Caddy Server');
-    const { stderr } = await exec('curl https://getcaddy.com --fail --silent --show-error | bash -s personal http.cache');
-    if (stderr) return console.error('Error while installation:', stderr);
+  console.log('Installing Caddy Server');
+  const { stderr } = await exec('curl https://getcaddy.com --fail --silent --show-error | bash -s personal http.cache');
+  if (stderr) return console.error('Error while installation:', stderr);
 
-    const caddyService = `
+  const caddyService = `
 [Unit]
 Description=Caddy HTTP/2 web server
 Documentation=https://caddyserver.com/docs
@@ -198,30 +196,30 @@ NoNewPrivileges=true
 [Install]
 WantedBy=multi-user.target`;
 
-    try {
-        // Create www-data user (don't care about the output)
-        await exec('groupadd -g 33 www-data');
-        await exec('useradd g www-data --no-user-group --home-dir /var/www' +
+  try {
+    // Create www-data user (don't care about the output)
+    await exec('groupadd -g 33 www-data');
+    await exec('useradd g www-data --no-user-group --home-dir /var/www' +
             ' --no-create-home --shell /usr/sbin/nologin --system --uid 33 www-data');
-    } catch (e) {
-        console.info('Skip www-data creation');
-    }
+  } catch (e) {
+    console.info('Skip www-data creation');
+  }
 
-    // Create ssl dir path
-    await createDirDeep(CADDY_SSL_PATH);
-    await exec(`chown -R root:www-data ${CADDY_SSL_PATH}`);
-    await exec(`chmod 0770 ${CADDY_SSL_PATH}`);
+  // Create ssl dir path
+  await createDirDeep(CADDY_SSL_PATH);
+  await exec(`chown -R root:www-data ${CADDY_SSL_PATH}`);
+  await exec(`chmod 0770 ${CADDY_SSL_PATH}`);
 
-    // Create the caddy service file
-    await overwriteOrNot('/etc/systemd/system/caddy.service', caddyService);
+  // Create the caddy service file
+  await overwriteOrNot('/etc/systemd/system/caddy.service', caddyService);
 
-    console.log('Caddy Server installed');
+  console.log('Caddy Server installed');
 
-    await systemdDaemonReload();
+  await systemdDaemonReload();
 }
 
 module.exports = {
-    askQuestions,
-    confirmConfig,
-    configure
+  askQuestions,
+  confirmConfig,
+  configure,
 };

@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 // Routes
 import { routing } from './app.routing';
@@ -53,6 +54,10 @@ import { ServiceListComponent } from './services/list/services-list.component';
 import { ServiceNewComponent } from './services/new/service-new.component';
 import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
+import { ConcertContactComponent } from './contacts/concert/concert-contact.component';
+import { WebsiteContactComponent } from './contacts/website/website-contact.component';
+import { LostContactComponent } from './contacts/lost/lost-contact.component';
+import { EventContactComponent } from './contacts/event/event-contact.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
 import { TasksListComponent } from './tasks/list/tasks-list.component';
@@ -63,8 +68,8 @@ import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 
 // Services
 import {
-  AuthService, BarmanService, KommissionService,
-  LoaderService, MemberService, MeService, PermissionService,
+  AuthService, BarmanService, ContactService,
+  KommissionService, LoaderService, MemberService, MeService, PermissionService,
   RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService,
 } from './_services';
 
@@ -133,6 +138,10 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     ServiceNewComponent,
     ServiceEditComponent,
     LoaderComponent,
+    ConcertContactComponent,
+    EventContactComponent,
+    LostContactComponent,
+    WebsiteContactComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
     KommissionViewComponent,
@@ -158,6 +167,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     FormsModule,
     ReactiveFormsModule,
     NgxPermissionsModule.forRoot(),
+    ReCaptchaModule,
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -174,6 +184,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     PermissionService,
     LoaderService,
     MeService,
+    ContactService,
     EditGuard,
     ActiveGuard,
     DatePipe,
