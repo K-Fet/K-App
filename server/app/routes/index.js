@@ -13,6 +13,7 @@ router.use(bodyParser.json());
 // Auth
 
 router.use('/auth', require('./auth'));
+router.use('/contact', require('./contact'));
 
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));

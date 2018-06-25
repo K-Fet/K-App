@@ -10,5 +10,6 @@ router.put('/', am(meController.updateMe));
 router.get('/services', isBarman, am(meController.getBarmanService));
 router.post('/services', isBarman, am(meController.addBarmanService));
 router.post('/services/delete', isBarman, am(meController.removeBarmanService));
+router.get('/tasks', isBarman, am(meController.getBarmanTasks));
 
 module.exports = router;

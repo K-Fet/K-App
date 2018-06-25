@@ -289,6 +289,9 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
   if (!user) throw createUserError('UnknownUser', 'Unable to find provided username');
 
   if (passwordToken) {
+    if (!user.passwordToken) {
+      throw createUserError('NoPasswordToken', 'passwordToken database value is null for the provided user');
+    }
     if (!await verify(user.passwordToken, passwordToken)) {
       throw createUserError('UnknownPasswordToken', 'Provided password token has not been found for this user');
     }

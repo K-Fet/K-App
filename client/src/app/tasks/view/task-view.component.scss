@@ -1,0 +1,15 @@
+@import "~theme.scss";
+
+.accent {
+  color: $warn;
+}
+
+.information {
+  margin: 0;
+  margin-left: 15px;
+  font-size: .8em;
+}
+
+.underline {
+  text-decoration: underline;
+}

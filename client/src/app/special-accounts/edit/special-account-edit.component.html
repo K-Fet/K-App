@@ -26,15 +26,15 @@
                     Le code ne peut pas être changer que par un administrateur
                     avec la permission "specialaccount:force-code-reset".
                 </p>
-                <div *ngxPermissionsOnly="['specialaccount:force-code-reset']">
-                    <mat-form-field fxFlex="45">
+                <div fxLayout.xs="column" fxLayout="row" *ngxPermissionsOnly="['specialaccount:force-code-reset']">
+                    <mat-form-field fxFlex.gt-xs="45">
                         <input matInput type="password" placeholder="Code " formControlName="code">
                         <mat-error *ngIf="specialAccountForm.get('code').hasError('pattern')">
                             Le code doit comporter seulement des chiffres, 4 au minimum.
                         </mat-error>
                     </mat-form-field>
-                    <div fxFlex></div>
-                    <mat-form-field fxFlex="45">
+                    <div fxFlex fxHide.xs="true"></div>
+                    <mat-form-field fxFlex.gt-xs="45">
                         <input matInput type="password" placeholder="Confirmation du code" formControlName="codeConfirmation">
                     </mat-form-field>
                 </div>

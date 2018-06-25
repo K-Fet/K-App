@@ -1,67 +1,73 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title fxLayout="row">
-                <a mat-button routerLink="/members"><mat-icon>arrow_back</mat-icon></a>
-                <section class="mat-typography">
-                    <h1>Ajouter un adhérent</h1>
-                </section>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
-                <mat-vertical-stepper formArrayName="formArray" linear>
-                    <mat-step formGroupName="0" [stepControl]="formArray.get([0])" label="Informations">
-                        <div fxLayout="column" fxLayoutAlign="center">
-                            <mat-form-field>
-                                <input matInput placeholder="Nom de famille"
-                                autocorrect="off" [(ngModel)]="lastName"
-                                formControlName="lastNameFormControl" required>
-                                <mat-error *ngIf="memberFormGroup.controls.lastNameFormControl.hasError('required')">
-                                Nom de famille <strong>requis</strong>
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-form-field>
-                                <input matInput placeholder="Prénom"
-                                autocorrect="off" [(ngModel)]="firstName"
-                                formControlName="firstNameFormControl" required>
-                                <mat-error *ngIf="memberFormGroup.controls.firstNameFormControl.hasError('required')">
-                                Prénom <strong>requis</strong>
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-form-field>
-                                <input matInput placeholder="École"
-                                [(ngModel)]="school" formControlName="schoolFormControl" required>
-                                <mat-error *ngIf="memberFormGroup.controls.schoolFormControl.hasError('required')">
-                                École <strong>requise</strong>
-                                </mat-error>
-                            </mat-form-field>
-                            <mat-checkbox [(ngModel)]="statut" formControlName="statutFormControl">
-                                J'accepte les <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a> de l'association
-                            </mat-checkbox>
-                            <mat-error *ngIf="memberFormGroup.get('statutFormControl').hasError('validCheckbox')">
-                                Vous devez <strong>accepter</strong> les statuts
-                            </mat-error>
-                        </div>
-                    </mat-step>
-                    <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Code Barman">
-                        <div fxLayout="column" fxLayoutAlign="center">
-                            <mat-form-field>
-                                <input matInput type="password" [(ngModel)]="code" placeholder="Code" formControlName="codeFormControl" required>
-                            </mat-form-field>
-                            <mat-error *ngIf="codeFormGroup.controls.codeFormControl.hasError('required')
-                                && codeFormGroup.controls.codeFormControl.dirty">
-                                Code <strong>requis</strong>
-                            </mat-error>
-                            <mat-error *ngIf="codeFormGroup.get('codeFormControl').hasError('pattern')">
-                                Le code doit comporter seulement des chiffres, 4 au minimum.
-                            </mat-error>
-                        </div>
-                    </mat-step>
-                </mat-vertical-stepper>
-                <button fxFlex="50" mat-button type="button" (click)="add()" 
-                [disabled]="!form.valid">Ajouter</button>
-            </form>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/members"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>Ajouter un adhérent</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" fxLayout="column" fxLayoutAlign="center">
+        <mat-vertical-stepper formArrayName="formArray" linear>
+          <mat-step formGroupName="0" [stepControl]="formArray.get([0])" label="Informations">
+            <div fxLayout="column" fxLayoutAlign="center">
+              <mat-form-field>
+                <input matInput placeholder="Nom de famille"
+                autocorrect="off" [(ngModel)]="lastName"
+                formControlName="lastNameFormControl" required>
+                <mat-error *ngIf="memberFormGroup.controls.lastNameFormControl.hasError('required')">
+                  Nom de famille <strong>requis</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Prénom"
+                autocorrect="off" [(ngModel)]="firstName"
+                formControlName="firstNameFormControl" required>
+                <mat-error *ngIf="memberFormGroup.controls.firstNameFormControl.hasError('required')">
+                  Prénom <strong>requis</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="École"
+                [(ngModel)]="school" formControlName="schoolFormControl" required>
+                <mat-error *ngIf="memberFormGroup.controls.schoolFormControl.hasError('required')">
+                  École <strong>requise</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-checkbox [(ngModel)]="statut" formControlName="statutFormControl">
+                J'accepte les <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a> de l'association
+              </mat-checkbox>
+              <mat-error *ngIf="memberFormGroup.get('statutFormControl').hasError('validCheckbox')">
+                Vous devez <strong>accepter</strong> les statuts
+              </mat-error>
+              <mat-checkbox [(ngModel)]="ri" formControlName="riFormControl">
+                J'accepte le <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a> de l'association
+              </mat-checkbox>
+              <mat-error *ngIf="memberFormGroup.get('riFormControl').hasError('validCheckbox')">
+                Vous devez <strong>accepter</strong> le réglement intérieur
+              </mat-error>
+            </div>
+          </mat-step>
+          <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Code Barman">
+            <div fxLayout="column" fxLayoutAlign="center">
+              <mat-form-field>
+                <input matInput type="password" [(ngModel)]="code" placeholder="Code" formControlName="codeFormControl" required>
+              </mat-form-field>
+              <mat-error *ngIf="codeFormGroup.controls.codeFormControl.hasError('required')
+                && codeFormGroup.controls.codeFormControl.dirty">
+                Code <strong>requis</strong>
+              </mat-error>
+              <mat-error *ngIf="codeFormGroup.get('codeFormControl').hasError('pattern')">
+                Le code doit comporter seulement des chiffres, 4 au minimum.
+              </mat-error>
+            </div>
+          </mat-step>
+        </mat-vertical-stepper>
+        <button fxFlex="50" mat-button type="button" (click)="add()" 
+        [disabled]="!form.valid">Ajouter</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

@@ -113,7 +113,7 @@ async function updateTask(taskId, updatedTask, _embedded) {
   }
 
   // Associations
-  await setAssociations(_embedded, currentTask, null, transaction, true);
+  await setAssociations(_embedded, currentTask, null, transaction);
 
   await transaction.commit();
   await currentTask.reload({
@@ -148,7 +148,6 @@ async function deleteTask(taskId) {
 
   return task;
 }
-
 
 module.exports = {
   createTask,

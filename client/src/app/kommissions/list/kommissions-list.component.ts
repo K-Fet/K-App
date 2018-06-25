@@ -50,7 +50,7 @@ export class KommissionsListComponent implements OnInit {
   }
 
   edit(kommission: Kommission): void {
-    this.router.navigate(['/kommissions', kommission.id]);
+    this.router.navigate(['/kommissions', kommission.id, 'edit']);
   }
 
   delete(kommission: Kommission): void {
@@ -59,6 +59,9 @@ export class KommissionsListComponent implements OnInit {
         this.toasterService.showToaster('Kommission supprimée');
         this.update();
       });
+  }
+  view(kommission: Kommission): void {
+    this.router.navigate(['/kommissions', kommission.id]);
   }
 
   openConfirmationDialog(kommission: Kommission): void {

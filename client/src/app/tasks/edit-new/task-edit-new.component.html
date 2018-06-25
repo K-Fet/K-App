@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Ajouter/Modifier une tâche</h2>
+<mat-dialog-content fxLayout="column">
+  <form [formGroup]="taskForm" (ngSubmit)="submitForm()" fxLayout="column" fxLayoutAlign="center">
+    <mat-form-field>
+      <input matInput placeholder="Nom" formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker" placeholder="Deadline" formControlName="deadline">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Status" formControlName="state">
+        <mat-option *ngFor="let state of states"[value]="state.value">{{ state.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select multiple placeholder="Barmen en charge" formControlName="barmen" [(value)]="selectedBarmen">
+        <mat-option *ngFor="let barman of barmen" [value]="barman.id">{{barman.nickname}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button type="submit" [disabled]="!taskForm.valid">
+      Valider
+    </button>
+  </form>
+</mat-dialog-content>

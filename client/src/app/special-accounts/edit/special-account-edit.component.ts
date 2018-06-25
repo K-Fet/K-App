@@ -113,7 +113,7 @@ export class SpecialAccountEditComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
-      data: { message: 'Edition d\'un compte special' },
+      data: { message: `Edition du compte special ${this.currentSpecialAccount.connection.username}` },
     });
 
     dialogRef.afterClosed().subscribe((code) => {
@@ -126,10 +126,11 @@ export class SpecialAccountEditComponent implements OnInit {
   edit(code: Number): void {
     const specialAccount = this.prepareEditing();
     if (this.isMe()) {
-      this.meService.put(new ConnectedUser({
+      const connectedUser = new ConnectedUser({
         specialAccount,
         accountType: 'specialAccount',
-      })).subscribe(() => {
+      });
+      this.meService.put(connectedUser, code).subscribe(() => {
         this.toasterService.showToaster('Modification(s) enregistrée(s)');
         this.router.navigate(['/specialaccounts']);
         this.authService.me().subscribe();

@@ -21,15 +21,15 @@
                 <mat-form-field>
                     <input matInput placeholder="Description" formControlName="description">
                 </mat-form-field>
-                <div>
-                    <mat-form-field fxFlex="45%">
+                <div fxLayout="row" fxLayout.xs="column">
+                    <mat-form-field fxFlex="45">
                         <input matInput type="password" placeholder="Code " formControlName="code">
                         <mat-error *ngIf="specialAccountForm.get('code').hasError('pattern')">
                             Le code doit comporter seulement des chiffres, 4 au minimums.
                         </mat-error>
                     </mat-form-field>
-                    <div fxFlex></div>
-                    <mat-form-field fxFlex="45%">
+                    <div fxFlex fxHide.xs="true"></div>
+                    <mat-form-field fxFlex="45">
                         <input matInput type="password" placeholder="Confirmation du code" formControlName="codeConfirmation">
                     </mat-form-field>
                 </div>
