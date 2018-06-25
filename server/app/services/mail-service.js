@@ -95,11 +95,10 @@ async function sendVerifyUsernameMail(email, token, userId) {
  *
  * @param email {String} recipient email address
  * @param newEmail {String} updated email address
- * @param token {String} passwordToken
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameUpdateInformationMail(email, newEmail, token, userId) {
+async function sendUsernameUpdateInformationMail(email, newEmail, userId) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.USERNAME_UPDATE_INFORMATION)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -110,7 +109,7 @@ async function sendUsernameUpdateInformationMail(email, newEmail, token, userId)
         case 'MAIL_NEW_USERNAME':
           return newEmail;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/cancel-username-update?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
+          return `${WEB_CONFIG.publicURL}/cancel-username-update?userId=${userId}&username=${email}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -139,6 +138,28 @@ async function sendUsernameConfirmation(email) {
     });
 
   await sendMail(email, '[K-App] Confirmation du changement d\'adresse email', mail);
+}
+
+/**
+ * Send a confirmation after a cancellation of an username update.
+ *
+ * @param email {String} recipient email address
+ * @returns {Promise<void>} Nothing
+ */
+async function sendCancelUsernameConfirmation(email) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.USERNAME_CHANGE_CANCEL_CONFIRMATION)
+    .replace(REGEX_TOKEN, (matches, replaceToken) => {
+      switch (replaceToken) {
+        case 'MAIL_WEBSITE':
+          return WEB_CONFIG.publicURL;
+        case 'MAIL_USERNAME':
+          return email;
+        default:
+          return `??${replaceToken}??`;
+      }
+    });
+
+  await sendMail(email, '[K-App] Confirmation de l\'annulation du changement d\'adresse email', mail);
 }
 
 /**
@@ -213,5 +234,6 @@ module.exports = {
   sendUsernameUpdateInformationMail,
   sendUsernameConfirmation,
   sendWelcomeMail,
+  sendCancelUsernameConfirmation,
   sendContactFormV2,
 };

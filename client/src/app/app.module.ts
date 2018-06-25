@@ -60,6 +60,7 @@ import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
+import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
 import { TasksListComponent } from './tasks/list/tasks-list.component';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 import { TemplateEditComponent } from './templates/edit/template-edit.component';
@@ -144,6 +145,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     WebsiteContactComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    CancelEmailUpdateComponent,
     KommissionViewComponent,
     TasksListComponent,
     TaskViewDialogComponent,

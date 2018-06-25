@@ -42,6 +42,7 @@ import { WebsiteContactComponent } from './contacts/website/website-contact.comp
 import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
 import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
+import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
 
 const generateData = (permissions: String[] | String) => {
   return {
@@ -57,6 +58,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'define-password', component: DefinePasswordComponent },
   { path: 'username-verification', component: UsernameVerificationComponent },
+  { path: 'cancel-username-update', component: CancelEmailUpdateComponent },
   { path: 'contact/concert', component: ConcertContactComponent },
   { path: 'contact/event', component: EventContactComponent },
   { path: 'contact/lost', component: LostContactComponent },
