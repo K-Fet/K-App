@@ -13,3 +13,38 @@ $k-app-theme: mat-light-theme($k-app-primary, $k-app-accent, $k-app-warn);
 $primary: mat-color($k-app-primary);
 $accent: mat-color($k-app-accent);
 $warn: mat-color($k-app-warn);
+
+// Task theme (must be global because it overide material css rules)
+
+$notStarted: #FFFFFF;
+$inProgress: #FFCC80;
+$abandoned: #FFFFFF ;
+$done: #AED581;
+
+.notStarted {
+  
+  mat-dialog-container {
+    background: $notStarted;
+  }
+}
+
+.inProgress {
+  
+  mat-dialog-container {
+    background: $inProgress;
+  }
+}
+
+.abandoned {
+  
+  mat-dialog-container {
+    background: $abandoned;
+  }
+}
+
+.done {
+  
+  mat-dialog-container {
+    background: $done;
+  }
+}

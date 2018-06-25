@@ -41,6 +41,7 @@ import { ConcertContactComponent } from './contacts/concert/concert-contact.comp
 import { WebsiteContactComponent } from './contacts/website/website-contact.component';
 import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
+import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
 
 const generateData = (permissions: String[] | String) => {
   return {
@@ -81,8 +82,12 @@ const routes: Routes = [
     data: generateData('kommission:write'),
   },
   {
-    path: 'kommissions/:id', component: KommissionEditComponent, canActivate: [NgxPermissionsGuard],
+    path: 'kommissions/:id/edit', component: KommissionEditComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('kommission:write'),
+  },
+  {
+    path: 'kommissions/:id', component: KommissionViewComponent, canActivate: [NgxPermissionsGuard],
+    data: generateData('kommission:read'),
   },
   {
     path: 'roles', component: RolesListComponent, canActivate: [NgxPermissionsGuard],

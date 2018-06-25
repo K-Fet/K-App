@@ -60,11 +60,16 @@ import { LostContactComponent } from './contacts/lost/lost-contact.component';
 import { EventContactComponent } from './contacts/event/event-contact.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
+import { TasksListComponent } from './tasks/list/tasks-list.component';
+import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
+import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.component';
+import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 
 // Services
 import { AuthService, BarmanService, ContactService,
     KommissionService, LoaderService, MemberService, MeService, PermissionService,
-    RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService } from './_services';
+    RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService } from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
@@ -85,7 +90,7 @@ registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { TemplateEditComponent } from './templates/edit/template-edit.component';
+import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
 
 @NgModule({
   declarations: [
@@ -137,11 +142,18 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     WebsiteContactComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    KommissionViewComponent,
+    TasksListComponent,
+    TaskViewDialogComponent,
+    TaskEditNewDialogComponent,
+    MyTasksComponent,
   ],
   entryComponents: [
     CodeDialogComponent,
     ConfirmationDialogComponent,
     ResetPasswordDialogComponent,
+    TaskEditNewDialogComponent,
+    TaskViewDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -165,6 +177,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     RoleService,
     ToasterService,
     TemplateService,
+    TaskService,
     SpecialAccountService,
     PermissionService,
     LoaderService,

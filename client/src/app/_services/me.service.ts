@@ -8,7 +8,7 @@ export class MeService {
 
   constructor(private http: HttpClient) { }
 
-  put(connectedUser: ConnectedUser): Observable<any> {
+  put(connectedUser: ConnectedUser, code?: Number): Observable<any> {
     let body;
     if (connectedUser.isBarman()) {
       body = {
@@ -16,6 +16,7 @@ export class MeService {
       };
     } else {
       body = {
+        code,
         specialAccount: connectedUser.specialAccount,
       };
     }

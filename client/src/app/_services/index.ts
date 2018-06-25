@@ -11,3 +11,4 @@ export * from './permission.service';
 export * from './me.service';
 export * from './contact.service';
 export * from './loader.service';
+export * from './task.service';
