@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Barman, Service } from '../_models';
+import { Barman, Service, Task } from '../_models';
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 
@@ -24,6 +24,10 @@ export class BarmanService {
         end: (+end).toString(),
       },
     });
+  }
+
+  getTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>('/api/me/tasks');
   }
 
   create(barman: Barman): Observable<Barman> {

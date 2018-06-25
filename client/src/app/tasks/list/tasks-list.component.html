@@ -1,0 +1,37 @@
+<div fxLayout="row">
+  <section class="mat-typography">
+    <h2>ToDo</h2>
+  </section>
+  <div fxFlex></div>
+  <div>
+      <button mat-icon-button (click)="openNewDialog(task)"><mat-icon>add</mat-icon></button>
+  </div>
+</div>
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-form-field fxFlex.gt-xs="200px">
+    <mat-select placeholder="Filtrer par status" multiple [formControl]="stateSelected">
+      <mat-option *ngFor="let state of states" [value]="state.value">{{ state.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<mat-table #table [dataSource]="tasksData" matSort>
+  <ng-container matColumnDef="state">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> État </mat-header-cell>
+    <mat-cell *matCellDef="let task">{{ getFrenchState(task) }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+    <mat-cell *matCellDef="let task"> {{task.name}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="deadline">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Date limite </mat-header-cell>
+    <mat-cell *matCellDef="let task"> {{ task.deadline | date:'dd/MM/yy' }} </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openViewDialog(row)" class="taskRow" [ngClass]="getPanelClass(row)"></mat-row>
+</mat-table>
+<mat-paginator #paginator
+    [pageIndex]="0"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]">
+</mat-paginator>

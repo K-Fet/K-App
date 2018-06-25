@@ -1,0 +1,21 @@
+<section class="mat-typography">
+  <h2>{{ data.task.name }}</h2>
+</section>
+<div fxLayout="row">
+  <p fxFlexOffset="10px" class="information">
+    <span class="underline">Kommission</span>: {{ data.kommission.name }}<br>
+    <span class="underline">Créée le</span>: {{ data.task.createdAt | date:'d/MM/yy' }}<br>
+    <span [ngClass]="isPassed()"><span class="underline">Deadline</span>: {{ data.task.deadline | date:'dd/MM/yy' }}</span><br>
+    <span class="underline">Status</span>: {{ getState(data.task.state) }}<br>
+    <span class="underline">Barmen en charge</span>:
+    <span *ngIf="data.task.barmen && data.task.barmen.length > 0">
+      <span *ngFor="let barman of data.task.barmen"> {{ barman.nickname }},</span>
+    </span>
+    <span *ngIf="!data.task.barmen || data.task.barmen.length === 0" class="accent"> aucun...</span><br><br>
+  </p>
+</div> 
+<p>{{ data.task.description }}</p>
+<div fxLayout.xs="column" fxLayout="row" fxLayoutAlign="end end" fxLayoutGap="10px" *ngxPermissionsOnly="['task:write']">
+  <button mat-button (click)="openEditDialog()">Modifier</button>
+  <button mat-button *ngIf="data.task.state !== 'Done'" (click)="markAsDone()">Clôturer</button>
+</div>

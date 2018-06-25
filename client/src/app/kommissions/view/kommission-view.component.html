@@ -1,0 +1,35 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/kommissions"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>{{ kommission?.name }}</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ kommission?.description}}
+      </p>
+      <section class="mat-typography">
+          <h2>Effectif</h2>
+        </section>
+      <p>
+        Les barmen actifs de la kommission sont: 
+        <span *ngFor="let barman of getBarmen(true); let isLast=last">
+          <a [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
+        </span>
+      </p>
+      <p>
+        Les vieux de la kommission sont:
+        <span *ngFor="let barman of getBarmen(false); let isLast=last">
+          <a [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
+        </span>
+      </p>
+      <div *ngIf="kommission">
+        <app-tasks *ngxPermissionsOnly="['task:read']"></app-tasks>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

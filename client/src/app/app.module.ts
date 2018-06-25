@@ -55,12 +55,17 @@ import { ServiceEditComponent } from './services/edit/service-edit.component';
 import { LoaderComponent } from './loader/loader.component';
 import { BarmanServiceNumberComponent } from './services/barman-service-number/barman-service-number.component';
 import { FooterComponent } from './footer/footer.component';
+import { TasksListComponent } from './tasks/list/tasks-list.component';
+import { KommissionViewComponent } from './kommissions/view/kommission-view.component';
+import { TemplateEditComponent } from './templates/edit/template-edit.component';
+import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.component';
+import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 
 // Services
 import {
   AuthService, BarmanService, KommissionService,
   LoaderService, MemberService, MeService, PermissionService,
-  RoleService, ServiceService, SpecialAccountService, TemplateService, ToasterService,
+  RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService,
 } from './_services';
 
 // Guards
@@ -82,7 +87,7 @@ registerLocaleData(fr, 'fr');
 
 // Modules
 import { MaterialModule } from './_helpers/material.module';
-import { TemplateEditComponent } from './templates/edit/template-edit.component';
+import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
 
 @NgModule({
   declarations: [
@@ -130,11 +135,18 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     LoaderComponent,
     BarmanServiceNumberComponent,
     FooterComponent,
+    KommissionViewComponent,
+    TasksListComponent,
+    TaskViewDialogComponent,
+    TaskEditNewDialogComponent,
+    MyTasksComponent,
   ],
   entryComponents: [
     CodeDialogComponent,
     ConfirmationDialogComponent,
     ResetPasswordDialogComponent,
+    TaskEditNewDialogComponent,
+    TaskViewDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -157,6 +169,7 @@ import { TemplateEditComponent } from './templates/edit/template-edit.component'
     RoleService,
     ToasterService,
     TemplateService,
+    TaskService,
     SpecialAccountService,
     PermissionService,
     LoaderService,
