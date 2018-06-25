@@ -25,7 +25,6 @@ async function sendForm(req, res) {
   await recaptchaService.recaptchaVerification(req.body.token);
 
   try {
-    console.log(CONFIG.CONCERT_MAIL);
     switch (req.body.contactFormName) {
       case 'concert':
         await mailService.sendContactFormV2('concert', CONFIG.CONCERT_MAIL, req.body.values);

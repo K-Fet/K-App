@@ -67,9 +67,11 @@ import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.compo
 import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 
 // Services
-import { AuthService, BarmanService, ContactService,
-    KommissionService, LoaderService, MemberService, MeService, PermissionService,
-    RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService } from './_services';
+import {
+  AuthService, BarmanService, ContactService,
+  KommissionService, LoaderService, MemberService, MeService, PermissionService,
+  RoleService, ServiceService, SpecialAccountService, TaskService, TemplateService, ToasterService,
+} from './_services';
 
 // Guards
 import { EditGuard } from './_guards/edit.guard';
