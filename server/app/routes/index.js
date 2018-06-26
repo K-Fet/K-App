@@ -14,12 +14,11 @@ router.use(bodyParser.json());
 // No Auth
 
 router.use('/feed', require('./feed'));
-
+router.use('/contact', require('./contact'));
 
 // Auth
 
 router.use('/auth', require('./auth'));
-router.use('/contact', require('./contact'));
 
 // Feed
 

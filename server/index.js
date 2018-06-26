@@ -4,12 +4,18 @@ const compression = require('compression');
 const logger = require('./logger');
 const routes = require('./app/routes');
 const WEB_CONFIG = require('./config/web');
+const { boot } = require('./bootstrap');
 
 const app = express();
 const server = http.createServer(app);
 
 // Database init
 require('./db');
+
+boot().then(() => {
+  logger.info('Application has booted');
+});
+
 
 // Prod middleware
 if (process.env.NODE_ENV === 'production') {

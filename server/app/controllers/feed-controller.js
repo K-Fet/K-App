@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const { createUserError } = require('../../utils');
-
+const logger = require('../../logger');
+const FEED_CONFIG = require('../../config/feed');
 
 /**
  * Webhook entry
@@ -10,7 +11,9 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function feedWebhooks(req, res) {
+  logger.info('Facebook feed:', req.body);
 
+  res.send();
 }
 
 /**
@@ -21,21 +24,19 @@ async function feedWebhooks(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function facebookVerify(req, res) {
+  const schema = Joi.object().keys({
+    'hub.mode': Joi.string().equal('subscribe').required(),
+    'hub.challenge': Joi.string().required(),
+    'hub.verify_token': Joi.equal(FEED_CONFIG.verifyToken),
+  }).required();
 
-    const schema = Joi.object().keys({
-        'hub.mode': Joi.string().equal('subscribe').required(),
-        'hub.challenge': Joi.string().required(),
-        // eslint-disable-next-line
-        'hub.verify_token': Joi.string().required(), // TODO Check the verification token
-    }).required();
+  const { error } = schema.validate(req.query);
+  if (error) throw createUserError('BadRequest', error.message);
 
-    const { error } = schema.validate(req.query);
-    if (error) throw createUserError('BadRequest', error.message);
-
-    res.send(req.query['hub.challenge']);
+  res.send(req.query['hub.challenge']);
 }
 
 module.exports = {
-    feedWebhooks,
-    facebookVerify,
+  feedWebhooks,
+  facebookVerify,
 };
