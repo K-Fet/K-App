@@ -6,11 +6,11 @@ const Joi = require('joi');
  */
 class Media extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -36,11 +36,11 @@ class Media extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
+   * Set associations for the model
+   * @param models
+   */
   static associate(models) {
-    this.belongsToMany(models.FeedObject, { as: 'medias' });
+    this.belongsToMany(models.FeedObject, { through: 'feedobjectmedia', as: 'medias' });
   }
 }
 
