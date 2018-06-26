@@ -22,6 +22,7 @@ class Category extends Model {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
 
       description: DataTypes.STRING,

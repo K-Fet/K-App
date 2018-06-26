@@ -46,10 +46,7 @@ class FeedObject extends Model {
         allowNull: false,
       },
 
-      openLink: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      openLink: DataTypes.STRING,
     }, {
       sequelize,
     });
