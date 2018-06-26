@@ -1,8 +1,11 @@
 const { Barman } = require('./barman');
+const { Category } = require('./category');
 const { ConnectionInformation } = require('./connection-information');
+const { FeedObject } = require('./feedObject');
 const { JWT } = require('./jwt');
 const { Kommission } = require('./kommission');
 const { KommissionWrapper } = require('./kommission-wrapper');
+const { Media } = require('./media');
 const { Member } = require('./member');
 const { Permission } = require('./permission');
 const { Role } = require('./role');
@@ -16,10 +19,13 @@ const { Template, TemplateUnit } = require('./template');
 
 module.exports = {
   Barman,
+  Category,
   ConnectionInformation,
+  FeedObject,
   JWT,
   Kommission,
   KommissionWrapper,
+  Media,
   Member,
   Permission,
   Role,

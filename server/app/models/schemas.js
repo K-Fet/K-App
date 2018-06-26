@@ -1,18 +1,23 @@
-const { BarmanSchema } = require('./barman');
-const { ConnectionInformationSchema } = require('./connection-information');
 const { AssociationChangesSchema } = require('./association-changes');
+const { BarmanSchema } = require('./barman');
+const { Category } = require('./category');
+const { ConnectionInformationSchema } = require('./connection-information');
+const { FeedObjectSchema } = require('./feedObject');
 const { KommissionSchema } = require('./kommission');
 const { RoleSchema } = require('./role');
 const { MemberSchema } = require('./member');
+const { MediaSchema } = require('./media');
 const { ServiceSchema } = require('./service');
 const { SpecialAccountSchema } = require('./special-account');
 const { TaskSchema } = require('./task');
 const { TemplateSchema, TemplateUnitSchema } = require('./template');
 
 module.exports = {
-  BarmanSchema,
-  ConnectionInformationSchema,
   AssociationChangesSchema,
+  BarmanSchema,
+  Category,
+  ConnectionInformationSchema,
+  FeedObjectSchema,
   KommissionSchema,
   RoleSchema,
   MemberSchema,
@@ -21,4 +26,5 @@ module.exports = {
   TaskSchema,
   TemplateSchema,
   TemplateUnitSchema,
+  MediaSchema,
 };
