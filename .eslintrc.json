@@ -48,7 +48,7 @@
         "no-undef": "off",
         "require-jsdoc": "off",
         "no-console": [
-          false
+          0
         ]
       }
     }
