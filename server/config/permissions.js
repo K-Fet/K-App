@@ -6,6 +6,10 @@ module.exports = {
     'barman:read',
     'barman:write',
 
+    'category:write',
+
+    'feedobject:write',
+
     'kommission:read',
     'kommission:write',
 

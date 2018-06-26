@@ -32,10 +32,9 @@ async function createCategory(req, res) {
 
   let newCategory = new Category({
     ...req.body,
-    _embedded: undefined, // Remove the only external object
   });
 
-  newCategory = await categoryService.createCategory(newCategory, req.body._embedded);
+  newCategory = await categoryService.createCategory(newCategory);
 
   res.json(newCategory);
 }
@@ -72,12 +71,11 @@ async function updateCategory(req, res) {
 
   let newCategory = new Category({
     ...req.body,
-    _embedded: undefined, // Remove the only external object
   });
 
   const categoryId = req.params.id;
 
-  newCategory = await categoryService.updateCategory(categoryId, newCategory, req.body._embedded);
+  newCategory = await categoryService.updateCategory(categoryId, newCategory);
 
   res.json(newCategory);
 }

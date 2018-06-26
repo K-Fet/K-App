@@ -1,7 +1,7 @@
 const { Barman } = require('./barman');
 const { Category } = require('./category');
 const { ConnectionInformation } = require('./connection-information');
-const { FeedObject } = require('./feedObject');
+const { FeedObject } = require('./feed-object');
 const { JWT } = require('./jwt');
 const { Kommission } = require('./kommission');
 const { KommissionWrapper } = require('./kommission-wrapper');
