@@ -1,4 +1,4 @@
-const feedObjectService = require('../services/feed-object-service');
+const feedController = require('./feed-object-controller');
 
 /**
  * Fetch the feed.
@@ -7,10 +7,9 @@ const feedObjectService = require('../services/feed-object-service');
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
+// eslint-disable-next-line
 async function get(req, res) {
-  const feed = await feedObjectService.getAll();
-
-  res.json(feed);
+  feedController.getAll();
 }
 
 module.exports = {

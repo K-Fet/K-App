@@ -12,10 +12,13 @@ const Joi = require('joi');
  * @return {Promise.<void>} Nothing
  */
 async function getAll(req, res) {
-  // TODO: offset
-  const categories = await feedObjectService.getAll();
+  if (req.query.offset && req.query.offset % 40 !== 0) {
+    throw createUserError('OffsetError', 'Offset must be a multiple of 40');
+  }
+  const offset = +req.query.offset || 0;
+  const feedObjects = await feedObjectService.getAll(offset);
 
-  res.json(categories);
+  res.json(feedObjects);
 }
 
 /**

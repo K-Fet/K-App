@@ -6,13 +6,35 @@ const {
 const sequelize = require('../../db');
 
 /**
- * Return all feed objects of the app.
- *
+ * Return the 40 last feed objects of the app.
+ * @param offset offset number
  * @returns {Promise<Array>} FeedObjects
  */
-async function getAll() {
-  logger.verbose('FeedObject service: get all feed objects');
-  return FeedObject.findAll({
+async function getAll(offset) {
+  logger.verbose('FeedObject service: get all feed objects, offset %d', offset);
+  const pinedFeedObjects = await FeedObject.findAll({
+    where: {
+      pin: true,
+    },
+    include: [
+      {
+        model: Category,
+        as: 'categories',
+      },
+      {
+        model: Media,
+        as: 'medias',
+      },
+    ],
+  });
+
+  let computedOffset = offset;
+  if (offset > pinedFeedObjects.length) computedOffset -= pinedFeedObjects.length;
+
+  const feedObjects = await FeedObject.findAll({
+    where: {
+      pin: false,
+    },
     order: [
       ['date', 'DESC'],
     ],
@@ -26,7 +48,19 @@ async function getAll() {
         as: 'medias',
       },
     ],
+    offset: computedOffset,
+    limit: 40,
   });
+
+  if (offset < pinedFeedObjects.length) {
+    // eslint-disable-next-line
+    for (let i = pinedFeedObjects.length - 1; i--; i >= 0) {
+      feedObjects.unshift(pinedFeedObjects[i]);
+    }
+    feedObjects.splice(40, feedObjects.length);
+  }
+
+  return feedObjects;
 }
 
 
