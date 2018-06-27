@@ -39,14 +39,13 @@ class Media extends Model {
    * Set associations for the model
    * @param models
    */
-  static associate(models) {
-    this.belongsToMany(models.FeedObject, { through: 'feedobjectmedia', as: 'medias' });
+  static associate(models) { // eslint-disable-line no-unused-vars
   }
 }
 
 const MediaSchema = Joi.object().keys({
   id: Joi.number().integer(),
-  name: Joi.string(),
+  url: Joi.string().uri({ scheme: ['http', 'https'] }),
   type: Joi.string(),
 });
 

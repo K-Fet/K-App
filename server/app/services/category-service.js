@@ -12,11 +12,7 @@ const sequelize = require('../../db');
  */
 async function getAll() {
   logger.verbose('Category service: get all categories');
-  return Category.findAll({
-    order: [
-      ['date', 'DESC'],
-    ],
-  });
+  return Category.findAll();
 }
 
 

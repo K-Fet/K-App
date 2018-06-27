@@ -19,7 +19,7 @@ router.use('/contact', require('./contact'));
 
 router.use('/feed', require('./feed'));
 router.use('/feedobjects', require('./feed-object'));
-router.use('/category', require('./category'));
+router.use('/categories', require('./category'));
 
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));

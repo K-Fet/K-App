@@ -1,7 +1,8 @@
 const feedObjectService = require('../services/feed-object-service');
-const { FeedObject } = require('../models');
-const { FeedObjectSchema } = require('../models/schemas');
+const { FeedObject, Media } = require('../models');
+const { MediaSchema, FeedObjectSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
+const Joi = require('joi');
 
 /**
  * Fetch all the categories from the database.
@@ -35,10 +36,27 @@ async function createFeedObject(req, res) {
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
+  // Handle media
+  if (req.body.medias) {
+    const mediaSchema = Joi.array().items(MediaSchema.requiredKeys([
+      'url',
+      'type',
+    ]));
+
+    const { mediaError } = mediaSchema.validate(req.body.medias);
+    if (mediaError) throw createUserError('BadRequest', error.message);
+  }
 
   let newFeedObject = new FeedObject({
     ...req.body,
     _embedded: undefined, // Remove the only external object
+  }, {
+    include: [
+      {
+        model: Media,
+        as: 'medias',
+      },
+    ],
   });
 
   newFeedObject = await feedObjectService.createFeedObject(newFeedObject, req.body._embedded);
@@ -79,6 +97,13 @@ async function updateFeedObject(req, res) {
   let newFeedObject = new FeedObject({
     ...req.body,
     _embedded: undefined, // Remove the only external object
+  }, {
+    include: [
+      {
+        model: Media,
+        as: 'medias',
+      },
+    ],
   });
 
   const feedObjectId = req.params.id;

@@ -42,7 +42,10 @@ class Category extends Model {
    * @param models
    */
   static associate(models) {
-    this.belongsToMany(models.FeedObject, { through: 'feedobjectcategory', as: 'categories' });
+    this.belongsToMany(models.FeedObject, {
+      through: 'feedobjectcategorywrapper',
+      foreignKey: 'categoryId',
+    });
   }
 }
 

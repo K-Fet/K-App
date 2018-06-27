@@ -1,6 +1,6 @@
 const { AssociationChangesSchema } = require('./association-changes');
 const { BarmanSchema } = require('./barman');
-const { Category } = require('./category');
+const { CategorySchema } = require('./category');
 const { ConnectionInformationSchema } = require('./connection-information');
 const { FeedObjectSchema } = require('./feed-object');
 const { KommissionSchema } = require('./kommission');
@@ -15,7 +15,7 @@ const { TemplateSchema, TemplateUnitSchema } = require('./template');
 module.exports = {
   AssociationChangesSchema,
   BarmanSchema,
-  Category,
+  CategorySchema,
   ConnectionInformationSchema,
   FeedObjectSchema,
   KommissionSchema,

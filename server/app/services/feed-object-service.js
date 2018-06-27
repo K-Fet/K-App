@@ -1,7 +1,5 @@
 const logger = require('../../logger');
-const {
-  Barman, FeedObject, Category, Media,
-} = require('../models/');
+const { FeedObject, Category, Media } = require('../models/');
 const {
   createUserError, createServerError, cleanObject, setAssociations,
 } = require('../../utils');
@@ -104,19 +102,33 @@ async function updateFeedObject(feedObjectId, updatedFeedObject, _embedded) {
   const currentFeedObject = await FeedObject.findById(feedObjectId, {
     include: [
       {
-        model: Barman,
-        as: 'barmen',
+        model: Media,
+        as: 'medias',
       },
     ],
   });
 
   if (!currentFeedObject) throw createUserError('UnknownFeedObject', 'This feed object does not exist');
 
-  logger.verbose('FeedObject service: updating feed object named %s %s', currentFeedObject.id, currentFeedObject.name);
+  logger.verbose('FeedObject service: updating feed object named %s %s', currentFeedObject.id, currentFeedObject.title);
 
   const transaction = await sequelize.transaction();
 
   try {
+    if (updatedFeedObject.medias) {
+      const oldMedias = await currentFeedObject.getMedias();
+      // eslint-disable-next-line
+      for (const oldMedia of oldMedias) {
+        // eslint-disable-next-line
+        await oldMedia.destroy();
+      }
+      // eslint-disable-next-line
+      for (const newMedia of updatedFeedObject.medias) {
+        // eslint-disable-next-line
+        await newMedia.save();
+      }
+      await currentFeedObject.setMedias(updatedFeedObject.medias, { transaction });
+    }
     await currentFeedObject.update(cleanObject({
       title: updatedFeedObject.title,
       content: updatedFeedObject.content,

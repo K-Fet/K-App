@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const Joi = require('joi');
 const { AssociationChangesSchema } = require('./association-changes');
+const { MediaSchema } = require('./media');
 
 /**
  * This class represent a FeedObject.
@@ -59,18 +60,13 @@ class FeedObject extends Model {
      */
   static associate(models) {
     this.hasMany(models.Media, {
-      foreignKey: {
-        name: 'mediaId',
-        allowNull: false,
-      },
+      foreignKey: 'feedObjectId',
       as: 'medias',
+      onDelete: 'CASCADE',
     });
-    this.hasMany(models.Category, {
-      foreignKey: {
-        name: 'categoryId',
-        allowNull: false,
-      },
-      as: 'categories',
+    this.belongsToMany(models.Category, {
+      through: 'feedobjectcategorywrapper',
+      foreignKey: 'feedObjectId',
     });
   }
 }
@@ -83,8 +79,11 @@ const FeedObjectSchema = Joi.object().keys({
   pin: Joi.boolean(),
   source: Joi.string().valid('Kapp', 'Facebook'),
   openLink: Joi.string(),
+  medias: Joi.array().items(MediaSchema.requiredKeys([
+    'url',
+    'type',
+  ])),
   _embedded: Joi.object({
-    medias: AssociationChangesSchema,
     categories: AssociationChangesSchema,
   }),
 });
