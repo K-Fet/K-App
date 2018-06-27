@@ -4,7 +4,7 @@ const { Barman } = require('../models/barman');
 const {
   createUserError, createServerError, cleanObject, setAssociations,
 } = require('../../utils');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
  * Return all kommissions of the app.

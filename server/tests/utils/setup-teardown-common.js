@@ -10,13 +10,13 @@ const PORT = process.env.PORT || 2356;
 const BASE_URL = `http://localhost:${PORT}/api`;
 const ACCOUNT = 'TEST_ADMIN';
 
-const sequelize = require('../../db');
+const { sequelize, start } = require('../../bootstrap/sequelize');
 const models = require('../../app/models/index');
 
 const { SpecialAccount, ConnectionInformation, Permission } = models;
 const authService = require('../../app/services/auth-service');
 const { hash } = require('../../utils/');
-const { syncPermissions } = require('../../permissions-init');
+const { start: syncPermissions } = require('../../bootstrap/permissions');
 
 app.use('/api/', routes);
 

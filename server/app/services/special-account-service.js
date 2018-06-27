@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const authService = require('./auth-service');
 const mailService = require('./mail-service');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../models');

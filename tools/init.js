@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console,require-jsdoc */
+/* eslint-disable no-console,require-jsdoc,no-await-in-loop */
 
 if (process.getuid && process.getuid() !== 0) {
   console.error('You have to run this tool as root');

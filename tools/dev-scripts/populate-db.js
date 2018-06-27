@@ -5,7 +5,7 @@ const inquirer = require('inquirer');
 const { Sequelize } = require('sequelize');
 const models = require('../../server/app/models');
 const mysqlConf = require('../prod-scripts/mysql');
-const { syncPermissions } = require('../../server/permissions-init');
+const { start: syncPermissions } = require('../../server/bootstrap/permissions');
 
 const {
   Service, Role, Kommission, Barman, Member, Permission,
