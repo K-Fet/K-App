@@ -5,20 +5,46 @@ const { createUserError } = require('../../utils');
 const Joi = require('joi');
 
 /**
- * Fetch all the categories from the database.
+ * Fetch feedObjects from the database with pagination.
  *
  * @param req Request
  * @param res Response
  * @return {Promise.<void>} Nothing
  */
 async function getAll(req, res) {
-  if (req.query.offset && req.query.offset % 40 !== 0) {
-    throw createUserError('OffsetError', 'Offset must be a multiple of 40');
+  const schema = Joi.object().keys({
+    page: Joi.number().min(1).max(100),
+    limit: Joi.number().min(1).max(100),
+  });
+
+  let page = 1;
+  let limit = 40;
+
+  if (req.query.params) {
+    // Cast to number
+    page = +req.query.params.page;
+    limit = +req.query.params.limit;
+
+    const { error } = schema.validate(req.query.params);
+    if (error) throw createUserError('BadRequest', error.message);
   }
-  const offset = +req.query.offset || 0;
-  const feedObjects = await feedObjectService.getAll(offset);
+
+  const feedObjects = await feedObjectService.getAll(page, limit);
 
   res.json(feedObjects);
+}
+
+/**
+ * Fetch all the pinned feedObjects from the database.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise.<void>} Nothing
+ */
+async function getPinned(req, res) {
+  const pinnedFeedObjects = await feedObjectService.getPinned();
+
+  res.json(pinnedFeedObjects);
 }
 
 /**
@@ -133,6 +159,7 @@ async function deleteFeedObject(req, res) {
 
 module.exports = {
   getAll,
+  getPinned,
   createFeedObject,
   updateFeedObject,
   getFeedObjectById,

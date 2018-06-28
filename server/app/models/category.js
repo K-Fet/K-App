@@ -36,14 +36,13 @@ class Category extends Model {
     });
   }
 
-
   /**
    * Set associations for the model
    * @param models
    */
   static associate(models) {
     this.belongsToMany(models.FeedObject, {
-      through: 'feedobjectcategorywrapper',
+      through: 'feedobjectcategorywrappers',
       foreignKey: 'categoryId',
     });
   }

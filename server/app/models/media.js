@@ -45,7 +45,7 @@ class Media extends Model {
 
 const MediaSchema = Joi.object().keys({
   id: Joi.number().integer(),
-  url: Joi.string().uri({ scheme: ['http', 'https'] }),
+  url: Joi.string().uri({ scheme: ['https'] }),
   type: Joi.string(),
 });
 

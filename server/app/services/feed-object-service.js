@@ -6,13 +6,46 @@ const {
 const sequelize = require('../../db');
 
 /**
- * Return the 40 last feed objects of the app.
- * @param offset offset number
+ * Return the last feed objects of the app.
+ * @param page The current requested page number, by default page 1 is returned.
+ * @param limit The current maximum number of items per response page.
  * @returns {Promise<Array>} FeedObjects
  */
-async function getAll(offset) {
-  logger.verbose('FeedObject service: get all feed objects, offset %d', offset);
-  const pinedFeedObjects = await FeedObject.findAll({
+async function getAll(page, limit) {
+  logger.verbose('FeedObject service: get all feed objects, page %d, limit %d', page, limit);
+
+  const offset = (page - 1) * limit;
+
+  const feedObjects = await FeedObject.findAll({
+    where: {
+      pin: false,
+    },
+    order: [
+      ['date', 'DESC'],
+    ],
+    include: [
+      {
+        model: Category,
+      },
+      {
+        model: Media,
+        as: 'medias',
+      },
+    ],
+    offset,
+    limit,
+  });
+
+  return feedObjects;
+}
+
+/**
+ * Return all the pinned feed objects of the app.
+ * @returns {Promise<Array>} FeedObjects
+ */
+async function getPinned() {
+  logger.verbose('FeedObject service: get all pinned feed objects');
+  return FeedObject.findAll({
     where: {
       pin: true,
     },
@@ -26,41 +59,10 @@ async function getAll(offset) {
         as: 'medias',
       },
     ],
-  });
-
-  let computedOffset = offset;
-  if (offset > pinedFeedObjects.length) computedOffset -= pinedFeedObjects.length;
-
-  const feedObjects = await FeedObject.findAll({
-    where: {
-      pin: false,
-    },
     order: [
-      ['date', 'DESC'],
+      ['updatedAt', 'DESC'],
     ],
-    include: [
-      {
-        model: Category,
-        as: 'categories',
-      },
-      {
-        model: Media,
-        as: 'medias',
-      },
-    ],
-    offset: computedOffset,
-    limit: 40,
   });
-
-  if (offset < pinedFeedObjects.length) {
-    // eslint-disable-next-line
-    for (let i = pinedFeedObjects.length - 1; i--; i >= 0) {
-      feedObjects.unshift(pinedFeedObjects[i]);
-    }
-    feedObjects.splice(40, feedObjects.length);
-  }
-
-  return feedObjects;
 }
 
 
@@ -151,17 +153,12 @@ async function updateFeedObject(feedObjectId, updatedFeedObject, _embedded) {
   try {
     if (updatedFeedObject.medias) {
       const oldMedias = await currentFeedObject.getMedias();
-      // eslint-disable-next-line
-      for (const oldMedia of oldMedias) {
-        // eslint-disable-next-line
-        await oldMedia.destroy();
-      }
-      // eslint-disable-next-line
-      for (const newMedia of updatedFeedObject.medias) {
-        // eslint-disable-next-line
-        await newMedia.save();
-      }
-      await currentFeedObject.setMedias(updatedFeedObject.medias, { transaction });
+      await Promise.all(oldMedias.map(m => m.destroy({ transaction })));
+      const newMediasCreatePromises = updatedFeedObject.medias.map(m => m.save({ transaction }));
+      await Promise.all(newMediasCreatePromises)
+        .then(async (newMedias) => {
+          await currentFeedObject.setMedias(newMedias, { transaction });
+        });
     }
     await currentFeedObject.update(cleanObject({
       title: updatedFeedObject.title,
@@ -205,6 +202,7 @@ async function deleteFeedObject(feedObjectId) {
 
 module.exports = {
   getAll,
+  getPinned,
   createFeedObject,
   updateFeedObject,
   getFeedObjectById,
