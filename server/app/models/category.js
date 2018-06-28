@@ -29,10 +29,6 @@ class Category extends Model {
     }, {
       sequelize,
       updatedAt: false,
-      name: {
-        plural: 'categories',
-        singular: 'category',
-      },
     });
   }
 

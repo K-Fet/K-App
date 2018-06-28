@@ -67,6 +67,7 @@ class FeedObject extends Model {
     this.belongsToMany(models.Category, {
       through: 'feedobjectcategorywrappers',
       foreignKey: 'feedObjectId',
+      as: 'categories',
     });
   }
 }

@@ -12,24 +12,24 @@ const Joi = require('joi');
  * @return {Promise.<void>} Nothing
  */
 async function getAll(req, res) {
-  const schema = Joi.object().keys({
-    page: Joi.number().min(1).max(100),
-    limit: Joi.number().min(1).max(100),
-  });
-
-  let page = 1;
+  let offset = 0;
   let limit = 40;
 
-  if (req.query.params) {
-    // Cast to number
-    page = +req.query.params.page;
-    limit = +req.query.params.limit;
+  if (req.query) {
+    const schema = Joi.object().keys({
+      offset: Joi.number().integer().min(1),
+      limit: Joi.number().integer().min(1).max(100),
+    });
 
-    const { error } = schema.validate(req.query.params);
+    const { error } = schema.validate(req.query);
     if (error) throw createUserError('BadRequest', error.message);
+
+    // Cast to number
+    offset = +req.query.offset || 0;
+    limit = +req.query.limit || 40;
   }
 
-  const feedObjects = await feedObjectService.getAll(page, limit);
+  const feedObjects = await feedObjectService.getAll(offset, limit);
 
   res.json(feedObjects);
 }

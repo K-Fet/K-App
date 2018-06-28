@@ -7,14 +7,12 @@ const sequelize = require('../../db');
 
 /**
  * Return the last feed objects of the app.
- * @param page The current requested page number, by default page 1 is returned.
- * @param limit The current maximum number of items per response page.
+ * @param offset The current requested offset number, by default offset 1 is returned.
+ * @param limit The current maximum number of items per response offset.
  * @returns {Promise<Array>} FeedObjects
  */
-async function getAll(page, limit) {
-  logger.verbose('FeedObject service: get all feed objects, page %d, limit %d', page, limit);
-
-  const offset = (page - 1) * limit;
+async function getAll(offset, limit) {
+  logger.verbose('FeedObject service: get all feed objects, offset %d, limit %d', offset, limit);
 
   const feedObjects = await FeedObject.findAll({
     where: {
@@ -26,6 +24,7 @@ async function getAll(page, limit) {
     include: [
       {
         model: Category,
+        as: 'categories',
       },
       {
         model: Media,
