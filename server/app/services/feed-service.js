@@ -2,6 +2,8 @@ const WEB_CONFIG = require('../../config/web');
 const FEED_CONFIG = require('../../config/feed');
 const rp = require('request-promise-native');
 const logger = require('../../logger');
+const { FeedObject } = require('../models');
+const { createUserError } = require('../../utils');
 
 /**
  * Send a request to subscribe to facebook webhooks.
@@ -43,40 +45,83 @@ async function subscribeWebhook() {
  *
  * @param field
  * @param value
- * @param value.item
- * @param value.post_id
- * @param value.verb
- * @param value.createdTime
- * @param value.isHidden
- * @param value.message
  * @return {Promise<void>}
  */
-async function importOneChange({ field, value }) {
-  const { item, post_id, verb, created_time: createdTime, is_hidden: isHidden, message } = value;
+async function _importChange({ field, value }) {
+  logger.verbose(`Facebook feed received a ${field} update`);
 
-}
+  if (field !== 'feed') {
+    logger.error(`Server received update for ${field} that it should not have received!`);
+    throw createUserError('BadRequest', 'Could not handle this entry');
+  }
 
-/**
- * Import only one entry from facebook.
- *
- * @param changes {any[]} Changes of a post of the page
- * @return {Promise<void>}
- */
-async function importOneFacebookItem({ changes }) {
-  return Promise.all(changes.map(importOneChange));
+  const {
+    action,
+    album_id: albumId,
+    comment_id: commentId,
+    created_time: createdTime,
+    edited_time: editedTime,
+    event_id: eventId,
+    from,
+    is_hidden: isHidden,
+    item,
+    link,
+    message,
+    parent_id: parentId,
+    photo,
+    photo_id: photoId,
+    photo_ids: photoIds,
+    photos,
+    post,
+    post_id: postId,
+    published,
+    reaction_type: reactionType,
+    recipient_id: recipientId,
+    share_id: shareId,
+    verb,
+    video,
+    video_id,
+  } = value;
+
+  switch (verb) {
+    case 'add': {
+      break;
+    }
+    case 'block':
+    case 'edit':
+    case 'edited':
+    case 'delete':
+    case 'follow':
+    case 'hide':
+    case 'mute':
+    case 'remove':
+    case 'unblock':
+    case 'unhide':
+    case 'update':
+      logger.warn(`Server does not implement ${verb} action for now`);
+      break;
+    default:
+      logger.error(`Unrecognised verb from facebook webhooks: ${verb}`);
+  }
 }
 
 /**
  * Import raw data from facebook webhooks.
  *
  * @param object {string} Type of the object
- * @param entry {any[]} FB entries
+ * @param entry {array} FB entries
  * @return {Promise<*>}
  */
 async function importWebhookEvent({ object, entry }) {
   logger.verbose(`Facebook feed received for '${object}'. Got ${entry.length} items`);
 
-  return Promise.all(entry.map(importOneFacebookItem));
+  // Each entry should is processed at the same time
+  // But each changes of an entry is done one after another to have the right order
+  return Promise.all(entry.map(({ changes }) =>
+    changes.reduce(
+      (p, change) => p.then(_importChange(change)),
+      Promise.resolve(),
+    )));
 }
 
 module.exports = {
