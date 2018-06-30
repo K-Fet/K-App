@@ -2,8 +2,9 @@ const WEB_CONFIG = require('../config/web');
 const logger = require('../logger');
 
 async function start() {
-  // TODO Send an error
   if (process.env.NODE_ENV === 'production') return;
+
+  logger.info('Starting ngrok...');
 
   // eslint-disable-next-line import/no-extraneous-dependencies,global-require
   const ngrok = require('ngrok');

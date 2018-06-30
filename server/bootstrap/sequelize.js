@@ -3,8 +3,6 @@ const logger = require('../logger');
 const DB_SEQUELIZE = require('../config/sequelize');
 const models = require('../app/models');
 
-const CONF = DB_SEQUELIZE[process.env.NODE_ENV];
-
 let _sequelize = null;
 
 function initModel() {
@@ -29,7 +27,15 @@ function initModel() {
 }
 
 async function start() {
-  logger.debug('Synchronising the database...');
+  const CONF = DB_SEQUELIZE[process.env.NODE_ENV];
+
+  logger.debug('Booting sequelize with:', {
+    ...CONF,
+    password: null,
+  });
+
+  // Set logging function
+  CONF.logging = query => logger.verbose(`[Sequelize] ${query}`);
 
   _sequelize = new Sequelize(CONF);
 

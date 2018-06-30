@@ -2,6 +2,7 @@ const Joi = require('joi');
 const { createUserError } = require('../../utils');
 const logger = require('../../logger');
 const FEED_CONFIG = require('../../config/feed');
+const feedService = require('../services/feed-service');
 
 /**
  * Webhook entry
@@ -11,9 +12,11 @@ const FEED_CONFIG = require('../../config/feed');
  * @return {Promise.<void>} Nothing
  */
 async function feedWebhooks(req, res) {
-  logger.info('Facebook feed:', req.body);
+  if (!req.isXHub) throw createUserError('BadRequest', 'No X-Hub Signature');
+  if (!req.isXHubValid()) throw createUserError('BadRequest', 'Invalid X-Hub Request');
 
-  res.send();
+  await feedService.importWebhookEvent(req.body);
+  res.sendStatus(200);
 }
 
 /**

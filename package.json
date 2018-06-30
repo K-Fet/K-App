@@ -37,12 +37,13 @@
     "preversion": "yarn test"
   },
   "dependencies": {
-    "argon2": "0.19.2",
+    "argon2": "0.19.3",
     "body-parser": "^1.18.3",
     "compression": "^1.7.2",
     "express": "^4.16.2",
     "express-jwt": "^5.3.1",
     "express-jwt-permissions": "^1.2.0",
+    "express-x-hub": "^1.0.4",
     "inquirer": "^5.0.1",
     "joi": "^13.3.0",
     "jsonwebtoken": "^8.2.0",

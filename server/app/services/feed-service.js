@@ -38,6 +38,48 @@ async function subscribeWebhook() {
   }
 }
 
+/**
+ * Import one change from one entry from the FB webhooks.
+ *
+ * @param field
+ * @param value
+ * @param value.item
+ * @param value.post_id
+ * @param value.verb
+ * @param value.createdTime
+ * @param value.isHidden
+ * @param value.message
+ * @return {Promise<void>}
+ */
+async function importOneChange({ field, value }) {
+  const { item, post_id, verb, created_time: createdTime, is_hidden: isHidden, message } = value;
+
+}
+
+/**
+ * Import only one entry from facebook.
+ *
+ * @param changes {any[]} Changes of a post of the page
+ * @return {Promise<void>}
+ */
+async function importOneFacebookItem({ changes }) {
+  return Promise.all(changes.map(importOneChange));
+}
+
+/**
+ * Import raw data from facebook webhooks.
+ *
+ * @param object {string} Type of the object
+ * @param entry {any[]} FB entries
+ * @return {Promise<*>}
+ */
+async function importWebhookEvent({ object, entry }) {
+  logger.verbose(`Facebook feed received for '${object}'. Got ${entry.length} items`);
+
+  return Promise.all(entry.map(importOneFacebookItem));
+}
+
 module.exports = {
   subscribeWebhook,
+  importWebhookEvent,
 };

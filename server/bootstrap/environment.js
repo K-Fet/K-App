@@ -1,3 +1,5 @@
+const logger = require('../logger');
+
 function start() {
   // Set global environment
 
@@ -11,6 +13,8 @@ function start() {
     default:
       break;
   }
+
+  logger.info(`Server is in ${process.env.NODE_ENV}.`);
 }
 
 module.exports = {
