@@ -15,6 +15,12 @@ router.use(bodyParser.json());
 router.use('/auth', require('./auth'));
 router.use('/contact', require('./contact'));
 
+// Feed
+
+router.use('/feed', require('./feed'));
+router.use('/feedobjects', require('./feed-object'));
+router.use('/categories', require('./category'));
+
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
