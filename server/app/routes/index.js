@@ -5,7 +5,6 @@ const xhub = require('express-x-hub');
 const logger = require('../../logger');
 const { accessToken } = require('../../config/feed');
 
-
 // Middlewares
 
 router.use(morgan('combined', { stream: logger.stream }));
@@ -34,6 +33,7 @@ router.use('/categories', require('./category'));
 
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
+router.use(am(require('../middlewares/perm')));
 
 // Dispatch to child routes
 router.use('/me', require('./me'));

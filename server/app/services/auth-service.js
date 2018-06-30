@@ -487,4 +487,5 @@ module.exports = {
   updateUsername,
   usernameVerify,
   cancelUsernameUpdate,
+  getPermissions,
 };
