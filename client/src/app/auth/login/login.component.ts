@@ -27,11 +27,13 @@ export class LoginComponent {
     this.loginForm = this.fb.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
+      rememberMe: new FormControl(''),
     });
   }
 
   login(): void {
-    this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
+    const { username, password, rememberMe } = this.loginForm.value;
+    this.authService.login(username, password, rememberMe)
       .subscribe(() => {
         this.authService.$currentUser.subscribe((user) => {
           this.user = user;

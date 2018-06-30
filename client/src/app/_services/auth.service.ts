@@ -6,7 +6,7 @@ import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -37,8 +37,8 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post('/api/auth/login', { username, password })
+  login(username: string, password: string, rememberMe: Boolean): Observable<any> {
+    return this.http.post('/api/auth/login', { username, password, rememberMe })
       .pipe(tap((jwt: { jwt: String }) => {
         this.saveUser(jwt);
         this.me().subscribe();
