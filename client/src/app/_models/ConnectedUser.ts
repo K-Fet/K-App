@@ -1,4 +1,4 @@
-import { Barman, SpecialAccount } from './index';
+import { Barman, SpecialAccount, Permission } from './index';
 
 export class ConnectedUser {
 
@@ -7,6 +7,7 @@ export class ConnectedUser {
   accountType: String;
   barman?: Barman;
   specialAccount?: SpecialAccount;
+  permissions?: Permission[];
 
   constructor(values: Object = {}) {
     Object.assign(this, values);

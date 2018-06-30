@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser } from '../_models';
+import { ConnectedUser, Permission } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
@@ -26,9 +26,17 @@ export class AuthService {
       if (currentUser.jwt) {
         const jwtDecoded = jwt_decode(currentUser.jwt);
         if (Date.now() < jwtDecoded.exp * 1000) {
-          this.managePermissionAndRole(jwtDecoded.permissions);
-
-          // Update /me
+          this.me().subscribe();
+        } else {
+          this.clearUser();
+        }
+      }
+    }
+    if (sessionStorage.getItem('currentUser')) {
+      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+      if (currentUser.jwt) {
+        const jwtDecoded = jwt_decode(currentUser.jwt);
+        if (Date.now() < jwtDecoded.exp * 1000) {
           this.me().subscribe();
         } else {
           this.clearUser();
@@ -39,11 +47,9 @@ export class AuthService {
 
   login(username: string, password: string, rememberMe: Boolean): Observable<any> {
     return this.http.post('/api/auth/login', { username, password, rememberMe })
-      .pipe(tap((jwt: { jwt: String }) => {
-        this.saveUser(jwt);
+      .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
+        this.saveUser(jwt, rememberMe);
         this.me().subscribe();
-        const jwtDecoded = jwt_decode(jwt.jwt);
-        this.managePermissionAndRole(jwtDecoded.permissions);
       }));
   }
 
@@ -84,23 +90,26 @@ export class AuthService {
     }));
     this.ngxPermissionsService.flushPermissions();
     this.ngxRolesService.flushRoles();
-    if (localStorage.getItem('currentUser')) {
-      localStorage.removeItem('currentUser');
-    }
+    if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
+    if (sessionStorage.getItem('currentUser')) sessionStorage.removeItem('currentUser');
     this.router.navigate(['/']);
   }
 
-  private saveUser(jwt): void {
-    localStorage.setItem('currentUser', JSON.stringify(jwt));
+  private saveUser(jwt, rememberMe): void {
+    if (rememberMe) localStorage.setItem('currentUser', JSON.stringify(jwt));
+    else sessionStorage.setItem('currentUser', JSON.stringify(jwt));
   }
 
-  private managePermissionAndRole(permissions: string[]): void {
-    this.ngxPermissionsService.addPermission(permissions);
+  private managePermissionAndRole(connectedUser: ConnectedUser): void {
+    this.ngxPermissionsService.addPermission(connectedUser.permissions.map(p => p.name as string));
     ROLES.forEach((ROLE) => {
-      if (permissions.filter(perm => ROLE.permissions.includes(perm)).length === ROLE.permissions.length) {
+      if (connectedUser.permissions.filter(perm => ROLE.permissions.includes(perm.name as string)).length
+        === ROLE.permissions.length) {
         this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
       }
     });
+    if (connectedUser.barman) this.ngxRolesService.addRole('BARMAN', ['']);
+    if (connectedUser.specialAccount) this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
   }
 
   me(): Observable<any> {
@@ -114,7 +123,7 @@ export class AuthService {
               createdAt: connectedUser.barman.createdAt,
               barman: connectedUser.barman,
             }));
-            this.ngxRolesService.addRole('BARMAN', ['']);
+            this.managePermissionAndRole(connectedUser);
           } else if (connectedUser.specialAccount) {
             this.$currentUser.next(new ConnectedUser({
               accountType: 'SpecialAccount',
@@ -122,7 +131,7 @@ export class AuthService {
               createdAt: connectedUser.specialAccount.createdAt,
               specialAccount: connectedUser.specialAccount,
             }));
-            this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
+            this.managePermissionAndRole(connectedUser);
           }
         }),
       );
