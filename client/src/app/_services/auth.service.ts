@@ -30,14 +30,6 @@ export class AuthService {
 
           // Update /me
           this.me().subscribe();
-
-          // Refresh the token after 50ms to prevent other call.
-          setTimeout(
-            () => {
-              this.refresh().subscribe();
-            },
-            50,
-          );
         } else {
           this.clearUser();
         }
@@ -52,45 +44,12 @@ export class AuthService {
         this.me().subscribe();
         const jwtDecoded = jwt_decode(jwt.jwt);
         this.managePermissionAndRole(jwtDecoded.permissions);
-
-        // Refresh token every 45 minutes
-        setTimeout(
-          () => {
-            this.refresh().subscribe();
-          },
-          45 * 60 * 60 * 1000,
-        );
       }));
   }
 
   logout(): Observable<any> {
     return this.http.get('/api/auth/logout')
       .pipe(tap(this.clearUser.bind(this)));
-  }
-
-  refresh(): Observable<any> {
-    return this.http.get('/api/auth/refresh')
-      .pipe(
-        tap((newJWT: { jwt: String }) => {
-          if (newJWT) {
-            this.saveUser(newJWT);
-            const jwtDecoded = jwt_decode(newJWT.jwt);
-            this.managePermissionAndRole(jwtDecoded.permissions);
-
-            // Refresh token every 45 minutes
-            setTimeout(
-              () => {
-                this.refresh().subscribe();
-              },
-              45 * 60 * 60 * 1000,
-            );
-          }
-        }),
-        catchError((err) => {
-          this.clearUser();
-          return Observable.throw(err);
-        }),
-      );
   }
 
   definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
