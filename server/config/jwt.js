@@ -9,7 +9,7 @@ module.exports = {
   /**
      * Expiration duration for a token, in hour.
      *
-     * @default 1
+     * @default 24
      */
-  expirationDuration: 1,
+  expirationDuration: 24,
 };

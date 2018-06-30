@@ -100,39 +100,38 @@ export class AuthService {
     else sessionStorage.setItem('currentUser', JSON.stringify(jwt));
   }
 
-  private managePermissionAndRole(connectedUser: ConnectedUser): void {
-    this.ngxPermissionsService.addPermission(connectedUser.permissions.map(p => p.name as string));
+  private managePermissionAndRole(permissions: string[]): void {
+    this.ngxPermissionsService.addPermission(permissions);
     ROLES.forEach((ROLE) => {
-      if (connectedUser.permissions.filter(perm => ROLE.permissions.includes(perm.name as string)).length
+      if (permissions.filter(perm => ROLE.permissions.includes(perm)).length
         === ROLE.permissions.length) {
         this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
       }
     });
-    if (connectedUser.barman) this.ngxRolesService.addRole('BARMAN', ['']);
-    if (connectedUser.specialAccount) this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
   }
 
   me(): Observable<any> {
-    return this.http.get<ConnectedUser>('/api/me')
+    return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/me')
       .pipe(
-        tap((connectedUser) => {
-          if (connectedUser.barman) {
+        tap((res) => {
+          if (res.user.barman) {
             this.$currentUser.next(new ConnectedUser({
               accountType: 'Barman',
-              username: connectedUser.barman.connection.username,
-              createdAt: connectedUser.barman.createdAt,
-              barman: connectedUser.barman,
+              username: res.user.barman.connection.username,
+              createdAt: res.user.barman.createdAt,
+              barman: res.user.barman,
             }));
-            this.managePermissionAndRole(connectedUser);
-          } else if (connectedUser.specialAccount) {
+            this.ngxRolesService.addRole('BARMAN', ['']);
+          } else if (res.user.specialAccount) {
             this.$currentUser.next(new ConnectedUser({
               accountType: 'SpecialAccount',
-              username: connectedUser.specialAccount.connection.username,
-              createdAt: connectedUser.specialAccount.createdAt,
-              specialAccount: connectedUser.specialAccount,
+              username: res.user.specialAccount.connection.username,
+              createdAt: res.user.specialAccount.createdAt,
+              specialAccount: res.user.specialAccount,
             }));
-            this.managePermissionAndRole(connectedUser);
+            this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
           }
+          this.managePermissionAndRole(res.permissions);
         }),
       );
   }
