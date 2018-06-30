@@ -141,6 +141,28 @@ async function sendUsernameConfirmation(email) {
 }
 
 /**
+ * Send a confirmation after an password update.
+ *
+ * @param email {String} recipient email address
+ * @returns {Promise<void>} Nothing
+ */
+async function sendPasswordUpdate(email) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.PASSWORD_UPDATE)
+    .replace(REGEX_TOKEN, (matches, replaceToken) => {
+      switch (replaceToken) {
+        case 'MAIL_WEBSITE':
+          return WEB_CONFIG.publicURL;
+        case 'MAIL_USERNAME':
+          return email;
+        default:
+          return `??${replaceToken}??`;
+      }
+    });
+
+  await sendMail(email, '[K-App] Confirmation du changement de mot de passe', mail);
+}
+
+/**
  * Send a confirmation after a cancellation of an username update.
  *
  * @param email {String} recipient email address
@@ -191,7 +213,7 @@ async function sendWelcomeMail(email) {
  * @param values {Object} Key/value pairs representing form values
  * @returns {Promise<void>} Nothing
  */
-async function sendContactFormV2(formName, emails, values) {
+async function sendContactForm(formName, emails, values) {
   const emailTemplate = createMailTemplate(EMAIL_TEMPLATES.CONTACT)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -235,5 +257,6 @@ module.exports = {
   sendUsernameConfirmation,
   sendWelcomeMail,
   sendCancelUsernameConfirmation,
-  sendContactFormV2,
+  sendContactForm,
+  sendPasswordUpdate,
 };
