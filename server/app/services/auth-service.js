@@ -323,6 +323,7 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
         connectionId: user.id,
       },
     });
+    await mailService.sendPasswordUpdate(username);
   } catch (e) {
     logger.warn('AuthService: Error while defining password: %o', e);
     await transaction.rollback();
