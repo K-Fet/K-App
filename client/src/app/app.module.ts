@@ -66,6 +66,8 @@ import { KommissionViewComponent } from './kommissions/view/kommission-view.comp
 import { TemplateEditComponent } from './templates/edit/template-edit.component';
 import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.component';
 import { TaskViewDialogComponent } from './tasks/view/task-view.component';
+import { FeedComponent } from './feed/feed.component';
+import { PresentationComponent } from './presentation/presentation.component';
 
 // Services
 import {
@@ -151,6 +153,8 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     TaskViewDialogComponent,
     TaskEditNewDialogComponent,
     MyTasksComponent,
+    FeedComponent,
+    PresentationComponent,
   ],
   entryComponents: [
     CodeDialogComponent,

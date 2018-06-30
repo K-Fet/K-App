@@ -1,36 +1,17 @@
-<div *ngIf="!isConnected()">
-	<div fxLayoutAlign="center">
+<div fxLayout="column" fxLayoutGap="20px">
+	<div fxLayoutAlign="center" *ngIf="!isConnected()">
 		<mat-card fxFlex class="max-width">
-			<mat-card-header>
-				<mat-card-title fxLayout="row">
-					<section class="mat-typography">
-							<h1>THE Home page</h1>
-					</section>
-				</mat-card-title>
-			</mat-card-header>
-			<mat-card-content>
-				<div fxLayout="column">
-					<div fxLayoutAlign="center">
-						<img src="./assets/logo.png">
-					</div>
-					<p>
-						La K-Fêt de l'INSA Lyon n'est pas à confondre avec une cafétéria ou autre restaurant universitaire. 
-						Il s'agit en effet d'un bar étudiant où les Insaliens se retrouvent pour se poser, se reposer, 
-						discuter, fêter, boire, dormir, manger, écouter de la musique, jouer au babyfoot ou au billard...
-					</p>
-					<p>
-						La K-Fêt c'est un endroit incontournable, incroyable qu'il ne faut absolument pas rater si tu es dans les environs.
-					</p>
-					<div *ngIf="!isConnected()" fxLayoutAlign="center">
-						<button mat-raised-button color="primary" routerLink="/login">Se connecter</button>
-					</div>
+			<mat-card-content fxLayout="column" fxLayoutAlign="center center">
+				<div>
+					Mais qu'est ce que la K-Fêt de l'INSA Lyon ?
 				</div>
+				<div>
+					Check la <span class="link" routerLink="/presentation">page de présentation</span>!
+				</div>				
 			</mat-card-content>
 		</mat-card>
 	</div>
-</div>
-<div *ngIf="isConnected()" >
-	<div fxLayoutAlign="center">
+	<div fxLayoutAlign="center" *ngIf="isConnected()">
 		<div fxFlex fxLayout="column" fxLayoutGap="20px" class="max-width">
 			<div fxFlex>
 				<mat-card>
@@ -44,12 +25,11 @@
 					</mat-card-header>
 				</mat-card>
 			</div>
-			<div fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
-				<div fxFlex *ngxPermissionsOnly="['task:read']">
-					<app-my-tasks fxFlex *ngIf="currentUser.isBarman()"></app-my-tasks>
-				</div>
-				<app-my-services fxFlex *ngIf="currentUser.isBarman()"></app-my-services>
+			<div *ngIf="currentUser.isBarman()" fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+				<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
+				<app-my-services fxFlex></app-my-services>
 			</div>
 		</div> 
 	</div>
+	<app-feed></app-feed>
 </div>

@@ -1,10 +1,11 @@
 @import "~theme.scss";
 
 .footer-container {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  height: 50px;
   z-index: 999;
   border-top: 1px solid rgba(0, 0, 0, .14);
   background: white;

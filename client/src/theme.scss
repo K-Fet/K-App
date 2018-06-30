@@ -14,7 +14,7 @@ $primary: mat-color($k-app-primary);
 $accent: mat-color($k-app-accent);
 $warn: mat-color($k-app-warn);
 
-// Task theme (must be global because it overide material css rules)
+// Task theme (must be global because it overides material css rules)
 
 $notStarted: #FFFFFF;
 $inProgress: #FFCC80;
@@ -47,4 +47,16 @@ $done: #AED581;
   mat-dialog-container {
     background: $done;
   }
+}
+
+// Global style
+
+.link {
+  color: rgba(0, 0, 0, .87); // Material color
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.justify {
+  text-align: justify;
 }
