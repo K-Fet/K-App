@@ -144,24 +144,6 @@ async function logout(tokenId) {
   return token;
 }
 
-/**
- * Refresh a token and revoked the old one.
- *
- * @param currentTokenId {String} Current token id
- * @returns {Promise<String>} The newly created token
- */
-async function refresh(currentTokenId) {
-  // Revoke old token
-  const token = await logout(currentTokenId);
-
-  // Get user to create a new token.
-  // Here we don't really need transaction
-  // because current token is already revoked
-  const user = await token.getConnection();
-
-  return createJWT(user);
-}
-
 
 /**
  * Logout a member by revoking his token.
@@ -477,7 +459,6 @@ async function cancelUsernameUpdate(userId, username) {
 module.exports = {
   isTokenRevoked,
   login,
-  refresh,
   logout,
   me,
   createJWT,

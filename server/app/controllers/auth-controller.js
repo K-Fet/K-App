@@ -30,22 +30,6 @@ async function login(req, res) {
 }
 
 /**
- * Refresh a token while revoking the current one.
- *
- * @param req Request
- * @param res Response
- * @return {Promise.<void>} Nothing
- */
-async function refresh(req, res) {
-  const jwt = await authService.refresh(req.user.jit);
-
-  res.json({
-    jwt,
-  });
-}
-
-
-/**
  * Logout a user.
  *
  * @param req Request
@@ -172,7 +156,6 @@ async function cancelUsernameVerify(req, res) {
 module.exports = {
   login,
   logout,
-  refresh,
   resetPassword,
   definePassword,
   usernameVerify,
