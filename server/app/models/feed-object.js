@@ -65,7 +65,7 @@ class FeedObject extends Model {
       onDelete: 'CASCADE',
     });
     this.belongsToMany(models.Category, {
-      through: 'feedobjectcategorywrappers',
+      through: 'feedObjectCategoryWrappers',
       foreignKey: 'feedObjectId',
       as: 'categories',
     });

@@ -123,8 +123,9 @@ async function updateFeedObject(req, res) {
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
-  let newFeedObject = new FeedObject({
+  let updatedFeedObject = new FeedObject({
     ...req.body,
+    medias: undefined,
     _embedded: undefined, // Remove the only external object
   }, {
     include: [
@@ -137,9 +138,10 @@ async function updateFeedObject(req, res) {
 
   const feedObjectId = req.params.id;
 
-  newFeedObject = await feedObjectService.updateFeedObject(feedObjectId, newFeedObject, req.body._embedded);
+  updatedFeedObject = await feedObjectService
+    .updateFeedObject(feedObjectId, updatedFeedObject, req.body.medias, req.body._embedded);
 
-  res.json(newFeedObject);
+  res.json(updatedFeedObject);
 }
 
 /**

@@ -130,10 +130,11 @@ async function getFeedObjectById(feedObjectId) {
  *
  * @param feedObjectId {number} feed object id
  * @param updatedFeedObject {FeedObject} Updated feed object, constructed from the request.
+ * @param medias {Array} feed medias from the request body.
  * @param _embedded {Object} Object containing associations to update, see swagger for more information.
  * @return {Promise<FeedObject>} The updated feed object
  */
-async function updateFeedObject(feedObjectId, updatedFeedObject, _embedded) {
+async function updateFeedObject(feedObjectId, updatedFeedObject, medias, _embedded) {
   const currentFeedObject = await FeedObject.findById(feedObjectId, {
     include: [
       {
@@ -150,14 +151,14 @@ async function updateFeedObject(feedObjectId, updatedFeedObject, _embedded) {
   const transaction = await sequelize.transaction();
 
   try {
-    if (updatedFeedObject.medias) {
-      const oldMedias = await currentFeedObject.getMedias();
-      await Promise.all(oldMedias.map(m => m.destroy({ transaction })));
-      const newMediasCreatePromises = updatedFeedObject.medias.map(m => m.save({ transaction }));
-      await Promise.all(newMediasCreatePromises)
-        .then(async (newMedias) => {
-          await currentFeedObject.setMedias(newMedias, { transaction });
-        });
+    if (medias) {
+      await Media.destroy({
+        where: {
+          feedObjectId: currentFeedObject.id,
+        },
+      }, { transaction });
+      const newMedias = await Media.bulkCreate(medias, { transaction });
+      await currentFeedObject.setMedias(newMedias, { transaction });
     }
     await currentFeedObject.update(cleanObject({
       title: updatedFeedObject.title,

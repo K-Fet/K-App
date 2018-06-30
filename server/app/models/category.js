@@ -38,7 +38,7 @@ class Category extends Model {
    */
   static associate(models) {
     this.belongsToMany(models.FeedObject, {
-      through: 'feedobjectcategorywrappers',
+      through: 'feedObjectCategoryWrappers',
       foreignKey: 'categoryId',
     });
   }
