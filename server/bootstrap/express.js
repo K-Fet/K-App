@@ -33,8 +33,10 @@ function setProductionEnv() {
   }
 }
 
-function launch(server) {
+function launch() {
   return new Promise((resolve, reject) => {
+    const server = http.createServer(_app);
+
     server.on('error', (error) => {
       if (error.syscall !== 'listen') return reject(error);
 
@@ -68,9 +70,8 @@ function launch(server) {
   });
 }
 
-async function start() {
+async function start({ skipHttpServer = false }) {
   _app = express();
-  const server = http.createServer(_app);
 
   // Prod middleware
   if (process.env.NODE_ENV === 'production') {
@@ -89,7 +90,7 @@ async function start() {
   // Otherwise send index.html
   _app.get('*', (req, res) => res.sendFile(`${WEB_CONFIG.publicFolder}/index.html`));
 
-  await launch(server);
+  if (!skipHttpServer) await launch();
 }
 
 

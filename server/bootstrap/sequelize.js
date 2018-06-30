@@ -37,6 +37,11 @@ async function start() {
   // Set logging function
   CONF.logging = query => logger.verbose(`[Sequelize] ${query}`);
 
+  if (_sequelize) {
+    logger.warn('Sequelize was already running! Creating a new instance...');
+    await _sequelize.close();
+  }
+
   _sequelize = new Sequelize(CONF);
 
   initModel();

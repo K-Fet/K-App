@@ -3,7 +3,7 @@ const { FeedObject, Category, Media } = require('../models/');
 const {
   createUserError, createServerError, cleanObject, setAssociations,
 } = require('../../utils');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
  * Return the last feed objects of the app.
