@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const { createUserError } = require('../../utils');
-const logger = require('../../logger');
 const FEED_CONFIG = require('../../config/feed');
 const feedService = require('../services/feed-service');
 

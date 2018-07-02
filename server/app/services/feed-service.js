@@ -2,7 +2,6 @@ const WEB_CONFIG = require('../../config/web');
 const FEED_CONFIG = require('../../config/feed');
 const rp = require('request-promise-native');
 const logger = require('../../logger');
-const { FeedObject } = require('../models');
 const { createUserError } = require('../../utils');
 
 /**
@@ -55,6 +54,7 @@ async function _importChange({ field, value }) {
     throw createUserError('BadRequest', 'Could not handle this entry');
   }
 
+  /* eslint-disable no-unused-vars */
   const {
     action,
     album_id: albumId,
@@ -80,8 +80,9 @@ async function _importChange({ field, value }) {
     share_id: shareId,
     verb,
     video,
-    video_id,
+    video_id: videoId,
   } = value;
+  /* eslint-enable no-unused-vars */
 
   switch (verb) {
     case 'add': {

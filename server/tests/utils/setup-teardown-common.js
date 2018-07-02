@@ -1,3 +1,5 @@
+jest.unmock('express');
+
 const request = require('supertest');
 const permissions = require('../../bootstrap/permissions');
 const express = require('../../bootstrap/express');
