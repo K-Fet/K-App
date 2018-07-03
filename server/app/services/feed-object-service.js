@@ -3,7 +3,7 @@ const { FeedObject, Category, Media } = require('../models/');
 const {
   createUserError, createServerError, cleanObject, setAssociations,
 } = require('../../utils');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
  * Return the last feed objects of the app.
@@ -14,7 +14,7 @@ const sequelize = require('../../db');
 async function getAll(offset, limit) {
   logger.verbose('FeedObject service: get all feed objects, offset %d, limit %d', offset, limit);
 
-  const feedObjects = await FeedObject.findAll({
+  return FeedObject.findAll({
     where: {
       pin: false,
     },
@@ -34,8 +34,6 @@ async function getAll(offset, limit) {
     offset,
     limit,
   });
-
-  return feedObjects;
 }
 
 /**

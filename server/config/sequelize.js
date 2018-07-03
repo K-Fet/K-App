@@ -1,9 +1,9 @@
 module.exports = {
   /**
-     * This file contains all the configuration for sequelize.
-     *
-     * @see http://docs.sequelizejs.com/manual/installation/usage.html
-     */
+   * This file contains all the configuration for sequelize.
+   *
+   * @see http://docs.sequelizejs.com/manual/installation/usage.html
+   */
 
   development: {
     host: 'localhost',
@@ -16,8 +16,6 @@ module.exports = {
       charset: 'utf8',
       collate: 'utf8_general_ci',
     },
-
-    logging: true,
     operatorsAliases: false,
   },
 
@@ -39,9 +37,8 @@ module.exports = {
       acquire: 30000,
       idle: 10000,
     },
-
-    logging: false,
     operatorsAliases: false,
+    benchmark: true,
   },
 
   test: {
@@ -50,7 +47,6 @@ module.exports = {
     database: 'test-db',
     dialect: 'sqlite',
     storage: ':memory:',
-    logging: false,
     operatorsAliases: false,
   },
 };

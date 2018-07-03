@@ -1,5 +1,6 @@
-const { PERMISSION_LIST } = require('./config/permissions');
-const { Permission } = require('./app/models');
+const { PERMISSION_LIST } = require('../config/permissions');
+const { Permission } = require('../app/models');
+const logger = require('../logger');
 
 /**
  * This function will synchronise permissions from PERMISSION_LIST with database.
@@ -10,17 +11,20 @@ const { Permission } = require('./app/models');
  *
  * @return {Promise<void>} Nothing
  */
-async function syncPermissions() {
+async function start() {
+  logger.info('Syncing permissions: starting...');
   const currPerms = (await Permission.findAll()).map(p => p.name);
 
   const toCreate = PERMISSION_LIST
     .filter(p => !currPerms.includes(p))
     .map(p => ({ name: p }));
 
-  return Permission.bulkCreate(toCreate);
+  await Permission.bulkCreate(toCreate);
+
+  logger.info('Syncing permissions: done.');
 }
 
 
 module.exports = {
-  syncPermissions,
+  start,
 };

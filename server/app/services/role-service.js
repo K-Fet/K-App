@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { Role, Barman, Permission } = require('../models/');
 const {
   createUserError, createServerError, cleanObject, setAssociations,

@@ -3,7 +3,7 @@ const { Category } = require('../models/category');
 const {
   createUserError, createServerError, cleanObject,
 } = require('../../utils');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
  * Return all categories of the app.

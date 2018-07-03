@@ -1,8 +1,8 @@
-const { site, initDatabase, clearDatabase } = require('../../utils/setup-teardown-common');
+const { setup, request, teardown } = require('../../utils/setup-teardown-common');
 const { Member } = require('../../../app/models');
 
-beforeEach(initDatabase);
-afterEach(clearDatabase);
+beforeEach(setup);
+afterEach(teardown);
 
 describe('Integration::Members::GetMembers', () => {
   test('should return members in array', async () => {
@@ -19,7 +19,7 @@ describe('Integration::Members::GetMembers', () => {
 
     // When
 
-    const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
+    const { body: members } = await request().get('/api/members').expect(200);
 
     // Then
 
@@ -38,7 +38,7 @@ describe('Integration::Members::GetMembers', () => {
     // Given
     // When
 
-    const members = await site.baseRequest.get(`${site.BASE_URL}/members`);
+    const { body: members } = await request().get('/api/members').expect(200);
 
     // Then
 

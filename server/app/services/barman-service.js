@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { Op } = require('sequelize');
 const {
   ConnectionInformation, Barman, Kommission, Role, Service,

@@ -3,7 +3,7 @@ const { Barman, Kommission, Task } = require('../models');
 const {
   createUserError, createServerError, cleanObject, setAssociations,
 } = require('../../utils');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
  * Create a task.

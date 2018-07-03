@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { Template, TemplateUnit } = require('../models');
 const { createUserError, createServerError, getDefaultTemplate } = require('../../utils');
 
@@ -24,7 +24,7 @@ async function getAllTemplates() {
     ],
   });
 
-    // Create a default template if no template was found yet.
+  // Create a default template if no template was found yet.
   if (templates.length === 0) {
     const template = await Template.create({
       name: 'Semaine par défaut',

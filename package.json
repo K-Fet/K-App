@@ -32,17 +32,20 @@
     "postinstall": "cd client/ && yarn install --production=false",
     "prod": "NODE_ENV=production node server/index.js",
     "test": "concurrently \"yarn run test:back\" \"yarn run test:front\" \"yarn run lint\"",
-    "test:back": "jest --runInBand",
+    "test:back": "concurrently \"yarn run test:back:unit\" \"yarn run test:back:it\"",
+    "test:back:it": "jest int",
+    "test:back:unit": "jest unit --coverage",
     "test:front": "cd client/ && yarn build",
     "preversion": "yarn test"
   },
   "dependencies": {
-    "argon2": "0.19.2",
+    "argon2": "0.19.3",
     "body-parser": "^1.18.3",
     "compression": "^1.7.2",
     "express": "^4.16.2",
     "express-jwt": "^5.3.1",
     "express-jwt-permissions": "^1.2.0",
+    "express-x-hub": "^1.0.4",
     "inquirer": "^5.0.1",
     "joi": "^13.3.0",
     "jsonwebtoken": "^8.2.0",
@@ -61,12 +64,16 @@
     "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jest": "^21.17.0",
     "jest": "^23.0.1",
-    "node-mocks-http": "^1.7.0",
+    "jest-environment-node": "^23.2.0",
+    "jest-extended": "^0.7.2",
+    "ngrok": "^3.0.1",
     "nodemon": "^1.17.5",
     "opn": "^5.3.0",
     "request": "^2.87.0",
-    "sqlite3": "^4.0.0"
+    "sqlite3": "^4.0.0",
+    "supertest": "^3.1.0"
   },
   "main": "server/index.js",
   "engines": {
@@ -74,22 +81,19 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "**/test/**",
       "client/",
       "tools/"
     ],
     "delay": "2500"
   },
   "jest": {
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true,
     "collectCoverageFrom": [
       "<rootDir>/server/**/*.js"
     ],
     "coveragePathIgnorePatterns": [
-      "app/routes/",
       "app/models/"
     ],
-    "testRegex": "(/__tests__/.*|/server/tests/(int).*)\\.jsx?$"
+    "setupTestFrameworkScriptFile": "jest-extended",
+    "testEnvironment": "node"
   }
 }

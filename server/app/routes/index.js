@@ -1,19 +1,30 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const xhub = require('express-x-hub');
 const logger = require('../../logger');
+const { accessToken } = require('../../config/feed');
 
 
 // Middlewares
 
 router.use(morgan('combined', { stream: logger.stream }));
 
+router.use(xhub({
+  algorithm: 'sha1',
+  secret: accessToken,
+}));
 router.use(bodyParser.json());
+
+
+// No Auth
+
+router.use('/feed', require('./feed'));
+router.use('/contact', require('./contact'));
 
 // Auth
 
 router.use('/auth', require('./auth'));
-router.use('/contact', require('./contact'));
 
 // Feed
 

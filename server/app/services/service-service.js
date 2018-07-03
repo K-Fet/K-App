@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { Service, Barman } = require('../models');
 const { createUserError, createServerError, cleanObject } = require('../../utils');
 

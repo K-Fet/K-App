@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const sequelize = require('../../db');
+const { sequelize } = require('../../bootstrap/sequelize');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
