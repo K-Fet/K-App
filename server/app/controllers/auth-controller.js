@@ -20,8 +20,7 @@ async function login(req, res) {
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
-  const { username, password } = req.body;
-  const rememberMe = req.body.rememberMe || 1;
+  const { username, password, rememberMe = 1 } = req.body;
 
   const jwt = await authService.login(username, password, rememberMe);
 

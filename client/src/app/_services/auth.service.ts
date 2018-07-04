@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
   login(username: string, password: string, rememberMe: Number): Observable<any> {
     return this.http.post('/api/auth/login', { username, password, rememberMe })
       .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
-        this.saveUser(jwt, (rememberMe >= 30));
+        this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
       }));
   }
@@ -103,25 +104,25 @@ export class AuthService {
   me(): Observable<any> {
     return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/me')
       .pipe(
-        tap((res) => {
-          if (res.user.barman) {
+        tap(({ user: { barman, specialAccount }, permissions }) => {
+          if (barman) {
             this.$currentUser.next(new ConnectedUser({
+              barman,
               accountType: 'Barman',
-              username: res.user.barman.connection.username,
-              createdAt: res.user.barman.createdAt,
-              barman: res.user.barman,
+              username: barman.connection.username,
+              createdAt: barman.createdAt,
             }));
             this.ngxRolesService.addRole('BARMAN', ['']);
-          } else if (res.user.specialAccount) {
+          } else if (specialAccount) {
             this.$currentUser.next(new ConnectedUser({
+              specialAccount,
               accountType: 'SpecialAccount',
-              username: res.user.specialAccount.connection.username,
-              createdAt: res.user.specialAccount.createdAt,
-              specialAccount: res.user.specialAccount,
+              username: specialAccount.connection.username,
+              createdAt: specialAccount.createdAt,
             }));
             this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
           }
-          this.managePermissionAndRole(res.permissions);
+          this.managePermissionAndRole(permissions);
         }),
       );
   }

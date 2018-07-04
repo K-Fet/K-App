@@ -5,11 +5,4 @@ module.exports = {
      * Must be define in 'production' mode.
      */
   jwtSecret: process.env.JWT_SECRET || (process.env.NODE_ENV !== 'production' ? 'devModeSecret' : undefined),
-
-  /**
-     * Expiration duration for a token, in hour.
-     *
-     * @default 24
-     */
-  expirationDuration: 24,
 };
