@@ -21,34 +21,24 @@ export class AuthService {
       accountType: 'Guest',
       createdAt: new Date(),
     }));
-    if (localStorage.getItem('currentUser')) {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (currentUser.jwt) {
-        const jwtDecoded = jwt_decode(currentUser.jwt);
-        if (Date.now() < jwtDecoded.exp * 1000) {
-          this.me().subscribe();
-        } else {
-          this.clearUser();
-        }
-      }
-    }
-    if (sessionStorage.getItem('currentUser')) {
-      const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-      if (currentUser.jwt) {
-        const jwtDecoded = jwt_decode(currentUser.jwt);
-        if (Date.now() < jwtDecoded.exp * 1000) {
-          this.me().subscribe();
-        } else {
-          this.clearUser();
-        }
+    const currentUser = {
+      ...JSON.parse(localStorage.getItem('currentUser')),
+      ...JSON.parse(sessionStorage.getItem('currentUser')),
+    };
+    if (currentUser.jwt) {
+      const jwtDecoded = jwt_decode(currentUser.jwt);
+      if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
+        this.me().subscribe();
+      } else {
+        this.clearUser();
       }
     }
   }
 
-  login(username: string, password: string, rememberMe: Boolean): Observable<any> {
+  login(username: string, password: string, rememberMe: Number): Observable<any> {
     return this.http.post('/api/auth/login', { username, password, rememberMe })
       .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
-        this.saveUser(jwt, rememberMe);
+        this.saveUser(jwt, (rememberMe >= 30));
         this.me().subscribe();
       }));
   }

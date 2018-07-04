@@ -45,8 +45,7 @@ async function createJWT(user, rememberMe) {
 
   logger.info(`Creating a new JWT ${user.id}`);
 
-  const exp = rememberMe ? Math.floor(Date.now() / 1000) + (60 * 60 * 730) // One mounth
-    : Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration);
+  const exp = Math.floor(Date.now() / 1000) + (86400 * rememberMe);
   return jwt.sign({
     jit: id,
     exp,

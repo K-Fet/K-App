@@ -14,13 +14,14 @@ async function login(req, res) {
   const schema = Joi.object().keys({
     username: Joi.string().required(),
     password: Joi.string().required(),
-    rememberMe: Joi.boolean().required(),
+    rememberMe: Joi.number().integer().min(1).max(30),
   });
 
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
-  const { username, password, rememberMe } = req.body;
+  const { username, password } = req.body;
+  const rememberMe = req.body.rememberMe || 1;
 
   const jwt = await authService.login(username, password, rememberMe);
 

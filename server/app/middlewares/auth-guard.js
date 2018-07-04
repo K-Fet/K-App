@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const jwt = require('express-jwt');
 const logger = require('../../logger');
+const am = require('../../utils/async-middleware');
+const authService = require('../services/auth-service');
+
 const { jwtSecret } = require('../../config/jwt');
 const { isTokenRevoked } = require('../services/auth-service');
-
 
 /**
  * Check if the provided JWT is revoked or not.
@@ -37,5 +39,13 @@ if (process.env.NODE_ENV === 'test') {
     isRevoked: isRevokedCallback,
   }));
 }
+
+// Add perm to req.user
+
+router.use(am(async (req, res, next) => {
+  const user = await authService.me(req.user.jit);
+  req.user.permissions = user.permissions;
+  next();
+}));
 
 module.exports = router;

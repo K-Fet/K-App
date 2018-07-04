@@ -33,7 +33,6 @@ router.use('/categories', require('./category'));
 
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
-router.use(am(require('../middlewares/perm')));
 
 // Dispatch to child routes
 router.use('/me', require('./me'));
