@@ -38,14 +38,13 @@ if (process.env.NODE_ENV === 'test') {
     secret: jwtSecret,
     isRevoked: isRevokedCallback,
   }));
+
+  // Add perm to req.user
+  router.use(am(async (req, res, next) => {
+    const user = await authService.me(req.user.jit);
+    req.user.permissions = user.permissions;
+    next();
+  }));
 }
-
-// Add perm to req.user
-
-router.use(am(async (req, res, next) => {
-  const user = await authService.me(req.user.jit);
-  req.user.permissions = user.permissions;
-  next();
-}));
 
 module.exports = router;
