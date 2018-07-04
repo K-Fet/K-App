@@ -3,7 +3,7 @@ const { sequelize } = require('../../bootstrap/sequelize');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
 
-const { jwtSecret, expirationDuration } = require('../../config/jwt');
+const { jwtSecret } = require('../../config/jwt');
 const {
   verify, createUserError, createServerError, generateToken, hash,
 } = require('../../utils');
@@ -32,9 +32,10 @@ async function isTokenRevoked(tokenId) {
  * Create a new JWT including permissions.
  *
  * @param user {ConnectionInformation} User
+ * @param rememberMe {Number} Number of day for jwt expiration
  * @returns {Promise<String>} Return a JWT.
  */
-async function createJWT(user) {
+async function createJWT(user, rememberMe) {
   // Sign with default (HMAC SHA256)
   const id = uuidv4();
 
@@ -42,6 +43,23 @@ async function createJWT(user) {
     id,
   });
 
+  logger.info(`Creating a new JWT ${user.id}`);
+
+  const exp = Math.floor(Date.now() / 1000) + (86400 * rememberMe); // Check JS doc for rememberMe unit
+  return jwt.sign({
+    jit: id,
+    exp,
+    userId: user.id,
+  }, jwtSecret);
+}
+
+/**
+ * Return the user permission
+ *
+ * @param user {ConnectionInformation} User
+ * @returns {Promise<Array<Permission>>} Return an array of Permission.
+ */
+async function getPermissions(user) {
   const barman = await user.getBarman({
     include: [
       {
@@ -80,16 +98,8 @@ async function createJWT(user) {
     permissions = specialAccount.permissions.map(p => p.name);
   }
 
-  logger.info(`Creating a new JWT ${user.id}, with permissions : ${permissions.join(', ')}`);
-
-  return jwt.sign({
-    jit: id,
-    exp: Math.floor(Date.now() / 1000) + (60 * 60 * expirationDuration),
-    permissions,
-    userId: user.id,
-  }, jwtSecret);
+  return permissions;
 }
-
 
 /**
  * Log a member and create a JWT Token.
@@ -98,9 +108,10 @@ async function createJWT(user) {
  *
  * @param usernameDirty Username used to login (dirty is because it can contain upper letters)
  * @param password Unencrypted password
+ * @param rememberMe {Number} NUmber of day for jwt expiration
  * @returns {Promise<String>} JWT Signed token
  */
-async function login(usernameDirty, password) {
+async function login(usernameDirty, password, rememberMe) {
   const username = usernameDirty.toLowerCase();
 
   const user = await ConnectionInformation.findOne({ where: { username } });
@@ -123,7 +134,7 @@ async function login(usernameDirty, password) {
   delete user.usernameToken;
   delete user.passwordToken;
 
-  return createJWT(user);
+  return createJWT(user, rememberMe);
 }
 
 
@@ -144,24 +155,6 @@ async function logout(tokenId) {
   return token;
 }
 
-/**
- * Refresh a token and revoked the old one.
- *
- * @param currentTokenId {String} Current token id
- * @returns {Promise<String>} The newly created token
- */
-async function refresh(currentTokenId) {
-  // Revoke old token
-  const token = await logout(currentTokenId);
-
-  // Get user to create a new token.
-  // Here we don't really need transaction
-  // because current token is already revoked
-  const user = await token.getConnection();
-
-  return createJWT(user);
-}
-
 
 /**
  * Logout a member by revoking his token.
@@ -174,8 +167,7 @@ async function me(tokenId) {
   const token = await JWT.findById(tokenId);
   if (!token) throw createUserError('UnknownUser', 'This token does not exist');
 
-  const co = await token.getConnection({
-    attributes: [],
+  const user = await token.getConnection({
     include: [
       {
         model: Barman,
@@ -211,9 +203,18 @@ async function me(tokenId) {
     ],
   });
 
-  if (!co) throw createServerError('UnknownUser', 'This token has no connection, this should not exist!');
+  if (!user) throw createServerError('UnknownUser', 'This token has no connection, this should not exist!');
 
-  return co;
+  const permissions = await getPermissions(user);
+
+  delete user.password;
+  delete user.usernameToken;
+  delete user.passwordToken;
+
+  return {
+    user,
+    permissions,
+  };
 }
 
 
@@ -477,7 +478,6 @@ async function cancelUsernameUpdate(userId, username) {
 module.exports = {
   isTokenRevoked,
   login,
-  refresh,
   logout,
   me,
   createJWT,
@@ -486,4 +486,5 @@ module.exports = {
   updateUsername,
   usernameVerify,
   cancelUsernameUpdate,
+  getPermissions,
 };

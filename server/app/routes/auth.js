@@ -13,7 +13,6 @@ router.post('/cancel-username-verification', am(authController.cancelUsernameVer
 // Add API specific middleware
 router.use(require('../middlewares/auth-guard'));
 
-router.get('/refresh', am(authController.refresh));
 router.get('/logout', am(authController.logout));
 
 module.exports = router;

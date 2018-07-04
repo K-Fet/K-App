@@ -12,8 +12,11 @@ export class RequestInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let forwardRequest = request;
     this.loaderService.show();
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser && currentUser.jwt) {
+    const currentUser = {
+      ...JSON.parse(localStorage.getItem('currentUser')),
+      ...JSON.parse(sessionStorage.getItem('currentUser')),
+    };
+    if (currentUser.jwt) {
       forwardRequest = request.clone({
         setHeaders: {
           Authorization: `Bearer ${currentUser.jwt}`,

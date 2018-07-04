@@ -14,36 +14,18 @@ async function login(req, res) {
   const schema = Joi.object().keys({
     username: Joi.string().required(),
     password: Joi.string().required(),
+    rememberMe: Joi.number().integer().min(1).max(30),
   });
 
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
+  const { username, password, rememberMe = 1 } = req.body;
 
-  const { username, password } = req.body;
+  const jwt = await authService.login(username, password, rememberMe);
 
-  const jwt = await authService.login(username, password);
-
-  res.json({
-    jwt,
-  });
+  res.json({ jwt });
 }
-
-/**
- * Refresh a token while revoking the current one.
- *
- * @param req Request
- * @param res Response
- * @return {Promise.<void>} Nothing
- */
-async function refresh(req, res) {
-  const jwt = await authService.refresh(req.user.jit);
-
-  res.json({
-    jwt,
-  });
-}
-
 
 /**
  * Logout a user.
@@ -172,7 +154,6 @@ async function cancelUsernameVerify(req, res) {
 module.exports = {
   login,
   logout,
-  refresh,
   resetPassword,
   definePassword,
   usernameVerify,

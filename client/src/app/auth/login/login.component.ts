@@ -5,6 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { AuthService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { ConnectedUser } from '../../_models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -27,11 +28,14 @@ export class LoginComponent {
     this.loginForm = this.fb.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
+      rememberMe: new FormControl(false),
     });
   }
 
   login(): void {
-    this.authService.login(this.loginForm.get('username').value, this.loginForm.get('password').value)
+    const { username, password, rememberMe } = this.loginForm.value;
+    const rememberMeDay = rememberMe ? environment.JWT_DAY_EXP_LONG : environment.JWT_DAY_EXP;
+    this.authService.login(username, password, rememberMeDay)
       .subscribe(() => {
         this.authService.$currentUser.subscribe((user) => {
           this.user = user;

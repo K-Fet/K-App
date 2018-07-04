@@ -22,7 +22,6 @@ const logger = require('../../logger');
  */
 async function me(req, res) {
   const user = await authService.me(req.user.jit);
-
   res.send(user);
 }
 

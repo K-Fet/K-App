@@ -1,24 +1,32 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex="350px" fxFlex.lt-sm="95">
-        <mat-card-content>
-            <form [formGroup]="loginForm" fxLayout="column" (ngSubmit)="login()">
-                <mat-form-field>
-                    <input matInput placeholder="Email" autocapitalize="off"
-                           autocorrect="off" formControlName="username">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput type="password" placeholder="Mot de passe"
-                           formControlName="password">
-                </mat-form-field>
-                <button mat-button type="submit" [disabled]="!loginForm.valid">
-                    CONNEXION
-                </button>
-            </form>
-            <div fxLayoutAlign="end">
-                <i>
-                    <a mat-button (click)="openDialog()">J'ai oublié mon mot de passe...</a>
-                </i>
-            </div>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+    <mat-card-content>
+      <form [formGroup]="loginForm" fxLayout="column" (ngSubmit)="login()">
+        <mat-form-field>
+          <input matInput placeholder="Email" autocapitalize="off"
+            autocorrect="off" formControlName="username">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="password" placeholder="Mot de passe"
+            formControlName="password">
+          <mat-icon matSuffix>vpn_key</mat-icon>
+        </mat-form-field>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center">
+          <div>
+            <mat-checkbox formControlName="rememberMe">Se souvenir de moi</mat-checkbox>
+          </div>
+          <div fxFlex></div>
+          <div>
+            <i>
+              <a mat-button (click)="openDialog()">J'ai oublié mon mot de passe...</a>
+            </i>
+          </div>
+        </div>
+        <button mat-button type="submit" [disabled]="!loginForm.valid">
+          CONNEXION
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

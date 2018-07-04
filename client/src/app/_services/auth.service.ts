@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser } from '../_models';
+import { ConnectedUser, Permission } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
 import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -21,76 +22,31 @@ export class AuthService {
       accountType: 'Guest',
       createdAt: new Date(),
     }));
-    if (localStorage.getItem('currentUser')) {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (currentUser.jwt) {
-        const jwtDecoded = jwt_decode(currentUser.jwt);
-        if (Date.now() < jwtDecoded.exp * 1000) {
-          this.managePermissionAndRole(jwtDecoded.permissions);
-
-          // Update /me
-          this.me().subscribe();
-
-          // Refresh the token after 50ms to prevent other call.
-          setTimeout(
-            () => {
-              this.refresh().subscribe();
-            },
-            50,
-          );
-        } else {
-          this.clearUser();
-        }
+    const currentUser = {
+      ...JSON.parse(localStorage.getItem('currentUser')),
+      ...JSON.parse(sessionStorage.getItem('currentUser')),
+    };
+    if (currentUser.jwt) {
+      const jwtDecoded = jwt_decode(currentUser.jwt);
+      if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
+        this.me().subscribe();
+      } else {
+        this.clearUser();
       }
     }
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post('/api/auth/login', { username, password })
-      .pipe(tap((jwt: { jwt: String }) => {
-        this.saveUser(jwt);
+  login(username: string, password: string, rememberMe: Number): Observable<any> {
+    return this.http.post('/api/auth/login', { username, password, rememberMe })
+      .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
+        this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
-        const jwtDecoded = jwt_decode(jwt.jwt);
-        this.managePermissionAndRole(jwtDecoded.permissions);
-
-        // Refresh token every 45 minutes
-        setTimeout(
-          () => {
-            this.refresh().subscribe();
-          },
-          45 * 60 * 60 * 1000,
-        );
       }));
   }
 
   logout(): Observable<any> {
     return this.http.get('/api/auth/logout')
       .pipe(tap(this.clearUser.bind(this)));
-  }
-
-  refresh(): Observable<any> {
-    return this.http.get('/api/auth/refresh')
-      .pipe(
-        tap((newJWT: { jwt: String }) => {
-          if (newJWT) {
-            this.saveUser(newJWT);
-            const jwtDecoded = jwt_decode(newJWT.jwt);
-            this.managePermissionAndRole(jwtDecoded.permissions);
-
-            // Refresh token every 45 minutes
-            setTimeout(
-              () => {
-                this.refresh().subscribe();
-              },
-              45 * 60 * 60 * 1000,
-            );
-          }
-        }),
-        catchError((err) => {
-          this.clearUser();
-          return Observable.throw(err);
-        }),
-      );
   }
 
   definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
@@ -125,46 +81,48 @@ export class AuthService {
     }));
     this.ngxPermissionsService.flushPermissions();
     this.ngxRolesService.flushRoles();
-    if (localStorage.getItem('currentUser')) {
-      localStorage.removeItem('currentUser');
-    }
+    if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
+    if (sessionStorage.getItem('currentUser')) sessionStorage.removeItem('currentUser');
     this.router.navigate(['/']);
   }
 
-  private saveUser(jwt): void {
-    localStorage.setItem('currentUser', JSON.stringify(jwt));
+  private saveUser(jwt, rememberMe): void {
+    if (rememberMe) localStorage.setItem('currentUser', JSON.stringify(jwt));
+    else sessionStorage.setItem('currentUser', JSON.stringify(jwt));
   }
 
   private managePermissionAndRole(permissions: string[]): void {
     this.ngxPermissionsService.addPermission(permissions);
     ROLES.forEach((ROLE) => {
-      if (permissions.filter(perm => ROLE.permissions.includes(perm)).length === ROLE.permissions.length) {
+      if (permissions.filter(perm => ROLE.permissions.includes(perm)).length
+        === ROLE.permissions.length) {
         this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
       }
     });
   }
 
   me(): Observable<any> {
-    return this.http.get<ConnectedUser>('/api/me')
+    return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/me')
       .pipe(
-        tap((connectedUser) => {
-          if (connectedUser.barman) {
+        tap(({ user: { barman, specialAccount }, permissions }) => {
+          if (barman) {
             this.$currentUser.next(new ConnectedUser({
+              barman,
               accountType: 'Barman',
-              username: connectedUser.barman.connection.username,
-              createdAt: connectedUser.barman.createdAt,
-              barman: connectedUser.barman,
+              username: barman.connection.username,
+              createdAt: barman.createdAt,
             }));
             this.ngxRolesService.addRole('BARMAN', ['']);
-          } else if (connectedUser.specialAccount) {
+          } else if (specialAccount) {
             this.$currentUser.next(new ConnectedUser({
+              specialAccount,
               accountType: 'SpecialAccount',
-              username: connectedUser.specialAccount.connection.username,
-              createdAt: connectedUser.specialAccount.createdAt,
-              specialAccount: connectedUser.specialAccount,
+              username: specialAccount.connection.username,
+              createdAt: specialAccount.createdAt,
             }));
             this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
           }
+          this.managePermissionAndRole(permissions);
         }),
       );
   }
