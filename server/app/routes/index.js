@@ -7,7 +7,19 @@ const { accessToken } = require('../../config/feed');
 
 // Middlewares
 
-router.use(morgan('combined', { stream: logger.stream }));
+router.use(morgan(
+  [
+    ':remote-addr',
+    '[:date[iso]]',
+    '":method :url HTTP/:http-version"',
+    ':status',
+    ':res[content-length]',
+    '":referrer"',
+    '":user-agent"',
+    ':response-time ms',
+  ].join(' '),
+  { stream: logger.stream },
+));
 
 router.use(xhub({
   algorithm: 'sha1',
@@ -48,11 +60,10 @@ router.use('/templates', require('./templates'));
 
 // Error handling
 
-/* eslint no-unused-vars: "off" */
+// eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
   // Express-jwt-permissions error
   if (err.code === 'permission_denied') {
-    logger.verbose('Not enough permissions error for %s %s with token %s', req.method, req.path, req.user.jit);
     return res.status(403).json({
       error: 'PermissionError',
       message: 'You don\'t have enough permissions!',
@@ -75,7 +86,6 @@ router.use((err, req, res, next) => {
     });
   }
 
-  logger.error('Server error for the request %s %s %s', req.method, req.path, err);
   return res.status(500).json({
     error: 'ServerError',
     message: 'A problem has occurred, try again later',
