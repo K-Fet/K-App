@@ -53,6 +53,10 @@ async function start() {
 
 module.exports = {
   start,
+  /**
+   * Return a sequelize instance.
+   * @return {Sequelize}
+   */
   get sequelize() {
     return _sequelize;
   },

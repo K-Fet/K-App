@@ -8,11 +8,11 @@ const { AssociationChangesSchema } = require('./association-changes');
  */
 class SpecialAccount extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -36,17 +36,14 @@ class SpecialAccount extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) {
-    this.belongsTo(models.ConnectionInformation, { as: 'connection' });
+   * Set associations for the model.
+   *
+   * @param models
+   */
+  static associate({ ConnectionInformation, Permission }) {
+    this.belongsTo(ConnectionInformation, { as: 'connection' });
 
-    this.belongsToMany(models.Permission, {
-      through: 'SpecialAccountPermissions',
-      as: 'permissions',
-    });
+    this.belongsToMany(Permission, { through: 'SpecialAccountPermissions', as: 'permissions' });
   }
 }
 

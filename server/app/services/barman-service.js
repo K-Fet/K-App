@@ -1,6 +1,6 @@
+const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { sequelize } = require('../../bootstrap/sequelize');
-const { Op } = require('sequelize');
 const {
   ConnectionInformation, Barman, Kommission, Role, Service,
 } = require('../models');

@@ -37,10 +37,8 @@ class Media extends Model {
 
   /**
    * Set associations for the model
-   * @param models
    */
-  static associate(models) { // eslint-disable-line no-unused-vars
-  }
+  static associate() {}
 }
 
 const MediaSchema = Joi.object().keys({

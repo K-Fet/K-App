@@ -7,11 +7,11 @@ const Joi = require('joi');
  */
 class ConnectionInformation extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -44,12 +44,10 @@ class ConnectionInformation extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) {
-    this.hasMany(models.JWT, {
+   * Set associations for the model.
+   */
+  static associate({ JWT, Barman, SpecialAccount }) {
+    this.hasMany(JWT, {
       onDelete: 'CASCADE',
       foreignKey: {
         name: 'connectionId',
@@ -58,7 +56,7 @@ class ConnectionInformation extends Model {
       as: 'jwt',
     });
 
-    this.hasOne(models.Barman, {
+    this.hasOne(Barman, {
       onDelete: 'CASCADE',
       foreignKey: {
         name: 'connectionId',
@@ -66,7 +64,7 @@ class ConnectionInformation extends Model {
       },
       as: 'barman',
     });
-    this.hasOne(models.SpecialAccount, {
+    this.hasOne(SpecialAccount, {
       onDelete: 'CASCADE',
       foreignKey: {
         name: 'connectionId',

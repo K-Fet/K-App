@@ -8,11 +8,11 @@ const { MediaSchema } = require('./media');
  */
 class FeedObject extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -55,16 +55,15 @@ class FeedObject extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-  static associate(models) {
-    this.hasMany(models.Media, {
+   * Set associations for the model
+   */
+  static associate({ Media, Category }) {
+    this.hasMany(Media, {
       foreignKey: 'feedObjectId',
       as: 'medias',
       onDelete: 'CASCADE',
     });
-    this.belongsToMany(models.Category, {
+    this.belongsToMany(Category, {
       through: 'feedObjectCategoryWrappers',
       foreignKey: 'feedObjectId',
       as: 'categories',

@@ -8,6 +8,7 @@ const { KommissionWrapper } = require('./kommission-wrapper');
 const { Media } = require('./media');
 const { Member } = require('./member');
 const { Permission } = require('./permission');
+const { Registration } = require('./registration');
 const { Role } = require('./role');
 const { RoleWrapper } = require('./role-wrapper');
 const { Service } = require('./service');
@@ -28,6 +29,7 @@ module.exports = {
   Media,
   Member,
   Permission,
+  Registration,
   Role,
   RoleWrapper,
   Service,
