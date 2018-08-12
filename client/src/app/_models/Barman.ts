@@ -2,7 +2,7 @@ import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } 
 
 export class Barman {
 
-  id: Number;
+  id: number;
   lastName: String;
   firstName: String;
   nickname: String;
@@ -23,7 +23,7 @@ export class Barman {
   services: Service[];
 
   _embedded: {
-    godFather?: Number;
+    godFather?: number;
     kommissions?: AssociationChanges,
     roles?: AssociationChanges,
   };

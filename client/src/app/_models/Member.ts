@@ -2,7 +2,7 @@ import { Registration } from './Registration';
 
 export class Member {
 
-  id: Number;
+  id: number;
   lastName: String;
   firstName: String;
   school: String;

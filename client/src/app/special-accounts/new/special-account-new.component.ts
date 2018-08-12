@@ -64,7 +64,7 @@ export class SpecialAccountNewComponent implements OnInit {
     });
   }
 
-  add(code: Number): void {
+  add(code: number): void {
     const specialAccount = this.prepareEditing();
 
     this.specialAccountService.create(specialAccount, code).subscribe(() => {

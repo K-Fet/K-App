@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 export class CancelEmailUpdateComponent implements OnInit {
 
-  userId: Number;
+  userId: number;
   email: String;
 
   constructor(private authService: AuthService,

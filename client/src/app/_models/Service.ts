@@ -2,10 +2,10 @@ import { Barman } from './index';
 
 export class Service {
 
-  id?: Number;
+  id?: number;
   startAt: Date;
   endAt: Date;
-  nbMax: Number;
+  nbMax: number;
 
   // Association
 

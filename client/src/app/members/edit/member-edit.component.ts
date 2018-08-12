@@ -13,7 +13,7 @@ export class MemberEditComponent implements OnInit {
   firstName: String;
   lastName: String;
   school: String;
-  code: Number;
+  code: number;
 
   formArray: FormArray;
   memberFormGroup: FormGroup;

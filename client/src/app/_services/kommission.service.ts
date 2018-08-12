@@ -29,7 +29,7 @@ export class KommissionService {
     return this.http.put<Kommission>(`/api/kommissions/${kommission.id}`, kommission);
   }
 
-  delete(id: Number): Observable<Kommission> {
+  delete(id: number): Observable<Kommission> {
     return this.http.post<Kommission>(`/api/kommissions/${id}/delete`, null);
   }
 }

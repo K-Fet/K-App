@@ -2,7 +2,7 @@ import { AssociationChanges, Permission } from './index';
 
 export class Role {
 
-  id: Number;
+  id: number;
   name: String;
   description: String;
 

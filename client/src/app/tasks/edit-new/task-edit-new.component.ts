@@ -17,7 +17,7 @@ export class TaskEditNewDialogComponent implements OnInit {
   states = TASK_STATES;
 
   selectedSate: String;
-  selectedBarmen: Number[];
+  selectedBarmen: number[];
 
   constructor(public dialogRef: MatDialogRef<TaskEditNewDialogComponent>,
               private fb: FormBuilder,
@@ -78,8 +78,8 @@ export class TaskEditNewDialogComponent implements OnInit {
   }
 
   prepareAssociationChanges(current, updated): AssociationChanges {
-    const add: Number[] = [];
-    const remove: Number[] = [];
+    const add: number[] = [];
+    const remove: number[] = [];
     updated.forEach((aId) => {
       if (!current.map(a => a.id).includes(aId)) {
         add.push(aId);

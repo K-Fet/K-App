@@ -1,6 +1,6 @@
 export class Permission {
 
-  id: Number;
+  id: number;
   name: String;
   disabled?: Boolean;
 

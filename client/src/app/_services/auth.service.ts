@@ -36,7 +36,7 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string, rememberMe: Number): Observable<any> {
+  login(username: string, password: string, rememberMe: number): Observable<any> {
     return this.http.post('/api/auth/login', { username, password, rememberMe })
       .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
@@ -58,7 +58,7 @@ export class AuthService {
     });
   }
 
-  verifyUsername(userId: Number, username: String, password: String, usernameToken: String): Observable<any> {
+  verifyUsername(userId: number, username: String, password: String, usernameToken: String): Observable<any> {
     return this.http.post('api/auth/username-verification', {
       userId,
       username,
@@ -67,7 +67,7 @@ export class AuthService {
     });
   }
 
-  cancelEmailUpdate(userId: Number, username: String) {
+  cancelEmailUpdate(userId: number, username: String) {
     return this.http.post('api/auth/cancel-username-verification', {
       userId,
       username,

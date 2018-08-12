@@ -1,6 +1,6 @@
 export class ConnectionInformation {
 
-  id?: Number;
+  id?: number;
   username?: String;
 
   constructor(values: Object = {}) {

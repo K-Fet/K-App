@@ -1,18 +1,18 @@
 export interface TemplateDateUnit {
-  day: Number;
-  hours: Number;
-  minutes: Number;
+  day: number;
+  hours: number;
+  minutes: number;
 }
 
 export interface TemplateServiceUnit {
-  nbMax: Number;
+  nbMax: number;
   startAt: TemplateDateUnit;
   endAt: TemplateDateUnit;
 }
 
 export class Template {
 
-  id: Number;
+  id: number;
   name: String;
   createdAt?: Date;
   updatedAt?: Date;

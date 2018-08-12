@@ -13,7 +13,7 @@ export class UsernameVerificationComponent implements OnInit {
   passwordForm: FormGroup;
   token: String;
   username: String;
-  userId: Number;
+  userId: number;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,

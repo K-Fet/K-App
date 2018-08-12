@@ -6,7 +6,7 @@ import { forkJoin, Observable } from 'rxjs';
 
 interface barmanServiceData {
   name: String;
-  services: Number;
+  services: number;
 }
 
 @Component({

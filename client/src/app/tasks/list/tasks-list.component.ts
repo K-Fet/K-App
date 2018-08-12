@@ -76,7 +76,7 @@ export class TasksListComponent implements OnInit {
     });
   }
 
-  private getIndice(state: String): Number {
+  private getIndice(state: String): number {
     switch (state) {
       case 'Abandoned':
         return 1;

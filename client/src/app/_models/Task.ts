@@ -1,7 +1,7 @@
 import { Barman, Kommission, AssociationChanges } from './index';
 
 export class Task {
-  id: Number;
+  id: number;
   name: String;
   deadline: Date;
   state: String;
@@ -12,7 +12,7 @@ export class Task {
 
   _embedded: {
     barmen?: AssociationChanges;
-    kommissionId?: Number;
+    kommissionId?: number;
   };
 
   constructor(values: Object = {}) {

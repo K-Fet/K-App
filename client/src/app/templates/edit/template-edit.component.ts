@@ -16,7 +16,7 @@ export class TemplateEditComponent implements OnInit {
   generalFormArray: FormArray;
   generalFormGroup: FormGroup;
   servicesFormGroup: FormGroup;
-  templateId: Number;
+  templateId: number;
 
   selectedStartDay: String[];
   selectedEndDay: String[];
@@ -151,7 +151,7 @@ export class TemplateEditComponent implements OnInit {
     return (this.generalFormArray.get([1]) as FormArray).controls;
   }
 
-  removeServiceForm(fromGroupId: Number): void {
+  removeServiceForm(fromGroupId: number): void {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 
