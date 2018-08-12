@@ -226,7 +226,7 @@ async function me(tokenId) {
  */
 async function resetPassword(usernameDirty, currTransaction) {
   const username = usernameDirty.toLowerCase();
-  const transaction = currTransaction || await sequelize.transaction();
+  const transaction = currTransaction || await sequelize().transaction();
 
   const co = await ConnectionInformation.findOne({
     where: { username },
@@ -309,7 +309,7 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
     );
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await user.update({
       password: await hash(newPassword),
@@ -353,7 +353,7 @@ async function updateUsername(currentUsername, newUsername) {
 
   const usernameToken = await generateToken(128);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({
@@ -396,7 +396,7 @@ async function usernameVerify(userId, username, password, usernameToken) {
     throw createUserError('VerificationError', 'Bad token/password/new email combination.');
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({
@@ -449,7 +449,7 @@ async function cancelUsernameUpdate(userId, username) {
     throw createUserError('VerificationError', 'No user found for this user id.');
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({

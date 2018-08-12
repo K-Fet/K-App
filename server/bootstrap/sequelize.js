@@ -57,7 +57,7 @@ module.exports = {
    * Return a sequelize instance.
    * @return {Sequelize}
    */
-  get sequelize() {
+  sequelize() {
     return _sequelize;
   },
 };

@@ -108,7 +108,7 @@ async function updateTemplateById(templateId, updatedTemplate) {
 
   logger.verbose('Template service: updating template named %s', currentTemplate.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentTemplate.destroy({ transaction });
@@ -153,7 +153,7 @@ async function deleteTemplateById(templateId) {
 
   if (!template) throw createUserError('UnknownTemplate', 'This Template does not exist');
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await template.destroy({ transaction });

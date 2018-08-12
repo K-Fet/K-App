@@ -26,7 +26,7 @@ async function getAll() {
 async function createCategory(newCategory) {
   logger.verbose('Category service: creating a new category named %s', newCategory.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await newCategory.save({ transaction });
   } catch (err) {
@@ -76,7 +76,7 @@ async function updateCategory(categoryId, updatedCategory) {
 
   logger.verbose('Category service: updating category named %s %s', currentCategory.id, currentCategory.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentCategory.update(cleanObject({

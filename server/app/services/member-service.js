@@ -89,7 +89,7 @@ async function getAllMembers({ startAt = CURRENT_SCHOOL_YEAR, endAt = CURRENT_SC
  * @return {Promise<Member|Errors.ValidationError>} The created member with its id
  */
 async function createMember(newMember) {
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   logger.verbose('Member service: creating a new member named %s %s', newMember.firstName, newMember.lastName);
   try {
     await newMember.save({ transaction });
@@ -102,7 +102,14 @@ async function createMember(newMember) {
   }
 
   await transaction.commit();
-  return newMember;
+
+  return newMember.reload({
+    include: [{
+      model: Registration,
+      as: 'registrations',
+      attributes: ['year', 'createdAt'],
+    }],
+  });
 }
 
 
@@ -115,7 +122,13 @@ async function createMember(newMember) {
 async function getMemberById(memberId) {
   logger.verbose('Member service: get member by id %d', memberId);
 
-  const member = await Member.findById(memberId);
+  const member = await Member.findById(memberId, {
+    include: [{
+      model: Registration,
+      as: 'registrations',
+      attributes: ['year', 'createdAt'],
+    }],
+  });
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
@@ -147,7 +160,13 @@ async function updateMember(memberId, updatedMember) {
     school: updatedMember.school,
   });
 
-  return currentMember.reload();
+  return currentMember.reload({
+    include: [{
+      model: Registration,
+      as: 'registrations',
+      attributes: ['year', 'createdAt'],
+    }],
+  });
 }
 
 /**
@@ -159,7 +178,13 @@ async function updateMember(memberId, updatedMember) {
 async function deleteMember(memberId) {
   logger.verbose('Member service: deleting member with id %d', memberId);
 
-  const member = await Member.findById(memberId);
+  const member = await Member.findById(memberId, {
+    include: [{
+      model: Registration,
+      as: 'registrations',
+      attributes: ['year', 'createdAt'],
+    }],
+  });
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
