@@ -31,7 +31,7 @@ async function start() {
 
   logger.debug('Booting sequelize with:', {
     ...CONF,
-    password: null,
+    password: undefined,
   });
 
   // Set logging function

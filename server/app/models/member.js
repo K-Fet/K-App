@@ -43,7 +43,7 @@ class Member extends Model {
    * Set associations for the model.
    */
   static associate({ Registration }) {
-    this.hasMany(Registration, { as: 'registrations', onDelete: 'CASCADE' });
+    this.hasMany(Registration, { as: 'registrations', onDelete: 'CASCADE', foreignKey: 'memberId' });
   }
 }
 

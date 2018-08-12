@@ -1,7 +1,7 @@
+const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Permission } = require('../models');
 const { createPermissionError } = require('../../utils');
-const { Op } = require('sequelize');
 
 /**
  * Return all permissions of the app.

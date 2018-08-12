@@ -1,12 +1,12 @@
+const rp = require('request-promise-native');
 const { createServerError, createUserError } = require('../../utils');
 const CONFIG = require('../../config/contactForm');
-const rp = require('request-promise-native');
 const logger = require('../../logger');
 
 /**
  * Verify recaptcha token
  *
- * @returns {Promise.<void>} Nothing
+ * @returns {Promise<boolean>} Nothing
  */
 async function recaptchaVerification(token) {
   const options = {
@@ -25,8 +25,10 @@ async function recaptchaVerification(token) {
       logger.warn('Contact controller: captcha verification failed');
       throw createUserError('CaptchaVerificationFailed', 'reCaptcha verification failed');
     }
-    return true;
   } catch (error) {
+    if (error.userError) {
+      throw error;
+    }
     throw createServerError('CaptchaRequestFailed', 'reCaptcha request failed');
   }
 }

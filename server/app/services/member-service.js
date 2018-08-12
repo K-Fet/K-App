@@ -18,7 +18,7 @@ async function registerMember(memberId, transaction) {
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
-  const year = (new Date()).getFullYear();
+  const year = CURRENT_SCHOOL_YEAR;
 
   const registrations = await member.getRegistrations({ where: { year }, transaction });
 
@@ -27,7 +27,7 @@ async function registerMember(memberId, transaction) {
   }
 
   logger.verbose('Member service: Register member with id %d for year %d', memberId, year);
-  return member.createRegistration(new Registration({ year }), { transaction });
+  return member.createRegistration({ year }, { transaction });
 }
 
 /**
@@ -49,7 +49,7 @@ async function unregisterMember(memberId, year) {
   }
 
   logger.verbose('Member service: Unregister member with id %d for year %d', memberId, year);
-  await Registration.destroy(registrations);
+  await registrations[0].destroy();
 
   return registrations[0];
 }
@@ -68,7 +68,9 @@ async function getAllMembers({ startAt = CURRENT_SCHOOL_YEAR, endAt = CURRENT_SC
     include: [
       {
         model: Registration,
+        as: 'registrations',
         required: true,
+        attributes: ['year', 'createdAt'],
         where: {
           year: {
             [Op.gte]: startAt,

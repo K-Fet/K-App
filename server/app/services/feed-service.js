@@ -1,6 +1,6 @@
+const rp = require('request-promise-native');
 const WEB_CONFIG = require('../../config/web');
 const FEED_CONFIG = require('../../config/feed');
-const rp = require('request-promise-native');
 const logger = require('../../logger');
 const { createUserError } = require('../../utils');
 
@@ -118,11 +118,10 @@ async function importWebhookEvent({ object, entry }) {
 
   // Each entry should is processed at the same time
   // But each changes of an entry is done one after another to have the right order
-  return Promise.all(entry.map(({ changes }) =>
-    changes.reduce(
-      (p, change) => p.then(_importChange(change)),
-      Promise.resolve(),
-    )));
+  return Promise.all(entry.map(({ changes }) => changes.reduce(
+    (p, change) => p.then(_importChange(change)),
+    Promise.resolve(),
+  )));
 }
 
 module.exports = {

@@ -1,8 +1,8 @@
+const Joi = require('joi');
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
 const { ServiceSchema } = require('../models/schemas');
 const { createUserError, parseStartAndEnd } = require('../../utils');
-const Joi = require('joi');
 
 /**
  * Fetch all the services from the database. Include associated barmen.

@@ -1,13 +1,11 @@
-const logger = require('../../logger');
-const { sequelize } = require('../../bootstrap/sequelize');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
-
+const logger = require('../../logger');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { jwtSecret } = require('../../config/jwt');
 const {
   verify, createUserError, createServerError, generateToken, hash,
 } = require('../../utils');
-
 const {
   ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission,
 } = require('../models');
@@ -391,9 +389,9 @@ async function updateUsername(currentUsername, newUsername) {
 async function usernameVerify(userId, username, password, usernameToken) {
   const co = await ConnectionInformation.findById(userId);
 
-  if (!co ||
-    !await verify(co.password, password) ||
-    !await verify(co.usernameToken, usernameToken + username)
+  if (!co
+    || !await verify(co.password, password)
+    || !await verify(co.usernameToken, usernameToken + username)
   ) {
     throw createUserError('VerificationError', 'Bad token/password/new email combination.');
   }
