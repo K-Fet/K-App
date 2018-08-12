@@ -64,6 +64,7 @@ async function getAllMembers({ startAt = CURRENT_SCHOOL_YEAR, endAt = CURRENT_SC
   return Member.findAll({
     order: [
       ['lastName', 'ASC'],
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
     ],
     include: [
       {
@@ -104,6 +105,9 @@ async function createMember(newMember) {
   await transaction.commit();
 
   return newMember.reload({
+    order: [
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+    ],
     include: [{
       model: Registration,
       as: 'registrations',
@@ -123,6 +127,9 @@ async function getMemberById(memberId) {
   logger.verbose('Member service: get member by id %d', memberId);
 
   const member = await Member.findById(memberId, {
+    order: [
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+    ],
     include: [{
       model: Registration,
       as: 'registrations',
@@ -161,6 +168,9 @@ async function updateMember(memberId, updatedMember) {
   });
 
   return currentMember.reload({
+    order: [
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+    ],
     include: [{
       model: Registration,
       as: 'registrations',
@@ -179,6 +189,9 @@ async function deleteMember(memberId) {
   logger.verbose('Member service: deleting member with id %d', memberId);
 
   const member = await Member.findById(memberId, {
+    order: [
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+    ],
     include: [{
       model: Registration,
       as: 'registrations',

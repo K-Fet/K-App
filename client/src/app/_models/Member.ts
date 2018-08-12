@@ -1,3 +1,5 @@
+import { Registration } from './Registration';
+
 export class Member {
 
   id: Number;
@@ -7,7 +9,7 @@ export class Member {
   deletedAt: Date;
   createdAt: Date;
   updatedAt: Date;
-  active: Boolean;
+  registrations: Registration[];
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
