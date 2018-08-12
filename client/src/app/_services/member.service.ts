@@ -30,7 +30,7 @@ export class MemberService {
     return this.http.post<Member>(`/api/members/${id}/delete`, { code });
   }
 
-  register(id: Number, code: Number): Observable<Registration> {
+  register(id: number, code: number): Observable<Registration> {
     return this.http.post<Registration>(`/api/members/${id}/register`, { code });
   }
 }
