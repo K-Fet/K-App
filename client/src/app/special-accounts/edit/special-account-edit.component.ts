@@ -123,7 +123,7 @@ export class SpecialAccountEditComponent implements OnInit {
     });
   }
 
-  edit(code: Number): void {
+  edit(code: number): void {
     const specialAccount = this.prepareEditing();
     if (this.isMe()) {
       const connectedUser = new ConnectedUser({

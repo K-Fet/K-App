@@ -2,9 +2,9 @@ const { Model, DataTypes } = require('sequelize');
 const Joi = require('joi');
 
 /**
- * This class represent a Category.
+ * This class represent a Registration of a member.
  */
-class Category extends Model {
+class Registration extends Model {
   /**
    * Initialization function.
    *
@@ -19,34 +19,37 @@ class Category extends Model {
         autoIncrement: true,
       },
 
-      name: {
-        type: DataTypes.STRING,
+      year: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        unique: true,
+        validate: { min: 2017 },
       },
-
-      description: DataTypes.STRING,
     }, {
       sequelize,
       updatedAt: false,
     });
   }
 
+
   /**
    * Set associations for the model
    */
-  static associate({ FeedObject }) {
-    this.belongsToMany(FeedObject, { through: 'feedObjectCategoryWrappers', foreignKey: 'categoryId' });
+  static associate({ Member }) {
+    this.belongsTo(Member, {
+      as: 'member',
+      foreignKey: {
+        allowNull: false,
+      },
+    });
   }
 }
 
-const CategorySchema = Joi.object().keys({
+const RegistrationSchema = Joi.object().keys({
   id: Joi.number().integer(),
-  name: Joi.string(),
-  description: Joi.string(),
+  year: Joi.number().integer(),
 });
 
 module.exports = {
-  Category,
-  CategorySchema,
+  Registration,
+  RegistrationSchema,
 };

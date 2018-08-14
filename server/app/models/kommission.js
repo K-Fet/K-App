@@ -7,11 +7,11 @@ const { AssociationChangesSchema } = require('./association-changes');
  */
 class Kommission extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -34,12 +34,11 @@ class Kommission extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-  static associate(models) {
-    this.belongsToMany(models.Barman, { through: models.KommissionWrapper, as: 'barmen' });
-    this.hasMany(models.Task, {
+   * Set associations for the model
+   */
+  static associate({ Barman, KommissionWrapper, Task }) {
+    this.belongsToMany(Barman, { through: KommissionWrapper, as: 'barmen' });
+    this.hasMany(Task, {
       foreignKey: {
         name: 'kommissionId',
         allowNull: false,

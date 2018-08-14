@@ -6,11 +6,11 @@ const Joi = require('joi');
  */
 class Template extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -30,12 +30,10 @@ class Template extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) {
-    this.hasMany(models.TemplateUnit, { onDelete: 'CASCADE', as: 'services' });
+   * Set associations for the model.
+   */
+  static associate({ TemplateUnit }) {
+    this.hasMany(TemplateUnit, { onDelete: 'CASCADE', as: 'services' });
   }
 }
 
@@ -44,11 +42,11 @@ class Template extends Model {
  */
 class TemplateUnit extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -65,7 +63,7 @@ class TemplateUnit extends Model {
         type: DataTypes.DATE,
         allowNull: false,
         // eslint-disable-next-line
-                get() {
+        get() {
           const startAt = this.getDataValue('startAt');
           const day = startAt.getDay() || 7;
           return {
@@ -75,7 +73,7 @@ class TemplateUnit extends Model {
           };
         },
         // eslint-disable-next-line
-                set(val) {
+        set(val) {
           const date = new Date();
           const currDay = date.getDay();
 
@@ -91,7 +89,7 @@ class TemplateUnit extends Model {
         type: DataTypes.DATE,
         allowNull: false,
         // eslint-disable-next-line
-                get() {
+        get() {
           const endAt = this.getDataValue('endAt');
           const day = endAt.getDay() || 7;
           return {
@@ -101,7 +99,7 @@ class TemplateUnit extends Model {
           };
         },
         // eslint-disable-next-line
-                set(val) {
+        set(val) {
           const date = new Date();
           const currDay = date.getDay();
 
@@ -119,12 +117,9 @@ class TemplateUnit extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) { // eslint-disable-line no-unused-vars
-  }
+   * Set associations for the model.
+   */
+  static associate() {}
 }
 
 const TemplateUnitSchema = Joi.object().keys({

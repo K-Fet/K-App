@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 
 @Component({
   templateUrl: './members-list.component.html',
@@ -13,7 +14,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 })
 export class MembersListComponent implements OnInit {
 
-  displayedColumns = ['lastName', 'firstName', 'school', 'action'];
+  displayedColumns = ['lastName', 'firstName', 'school', 'lastActive', 'action'];
   membersData: MatTableDataSource<Member>;
 
   deletedMember: Member;
@@ -32,7 +33,7 @@ export class MembersListComponent implements OnInit {
   ngOnInit(): void {
     this.update();
     if (!this.ngxPermissionsService.getPermissions()['member:write']) {
-      this.displayedColumns = ['lastName', 'firstName', 'school'];
+      this.displayedColumns = ['lastName', 'firstName', 'lastActive', 'school'];
     }
     this.media.subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs' && this.displayedColumns.includes('school')) {
@@ -48,6 +49,13 @@ export class MembersListComponent implements OnInit {
       this.membersData = new MatTableDataSource(members);
       this.membersData.paginator = this.paginator;
       this.membersData.sort = this.sort;
+    });
+  }
+
+  register(member: Member, code: number) {
+    this.memberService.register(member.id, code).subscribe(({ year }) => {
+      this.toasterService.showToaster(`Adhérent inscrit pour l'année ${year}-${year + 1}`);
+      this.update();
     });
   }
 
@@ -67,7 +75,21 @@ export class MembersListComponent implements OnInit {
     this.membersData.filter = filterValue.trim().toLowerCase();
   }
 
-  openDialog(member: Member): void {
+  getLastActive(member: Member): string {
+    // TODO: Enhance the display with badge maybe
+    if (member.registrations && member.registrations.length > 0) {
+      // Ordered from the last registration to the oldest
+      const { year } = member.registrations[0];
+
+      if (year === CURRENT_SCHOOL_YEAR) {
+        return 'Actif';
+      }
+      return `Inactif depuis ${year}-${year + 1}`;
+    }
+    return 'Aucune activité';
+  }
+
+  openDeleteDialog(member: Member): void {
     this.deletedMember = member;
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
@@ -78,6 +100,27 @@ export class MembersListComponent implements OnInit {
       if (result) {
         this.delete(this.deletedMember, result);
       }
+    });
+  }
+
+  needRegistration(member: Member): boolean {
+    return !(member.registrations
+      && member.registrations.length > 0
+      && member.registrations[0].year === CURRENT_SCHOOL_YEAR);
+
+  }
+
+  openRegisterDialog(member: Member): void {
+    const dialogRef = this.dialog.open(CodeDialogComponent, {
+      width: '350px',
+      data: {
+        message: `Inscription de ${member.firstName} ${member.lastName} ` +
+          `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1}`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.register(member, result);
     });
   }
 }

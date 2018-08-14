@@ -16,18 +16,18 @@ export class SpecialAccountService {
     return this.http.get<SpecialAccount>(`/api/specialaccounts/${id}`);
   }
 
-  create(specialAccount: SpecialAccount, code: Number): Observable<SpecialAccount> {
+  create(specialAccount: SpecialAccount, code: number): Observable<SpecialAccount> {
     return this.http.post<SpecialAccount>('/api/specialaccounts', { specialAccount, code });
   }
 
-  update(specialAccount: SpecialAccount, code: Number): Observable<SpecialAccount> {
+  update(specialAccount: SpecialAccount, code: number): Observable<SpecialAccount> {
     return this.http.put<SpecialAccount>(`/api/specialaccounts/${specialAccount.id}`, {
       specialAccount,
       code,
     });
   }
 
-  delete(id: Number, code: Number): Observable<SpecialAccount> {
+  delete(id: number, code: number): Observable<SpecialAccount> {
     return this.http.post<SpecialAccount>(`/api/specialaccounts/${id}/delete`, { code });
   }
 }

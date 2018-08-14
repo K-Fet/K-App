@@ -1,7 +1,7 @@
+const guard = require('express-jwt-permissions')();
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
 const templateController = require('../controllers/template-controller');
-const guard = require('express-jwt-permissions')();
 
 router.get('/', guard.check('template:read'), am(templateController.getAllTemplates));
 router.post('/', guard.check('template:write'), am(templateController.createTemplate));

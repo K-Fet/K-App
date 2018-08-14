@@ -1,8 +1,8 @@
+const Joi = require('joi');
 const feedObjectService = require('../services/feed-object-service');
 const { FeedObject, Media } = require('../models');
 const { MediaSchema, FeedObjectSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
-const Joi = require('joi');
 
 /**
  * Fetch feedObjects from the database with pagination.

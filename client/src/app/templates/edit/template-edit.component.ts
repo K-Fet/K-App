@@ -16,7 +16,7 @@ export class TemplateEditComponent implements OnInit {
   generalFormArray: FormArray;
   generalFormGroup: FormGroup;
   servicesFormGroup: FormGroup;
-  templateId: Number;
+  templateId: number;
 
   selectedStartDay: String[];
   selectedEndDay: String[];
@@ -69,9 +69,9 @@ export class TemplateEditComponent implements OnInit {
   addServiceFormFromTemplate(template: Template): void {
     template.services.forEach((service) => {
       const startTime = moment().isoWeekday(service.startAt.day.toString())
-        .hour(service.startAt.hours as number).minute(service.startAt.minutes as number);
+        .hour(service.startAt.hours).minute(service.startAt.minutes);
       const endTime = moment().isoWeekday(service.endAt.day.toString())
-        .hour(service.endAt.hours as number).minute(service.endAt.minutes as number);
+        .hour(service.endAt.hours).minute(service.endAt.minutes);
       const serviceFormGroup = this.fb.group({
         startFormControl: [startTime.format('HH:mm'), Validators.required],
         startDayFormControl: [service.startAt.day.toString(), Validators.required],
@@ -151,7 +151,7 @@ export class TemplateEditComponent implements OnInit {
     return (this.generalFormArray.get([1]) as FormArray).controls;
   }
 
-  removeServiceForm(fromGroupId: Number): void {
+  removeServiceForm(fromGroupId: number): void {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 

@@ -1,13 +1,15 @@
+import { Registration } from './Registration';
+
 export class Member {
 
-  id: Number;
+  id: number;
   lastName: String;
   firstName: String;
   school: String;
   deletedAt: Date;
   createdAt: Date;
   updatedAt: Date;
-  active: Boolean;
+  registrations: Registration[];
 
   constructor(values: Object = {}) {
     Object.assign(this, values);

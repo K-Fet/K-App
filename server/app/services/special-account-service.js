@@ -39,7 +39,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     newSpecialAccount.connection.username,
   );
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     // We force the email to lowercase for multiple reasons:
@@ -67,7 +67,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     logger.verbose('SpecialAccount service: Error while creating specialAccount %o', err);
     await transaction.rollback();
 
-    if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+    if (err.Errors === sequelize().SequelizeUniqueConstraintError) {
       throw createUserError('BadUsername', 'a username must be unique');
     }
     throw createServerError('ServerError', 'Error while creating special account');
@@ -136,7 +136,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
 
   logger.verbose('SpecialAccount service: updating specialAccount named %s', currentSpecialAccount.connection.username);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentSpecialAccount.update(cleanObject({
@@ -185,7 +185,7 @@ async function deleteSpecialAccountById(specialAccountId) {
 
   if (!specialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await specialAccount.connection.destroy();

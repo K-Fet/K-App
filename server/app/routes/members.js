@@ -13,4 +13,7 @@ router.get('/:id(\\d+)', guard.check('member:read'), am(memberController.getMemb
 router.put('/:id(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.updateMember));
 router.post('/:id(\\d+)/delete', guard.check('member:write'), am(codeGuard), am(memberController.deleteMember));
 
+router.post('/:id(\\d+)/register', guard.check('member:write'), am(codeGuard), am(memberController.registerMember));
+router.post('/:id(\\d+)/unregister/:year(\\d+)', guard.check('member:write'), am(codeGuard), am(memberController.unregisterMember));
+
 module.exports = router;

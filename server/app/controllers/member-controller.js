@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const memberService = require('../services/member-service');
 const { Member } = require('../models');
 const { MemberSchema } = require('../models/schemas');
@@ -11,7 +12,16 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllMembers(req, res) {
-  const members = await memberService.getAllMembers();
+  const filters = req.query;
+  const schema = Joi.object().keys({
+    startAt: Joi.number().integer(),
+    endAt: Joi.number().integer(),
+  });
+
+  const { error } = schema.validate(filters);
+  if (error) throw createUserError('BadRequest', error.message);
+
+  const members = await memberService.getAllMembers(filters);
 
   res.json(members);
 }
@@ -95,6 +105,36 @@ async function deleteMember(req, res) {
   res.json(member);
 }
 
+/**
+ * Register a member for a new year.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise<void>} Registration
+ */
+async function registerMember(req, res) {
+  const memberId = req.params.id;
+
+  const registration = await memberService.registerMember(memberId);
+
+  res.json(registration);
+}
+
+/**
+ * Unregister a member for a specific year.
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise<void>} Nothing
+ */
+async function unregisterMember(req, res) {
+  const { id: memberId, year } = req.params;
+
+  const registration = await memberService.unregisterMember(memberId, year);
+
+  res.send(registration);
+}
+
 
 module.exports = {
   getAllMembers,
@@ -102,4 +142,6 @@ module.exports = {
   updateMember,
   getMemberById,
   deleteMember,
+  registerMember,
+  unregisterMember,
 };

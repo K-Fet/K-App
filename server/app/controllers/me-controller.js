@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const authService = require('../services/auth-service');
 const barmanService = require('../services/barman-service');
 const userService = require('../services/user-service');
@@ -10,7 +11,6 @@ const {
   Kommission,
 } = require('../models');
 const { BarmanSchema, SpecialAccountSchema } = require('../models/schemas');
-const Joi = require('joi');
 const logger = require('../../logger');
 
 /**

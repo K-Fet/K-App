@@ -1,6 +1,6 @@
+const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { sequelize } = require('../../bootstrap/sequelize');
-const { Op } = require('sequelize');
 const {
   ConnectionInformation, Barman, Kommission, Role, Service,
 } = require('../models');
@@ -34,7 +34,7 @@ async function getAllBarmen() {
 async function createBarman(newBarman, _embedded) {
   logger.verbose('Barman service: creating a new barman named %s %s', newBarman.firstName, newBarman.lastName);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     // We force the email to lowercase for multiple reasons:
     // 1. We can profit of the unique index of mysql
@@ -58,7 +58,7 @@ async function createBarman(newBarman, _embedded) {
     await transaction.rollback();
     logger.warn('Barman service: Error while creating barman %o', err);
 
-    if (err.Errors === sequelize.SequelizeUniqueConstraintError) {
+    if (err.Errors === sequelize().SequelizeUniqueConstraintError) {
       throw createUserError('BadUsername', 'a username must be unique');
     }
 
@@ -146,7 +146,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
   logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentBarman.update(cleanObject({
@@ -208,7 +208,7 @@ async function deleteBarmanById(barmanId) {
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   // FIXME even wih paranoid = false it doesn't work normally with CASCADE DELETE
   // because it should be the other way, here when we delete a connection information,
   // it deletes on cascade a barman. But when we delete a barman it doesn't delete a connection information on cascade

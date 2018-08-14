@@ -5,11 +5,11 @@ const { Model, DataTypes } = require('sequelize');
  */
 class JWT extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -28,11 +28,10 @@ class JWT extends Model {
   }
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-  static associate(models) {
-    this.belongsTo(models.ConnectionInformation, {
+   * Set associations for the model
+   */
+  static associate({ ConnectionInformation }) {
+    this.belongsTo(ConnectionInformation, {
       as: 'connection',
       foreignKey: {
         allowNull: false,

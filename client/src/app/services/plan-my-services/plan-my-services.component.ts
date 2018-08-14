@@ -30,7 +30,7 @@ export class PlanMyServicesComponent implements OnInit {
     this.updatePlanning(0);
   }
 
-  updatePlanning(dayNumber: Number): void {
+  updatePlanning(dayNumber: number): void {
     // Get the planning of the current week
     this.serviceService.getWeek().subscribe((week) => {
       this.serviceService.getPlanning(week.start, week.end).subscribe((days) => {
@@ -84,7 +84,7 @@ export class PlanMyServicesComponent implements OnInit {
     }
   }
 
-  getCurrentDayIndex(): Number {
+  getCurrentDayIndex(): number {
     return this.days.indexOf(this.days.filter(day => day.active === true)[0]);
   }
 

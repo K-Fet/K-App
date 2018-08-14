@@ -6,11 +6,11 @@ const Joi = require('joi');
  */
 class Member extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize Sequelize instance
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize Sequelize instance
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -30,12 +30,6 @@ class Member extends Model {
       },
 
       school: DataTypes.STRING,
-
-      active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
     }, {
       sequelize,
 
@@ -46,11 +40,10 @@ class Member extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) { // eslint-disable-line no-unused-vars
+   * Set associations for the model.
+   */
+  static associate({ Registration }) {
+    this.hasMany(Registration, { as: 'registrations', onDelete: 'CASCADE', foreignKey: 'memberId' });
   }
 }
 
@@ -59,7 +52,6 @@ const MemberSchema = Joi.object().keys({
   firstName: Joi.string(),
   lastName: Joi.string(),
   school: Joi.string(),
-  active: Joi.boolean(),
 });
 
 module.exports = {

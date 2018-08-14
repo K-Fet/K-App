@@ -17,7 +17,7 @@ async function createTask(newTask, _embedded) {
 
   if (!await Kommission.findById(_embedded.kommissionId)) throw createUserError('UnknownKommission', 'This kommission does not exist');
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     // eslint-disable-next-line no-param-reassign
     newTask.kommissionId = _embedded.kommissionId;
@@ -97,7 +97,7 @@ async function updateTask(taskId, updatedTask, _embedded) {
 
   logger.verbose('Task service: updating task named %s %s', currentTask.id, currentTask.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentTask.update(cleanObject({

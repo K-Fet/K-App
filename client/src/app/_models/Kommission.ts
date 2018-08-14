@@ -3,7 +3,7 @@ import { Task } from './Task';
 
 export class Kommission {
 
-  id: Number;
+  id: number;
   name: String;
   description: String;
   barmen: Barman[];

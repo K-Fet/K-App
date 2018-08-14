@@ -10,7 +10,7 @@ import { Moment } from 'moment';
 
 export class WeekPickerComponent implements OnInit {
 
-  weekInterval: Number;
+  weekInterval: number;
   week: { start: Moment, end: Moment };
 
   ngOnInit(): void {

@@ -1,6 +1,6 @@
+const guard = require('express-jwt-permissions')();
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
-const guard = require('express-jwt-permissions')();
 const serviceController = require('../controllers/service-controller');
 
 router.get('/', guard.check('service:read'), am(serviceController.getAllServices));

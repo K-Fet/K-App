@@ -54,7 +54,7 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  addServiceForm(nbMax: Number, startAt: Moment, endAt: Moment): void {
+  addServiceForm(nbMax: number, startAt: Moment, endAt: Moment): void {
     const serviceFormGroup = this.formBuilder.group({
       nbMaxFormControl: [nbMax, Validators.required],
       startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
@@ -80,7 +80,7 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  removeServiceForm(fromGroupId: Number): void {
+  removeServiceForm(fromGroupId: number): void {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 

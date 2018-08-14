@@ -18,9 +18,9 @@ export class BarmanNewComponent implements OnInit {
 
   barmanForm: FormGroup;
 
-  selectedGodFather: Number;
-  selectedKommissions: Number[];
-  selectedRoles: Number[];
+  selectedGodFather: number;
+  selectedKommissions: number[];
+  selectedRoles: number[];
 
   startDate = new Date();
 
@@ -82,7 +82,7 @@ export class BarmanNewComponent implements OnInit {
     this.barman._embedded = {};
     this.barman.connection = {};
     Object.keys(this.barmanForm.controls).forEach((key) => {
-      let add: Number[] = [];
+      let add: number[] = [];
       if (this.barmanForm.controls[key].value) {
         switch (key) {
           case 'username':

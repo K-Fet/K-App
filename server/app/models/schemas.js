@@ -7,6 +7,7 @@ const { KommissionSchema } = require('./kommission');
 const { RoleSchema } = require('./role');
 const { MemberSchema } = require('./member');
 const { MediaSchema } = require('./media');
+const { RegistrationSchema } = require('./registration');
 const { ServiceSchema } = require('./service');
 const { SpecialAccountSchema } = require('./special-account');
 const { TaskSchema } = require('./task');
@@ -21,6 +22,7 @@ module.exports = {
   KommissionSchema,
   RoleSchema,
   MemberSchema,
+  RegistrationSchema,
   ServiceSchema,
   SpecialAccountSchema,
   TaskSchema,

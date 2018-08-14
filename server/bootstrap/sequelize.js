@@ -31,7 +31,7 @@ async function start() {
 
   logger.debug('Booting sequelize with:', {
     ...CONF,
-    password: null,
+    password: undefined,
   });
 
   // Set logging function
@@ -53,7 +53,11 @@ async function start() {
 
 module.exports = {
   start,
-  get sequelize() {
+  /**
+   * Return a sequelize instance.
+   * @return {Sequelize}
+   */
+  sequelize() {
     return _sequelize;
   },
 };

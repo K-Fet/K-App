@@ -85,7 +85,7 @@ async function updateService(serviceId, updatedService) {
   if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
   logger.verbose('Service service: updating service named %s', currentService.name);
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await currentService.update(cleanObject({
       startAt: updatedService.startAt,

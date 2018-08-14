@@ -18,9 +18,9 @@ export class BarmanEditComponent implements OnInit {
   currentBarman: Barman = new Barman();
   barman: Barman = new Barman();
 
-  selectedGodFather: Number;
-  selectedKommissions: Number[];
-  selectedRoles: Number[];
+  selectedGodFather: number;
+  selectedKommissions: number[];
+  selectedRoles: number[];
 
   kommissions: Kommission[] = [];
   roles: Role[] = [];
@@ -222,8 +222,8 @@ export class BarmanEditComponent implements OnInit {
   }
 
   prepareAssociationChanges(current, updated): AssociationChanges {
-    const add: Number[] = [];
-    const remove: Number[] = [];
+    const add: number[] = [];
+    const remove: number[] = [];
     updated.forEach((aId) => {
       if (!current.map(a => a.id).includes(aId)) {
         add.push(aId);

@@ -44,7 +44,7 @@ export class SpecialAccountListComponent implements OnInit {
     this.router.navigate(['/specialaccounts', specialAccount.id]);
   }
 
-  delete(specialAccount: SpecialAccount, code: Number): void {
+  delete(specialAccount: SpecialAccount, code: number): void {
 
     this.specialAccountService.delete(specialAccount.id, code)
       .subscribe(() => {

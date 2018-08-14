@@ -73,7 +73,7 @@ async function getPinned() {
 async function createFeedObject(newFeedObject, _embedded) {
   logger.verbose('FeedObject service: creating a new feed object named %s', newFeedObject.title);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await newFeedObject.save({ transaction });
   } catch (err) {
@@ -146,7 +146,7 @@ async function updateFeedObject(feedObjectId, updatedFeedObject, medias, _embedd
 
   logger.verbose('FeedObject service: updating feed object named %s %s', currentFeedObject.id, currentFeedObject.title);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     if (medias) {
