@@ -42,7 +42,7 @@
           <ng-container matColumnDef="action">
             <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
             <mat-cell *matCellDef="let member">
-              <div fxLayout="row">
+              <div fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="center center">
                 <button
                   mat-icon-button
                   matTooltip="Inscrire pour cette année"
