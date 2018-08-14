@@ -20,7 +20,7 @@ async function getAllSpecialAccounts() {
       {
         model: ConnectionInformation,
         as: 'connection',
-        attributes: ['id', 'username'],
+        attributes: ['id', 'email'],
       },
     ],
   });
@@ -35,8 +35,8 @@ async function getAllSpecialAccounts() {
  */
 async function createSpecialAccount(newSpecialAccount, _embedded) {
   logger.verbose(
-    'SpecialAccount service: creating a new SpecialAccount with username %s',
-    newSpecialAccount.connection.username,
+    'SpecialAccount service: creating a new SpecialAccount with email %s',
+    newSpecialAccount.connection.email,
   );
 
   const transaction = await sequelize().transaction();
@@ -49,7 +49,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     //
     // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
     /* eslint-disable no-param-reassign */
-    newSpecialAccount.connection.username = newSpecialAccount.connection.username.toLowerCase();
+    newSpecialAccount.connection.email = newSpecialAccount.connection.email.toLowerCase();
 
     newSpecialAccount.code = await hash(newSpecialAccount.code);
 
@@ -57,7 +57,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     newSpecialAccount.connectionId = co.id;
     await newSpecialAccount.save({ transaction });
 
-    await authService.resetPassword(co.username, transaction);
+    await authService.resetPassword(co.email, transaction);
     // Remove critic fields
     newSpecialAccount.code = undefined;
     /* eslint-enable no-param-reassign */
@@ -68,7 +68,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
     await transaction.rollback();
 
     if (err.Errors === sequelize().SequelizeUniqueConstraintError) {
-      throw createUserError('BadUsername', 'a username must be unique');
+      throw createUserError('BadEmail', 'a email must be unique');
     }
     throw createServerError('ServerError', 'Error while creating special account');
   }
@@ -77,9 +77,9 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 
   // Welcome email
   try {
-    await mailService.sendWelcomeMail(newSpecialAccount.connection.username);
+    await mailService.sendWelcomeMail(newSpecialAccount.connection.email);
   } catch (err) {
-    logger.error('Error while sending reset password mail at %s, %o', newSpecialAccount.connection.username, err);
+    logger.error('Error while sending reset password mail at %s, %o', newSpecialAccount.connection.email, err);
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
 
@@ -100,7 +100,7 @@ async function getSpecialAccountById(specialAccountId) {
       {
         model: ConnectionInformation,
         as: 'connection',
-        attributes: ['id', 'username'],
+        attributes: ['id', 'email'],
       },
       {
         model: Permission,
@@ -134,7 +134,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
 
   if (!currentSpecialAccount) throw createUserError('UnknownSpecialAccount', 'This SpecialAccount does not exist');
 
-  logger.verbose('SpecialAccount service: updating specialAccount named %s', currentSpecialAccount.connection.username);
+  logger.verbose('SpecialAccount service: updating specialAccount named %s', currentSpecialAccount.connection.email);
 
   const transaction = await sequelize().transaction();
 
@@ -145,11 +145,11 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
       description: updatedSpecialAccount.description,
     }), { transaction });
 
-    if (updatedSpecialAccount.connection && updatedSpecialAccount.connection.username) {
-      // We have to load old username
+    if (updatedSpecialAccount.connection && updatedSpecialAccount.connection.email) {
+      // We have to load old email
       const co = await currentSpecialAccount.getConnection();
 
-      await authService.updateUsername(co.username, updatedSpecialAccount.connection.username);
+      await authService.updateEmail(co.email, updatedSpecialAccount.connection.email);
     }
   } catch (err) {
     if (err.userError) throw err;

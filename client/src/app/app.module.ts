@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { ReCaptchaModule } from 'angular2-recaptcha';
+import { ReCaptchaModule } from 'angular2-recaptcha/angular2-recaptcha';
 
 // Routes
 import { routing } from './app.routing';
@@ -45,7 +45,7 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
-import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { EmailVerificationComponent } from './auth/email-verification/email-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
@@ -136,7 +136,7 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     ResetPasswordDialogComponent,
     EqualValidator,
     DefinePasswordComponent,
-    UsernameVerificationComponent,
+    EmailVerificationComponent,
     TemplatesListComponent,
     TemplateNewComponent,
     TemplateViewComponent,

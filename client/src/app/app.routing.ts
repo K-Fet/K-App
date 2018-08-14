@@ -28,7 +28,7 @@ import { SpecialAccountListComponent } from './special-accounts/list/special-acc
 import { SpecialAccountEditComponent } from './special-accounts/edit/special-account-edit.component';
 import { SpecialAccountNewComponent } from './special-accounts/new/special-account-new.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
-import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { EmailVerificationComponent } from './auth/email-verification/email-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
@@ -59,8 +59,8 @@ const routes: Routes = [
   { path: 'presentation', component: PresentationComponent },
   { path: 'login', component: LoginComponent },
   { path: 'define-password', component: DefinePasswordComponent },
-  { path: 'username-verification', component: UsernameVerificationComponent },
-  { path: 'cancel-username-update', component: CancelEmailUpdateComponent },
+  { path: 'email-verification', component: EmailVerificationComponent },
+  { path: 'cancel-email-update', component: CancelEmailUpdateComponent },
   { path: 'contact/concert', component: ConcertContactComponent },
   { path: 'contact/event', component: EventContactComponent },
   { path: 'contact/lost', component: LostContactComponent },

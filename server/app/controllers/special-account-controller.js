@@ -28,7 +28,7 @@ async function createSpecialAccount(req, res) {
   const schema = SpecialAccountSchema.requiredKeys(
     'code',
     'connection',
-    'connection.username',
+    'connection.email',
   );
 
   const { error } = schema.validate(req.body.specialAccount);

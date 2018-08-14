@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit {
 
   getName(): String {
     if (this.currentUser.specialAccount) {
-      return this.currentUser.username;
+      return this.currentUser.email;
     } if (this.currentUser.barman) {
       return this.currentUser.barman.nickname;
     }

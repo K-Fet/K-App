@@ -36,8 +36,8 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string, rememberMe: number): Observable<any> {
-    return this.http.post('/api/auth/login', { username, password, rememberMe })
+  login(email: string, password: string, rememberMe: number): Observable<any> {
+    return this.http.post('/api/auth/login', { email, password, rememberMe })
       .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
@@ -49,28 +49,28 @@ export class AuthService {
       .pipe(tap(this.clearUser.bind(this)));
   }
 
-  definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
+  definePassword(email: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
     return this.http.put('api/auth/reset-password', {
-      username,
+      email,
       password,
       passwordToken,
       oldPassword,
     });
   }
 
-  verifyUsername(userId: number, username: String, password: String, usernameToken: String): Observable<any> {
-    return this.http.post('api/auth/username-verification', {
+  verifyEmail(userId: number, email: String, password: String, emailToken: String): Observable<any> {
+    return this.http.post('api/auth/email-verification', {
       userId,
-      username,
+      email,
       password,
-      usernameToken,
+      emailToken,
     });
   }
 
-  cancelEmailUpdate(userId: number, username: String) {
-    return this.http.post('api/auth/cancel-username-verification', {
+  cancelEmailUpdate(userId: number, email: String) {
+    return this.http.post('api/auth/cancel-email-verification', {
       userId,
-      username,
+      email,
     });
   }
 
@@ -109,7 +109,7 @@ export class AuthService {
             this.$currentUser.next(new ConnectedUser({
               barman,
               accountType: 'Barman',
-              username: barman.connection.username,
+              email: barman.connection.email,
               createdAt: barman.createdAt,
             }));
             this.ngxRolesService.addRole('BARMAN', ['']);
@@ -117,7 +117,7 @@ export class AuthService {
             this.$currentUser.next(new ConnectedUser({
               specialAccount,
               accountType: 'SpecialAccount',
-              username: specialAccount.connection.username,
+              email: specialAccount.connection.email,
               createdAt: specialAccount.createdAt,
             }));
             this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
@@ -127,7 +127,7 @@ export class AuthService {
       );
   }
 
-  resetPassword(username: String): Observable<any> {
-    return this.http.post('/api/auth/reset-password', { username });
+  resetPassword(email: String): Observable<any> {
+    return this.http.post('/api/auth/reset-password', { email });
   }
 }

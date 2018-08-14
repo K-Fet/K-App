@@ -4,15 +4,15 @@ import { AuthService, ToasterService } from '../../_services';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-username-verification',
-  templateUrl: './username-verification.component.html',
+  selector: 'app-email-verification',
+  templateUrl: './email-verification.component.html',
 })
 
-export class UsernameVerificationComponent implements OnInit {
+export class EmailVerificationComponent implements OnInit {
 
   passwordForm: FormGroup;
   token: String;
-  username: String;
+  email: String;
   userId: number;
 
   constructor(private authService: AuthService,
@@ -25,12 +25,12 @@ export class UsernameVerificationComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if (params['username'] && params['usernameToken'] && params['userId']) {
-        this.username = params['username'];
-        this.token = params['usernameToken'];
+      if (params['email'] && params['emailToken'] && params['userId']) {
+        this.email = params['email'];
+        this.token = params['emailToken'];
         this.userId = params['userId'];
       } else {
-        this.toasterService.showToaster('Problème dans la récupération du username ou du token');
+        this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
         setTimeout(this.router.navigate(['/login']), 1000);
       }
     });
@@ -42,9 +42,9 @@ export class UsernameVerificationComponent implements OnInit {
     });
   }
 
-  verifyUsername(): void {
+  verifyEmail(): void {
     const password = this.passwordForm.get('password').value;
-    this.authService.verifyUsername(this.userId, this.username, password, this.token).subscribe(() => {
+    this.authService.verifyEmail(this.userId, this.email, password, this.token).subscribe(() => {
       this.toasterService.showToaster('Enregistré, veuillez vous connecter');
       setTimeout(this.router.navigate(['/login']), 1000);
     });

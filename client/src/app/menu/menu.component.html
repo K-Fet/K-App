@@ -11,7 +11,7 @@
 			</div>
 		</div>
 		<div *ngIf="user?.specialAccount" class="connectedUserInformation">
-			<h4>Compte spécial {{user.specialAccount.connection.username}}</h4>
+			<h4>Compte spécial {{user.specialAccount.connection.email}}</h4>
 			<p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
 			<div fxLayoutAlign="end">
 				<a mat-raised-button routerLink="/specialaccounts/{{user.specialAccount.id}}">Modifier mes informations</a>

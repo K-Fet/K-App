@@ -19,11 +19,11 @@ export class CancelEmailUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if (params['username'] && params['userId']) {
+      if (params['email'] && params['userId']) {
         this.userId = +params['userId'];
-        this.email = params['username'];
+        this.email = params['email'];
       } else {
-        this.toasterService.showToaster('Problème dans la récupération du username ou du token');
+        this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
         setTimeout(this.router.navigate(['/login']), 1000);
       }
     });

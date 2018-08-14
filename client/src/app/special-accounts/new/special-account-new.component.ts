@@ -33,7 +33,7 @@ export class SpecialAccountNewComponent implements OnInit {
 
   createForms(): void {
     this.specialAccountForm = this.fb.group({
-      username: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       code: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]{4,}$/)]),
       codeConfirmation: new FormControl('', [Validators.required]),
       description: new FormControl(''),
@@ -83,7 +83,7 @@ export class SpecialAccountNewComponent implements OnInit {
     }
 
     specialAccount.connection = {
-      username: this.specialAccountForm.get('username').value,
+      email: this.specialAccountForm.get('email').value,
     };
 
     // Associations
@@ -109,7 +109,7 @@ export class SpecialAccountNewComponent implements OnInit {
       return true;
     }
 
-    return this.specialAccountForm.get('username').value === ''
+    return this.specialAccountForm.get('email').value === ''
       || !this.codeMatch()
       || add.length === 0;
   }

@@ -52,10 +52,10 @@ async function sendPasswordResetMail(email, token) {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/define-password?username=${email}&passwordToken=${encodeURIComponent(token)}`;
+          return `${WEB_CONFIG.publicURL}/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -65,72 +65,72 @@ async function sendPasswordResetMail(email, token) {
 }
 
 /**
- * Send verify username mail
+ * Send verify email mail
  *
  * @param email {String} recipient email address
- * @param token {String} usernameToken
+ * @param token {String} emailToken
  * @param userId {Number} User id
  * @returns {Promise<void>} Nothing
  */
-async function sendVerifyUsernameMail(email, token, userId) {
-  const mail = createMailTemplate(EMAIL_TEMPLATES.VERIFY_USERNAME)
+async function sendVerifyEmailMail(email, token, userId) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.VERIFY_EMAIL)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/username-verification?userId=${userId}&username=${email}&usernameToken=${encodeURIComponent(token)}`;
+          return `${WEB_CONFIG.publicURL}/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
     });
 
-  await sendMail(email, '[K-App] Vérification du nom d\'utilisateur (adresse e-mail)', mail);
+  await sendMail(email, '[K-App] Vérification du nom d\'utilisateur (adresse email)', mail);
 }
 
 /**
- * Send username update information
+ * Send email update information
  *
  * @param email {String} recipient email address
  * @param newEmail {String} updated email address
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameUpdateInformationMail(email, newEmail, userId) {
-  const mail = createMailTemplate(EMAIL_TEMPLATES.USERNAME_UPDATE_INFORMATION)
+async function sendEmailUpdateInformationMail(email, newEmail, userId) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_UPDATE_INFORMATION)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
-        case 'MAIL_NEW_USERNAME':
+        case 'MAIL_NEW_EMAIL':
           return newEmail;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/cancel-username-update?userId=${userId}&username=${email}`;
+          return `${WEB_CONFIG.publicURL}/cancel-email-update?userId=${userId}&email=${email}`;
         default:
           return `??${replaceToken}??`;
       }
     });
 
-  await sendMail(email, '[K-App] Information de changement de username (adresse email)', mail);
+  await sendMail(email, '[K-App] Information de changement d\'adresse email', mail);
 }
 
 /**
- * Send a confirmation after an username update.
+ * Send a confirmation after an email update.
  *
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendUsernameConfirmation(email) {
-  const mail = createMailTemplate(EMAIL_TEMPLATES.USERNAME_CONFIRM_CHANGE)
+async function sendEmailConfirmation(email) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_CONFIRM_CHANGE)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         default:
           return `??${replaceToken}??`;
@@ -152,7 +152,7 @@ async function sendPasswordUpdate(email) {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         default:
           return `??${replaceToken}??`;
@@ -163,18 +163,18 @@ async function sendPasswordUpdate(email) {
 }
 
 /**
- * Send a confirmation after a cancellation of an username update.
+ * Send a confirmation after a cancellation of an email update.
  *
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendCancelUsernameConfirmation(email) {
-  const mail = createMailTemplate(EMAIL_TEMPLATES.USERNAME_CHANGE_CANCEL_CONFIRMATION)
+async function sendCancelEmailConfirmation(email) {
+  const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_CHANGE_CANCEL_CONFIRMATION)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
           return WEB_CONFIG.publicURL;
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         default:
           return `??${replaceToken}??`;
@@ -195,7 +195,7 @@ async function sendWelcomeMail(email) {
     switch (replaceToken) {
       case 'MAIL_WEBSITE':
         return WEB_CONFIG.publicURL;
-      case 'MAIL_USERNAME':
+      case 'MAIL_EMAIL':
         return email;
       default:
         return `??${replaceToken}??`;
@@ -227,8 +227,8 @@ async function sendContactForm(formName, emails, values) {
           html += '</ul></p>';
           return html;
         }
-        case 'MAIL_USERNAME':
-          return '{{ MAIL_USERNAME }}';
+        case 'MAIL_EMAIL':
+          return '{{ MAIL_EMAIL }}';
         default:
           return `??${replaceToken}??`;
       }
@@ -238,7 +238,7 @@ async function sendContactForm(formName, emails, values) {
   for (const email of emails) {
     const currentMail = emailTemplate.replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
-        case 'MAIL_USERNAME':
+        case 'MAIL_EMAIL':
           return email;
         default:
           return `??${replaceToken}??`;
@@ -252,11 +252,11 @@ async function sendContactForm(formName, emails, values) {
 
 module.exports = {
   sendPasswordResetMail,
-  sendVerifyUsernameMail,
-  sendUsernameUpdateInformationMail,
-  sendUsernameConfirmation,
+  sendVerifyEmailMail,
+  sendEmailUpdateInformationMail,
+  sendEmailConfirmation,
   sendWelcomeMail,
-  sendCancelUsernameConfirmation,
+  sendCancelEmailConfirmation,
   sendContactForm,
   sendPasswordUpdate,
 };

@@ -1,4 +1,4 @@
-import { ResetPasswordDialogComponent } from './../../dialogs/reset-password/reset-password.component';
+import { ResetPasswordDialogComponent } from '../../dialogs/reset-password/reset-password.component';
 import { MatDialog } from '@angular/material';
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -26,16 +26,16 @@ export class LoginComponent {
 
   createForm(): void {
     this.loginForm = this.fb.group({
-      username: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
       rememberMe: new FormControl(false),
     });
   }
 
   login(): void {
-    const { username, password, rememberMe } = this.loginForm.value;
+    const { email, password, rememberMe } = this.loginForm.value;
     const rememberMeDay = rememberMe ? environment.JWT_DAY_EXP_LONG : environment.JWT_DAY_EXP;
-    this.authService.login(username, password, rememberMeDay)
+    this.authService.login(email, password, rememberMeDay)
       .subscribe(() => {
         this.authService.$currentUser.subscribe((user) => {
           this.user = user;
@@ -47,9 +47,9 @@ export class LoginComponent {
   openDialog(): void {
     const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
 
-    dialogRef.afterClosed().subscribe((username) => {
-      if (username) {
-        this.authService.resetPassword(username).subscribe(() => {
+    dialogRef.afterClosed().subscribe((email) => {
+      if (email) {
+        this.authService.resetPassword(email).subscribe(() => {
           this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
         });
       }

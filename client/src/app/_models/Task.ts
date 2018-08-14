@@ -1,4 +1,4 @@
-import { Barman, Kommission, AssociationChanges } from './index';
+import { Barman, Kommission, AssociationChanges } from '.';
 
 export class Task {
   id: number;

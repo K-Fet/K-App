@@ -33,6 +33,7 @@ async function me(req, res) {
  */
 async function updateMe(req, res) {
   const user = await authService.me(req.user.jit);
+  console.log(user.specialAccount);
 
   if (user.specialAccount) {
     const schema = SpecialAccountSchema.min(1);
@@ -75,8 +76,7 @@ async function updateMe(req, res) {
       specialAccount: newSpecialAccount,
       barman: undefined,
     });
-  }
-  if (user.barman) {
+  } else if (user.barman) {
     const schema = BarmanSchema
       .forbiddenKeys('active')
       .min(1);

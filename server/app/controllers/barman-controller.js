@@ -29,7 +29,7 @@ async function createBarman(req, res) {
     'firstName',
     'lastName',
     'connection',
-    'connection.username',
+    'connection.email',
     'nickname',
     'dateOfBirth',
     'flow',

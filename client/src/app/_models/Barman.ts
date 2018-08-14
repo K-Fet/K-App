@@ -1,4 +1,4 @@
-import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } from './index';
+import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } from '.';
 
 export class Barman {
 

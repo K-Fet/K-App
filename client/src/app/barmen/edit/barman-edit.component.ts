@@ -53,7 +53,7 @@ export class BarmanEditComponent implements OnInit {
       nickname: new FormControl('', [Validators.required]),
       facebook: new FormControl('', [Validators.pattern(
         /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w\-]*\/)*([\w\-.]+)(\/)?/i)]),
-      username: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       dateOfBirth: new FormControl('', [Validators.required]),
       flow: new FormControl('', [Validators.required]),
       godFather: new FormControl(''),
@@ -107,7 +107,7 @@ export class BarmanEditComponent implements OnInit {
         this.barmanForm.controls.firstName.setValue(barman.firstName);
         this.barmanForm.controls.nickname.setValue(barman.nickname);
         this.barmanForm.controls.facebook.setValue(barman.facebook);
-        this.barmanForm.controls.username.setValue(barman.connection.username);
+        this.barmanForm.controls.email.setValue(barman.connection.email);
         this.barmanForm.controls.dateOfBirth.setValue(barman.dateOfBirth);
         this.barmanForm.controls.flow.setValue(barman.flow);
         this.barmanForm.controls.active.setValue(barman.active);
@@ -141,7 +141,7 @@ export class BarmanEditComponent implements OnInit {
 
   updatePassword(): void {
     this.authService.definePassword(
-      this.currentBarman.connection.username,
+      this.currentBarman.connection.email,
       this.passwordForm.value.newPassword,
       null,
       this.passwordForm.value.oldPassword).subscribe(() => {
@@ -179,10 +179,10 @@ export class BarmanEditComponent implements OnInit {
     Object.keys(this.currentBarman).forEach((key) => {
       switch (key) {
         case 'connection':
-          if (values.username !== this.currentBarman.connection.username) {
+          if (values.email !== this.currentBarman.connection.email) {
             this.barman.connection = {
               ...this.barman.connection,
-              username: values.username,
+              email: values.email,
             };
           }
           break;

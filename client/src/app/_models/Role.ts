@@ -1,4 +1,4 @@
-import { AssociationChanges, Permission } from './index';
+import { AssociationChanges, Permission } from '.';
 
 export class Role {
 
