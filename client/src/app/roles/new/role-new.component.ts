@@ -6,7 +6,7 @@ import { PermissionService, RoleService, ToasterService } from '../../_services'
 
 interface PermissionObj {
   permission: Permission;
-  isChecked: Boolean;
+  isChecked: boolean;
 }
 
 @Component({

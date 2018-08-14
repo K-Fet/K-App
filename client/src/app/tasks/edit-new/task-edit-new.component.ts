@@ -16,7 +16,7 @@ export class TaskEditNewDialogComponent implements OnInit {
   barmen: Barman[];
   states = TASK_STATES;
 
-  selectedSate: String;
+  selectedSate: string;
   selectedBarmen: number[];
 
   constructor(public dialogRef: MatDialogRef<TaskEditNewDialogComponent>,

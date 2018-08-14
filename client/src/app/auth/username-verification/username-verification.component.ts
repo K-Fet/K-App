@@ -11,8 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class UsernameVerificationComponent implements OnInit {
 
   passwordForm: FormGroup;
-  token: String;
-  username: String;
+  token: string;
+  username: string;
   userId: number;
 
   constructor(private authService: AuthService,

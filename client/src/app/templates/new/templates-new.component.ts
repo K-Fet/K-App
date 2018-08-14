@@ -84,7 +84,7 @@ export class TemplateNewComponent {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 
-  toNumber(date: String, selectedDay): TemplateDateUnit {
+  toNumber(date: string, selectedDay): TemplateDateUnit {
     return {
       day: selectedDay,
       hours: +date.split(':')[0],
@@ -112,7 +112,7 @@ export class TemplateNewComponent {
     };
   }
 
-  findWeekDay(dayId: String): String {
+  findWeekDay(dayId: string): string {
     return this.WEEK_DAY.find(day => day.id === dayId).value;
   }
 }

@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material';
 
 interface PermissionObj {
   permission: Permission;
-  isChecked: Boolean;
+  isChecked: boolean;
 }
 
 @Component({
@@ -100,7 +100,7 @@ export class SpecialAccountNewComponent implements OnInit {
     return specialAccount;
   }
 
-  disable(): Boolean {
+  disable(): boolean {
     const add = this.permissions.filter((permission) => {
       return permission.isChecked === true;
     });
@@ -114,7 +114,7 @@ export class SpecialAccountNewComponent implements OnInit {
       || add.length === 0;
   }
 
-  codeMatch(): Boolean {
+  codeMatch(): boolean {
     return (this.specialAccountForm.get('code').value ===
       this.specialAccountForm.get('codeConfirmation').value ||
       this.specialAccountForm.get('codeConfirmation').untouched);

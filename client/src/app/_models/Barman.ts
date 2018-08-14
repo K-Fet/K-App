@@ -3,16 +3,16 @@ import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } 
 export class Barman {
 
   id: number;
-  lastName: String;
-  firstName: String;
-  nickname: String;
+  lastName: string;
+  firstName: string;
+  nickname: string;
   deletedAt: Date;
   createdAt: Date;
   updatedAt: Date;
-  facebook: String;
+  facebook: string;
   dateOfBirth: Date;
-  flow: String;
-  active: Boolean;
+  flow: string;
+  active: boolean;
 
     // Associations
 

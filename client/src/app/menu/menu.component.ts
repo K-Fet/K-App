@@ -8,16 +8,16 @@ import { Router } from '@angular/router';
 import * as Hammer from 'hammerjs';
 
 interface Link {
-  name: String;
-  route: String;
-  permissions?: String[];
-  accountType?: String;
+  name: string;
+  route: string;
+  permissions?: string[];
+  accountType?: string;
 }
 
 interface SubMenu {
-  name?: String;
+  name?: string;
   links: Link[];
-  accountType?: String;
+  accountType?: string;
 }
 
 @Component({
@@ -184,6 +184,7 @@ export class MenuComponent implements OnDestroy, OnInit {
   logout(): void {
     this.authService.logout().subscribe(() => {
       this.toasterService.showToaster('Déconnexion réussie');
+      this.router.navigate(['/']);
     });
   }
 
@@ -197,14 +198,14 @@ export class MenuComponent implements OnDestroy, OnInit {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
-  isVisible(subMenu: SubMenu): Boolean {
+  isVisible(subMenu: SubMenu): boolean {
     if (subMenu.accountType === 'guest' && !this.user.isGuest()) return false;
     if (subMenu.accountType === 'connectedUser' && this.user.isGuest()) return false;
     for (const link of subMenu.links) {
       if (!link.permissions) return true;
       for (const perm of link.permissions) {
-        if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1
-            || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm as string) !== -1) {
+        if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm) !== -1
+            || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm) !== -1) {
           return true;
         }
       }

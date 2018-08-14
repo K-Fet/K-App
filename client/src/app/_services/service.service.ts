@@ -10,7 +10,7 @@ import { Moment } from 'moment';
 
 // The K-Fêt week change every thusday ( = 4 )
 export const DEFAULT_WEEK_SWITCH: number = 4;
-const WEEK_DAY_SHORT: String[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+const WEEK_DAY_SHORT: string[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Injectable()
 export class ServiceService {

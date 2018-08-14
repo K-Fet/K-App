@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ConnectedUser, Permission } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
-import { Router } from '@angular/router';
 import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,29 +15,37 @@ export class AuthService {
 
   constructor(private http: HttpClient,
               private ngxPermissionsService: NgxPermissionsService,
-              private ngxRolesService: NgxRolesService,
-              private router: Router) {
-    this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
-      accountType: 'Guest',
-      createdAt: new Date(),
-    }));
-    const currentUser = {
-      ...JSON.parse(localStorage.getItem('currentUser')),
-      ...JSON.parse(sessionStorage.getItem('currentUser')),
-    };
-    if (currentUser.jwt) {
-      const jwtDecoded = jwt_decode(currentUser.jwt);
-      if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
-        this.me().subscribe();
+              private ngxRolesService: NgxRolesService) { }
+
+  initializeAuth(): Promise<any> {
+    return new Promise((resolve) => {
+      this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
+        accountType: 'Guest',
+        createdAt: new Date(),
+      }));
+      const currentUser = {
+        ...JSON.parse(localStorage.getItem('currentUser')),
+        ...JSON.parse(sessionStorage.getItem('currentUser')),
+      };
+      if (currentUser.jwt) {
+        const jwtDecoded = jwt_decode(currentUser.jwt);
+        if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
+          this.me().subscribe(() => {
+            resolve();
+          });
+        } else {
+          this.clearUser();
+          resolve();
+        }
       } else {
-        this.clearUser();
+        resolve();
       }
-    }
+    });
   }
 
   login(username: string, password: string, rememberMe: number): Observable<any> {
     return this.http.post('/api/auth/login', { username, password, rememberMe })
-      .pipe(tap((jwt: { jwt: String, permissions: Permission }) => {
+      .pipe(tap((jwt: { jwt: string, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
       }));
@@ -49,7 +56,7 @@ export class AuthService {
       .pipe(tap(this.clearUser.bind(this)));
   }
 
-  definePassword(username: String, password: String, passwordToken: String, oldPassword: String): Observable<any> {
+  definePassword(username: string, password: string, passwordToken: string, oldPassword: string): Observable<any> {
     return this.http.put('api/auth/reset-password', {
       username,
       password,
@@ -58,7 +65,7 @@ export class AuthService {
     });
   }
 
-  verifyUsername(userId: number, username: String, password: String, usernameToken: String): Observable<any> {
+  verifyUsername(userId: number, username: string, password: string, usernameToken: string): Observable<any> {
     return this.http.post('api/auth/username-verification', {
       userId,
       username,
@@ -67,7 +74,7 @@ export class AuthService {
     });
   }
 
-  cancelEmailUpdate(userId: number, username: String) {
+  cancelEmailUpdate(userId: number, username: string) {
     return this.http.post('api/auth/cancel-username-verification', {
       userId,
       username,
@@ -83,7 +90,6 @@ export class AuthService {
     this.ngxRolesService.flushRoles();
     if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
     if (sessionStorage.getItem('currentUser')) sessionStorage.removeItem('currentUser');
-    this.router.navigate(['/']);
   }
 
   private saveUser(jwt, rememberMe): void {
@@ -127,7 +133,7 @@ export class AuthService {
       );
   }
 
-  resetPassword(username: String): Observable<any> {
+  resetPassword(username: string): Observable<any> {
     return this.http.post('/api/auth/reset-password', { username });
   }
 }
