@@ -5,11 +5,11 @@ const { Model, DataTypes } = require('sequelize');
  */
 class Permission extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -31,10 +31,9 @@ class Permission extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-    static associate(models) {} // eslint-disable-line
+   * Set associations for the model
+   */
+  static associate() {}
 }
 
 module.exports = {

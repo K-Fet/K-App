@@ -31,7 +31,7 @@ async function getAllKommissions() {
 async function createKommission(newKommission, _embedded) {
   logger.verbose('Kommission service: creating a new kommission named %s', newKommission.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await newKommission.save({ transaction });
   } catch (err) {
@@ -99,7 +99,7 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
 
   logger.verbose('Kommission service: updating kommission named %s %s', currentKommission.id, currentKommission.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentKommission.update(cleanObject({

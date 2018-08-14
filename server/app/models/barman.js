@@ -8,11 +8,11 @@ const { ConnectionInformationSchema } = require('./connection-information');
  */
 class Barman extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -65,23 +65,21 @@ class Barman extends Model {
 
 
   /**
-     * Set associations for the model.
-     *
-     * @param models
-     */
-  static associate(models) {
-    this.belongsToMany(models.Kommission, { through: models.KommissionWrapper, as: 'kommissions' });
-    this.belongsToMany(models.Role, { through: models.RoleWrapper, as: 'roles' });
-    this.belongsToMany(models.Service, { through: models.ServiceWrapper, as: 'services' });
+   * Set associations for the model.
+   */
+  static associate({
+    Kommission, Role, Service, KommissionWrapper, RoleWrapper,
+    ServiceWrapper, ConnectionInformation, Task, TaskBarmanWrapper,
+  }) {
+    this.belongsToMany(Kommission, { through: KommissionWrapper, as: 'kommissions' });
+    this.belongsToMany(Role, { through: RoleWrapper, as: 'roles' });
+    this.belongsToMany(Service, { through: ServiceWrapper, as: 'services' });
 
     this.belongsTo(Barman, { as: 'godFather' });
 
-    this.belongsTo(models.ConnectionInformation, {
-      onDelete: 'CASCADE',
-      as: 'connection',
-    });
+    this.belongsTo(ConnectionInformation, { onDelete: 'CASCADE', as: 'connection' });
 
-    this.belongsToMany(models.Task, { through: models.TaskBarmanWrapper, as: 'tasks' });
+    this.belongsToMany(Task, { through: TaskBarmanWrapper, as: 'tasks' });
   }
 }
 
@@ -93,8 +91,9 @@ const BarmanSchema = Joi.object().keys({
   active: Joi.boolean(),
   nickname: Joi.string(),
   // eslint-disable-next-line
-    facebook: Joi.string().regex(
-    /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w-]*\/)*([\w\-.]+)(\/)?/i),
+  facebook: Joi.string().regex(
+    /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w-]*\/)*([\w\-.]+)(\/)?/i,
+  ),
   dateOfBirth: Joi.string().isoDate(),
   flow: Joi.string(),
 

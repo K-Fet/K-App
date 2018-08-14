@@ -1,6 +1,6 @@
+const guard = require('express-jwt-permissions')();
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
-const guard = require('express-jwt-permissions')();
 const { codeGuard } = require('../middlewares/code-guard');
 const specialAccountController = require('../controllers/special-account-controller');
 

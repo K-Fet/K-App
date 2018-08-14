@@ -6,11 +6,11 @@ const Joi = require('joi');
  */
 class Service extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -45,11 +45,10 @@ class Service extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-  static associate(models) {
-    this.belongsToMany(models.Barman, { through: models.ServiceWrapper, as: 'barmen' });
+   * Set associations for the model
+   */
+  static associate({ Barman, ServiceWrapper }) {
+    this.belongsToMany(Barman, { through: ServiceWrapper, as: 'barmen' });
   }
 }
 

@@ -1,8 +1,8 @@
+const Joi = require('joi');
 const templateService = require('../services/template-service');
 const { Template, TemplateUnit } = require('../models');
 const { TemplateSchema, TemplateUnitSchema } = require('../models/schemas');
 const { createUserError } = require('../../utils');
-const Joi = require('joi');
 
 /**
  * Fetch all templates from the database

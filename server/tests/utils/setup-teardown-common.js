@@ -15,7 +15,7 @@ async function setup() {
 }
 
 async function teardown() {
-  await sequelize.sequelize.close();
+  await sequelize.sequelize().close();
 }
 
 module.exports = {

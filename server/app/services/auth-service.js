@@ -1,13 +1,11 @@
-const logger = require('../../logger');
-const { sequelize } = require('../../bootstrap/sequelize');
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
-
+const logger = require('../../logger');
+const { sequelize } = require('../../bootstrap/sequelize');
 const { jwtSecret } = require('../../config/jwt');
 const {
   verify, createUserError, createServerError, generateToken, hash,
 } = require('../../utils');
-
 const {
   ConnectionInformation, JWT, Barman, SpecialAccount, Kommission, Role, Permission,
 } = require('../models');
@@ -228,7 +226,7 @@ async function me(tokenId) {
  */
 async function resetPassword(usernameDirty, currTransaction) {
   const username = usernameDirty.toLowerCase();
-  const transaction = currTransaction || await sequelize.transaction();
+  const transaction = currTransaction || await sequelize().transaction();
 
   const co = await ConnectionInformation.findOne({
     where: { username },
@@ -311,7 +309,7 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
     );
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
   try {
     await user.update({
       password: await hash(newPassword),
@@ -355,7 +353,7 @@ async function updateUsername(currentUsername, newUsername) {
 
   const usernameToken = await generateToken(128);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({
@@ -391,14 +389,14 @@ async function updateUsername(currentUsername, newUsername) {
 async function usernameVerify(userId, username, password, usernameToken) {
   const co = await ConnectionInformation.findById(userId);
 
-  if (!co ||
-    !await verify(co.password, password) ||
-    !await verify(co.usernameToken, usernameToken + username)
+  if (!co
+    || !await verify(co.password, password)
+    || !await verify(co.usernameToken, usernameToken + username)
   ) {
     throw createUserError('VerificationError', 'Bad token/password/new email combination.');
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({
@@ -451,7 +449,7 @@ async function cancelUsernameUpdate(userId, username) {
     throw createUserError('VerificationError', 'No user found for this user id.');
   }
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await co.update({

@@ -29,7 +29,7 @@ async function getAllRoles() {
 async function createRole(newRole, _embedded) {
   logger.verbose('Role service: creating a new role named %s', newRole.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await newRole.save({ transaction });
@@ -92,7 +92,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
 
   logger.verbose('Role service: updating role named %s', currentRole.name);
 
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize().transaction();
 
   try {
     await currentRole.update(cleanObject({

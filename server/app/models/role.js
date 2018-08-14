@@ -7,11 +7,11 @@ const { AssociationChangesSchema } = require('./association-changes');
  */
 class Role extends Model {
   /**
-     * Initialization function.
-     *
-     * @param sequelize
-     * @returns {Model}
-     */
+   * Initialization function.
+   *
+   * @param sequelize
+   * @returns {Model}
+   */
   static init(sequelize) {
     return super.init({
       id: {
@@ -34,19 +34,12 @@ class Role extends Model {
 
 
   /**
-     * Set associations for the model
-     * @param models
-     */
-  static associate(models) {
-    this.belongsToMany(models.Barman, {
-      through: models.RoleWrapper,
-      as: 'barmen',
-    });
+   * Set associations for the model
+   */
+  static associate({ Barman, Permission, RoleWrapper }) {
+    this.belongsToMany(Barman, { through: RoleWrapper, as: 'barmen' });
 
-    this.belongsToMany(models.Permission, {
-      through: 'RolePermissions',
-      as: 'permissions',
-    });
+    this.belongsToMany(Permission, { through: 'RolePermissions', as: 'permissions' });
   }
 }
 

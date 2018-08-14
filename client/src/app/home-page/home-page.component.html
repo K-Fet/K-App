@@ -7,7 +7,7 @@
 				</div>
 				<div>
 					Check la <span class="link" routerLink="/presentation">page de présentation</span>!
-				</div>				
+				</div>
 			</mat-card-content>
 		</mat-card>
 	</div>
@@ -21,7 +21,7 @@
 									<h1>Bonjour {{ getName() }}!</h1>
 							</section>
 						</mat-card-title>
-						<mat-card-subtitle>Cela fait maintenant {{ getSeniority() }} que tu fais parti de l'association A.R.G.I.L</mat-card-subtitle>
+						<mat-card-subtitle>Cela fait maintenant {{ currentUser.createdAt | amTimeAgo:true }} que tu fais parti de l'association A.R.G.I.L</mat-card-subtitle>
 					</mat-card-header>
 				</mat-card>
 			</div>
@@ -29,7 +29,7 @@
 				<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
 				<app-my-services fxFlex></app-my-services>
 			</div>
-		</div> 
+		</div>
 	</div>
 	<app-feed></app-feed>
 </div>

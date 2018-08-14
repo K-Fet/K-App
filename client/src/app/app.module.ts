@@ -86,6 +86,11 @@ import { EqualValidator } from './_helpers/equal-validator.directive';
 import { ErrorsHandler } from './_helpers/error.handler';
 
 // Date
+import { MomentModule } from 'ngx-moment';
+import 'moment/locale/fr';
+import * as moment from 'moment';
+
+moment.locale('fr');
 
 // tslint:disable-next-line:no-duplicate-imports
 import { registerLocaleData } from '@angular/common';
@@ -173,6 +178,7 @@ export function initAuth(authService: AuthService) {
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
+    MomentModule,
     HttpClientModule,
     routing,
     FormsModule,
