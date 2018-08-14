@@ -11,8 +11,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DefinePasswordComponent implements OnInit {
 
   passwordForm: FormGroup;
-  token: String;
-  email: String;
+  token: string;
+  email: string;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,

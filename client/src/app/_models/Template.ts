@@ -13,7 +13,7 @@ export interface TemplateServiceUnit {
 export class Template {
 
   id: number;
-  name: String;
+  name: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;

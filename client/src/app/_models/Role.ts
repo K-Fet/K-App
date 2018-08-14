@@ -3,8 +3,8 @@ import { AssociationChanges, Permission } from '.';
 export class Role {
 
   id: number;
-  name: String;
-  description: String;
+  name: string;
+  description: string;
 
   // Association
   permissions: Permission[];

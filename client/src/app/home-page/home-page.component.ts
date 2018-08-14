@@ -19,7 +19,7 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-  getName(): String {
+  getName(): string {
     if (this.currentUser.specialAccount) {
       return this.currentUser.email;
     } if (this.currentUser.barman) {

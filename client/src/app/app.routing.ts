@@ -45,7 +45,7 @@ import { KommissionViewComponent } from './kommissions/view/kommission-view.comp
 import { CancelEmailUpdateComponent } from './auth/cancel-email-update/cancel-email-update.component';
 import { PresentationComponent } from './presentation/presentation.component';
 
-const generateData = (permissions: String[] | String) => {
+const generateData = (permissions: string[] | string) => {
   return {
     permissions: {
       only: permissions,

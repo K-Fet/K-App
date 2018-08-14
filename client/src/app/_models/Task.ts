@@ -2,10 +2,10 @@ import { Barman, Kommission, AssociationChanges } from '.';
 
 export class Task {
   id: number;
-  name: String;
+  name: string;
   deadline: Date;
-  state: String;
-  description: String;
+  state: string;
+  description: string;
   createdAt: Date;
   kommission: Kommission;
   barmen: Barman[];

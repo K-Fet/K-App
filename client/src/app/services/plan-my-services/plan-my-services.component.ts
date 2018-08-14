@@ -97,11 +97,11 @@ export class PlanMyServicesComponent implements OnInit {
     });
   }
 
-  available(service: Service): Boolean {
+  available(service: Service): boolean {
     return !service.barmen || service.barmen.filter(barman => barman.id === this.user.barman.id).length === 0;
   }
 
-  isPasted(service): Boolean {
+  isPasted(service): boolean {
     return new Service(service).isPasted();
   }
 

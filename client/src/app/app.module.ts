@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
+import { ErrorHandler, LOCALE_ID, NgModule, APP_INITIALIZER } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 
@@ -101,6 +101,11 @@ registerLocaleData(fr, 'fr');
 // Modules
 import { MaterialModule } from './_helpers/material.module';
 import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
+
+// Auth initialization
+export function initAuth(authService: AuthService) {
+  return () => authService.initializeAuth();
+}
 
 @NgModule({
   declarations: [
@@ -210,6 +215,12 @@ import { MyTasksComponent } from './tasks/my-tasks/my-tasks.component';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestInterceptor,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initAuth,
+      deps: [AuthService],
       multi: true,
     },
   ],

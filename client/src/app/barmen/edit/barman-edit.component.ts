@@ -30,7 +30,7 @@ export class BarmanEditComponent implements OnInit {
 
   passwordForm: FormGroup;
 
-  oldPassword: String;
+  oldPassword: string;
 
   startDate = new Date();
 
@@ -84,7 +84,7 @@ export class BarmanEditComponent implements OnInit {
     this.startDate.setFullYear(this.startDate.getFullYear() - 20);
   }
 
-  getErrorMessage(): String {
+  getErrorMessage(): string {
     if (this.passwordForm.hasError('passwordMismatch')) {
       return 'Les nouveaux mots de passe ne correspondent pas.';
     }
@@ -237,7 +237,7 @@ export class BarmanEditComponent implements OnInit {
     return { add, remove };
   }
 
-  isMe(): Boolean {
+  isMe(): boolean {
     return this.connectedUser && this.connectedUser.barman
       && this.connectedUser.barman.id === this.currentBarman.id;
   }

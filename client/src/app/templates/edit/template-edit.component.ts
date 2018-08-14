@@ -18,8 +18,8 @@ export class TemplateEditComponent implements OnInit {
   servicesFormGroup: FormGroup;
   templateId: number;
 
-  selectedStartDay: String[];
-  selectedEndDay: String[];
+  selectedStartDay: string[];
+  selectedEndDay: string[];
 
   WEEK_DAY = [
     { id: '1', value: 'Lundi' },
@@ -155,7 +155,7 @@ export class TemplateEditComponent implements OnInit {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 
-  toNumber(date: String, selectedDay): TemplateDateUnit {
+  toNumber(date: string, selectedDay): TemplateDateUnit {
     return {
       day: selectedDay,
       hours: +date.split(':')[0],
@@ -163,7 +163,7 @@ export class TemplateEditComponent implements OnInit {
     };
   }
 
-  findWeekDay(dayId: String): String {
+  findWeekDay(dayId: string): string {
     return this.WEEK_DAY.find(day => day.id === dayId).value;
   }
 }

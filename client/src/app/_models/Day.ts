@@ -2,9 +2,9 @@ import { Service } from '.';
 import { Moment } from 'moment';
 
 export class Day {
-  name: String;
+  name: string;
   date: Moment;
-  active: Boolean;
+  active: boolean;
   services: Service[];
 
   constructor(values: Object = {}) {

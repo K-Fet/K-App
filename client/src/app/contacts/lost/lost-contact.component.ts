@@ -11,8 +11,8 @@ import { environment } from '../../../environments/environment';
 export class LostContactComponent {
 
   contactForm: FormGroup;
-  token: String;
-  siteKey: String = environment.RECAPTACHA_SITE_KEY;
+  token: string;
+  siteKey: string = environment.RECAPTACHA_SITE_KEY;
 
   constructor(private fb: FormBuilder,
               private contactService: ContactService,
@@ -33,7 +33,7 @@ export class LostContactComponent {
     });
   }
 
-  onCaptchaComplete(response: String): void {
+  onCaptchaComplete(response: string): void {
     this.token = response;
   }
 
