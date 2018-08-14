@@ -56,7 +56,7 @@ export class AuthService {
       .pipe(tap(this.clearUser.bind(this)));
   }
 
-  definePassword(email: string, password: String, passwordToken: String, oldPassword: String): Observable<any> {
+  definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Observable<any> {
     return this.http.put('api/auth/reset-password', {
       email,
       password,
@@ -65,7 +65,7 @@ export class AuthService {
     });
   }
 
-  verifyEmail(userId: number, email: string, password: String, emailToken: string): Observable<any> {
+  verifyEmail(userId: number, email: string, password: string, emailToken: string): Observable<any> {
     return this.http.post('api/auth/email-verification', {
       userId,
       email,
