@@ -2,11 +2,11 @@ import { AssociationChanges, ConnectionInformation, Permission } from './index';
 
 export class SpecialAccount {
 
-  id: Number;
-  description: String;
+  id: number;
+  description: string;
   createdAt: Date;
-  code: Number;
-  password: String;
+  code: number;
+  password: string;
 
   // Association
   connection: ConnectionInformation;

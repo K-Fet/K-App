@@ -16,15 +16,15 @@ export class MemberService {
     return this.http.get<Member>(`/api/members/${id}`);
   }
 
-  create(member: Member, code: Number): Observable<Member> {
+  create(member: Member, code: number): Observable<Member> {
     return this.http.post<Member>('/api/members', { code, member });
   }
 
-  update(member: Member, code: Number): Observable<Member> {
+  update(member: Member, code: number): Observable<Member> {
     return this.http.put<Member>(`/api/members/${member.id}`, { code, member });
   }
 
-  delete(id: Number, code: Number): Observable<Member> {
+  delete(id: number, code: number): Observable<Member> {
     return this.http.post<Member>(`/api/members/${id}`, { code });
   }
 }

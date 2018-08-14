@@ -15,7 +15,7 @@ export class MemberNewComponent implements OnInit {
   lastName: string;
   school: string;
   statut: boolean;
-  code: Number;
+  code: number;
 
   formArray: FormArray;
   memberFormGroup: FormGroup;

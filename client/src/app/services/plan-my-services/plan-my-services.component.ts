@@ -30,7 +30,7 @@ export class PlanMyServicesComponent implements OnInit {
     this.updatePlanning(0);
   }
 
-  updatePlanning(dayNumber: Number): void {
+  updatePlanning(dayNumber: number): void {
     // Get the planning of the current week
     this.serviceService.getWeek().subscribe((week) => {
       this.serviceService.getPlanning(week.start, week.end).subscribe((days) => {
@@ -84,7 +84,7 @@ export class PlanMyServicesComponent implements OnInit {
     }
   }
 
-  getCurrentDayIndex(): Number {
+  getCurrentDayIndex(): number {
     return this.days.indexOf(this.days.filter(day => day.active === true)[0]);
   }
 
@@ -97,11 +97,11 @@ export class PlanMyServicesComponent implements OnInit {
     });
   }
 
-  available(service: Service): Boolean {
+  available(service: Service): boolean {
     return !service.barmen || service.barmen.filter(barman => barman.id === this.user.barman.id).length === 0;
   }
 
-  isPasted(service): Boolean {
+  isPasted(service): boolean {
     return new Service(service).isPasted();
   }
 

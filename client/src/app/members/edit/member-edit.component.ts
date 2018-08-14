@@ -9,11 +9,11 @@ import { Member } from '../../_models';
 })
 
 export class MemberEditComponent implements OnInit {
-  id: String;
-  firstName: String;
-  lastName: String;
-  school: String;
-  code: Number;
+  id: string;
+  firstName: string;
+  lastName: string;
+  school: string;
+  code: number;
 
   formArray: FormArray;
   memberFormGroup: FormGroup;

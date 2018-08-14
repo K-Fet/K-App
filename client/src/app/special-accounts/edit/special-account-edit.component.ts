@@ -14,8 +14,8 @@ import { MatDialog } from '@angular/material';
 
 interface PermissionObj {
   permission: Permission;
-  isChecked: Boolean;
-  initial: Boolean;
+  isChecked: boolean;
+  initial: boolean;
 }
 
 @Component({
@@ -123,7 +123,7 @@ export class SpecialAccountEditComponent implements OnInit {
     });
   }
 
-  edit(code: Number): void {
+  edit(code: number): void {
     const specialAccount = this.prepareEditing();
     if (this.isMe()) {
       const connectedUser = new ConnectedUser({
@@ -203,7 +203,7 @@ export class SpecialAccountEditComponent implements OnInit {
     );
   }
 
-  getErrorMessage(): String {
+  getErrorMessage(): string {
     if (this.passwordForm.hasError('passwordMismatch')) {
       return 'Les nouveaux mots de passe ne correspondent pas.';
     }
@@ -215,7 +215,7 @@ export class SpecialAccountEditComponent implements OnInit {
     return '';
   }
 
-  disable(): Boolean {
+  disable(): boolean {
     const add = this.permissions.filter((permission) => {
       return permission.isChecked && permission.initial !== permission.isChecked;
     });
@@ -232,12 +232,12 @@ export class SpecialAccountEditComponent implements OnInit {
       && this.specialAccountForm.get('code').value === '';
   }
 
-  isMe(): Boolean {
+  isMe(): boolean {
     return this.currentUser && this.currentUser.specialAccount
       && this.currentSpecialAccount.id === this.currentUser.specialAccount.id;
   }
 
-  codesMatch(): Boolean {
+  codesMatch(): boolean {
     if (this.specialAccountForm.get('code').value !== this.specialAccountForm.get('codeConfirmation').value) {
       this.specialAccountForm.get('code').setErrors({ incorrect: true });
       this.specialAccountForm.get('codeConfirmation').setErrors({ incorrect: true });

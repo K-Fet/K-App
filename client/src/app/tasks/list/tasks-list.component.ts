@@ -20,7 +20,7 @@ export class TasksListComponent implements OnInit {
   tasks: Task[];
   tasksData: MatTableDataSource<Task>;
   displayedColumns = ['state', 'name', 'deadline'];
-  stateFilter: String[];
+  stateFilter: string[];
   states = TASK_STATES;
   stateSelected: FormControl;
 
@@ -46,7 +46,7 @@ export class TasksListComponent implements OnInit {
     });
   }
 
-  filterByState(states: String[]) {
+  filterByState(states: string[]) {
     const filteredTasks = states.length !== 0 ? this.tasks.filter(t => states.includes(t.state)) : this.tasks;
     this.tasksData = new MatTableDataSource(filteredTasks);
     this.tasksData.paginator = this.paginator;
@@ -76,7 +76,7 @@ export class TasksListComponent implements OnInit {
     });
   }
 
-  private getIndice(state: String): Number {
+  private getIndice(state: string): number {
     switch (state) {
       case 'Abandoned':
         return 1;

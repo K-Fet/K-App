@@ -6,17 +6,17 @@ import { PermissionService, RoleService, ToasterService } from '../../_services'
 
 interface PermissionObj {
   permission: Permission;
-  isChecked: Boolean;
-  initial: Boolean;
+  isChecked: boolean;
+  initial: boolean;
 }
 
 @Component({
   templateUrl: './role-edit.component.html',
 })
 export class RoleEditComponent implements OnInit {
-  id: String;
-  name: String;
-  description: String;
+  id: string;
+  name: string;
+  description: string;
 
   permissions: PermissionObj[] = [];
 
@@ -105,7 +105,7 @@ export class RoleEditComponent implements OnInit {
     return role;
   }
 
-  disable(): Boolean {
+  disable(): boolean {
     const add = this.permissions.filter((permission) => {
       return permission.isChecked && permission.initial !== permission.isChecked;
     });

@@ -1,18 +1,18 @@
 import { Barman, Kommission, AssociationChanges } from './index';
 
 export class Task {
-  id: Number;
-  name: String;
+  id: number;
+  name: string;
   deadline: Date;
-  state: String;
-  description: String;
+  state: string;
+  description: string;
   createdAt: Date;
   kommission: Kommission;
   barmen: Barman[];
 
   _embedded: {
     barmen?: AssociationChanges;
-    kommissionId?: Number;
+    kommissionId?: number;
   };
 
   constructor(values: Object = {}) {

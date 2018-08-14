@@ -10,7 +10,7 @@ import { ServiceService, ToasterService } from '../../_services';
 export class ServiceEditComponent {
 
   serviceForm: FormGroup;
-  id: Number;
+  id: number;
 
   constructor(private serviceService: ServiceService,
               private toasterService: ToasterService,

@@ -2,9 +2,9 @@ import { Barman, SpecialAccount, Permission } from './index';
 
 export class ConnectedUser {
 
-  username?: String;
+  username?: string;
   createdAt?: Date;
-  accountType: String;
+  accountType: string;
   barman?: Barman;
   specialAccount?: SpecialAccount;
   permissions?: Permission[];
@@ -13,11 +13,11 @@ export class ConnectedUser {
     Object.assign(this, values);
   }
 
-  public isGuest(): Boolean {
+  public isGuest(): boolean {
     return this.accountType === 'Guest' ? true : false;
   }
 
-  public isBarman(): Boolean {
+  public isBarman(): boolean {
     return this.accountType === 'Barman' ? true : false;
   }
 }

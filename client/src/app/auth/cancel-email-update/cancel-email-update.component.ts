@@ -9,8 +9,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 export class CancelEmailUpdateComponent implements OnInit {
 
-  userId: Number;
-  email: String;
+  userId: number;
+  email: string;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,

@@ -2,17 +2,17 @@ import { AssociationChanges, ConnectionInformation, Kommission, Role, Service } 
 
 export class Barman {
 
-  id: Number;
-  lastName: String;
-  firstName: String;
-  nickname: String;
+  id: number;
+  lastName: string;
+  firstName: string;
+  nickname: string;
   deletedAt: Date;
   createdAt: Date;
   updatedAt: Date;
-  facebook: String;
+  facebook: string;
   dateOfBirth: Date;
-  flow: String;
-  active: Boolean;
+  flow: string;
+  active: boolean;
 
     // Associations
 
@@ -23,7 +23,7 @@ export class Barman {
   services: Service[];
 
   _embedded: {
-    godFather?: Number;
+    godFather?: number;
     kommissions?: AssociationChanges,
     roles?: AssociationChanges,
   };

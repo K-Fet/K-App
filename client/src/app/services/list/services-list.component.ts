@@ -73,7 +73,7 @@ export class ServiceListComponent implements OnInit {
     });
   }
 
-  transformServiceToDate(date: Service): String {
+  transformServiceToDate(date: Service): string {
     return `${this.datePipe.transform(date.startAt, 'EEEE d LLLL')} de
             ${this.datePipe.transform(date.startAt, 'H')}h à
             ${this.datePipe.transform(date.endAt, 'H')}h`;

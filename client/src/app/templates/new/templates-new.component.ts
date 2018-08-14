@@ -48,7 +48,7 @@ export class TemplateNewComponent {
     });
   }
 
-  addServiceForm(nbMax: Number, startAt: Date, endAt: Date, startDay: Number, endDay: Number): void {
+  addServiceForm(nbMax: number, startAt: Date, endAt: Date, startDay: number, endDay: number): void {
     const serviceFormGroup = this.fb.group({
       startFormControl: [startAt, Validators.required],
       startDayFormControl: [startDay, Validators.required],
@@ -80,11 +80,11 @@ export class TemplateNewComponent {
     return (this.generalFormArray.get([1]) as FormArray).controls;
   }
 
-  removeServiceForm(fromGroupId: Number): void {
+  removeServiceForm(fromGroupId: number): void {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 
-  toNumber(date: String, selectedDay): TemplateDateUnit {
+  toNumber(date: string, selectedDay): TemplateDateUnit {
     return {
       day: selectedDay,
       hours: +date.split(':')[0],
@@ -112,7 +112,7 @@ export class TemplateNewComponent {
     };
   }
 
-  findWeekDay(dayId: String): String {
+  findWeekDay(dayId: string): string {
     return this.WEEK_DAY.find(day => day.id === dayId).value;
   }
 }

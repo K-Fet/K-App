@@ -3,9 +3,9 @@ import { Task } from './Task';
 
 export class Kommission {
 
-  id: Number;
-  name: String;
-  description: String;
+  id: number;
+  name: string;
+  description: string;
   barmen: Barman[];
   tasks: Task[];
 

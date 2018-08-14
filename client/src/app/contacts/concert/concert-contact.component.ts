@@ -11,8 +11,8 @@ import { environment } from '../../../environments/environment';
 export class ConcertContactComponent {
 
   contactForm: FormGroup;
-  token: String;
-  siteKey: String = environment.RECAPTACHA_SITE_KEY;
+  token: string;
+  siteKey: string = environment.RECAPTACHA_SITE_KEY;
 
   constructor(private fb: FormBuilder,
               private contactService: ContactService,
@@ -34,7 +34,7 @@ export class ConcertContactComponent {
     });
   }
 
-  onCaptchaComplete(response: String): void {
+  onCaptchaComplete(response: string): void {
     this.token = response;
   }
 

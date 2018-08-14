@@ -8,16 +8,16 @@ import { Router } from '@angular/router';
 import * as Hammer from 'hammerjs';
 
 interface Link {
-  name: String;
-  route: String;
-  permissions?: String[];
-  accountType?: String;
+  name: string;
+  route: string;
+  permissions?: string[];
+  accountType?: string;
 }
 
 interface SubMenu {
-  name?: String;
+  name?: string;
   links: Link[];
-  accountType?: String;
+  accountType?: string;
 }
 
 @Component({
@@ -198,7 +198,7 @@ export class MenuComponent implements OnDestroy, OnInit {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
-  isVisible(subMenu: SubMenu): Boolean {
+  isVisible(subMenu: SubMenu): boolean {
     if (subMenu.accountType === 'guest' && !this.user.isGuest()) return false;
     if (subMenu.accountType === 'connectedUser' && this.user.isGuest()) return false;
     for (const link of subMenu.links) {

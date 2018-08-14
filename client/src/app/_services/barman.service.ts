@@ -17,7 +17,7 @@ export class BarmanService {
     return this.http.get<Barman>(`/api/barmen/${id}`);
   }
 
-  getServices(id: Number, start: Moment, end: Moment): Observable<Service[]> {
+  getServices(id: number, start: Moment, end: Moment): Observable<Service[]> {
     return this.http.get<Service[]>(`/api/barmen/${id}/services`, {
       params: {
         start: (+start).toString(),
@@ -34,11 +34,11 @@ export class BarmanService {
     return this.http.post<Barman>('/api/barmen', barman);
   }
 
-  addService(id: Number, services: Number[]): Observable<Service> {
+  addService(id: number, services: number[]): Observable<Service> {
     return this.http.post<Service>(`/api/barmen/${id}/services`, services);
   }
 
-  removeService(id: Number, services: Number[]): Observable<Service> {
+  removeService(id: number, services: number[]): Observable<Service> {
     return this.http.post<Service>(`/api/barmen/${id}/services/delete`, services);
   }
 
@@ -46,7 +46,7 @@ export class BarmanService {
     return this.http.put<Barman>(`/api/barmen/${barman.id}`, barman);
   }
 
-  delete(id: Number): Observable<Barman> {
+  delete(id: number): Observable<Barman> {
     return this.http.post<Barman>(`/api/barmen/${id}/delete`, null);
   }
 }

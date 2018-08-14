@@ -20,7 +20,7 @@ export class HomePageComponent implements OnInit {
     });
   }
 
-  getName(): String {
+  getName(): string {
     if (this.currentUser.specialAccount) {
       return this.currentUser.username;
     } if (this.currentUser.barman) {
@@ -40,7 +40,7 @@ export class HomePageComponent implements OnInit {
       + daysDiff + ' jour(s), ';
   }
 
-  isConnected(): Boolean {
+  isConnected(): boolean {
     return this.currentUser.accountType !== 'Guest';
   }
 }

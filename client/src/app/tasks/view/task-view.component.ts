@@ -20,11 +20,11 @@ export class TaskViewDialogComponent implements OnInit {
   ngOnInit () {
   }
 
-  getState(state): String {
+  getState(state): string {
     return TASK_STATES.find(s => s.value === state).name;
   }
 
-  isPassed(): String {
+  isPassed(): string {
     return new Date(this.data.task.deadline) < new Date() && this.data.task.state !== 'Done' ?
       'accent' : '';
   }

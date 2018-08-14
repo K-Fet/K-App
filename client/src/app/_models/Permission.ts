@@ -1,8 +1,8 @@
 export class Permission {
 
-  id: Number;
-  name: String;
-  disabled?: Boolean;
+  id: number;
+  name: string;
+  disabled?: boolean;
 
   constructor(values: Object = {}) {
     Object.assign(this, values);

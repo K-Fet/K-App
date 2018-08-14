@@ -2,10 +2,10 @@ import { Barman } from './index';
 
 export class Service {
 
-  id?: Number;
+  id?: number;
   startAt: Date;
   endAt: Date;
-  nbMax: Number;
+  nbMax: number;
 
   // Association
 
@@ -20,7 +20,7 @@ export class Service {
     this.endAt = castVal.endAt ? new Date(castVal.endAt) : null;
   }
 
-  isPasted(): Boolean {
+  isPasted(): boolean {
     return this.endAt.getTime() < Date.now();
   }
 }

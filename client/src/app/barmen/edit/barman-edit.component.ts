@@ -18,9 +18,9 @@ export class BarmanEditComponent implements OnInit {
   currentBarman: Barman = new Barman();
   barman: Barman = new Barman();
 
-  selectedGodFather: Number;
-  selectedKommissions: Number[];
-  selectedRoles: Number[];
+  selectedGodFather: number;
+  selectedKommissions: number[];
+  selectedRoles: number[];
 
   kommissions: Kommission[] = [];
   roles: Role[] = [];
@@ -30,7 +30,7 @@ export class BarmanEditComponent implements OnInit {
 
   passwordForm: FormGroup;
 
-  oldPassword: String;
+  oldPassword: string;
 
   startDate = new Date();
 
@@ -84,7 +84,7 @@ export class BarmanEditComponent implements OnInit {
     this.startDate.setFullYear(this.startDate.getFullYear() - 20);
   }
 
-  getErrorMessage(): String {
+  getErrorMessage(): string {
     if (this.passwordForm.hasError('passwordMismatch')) {
       return 'Les nouveaux mots de passe ne correspondent pas.';
     }
@@ -222,8 +222,8 @@ export class BarmanEditComponent implements OnInit {
   }
 
   prepareAssociationChanges(current, updated): AssociationChanges {
-    const add: Number[] = [];
-    const remove: Number[] = [];
+    const add: number[] = [];
+    const remove: number[] = [];
     updated.forEach((aId) => {
       if (!current.map(a => a.id).includes(aId)) {
         add.push(aId);
@@ -237,7 +237,7 @@ export class BarmanEditComponent implements OnInit {
     return { add, remove };
   }
 
-  isMe(): Boolean {
+  isMe(): boolean {
     return this.connectedUser && this.connectedUser.barman
       && this.connectedUser.barman.id === this.currentBarman.id;
   }

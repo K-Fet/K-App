@@ -5,8 +5,8 @@ import { BarmanService, ServiceService } from '../../_services';
 import { forkJoin, Observable } from 'rxjs';
 
 interface barmanServiceData {
-  name: String;
-  services: Number;
+  name: string;
+  services: number;
 }
 
 @Component({

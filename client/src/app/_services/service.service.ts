@@ -9,12 +9,12 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 
 // The K-Fêt week change every thusday ( = 4 )
-export const DEFAULT_WEEK_SWITCH: Number = 4;
-const WEEK_DAY_SHORT: String[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+export const DEFAULT_WEEK_SWITCH: number = 4;
+const WEEK_DAY_SHORT: string[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Injectable()
 export class ServiceService {
-  $weekInterval: BehaviorSubject<Number> = new BehaviorSubject<Number>(0);
+  $weekInterval: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient) { }
 
@@ -27,11 +27,11 @@ export class ServiceService {
     });
   }
 
-  getById(id: Number): Observable<Service> {
+  getById(id: number): Observable<Service> {
     return this.http.get<Service>(`/api/services/${id}`);
   }
 
-  getBarmen(id: Number): Observable<Barman[]> {
+  getBarmen(id: number): Observable<Barman[]> {
     return this.http.get<Barman[]>(`/api/services/${id}/barmen`);
   }
 
@@ -43,7 +43,7 @@ export class ServiceService {
     return this.http.put<Service>(`/api/services/${service.id}`, service);
   }
 
-  delete(id: Number): Observable<Service> {
+  delete(id: number): Observable<Service> {
     return this.http.post<Service>(`/api/services/${id}/delete`, null);
   }
 
