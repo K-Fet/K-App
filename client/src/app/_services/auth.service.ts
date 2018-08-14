@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ConnectedUser, Permission } from '../_models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
-import { Router } from '@angular/router';
 import { ROLES } from '../_helpers/roles';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,24 +15,32 @@ export class AuthService {
 
   constructor(private http: HttpClient,
               private ngxPermissionsService: NgxPermissionsService,
-              private ngxRolesService: NgxRolesService,
-              private router: Router) {
-    this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
-      accountType: 'Guest',
-      createdAt: new Date(),
-    }));
-    const currentUser = {
-      ...JSON.parse(localStorage.getItem('currentUser')),
-      ...JSON.parse(sessionStorage.getItem('currentUser')),
-    };
-    if (currentUser.jwt) {
-      const jwtDecoded = jwt_decode(currentUser.jwt);
-      if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
-        this.me().subscribe();
+              private ngxRolesService: NgxRolesService) { }
+
+  initializeAuth(): Promise<any> {
+    return new Promise((resolve) => {
+      this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
+        accountType: 'Guest',
+        createdAt: new Date(),
+      }));
+      const currentUser = {
+        ...JSON.parse(localStorage.getItem('currentUser')),
+        ...JSON.parse(sessionStorage.getItem('currentUser')),
+      };
+      if (currentUser.jwt) {
+        const jwtDecoded = jwt_decode(currentUser.jwt);
+        if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
+          this.me().subscribe(() => {
+            resolve();
+          });
+        } else {
+          this.clearUser();
+          resolve();
+        }
       } else {
-        this.clearUser();
+        resolve();
       }
-    }
+    });
   }
 
   login(username: string, password: string, rememberMe: Number): Observable<any> {
@@ -83,7 +90,6 @@ export class AuthService {
     this.ngxRolesService.flushRoles();
     if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
     if (sessionStorage.getItem('currentUser')) sessionStorage.removeItem('currentUser');
-    this.router.navigate(['/']);
   }
 
   private saveUser(jwt, rememberMe): void {

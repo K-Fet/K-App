@@ -184,6 +184,7 @@ export class MenuComponent implements OnDestroy, OnInit {
   logout(): void {
     this.authService.logout().subscribe(() => {
       this.toasterService.showToaster('Déconnexion réussie');
+      this.router.navigate(['/']);
     });
   }
 
