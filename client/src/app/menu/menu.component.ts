@@ -204,8 +204,8 @@ export class MenuComponent implements OnDestroy, OnInit {
     for (const link of subMenu.links) {
       if (!link.permissions) return true;
       for (const perm of link.permissions) {
-        if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm as string) !== -1
-            || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm as string) !== -1) {
+        if (Object.keys(this.ngxPermissionsService.getPermissions()).indexOf(perm) !== -1
+            || Object.keys(this.ngxRolesService.getRoles()).indexOf(perm) !== -1) {
           return true;
         }
       }
