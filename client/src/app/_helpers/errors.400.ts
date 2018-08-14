@@ -8,7 +8,7 @@ export const ERRORS400 = {
   UnknownKommission: 'Kommission inconnue: la kommission est introuvable dans la base de données.',
   UnknownBarman: 'Barman inconnu: Le barman est introuvable dans la base de données.',
   UnknownService: 'Service inconnu: le service est introuvable dans la base de données.',
-  UnverifiedUsername: 'Username non verifié: le username (email) n\'a pas été vérifié, merci de vérifier vos e-mails.',
+  UnverifiedUsername: 'Username non verifié: l\'addresse email n\'a pas été vérifié, merci de vérifier vos e-mails.',
   UndefinedPassword: 'Le mot de passe n\'a pas été défini, merci de vérifier vos e-mails.',
   MailerError: 'L\'envoi du mail du côté serveur a échoué. Merci de vérifier que l\'adresse email est valide.',
   CodeError: 'Code invalide: Le code n\'est pas valide.',
