@@ -1,8 +1,6 @@
 const specialAccountService = require('../services/special-account-service');
 const permissionService = require('../services/permission-service');
 const { SpecialAccount, ConnectionInformation } = require('../models');
-const { SpecialAccountSchema } = require('../models/schemas');
-const { createUserError, createPermissionError } = require('../../utils');
 
 /**
  * Fetch all SpecialAccount from the database
@@ -25,15 +23,6 @@ async function getAllSpecialAccounts(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createSpecialAccount(req, res) {
-  const schema = SpecialAccountSchema.requiredKeys(
-    'code',
-    'connection',
-    'connection.email',
-  );
-
-  const { error } = schema.validate(req.body.specialAccount);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const newAccount = req.body.specialAccount;
 
   let newSpecialAccount = new SpecialAccount(
@@ -83,11 +72,7 @@ async function getSpecialAccountById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateSpecialAccount(req, res) {
-  const schema = SpecialAccountSchema.min(1);
   const newUser = req.body.specialAccount;
-
-  const { error } = schema.validate(newUser);
-  if (error) throw createUserError('BadRequest', error.message);
 
   if (newUser.code && !req.user.permissions.include('specialaccount:force-code-reset')) {
     throw createPermissionError();

@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const Joi = require('joi');
 const { createUserError } = require('./errors');
 
 /**
@@ -61,8 +62,17 @@ function generateToken(byteLength = 48, stringBase = 'base64') {
   });
 }
 
+/**
+ * This constant is used by Joi to validate params from a request.
+ * It represent an object with a single field id (an integer).
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
+
 module.exports = {
   cleanObject,
   parseStartAndEnd,
   generateToken,
+  ID_SCHEMA,
 };
