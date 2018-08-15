@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const templateService = require('../services/template-service');
 const { Template, TemplateUnit } = require('../models');
-const { TemplateSchema, TemplateUnitSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch all templates from the database
@@ -25,22 +22,6 @@ async function getAllTemplates(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function createTemplate(req, res) {
-  const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
-    'startAt',
-    'endAt',
-    'nbMax',
-  );
-
-  const schema = TemplateSchema.keys({
-    services: Joi.array().items(strictTemplateUnitSchema).min(1),
-  }).requiredKeys(
-    'name',
-    'services',
-  );
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   let newTemplate = new Template(req.body, {
     include: [
       {
@@ -78,23 +59,6 @@ async function getTemplateById(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function updateTemplate(req, res) {
-  const strictTemplateUnitSchema = TemplateUnitSchema.requiredKeys(
-    'startAt',
-    'endAt',
-    'nbMax',
-  );
-
-  const schema = TemplateSchema.keys({
-    services: Joi.array().items(strictTemplateUnitSchema).min(1),
-  }).requiredKeys(
-    'name',
-    'services',
-  );
-
-  const { error } = schema.validate(req.body);
-
-  if (error) throw createUserError('BadRequest', error.message);
-
   let newTemplate = new Template(
     req.body,
     {

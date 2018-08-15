@@ -12,17 +12,7 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function createTask(req, res) {
-  const schema = TaskSchema.requiredKeys(
-    'name',
-    'deadline',
-    'state',
-    '_embedded',
-    '_embedded.kommissionId',
-  );
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
+  // Auto check if the kommission exists
   await kommissionService.getKommissionById(req.body._embedded.kommissionId);
 
   let newTask = new Task({
@@ -60,11 +50,6 @@ async function getTaskById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateTask(req, res) {
-  const schema = TaskSchema.min(1).forbiddenKeys('_embedded.kommissionId');
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   let newTask = new Task({
     ...req.body,
     _embedded: undefined, // Remove the only external object

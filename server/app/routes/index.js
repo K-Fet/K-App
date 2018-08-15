@@ -70,6 +70,15 @@ router.use((err, req, res, next) => {
     });
   }
 
+  // Express-joi-validation
+  if (err.error && err.error.isJoi) {
+    return res.status(400).json({
+      error: 'BadRequest',
+      message: err.error.toString(),
+      type: err.type,
+    });
+  }
+
   // Express-jwt error
   if (err.name === 'UnauthorizedError') {
     return res.status(401).json({

@@ -137,7 +137,10 @@ const TemplateUnitSchema = Joi.object().keys({
 const TemplateSchema = Joi.object().keys({
   id: Joi.number().integer(),
   name: Joi.string(),
-  services: Joi.array().items(TemplateUnitSchema),
+  services: Joi
+    .array()
+    .items(TemplateUnitSchema.requiredKeys('startAt', 'endAt', 'nbMax'))
+    .min(1),
 });
 
 module.exports = {
