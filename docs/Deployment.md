@@ -262,3 +262,9 @@ where `3000` is the web port.
 
 To let the server reboot after machine reboot, 
 execute :`systemctl enable kapp@3000.service`
+
+
+## Migration System
+
+The project uses [umzug](https://github.com/sequelize/umzug) 
+to automatically migrate database schema on update. 

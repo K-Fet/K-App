@@ -42,6 +42,30 @@ async function askQuestions(configObj) {
     },
     {
       type: 'input',
+      name: 'contactEmailLost',
+      default: configObj.app && configObj.app.publicUrl && `sg@${configObj.app.publicUrl}`,
+      message: 'What are the lost objects email addresses ? (comma separated)',
+    },
+    {
+      type: 'input',
+      name: 'contactEmailConcert',
+      default: configObj.app && configObj.app.publicUrl && `concert@${configObj.app.publicUrl}`,
+      message: 'What are the concert event email addresses ? (comma separated)',
+    },
+    {
+      type: 'input',
+      name: 'contactEmailEvent',
+      default: configObj.app && configObj.app.publicUrl && `sg@${configObj.app.publicUrl}, president@${configObj.app.publicUrl}`,
+      message: 'What are events email addresses ? (comma separated)',
+    },
+    {
+      type: 'input',
+      name: 'contactEmailWebsite',
+      default: configObj.app && configObj.app.publicUrl && `webmaster@${configObj.app.publicUrl}`,
+      message: 'What are the website problem email addresses ? (comma separated)',
+    },
+    {
+      type: 'input',
       name: 'recaptachaSecret',
       message: 'What is the Recaptacha Secret?',
       default: configObj.app && configObj.app.recaptacha && configObj.app.recaptacha.secret,
@@ -66,6 +90,12 @@ async function askQuestions(configObj) {
     recaptacha: {
       secret: answers.recaptachaSecret,
       siteKey: answers.recaptachaSiteKey,
+    },
+    contact: {
+      concert: answers.contactEmailConcert,
+      lost: answers.contactEmailLost,
+      event: answers.contactEmailEvent,
+      website: answers.contactEmailWebsite,
     },
   };
 }
@@ -114,6 +144,11 @@ Environment=EMAIL_HOST=${config.email.host}
 Environment=EMAIL_PORT=${config.email.port}
 Environment=EMAIL_USER=${config.email.user}
 Environment=EMAIL_PASS=${config.email.pass}
+
+Environment=CONCERT_MAIL=${config.app.contact.concert}
+Environment=EVENT_MAIL=${config.app.contact.event}
+Environment=LOST_MAIL=${config.app.contact.lost}
+Environment=WEBSITE_MAIL=${config.app.contact.website}
 
 Environment=RECAPTACHA_SITE_KEY=${config.app.recaptacha.siteKey}
 Environment=RECAPTACHA_SECRET=${config.app.recaptacha.secret}

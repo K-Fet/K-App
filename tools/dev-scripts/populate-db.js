@@ -8,7 +8,7 @@ const mysqlConf = require('../prod-scripts/mysql');
 const { start: syncPermissions } = require('../../server/bootstrap/permissions');
 
 const {
-  Service, Role, Kommission, Barman, Member, Permission,
+  Service, Role, Kommission, Barman, Member, Permission, Registration,
 } = models;
 
 
@@ -119,7 +119,9 @@ async function generateRoles() {
 
 async function generateMembers() {
   try {
-    await Member.bulkCreate(require('./data/members'));
+    const members = require('./data/members');
+
+    await Promise.all(members.map(m => Member.create(m, { include: [{ model: Registration, as: 'registrations' }] })));
 
     console.log('Members generated!');
   } catch (e) {
@@ -205,7 +207,7 @@ async function generate(config) {
     },
   });
 
-    // Call init for all models
+  // Call init for all models
 
   for (const m of Object.values(models)) m.init(sequelize);
 

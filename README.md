@@ -86,6 +86,15 @@ Here are a list _(usually updated)_ of all the environment variables:
 * `EMAIL_USER`: Email used to send mail.
 * `EMAIL_PASS`: Password of the email.
 
+###### Contact emails
+
+Each variable is a list of email addresses separated by commas.
+
+* `CONCERT_MAIL`: Concert events emails
+* `EVENT_MAIL`:  Event emails
+* `LOST_MAIL`: Lost objects emails
+* `WEBSITE_MAIL`: Website problem emails
+
 ###### Recaptacha
 
 * `RECAPTACHA_SITE_KEY`: Key used in client side at compilation time (not needed in dev).

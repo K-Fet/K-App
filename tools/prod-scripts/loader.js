@@ -66,6 +66,12 @@ async function load(config) {
       secret: matchInFile(/RECAPTACHA_SECRET=(.+)$/, systemdFile),
       siteKey: matchInFile(/RECAPTACHA_SITE_KEY=(.+)$/, systemdFile),
     },
+    contact: {
+      concert: matchInFile(/CONCERT_MAIL=(.+)$/, systemdFile),
+      lost: matchInFile(/LOST_MAIL=(.+)$/, systemdFile),
+      event: matchInFile(/EVENT_MAIL=(.+)$/, systemdFile),
+      website: matchInFile(/WEBSITE_MAIL=(.+)$/, systemdFile),
+    },
   };
 
   config.mysql = {
