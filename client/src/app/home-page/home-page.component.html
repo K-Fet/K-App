@@ -1,6 +1,6 @@
-<div fxLayout="column" fxLayoutGap="20px">
-	<div fxLayoutAlign="center" *ngIf="!isConnected()">
-		<mat-card fxFlex class="max-width">
+<div fxLayoutAlign="center" *ngIf="!isConnected()">
+	<div fxFlex class="max-width" fxLayout="column" fxLayoutGap="20px">
+		<mat-card fxFlex>
 			<mat-card-content fxLayout="column" fxLayoutAlign="center center">
 				<div>
 					Mais qu'est ce que la K-Fêt de l'INSA Lyon ?
@@ -10,26 +10,25 @@
 				</div>
 			</mat-card-content>
 		</mat-card>
+		<app-feed fxFlex></app-feed>
 	</div>
-	<div fxLayoutAlign="center" *ngIf="isConnected()">
-		<div fxFlex fxLayout="column" fxLayoutGap="20px" class="max-width">
-			<div fxFlex>
-				<mat-card>
-					<mat-card-header>
-						<mat-card-title>
-							<section class="mat-typography">
-									<h1>Bonjour {{ getName() }}!</h1>
-							</section>
-						</mat-card-title>
-						<mat-card-subtitle>Cela fait maintenant {{ currentUser.createdAt | amTimeAgo:true }} que tu fais parti de l'association A.R.G.I.L</mat-card-subtitle>
-					</mat-card-header>
-				</mat-card>
-			</div>
-			<div *ngIf="currentUser.isBarman()" fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
-				<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
-				<app-my-services fxFlex></app-my-services>
-			</div>
+</div>
+<div fxLayoutAlign="center" *ngIf="isConnected()">
+	<div fxFlex fxLayout="column" fxLayoutGap="20px" class="max-width">
+		<mat-card>
+			<mat-card-header>
+				<mat-card-title>
+					<section class="mat-typography">
+							<h1>Bonjour {{ getName() }}!</h1>
+					</section>
+				</mat-card-title>
+				<mat-card-subtitle>Cela fait maintenant {{ currentUser.createdAt | amTimeAgo:true }} que tu fais parti de l'association A.R.G.I.L</mat-card-subtitle>
+			</mat-card-header>
+		</mat-card>
+		<div *ngIf="currentUser.isBarman()" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center stretch" fxLayoutGap="20px">
+			<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
+			<app-my-services fxFlex></app-my-services>
 		</div>
+		<app-feed fxFlex></app-feed>
 	</div>
-	<app-feed></app-feed>
 </div>

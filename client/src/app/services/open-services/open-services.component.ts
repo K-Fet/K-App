@@ -113,22 +113,22 @@ export class OpenServicesComponent implements OnInit {
   }
 
   onFormChanges(): void {
+    const firstDayOfNextWeek = this.getFirstDayOfNextWeek();
     this.templateSelectorFormGroup.valueChanges.subscribe((val) => {
       if (val.templateSelectorFormControl) {
         (val.templateSelectorFormControl as Template).services.forEach((service) => {
-          const startAt: Moment = moment().isoWeekday(+service.startAt.day).set({
-            hour: +service.startAt.hours,
-            minute: +service.startAt.minutes,
+          const startAt: Moment = moment().isoWeekday(service.startAt.day).set({
+            hour: service.startAt.hours,
+            minute: service.startAt.minutes,
             second: 0,
             millisecond: 0,
           });
-          const endAt: Moment = moment().isoWeekday(+service.endAt.day).set({
-            hour: +service.endAt.hours,
-            minute: +service.endAt.minutes,
+          const endAt: Moment = moment().isoWeekday(service.endAt.day).set({
+            hour: service.endAt.hours,
+            minute: service.endAt.minutes,
             second: 0,
             millisecond: 0,
           });
-          const firstDayOfNextWeek = this.getFirstDayOfNextWeek();
           while (startAt.isBefore(firstDayOfNextWeek)) {
             startAt.add(1, 'week');
             endAt.add(1, 'week');
@@ -148,9 +148,9 @@ export class OpenServicesComponent implements OnInit {
       millisecond: 0,
     });
     if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
-      firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
+      firstDay.isoWeekday(DEFAULT_WEEK_SWITCH + 1);
     } else {
-      firstDay.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).add(1, 'week');
+      firstDay.isoWeekday(DEFAULT_WEEK_SWITCH + 1).add(1, 'week');
     }
     return firstDay;
   }

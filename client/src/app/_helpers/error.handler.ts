@@ -45,6 +45,6 @@ export class ErrorsHandler implements ErrorHandler {
 
     // Log the error in the console
     // DEV ENV ONLY, DO NOT COMMIT
-    // console.error('Server error happens: ', error);
+    console.error('Server error happens: ', error);
   }
 }
