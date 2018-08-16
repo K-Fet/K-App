@@ -86,6 +86,13 @@ router.use((err, req, res, next) => {
     });
   }
 
+  logger.warn('Server error for request %s %s.', req.method, req.path, err);
+  try {
+    const stackStr = err.stack.split('\n').slice(0, 5).join('\n');
+    logger.verbose('Stack trace:\n%s', stackStr);
+  } catch (e) {
+    // ignored
+  }
   return res.status(500).json({
     error: 'ServerError',
     message: 'A problem has occurred, try again later',

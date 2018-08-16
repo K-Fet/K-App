@@ -1,23 +1,26 @@
 const { createLogger, format, transports: { Console } } = require('winston');
 const LOGGER_CONFIG = require('./config/logger');
 
+const fixErrorProperties = (o) => {
+  if (o instanceof Error) {
+    Object.defineProperty(o, 'message', { enumerable: true });
+  }
+  return o;
+};
+
 /**
  * Create a format instance for winston.
  * It just stringify the message with the timestamp
  */
 const stringify = format((info) => {
-  const { timestamp, level, message } = info;
-  let str = JSON.stringify({
-    ...info,
-    level: undefined,
-    message: undefined,
-    splat: undefined,
-    timestamp: undefined,
-  }, null, 4);
+  const {
+    timestamp, level, message, meta,
+  } = info;
+  let str = JSON.stringify(fixErrorProperties(meta), null, 4) || '';
 
-  if (str === '{}') {
-    str = '';
-  } else {
+  if (str === '{}') str = '';
+
+  if (str) {
     const padding = '\n    ';
     str = `${padding}${str.split('\n').join(padding)}`;
   }
