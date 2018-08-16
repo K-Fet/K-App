@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Permission, Role } from '../../_models';
 import { PermissionService, RoleService, ToasterService } from '../../_services';
@@ -15,23 +15,21 @@ interface PermissionObj {
 })
 export class RoleEditComponent implements OnInit {
   id: string;
-  name: string;
-  description: string;
-
   permissions: PermissionObj[] = [];
+  roleForm: FormGroup;
 
-  nameFormControl: FormControl = new FormControl('', [Validators.required]);
-  descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
-
-  constructor(
-    private roleService: RoleService,
-    private toasterService: ToasterService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private permissionService: PermissionService,
-  ) {}
+  constructor(private roleService: RoleService,
+              private toasterService: ToasterService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private permissionService: PermissionService,
+              private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.roleForm = this.fb.group({
+      name: new FormControl('', [Validators.required]),
+      description: new FormControl(''),
+    });
     this.permissionService.getAll().subscribe((permissions) => {
       permissions.forEach((permission) => {
         this.permissions.push({
@@ -43,8 +41,8 @@ export class RoleEditComponent implements OnInit {
       this.route.params.subscribe((params) => {
         this.id = params['id'];
         this.roleService.getById(+this.id).subscribe((role) => {
-          this.name = role.name;
-          this.description = role.description;
+          this.roleForm.controls['name'].setValue(role.name);
+          this.roleForm.controls['description'].setValue(role.description);
           if (role.permissions) {
             role.permissions.forEach((rolePermission) => {
               if (this.permissions) {
@@ -73,8 +71,7 @@ export class RoleEditComponent implements OnInit {
   prepareEditing(): Role {
     const role = new Role({
       id: +this.id,
-      name: this.name,
-      description: this.description,
+      ...this.roleForm.value,
     });
     // Associations
     const add = this.permissions.filter((permission) => {

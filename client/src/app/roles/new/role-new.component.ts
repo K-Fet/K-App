@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Permission, Role } from '../../_models';
 import { PermissionService, RoleService, ToasterService } from '../../_services';
@@ -13,19 +13,14 @@ interface PermissionObj {
   templateUrl: './role-new.component.html',
 })
 export class RoleNewComponent implements OnInit {
-  name: string;
-  description: string;
-
+  roleForm: FormGroup;
   permissions: PermissionObj[] = [];
 
-  nameFormControl: FormControl = new FormControl('', [Validators.required]);
-  descriptionFormControl: FormControl = new FormControl('', [Validators.required]);
-
-  constructor(
-    private roleService: RoleService,
-    private toasterService: ToasterService,
-    private router: Router,
-    private permissionService: PermissionService) {}
+  constructor(private roleService: RoleService,
+              private toasterService: ToasterService,
+              private router: Router,
+              private permissionService: PermissionService,
+              private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.permissionService.getAll().subscribe((permissions) => {
@@ -36,13 +31,14 @@ export class RoleNewComponent implements OnInit {
         });
       });
     });
-
+    this.roleForm = this.fb.group({
+      name: new FormControl('', [Validators.required]),
+      description: new FormControl(''),
+    });
   }
 
   add(): void {
-    const role = new Role();
-    role.name = this.name;
-    role.description = this.description;
+    const role = new Role(this.roleForm.value);
     // Associations
     const add = this.permissions.filter((permission) => {
       return permission.isChecked === true;

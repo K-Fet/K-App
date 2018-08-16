@@ -1,42 +1,36 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title fxLayout="row">
-                <a mat-button routerLink="/roles"><mat-icon>arrow_back</mat-icon></a>
-                <section class="mat-typography">
-                    <h1>Ajouter un rôle</h1>
-                </section>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form #addForm="ngForm" fxLayout="column">
-                <mat-form-field>
-                    <input matInput placeholder="Nom du rôle"
-                    autocorrect="off" required [(ngModel)]="name" name="name">
-                    <mat-error *ngIf="nameFormControl.hasError('required')">
-                    Nom <strong>requis</strong>
-                    </mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <textarea matInput placeholder="Description"
-                    [(ngModel)]="description" required name="description"></textarea>
-                    <mat-error *ngIf="descriptionFormControl.hasError('required')">
-                    Description <strong>requise</strong>
-                    </mat-error>
-                </mat-form-field>
-                <h4>Permissions</h4>
-                <div *ngFor="let permission of permissions">
-                    <mat-checkbox [(ngModel)]="permission.isChecked"
-                                  [ngModelOptions]="{standalone: true}"
-                                  [disabled]="permission.permission.disabled">
-                        {{permission.permission.name}}
-                    </mat-checkbox>
-                </div>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="button" (click)="add()"
-                    [disabled]="!addForm.valid">Ajouter</button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/roles"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>Ajouter un rôle</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="roleForm" fxLayout="column" (ngSubmit)="add()">
+        <mat-form-field>
+          <input matInput placeholder="Nom du rôle" formControlName="name">
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput placeholder="Description" formControlName="description"
+            matTextareaAutosize matAutosizeMinRows="10"></textarea>
+        </mat-form-field>
+        <h4>Permissions</h4>
+        <div *ngFor="let permission of permissions">
+          <mat-checkbox [(ngModel)]="permission.isChecked"
+            [ngModelOptions]="{standalone: true}"
+            [disabled]="permission.permission.disabled">
+            {{permission.permission.name}}
+          </mat-checkbox>
+        </div>
+        <div fxLayoutAlign="center">
+          <button fxFlex="50" mat-button type="submit" [disabled]="!roleForm.valid">
+            Ajouter
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

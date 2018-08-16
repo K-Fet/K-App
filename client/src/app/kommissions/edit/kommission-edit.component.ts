@@ -17,15 +17,14 @@ export class KommissionEditComponent implements OnInit {
   createForm(): void {
     this.kommissionForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
-      description: new FormControl('', [Validators.required]),
+      description: new FormControl(''),
     });
   }
 
-  constructor(
-    private kommissionService: KommissionService,
-    private toasterService: ToasterService,
-    private route: ActivatedRoute,
-    private router: Router) {
+  constructor(private kommissionService: KommissionService,
+              private toasterService: ToasterService,
+              private route: ActivatedRoute,
+              private router: Router) {
     this.createForm();
   }
 

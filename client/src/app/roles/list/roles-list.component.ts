@@ -13,7 +13,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 })
 export class RolesListComponent implements OnInit {
 
-  displayedColumns = ['name', 'description', 'action'];
+  displayedColumns = ['name', 'action'];
   rolesData: MatTableDataSource<Role>;
 
   @ViewChild(MatSort) sort: MatSort;

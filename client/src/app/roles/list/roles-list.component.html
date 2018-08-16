@@ -23,10 +23,6 @@
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
                         <mat-cell *matCellDef="let role"> {{role.name}} </mat-cell>
                     </ng-container>
-                    <ng-container matColumnDef="description">
-                        <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-                        <mat-cell *matCellDef="let role"> {{role.description}} </mat-cell>
-                    </ng-container>
                     <ng-container matColumnDef="action">
                         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
                         <mat-cell *matCellDef="let role">
