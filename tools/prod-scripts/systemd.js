@@ -130,30 +130,30 @@ After=network.target mysql.service
 [Service]
 
 Environment=PORT=%i
-Environment=HOSTNAME="${config.proxy ? 'localhost' : ''}"
-Environment=PUBLIC_URL="https://${config.app.publicUrl}/"
-Environment=TRUSTED_PROXY="${config.proxy ? 'loopback' : ''}"
+Environment=HOSTNAME=${config.proxy ? 'localhost' : ''}
+Environment=PUBLIC_URL=https://${config.app.publicUrl}/
+Environment=TRUSTED_PROXY=${config.proxy ? 'loopback' : ''}
 
-Environment=DB_HOST="${config.mysql.host}"
-Environment=DB_USER="${config.mysql.app.username}"
-Environment=DB_PWD="${config.mysql.app.password}"
-Environment=DB_DATABASE="${config.mysql.database}"
+Environment=DB_HOST=${config.mysql.host}
+Environment=DB_USER=${config.mysql.app.username}
+Environment=DB_PWD=${config.mysql.app.password}
+Environment=DB_DATABASE=${config.mysql.database}
 
 
-Environment=EMAIL_HOST="${config.email.host}"
-Environment=EMAIL_PORT="${config.email.port}"
-Environment=EMAIL_USER="${config.email.user}"
-Environment=EMAIL_PASS="${config.email.pass}"
+Environment=EMAIL_HOST=${config.email.host}
+Environment=EMAIL_PORT=${config.email.port}
+Environment=EMAIL_USER=${config.email.user}
+Environment=EMAIL_PASS=${config.email.pass}
 
-Environment=CONCERT_MAIL="${config.app.contact.concert}"
-Environment=EVENT_MAIL="${config.app.contact.event}"
-Environment=LOST_MAIL="${config.app.contact.lost}"
-Environment=WEBSITE_MAIL="${config.app.contact.website}"
+Environment=CONTACT_CONCERT_MAIL=${config.app.contact.concert}
+Environment=CONTACT_EVENT_MAIL=${config.app.contact.event}
+Environment=CONTACT_LOST_MAIL=${config.app.contact.lost}
+Environment=CONTACT_WEBSITE_MAIL=${config.app.contact.website}
 
-Environment=RECAPTCHA_SITE_KEY="${config.app.recaptacha.siteKey}"
-Environment=RECAPTCHA_SECRET="${config.app.recaptacha.secret}"
+Environment=RECAPTCHA_SITE_KEY=${config.app.recaptacha.siteKey}
+Environment=RECAPTCHA_SECRET=${config.app.recaptacha.secret}
 
-Environment=JWT_SECRET="${config.jwt.secret}"
+Environment=JWT_SECRET=${config.jwt.secret}
 
 Environment=NODE_ENV=production
 

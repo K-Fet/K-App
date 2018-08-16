@@ -88,12 +88,12 @@ Here are a list _(usually updated)_ of all the environment variables:
 
 ###### Contact emails
 
-Each variable is a list of email addresses separated by commas.
+Each variable is a list of email addresses separated by commas (without spaces).
 
-* `CONCERT_MAIL`: Concert events emails
-* `EVENT_MAIL`:  Event emails
-* `LOST_MAIL`: Lost objects emails
-* `WEBSITE_MAIL`: Website problem emails
+* `CONTACT_CONCERT_MAIL`: Concert events emails
+* `CONTACT_EVENT_MAIL`:  Event emails
+* `CONTACT_LOST_MAIL`: Lost objects emails
+* `CONTACT_WEBSITE_MAIL`: Website problem emails
 
 ###### Recaptacha
 

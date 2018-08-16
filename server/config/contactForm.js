@@ -1,7 +1,7 @@
 const DEV_MAIL = ['contact@fake.com'];
 
 function getMails(name) {
-  const row = process.env[`CONTACT_${name}_MAIl`];
+  const row = process.env[`CONTACT_${name}_MAIL`];
 
   if (!row) return DEV_MAIL;
   return row.split(',').map(m => m.trim());

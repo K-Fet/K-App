@@ -67,10 +67,10 @@ async function load(config) {
       siteKey: matchInFile(/RECAPTCHA_SITE_KEY=(.+)$/, systemdFile),
     },
     contact: {
-      concert: matchInFile(/CONCERT_MAIL=(.+)$/, systemdFile),
-      lost: matchInFile(/LOST_MAIL=(.+)$/, systemdFile),
-      event: matchInFile(/EVENT_MAIL=(.+)$/, systemdFile),
-      website: matchInFile(/WEBSITE_MAIL=(.+)$/, systemdFile),
+      concert: matchInFile(/CONTACT_CONCERT_MAIL=(.+)$/, systemdFile),
+      lost: matchInFile(/CONTACT_LOST_MAIL=(.+)$/, systemdFile),
+      event: matchInFile(/CONTACT_EVENT_MAIL=(.+)$/, systemdFile),
+      website: matchInFile(/CONTACT_WEBSITE_MAIL=(.+)$/, systemdFile),
     },
   };
 
