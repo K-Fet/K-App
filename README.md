@@ -97,7 +97,7 @@ Each variable is a list of email addresses separated by commas.
 
 ###### Recaptacha
 
-* `RECAPTACHA_SITE_KEY`: Key used in client side at compilation time (not needed in dev).
+* `RECAPTCHA_SITE_KEY`: Key used in client side at compilation time (not needed in dev).
 * `RECAPTCHA_SECRET`: Secret for the server side (not needed in dev).
 
 ###### JWT

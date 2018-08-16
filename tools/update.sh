@@ -28,7 +28,7 @@ function checkout_last_release() {
 }
 
 function load_front_env_variables() {
-    export RECAPTACHA_SITE_KEY=$(grep -oP 'RECAPTACHA_SITE_KEY=\K(.+)$' /etc/systemd/system/kapp@.service)
+    export RECAPTCHA_SITE_KEY=$(grep -oP 'RECAPTCHA_SITE_KEY=\K(.+)$' /etc/systemd/system/kapp@.service)
 }
 
 #==============================================================================

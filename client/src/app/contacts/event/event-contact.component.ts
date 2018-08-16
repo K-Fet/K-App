@@ -12,7 +12,7 @@ export class EventContactComponent {
 
   contactForm: FormGroup;
   token: string;
-  siteKey: string = environment.RECAPTACHA_SITE_KEY;
+  siteKey: string = environment.RECAPTCHA_SITE_KEY;
 
   constructor(private fb: FormBuilder,
               private contactService: ContactService,

@@ -63,8 +63,8 @@ async function load(config) {
     instances: matchInFile(/proxy\s\/api(\slocalhost:\d{2,6})*\slocalhost:(\d{2,6})/, caddyFile, 2) -
       matchInFile(/proxy\s\/api\slocalhost:(\d{2,6})/, caddyFile) + 1,
     recaptacha: {
-      secret: matchInFile(/RECAPTACHA_SECRET=(.+)$/, systemdFile),
-      siteKey: matchInFile(/RECAPTACHA_SITE_KEY=(.+)$/, systemdFile),
+      secret: matchInFile(/RECAPTCHA_SECRET=(.+)$/, systemdFile),
+      siteKey: matchInFile(/RECAPTCHA_SITE_KEY=(.+)$/, systemdFile),
     },
     contact: {
       concert: matchInFile(/CONCERT_MAIL=(.+)$/, systemdFile),
