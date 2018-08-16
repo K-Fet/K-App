@@ -25,7 +25,7 @@ class Kommission extends Model {
         allowNull: false,
       },
 
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
     }, {
       sequelize,
       updatedAt: false,
