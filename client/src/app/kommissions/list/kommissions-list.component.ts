@@ -13,7 +13,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 })
 export class KommissionsListComponent implements OnInit {
 
-  displayedColumns = ['name', 'description', 'action'];
+  displayedColumns = ['name', 'action'];
   kommissionsData: MatTableDataSource<Kommission>;
 
   @ViewChild(MatSort) sort: MatSort;
