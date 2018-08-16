@@ -32,8 +32,7 @@ async function me(req, res) {
  * @returns {Promise<void>}
  */
 async function updateMe(req, res) {
-  const user = await authService.me(req.user.jit);
-  console.log(user.specialAccount);
+  const { user } = await authService.me(req.user.jit);
 
   if (user.specialAccount) {
     const schema = SpecialAccountSchema.min(1);

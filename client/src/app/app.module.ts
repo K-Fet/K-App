@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Libraries
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { ReCaptchaModule } from 'angular2-recaptcha/angular2-recaptcha';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 // Routes
 import { routing } from './app.routing';
