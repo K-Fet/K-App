@@ -1,50 +1,51 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title fxLayout="row">
-                <a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon></a>
-                <section class="mat-typography">
-                    <h1>Contact pour un objet perdu</h1>
-                </section>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form [formGroup]="contactForm" fxLayoutAlign="center" fxLayout="column" (ngSubmit)="send()">
-                <h4>Vos informations</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Nom" autocorrect="off" formControlName="lastName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Prénom" autocorrect="off" formControlName="firstName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Email" autocorrect="off" formControlName="email">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Téléphone portable" autocorrect="off" formControlName="phone">
-                    <mat-icon matSuffix>phone</mat-icon>
-                </mat-form-field>
-                <h4>L'objet perdu</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Nom de l'objet" autocorrect="off" formControlName="objectName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Date de perte" formControlName="lostDate" [owlDateTimeTrigger]="lost" [owlDateTime]="lost">
-                    <owl-date-time #lost></owl-date-time>
-                </mat-form-field>
-                <mat-form-field>
-                    <textarea matInput placeholder="Description rapide" autocorrect="off" formControlName="description">
-                    </textarea>
-                </mat-form-field>
-                <div fxLayoutAlign="center">
-                    <re-captcha (captchaResponse)="onCaptchaComplete($event)" site_key="{{siteKey}}">
-                    </re-captcha>
-                </div>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="submit"
-                    [disabled]="!this.contactForm.valid || this.token === undefined">Envoyer</button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>Contact pour un objet perdu</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="contactForm" fxLayoutAlign="center" fxLayout="column" (ngSubmit)="send()">
+        <h4>Vos informations</h4>
+        <mat-form-field>
+          <input matInput placeholder="Nom" autocorrect="off" formControlName="lastName">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Prénom" autocorrect="off" formControlName="firstName">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Email" autocorrect="off" formControlName="email">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Téléphone portable" autocorrect="off" formControlName="phone">
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+        <h4>L'objet perdu</h4>
+        <mat-form-field>
+          <input matInput placeholder="Nom de l'objet" autocorrect="off" formControlName="objectName">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Date de perte" formControlName="lostDate" [owlDateTimeTrigger]="lost" [owlDateTime]="lost">
+          <owl-date-time #lost></owl-date-time>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput placeholder="Description rapide" autocorrect="off" formControlName="description"
+            matTextareaAutosize matAutosizeMinRows="6">
+          </textarea>
+        </mat-form-field>
+        <div fxLayoutAlign="center">
+          <re-captcha (captchaResponse)="onCaptchaComplete($event)" site_key="{{siteKey}}">
+          </re-captcha>
+        </div>
+        <div fxLayoutAlign="center">
+          <button fxFlex="50" mat-button type="submit"
+          [disabled]="!this.contactForm.valid || this.token === undefined">Envoyer</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
