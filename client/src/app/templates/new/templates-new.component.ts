@@ -86,7 +86,7 @@ export class TemplateNewComponent {
 
   toNumber(date: string, selectedDay): TemplateDateUnit {
     return {
-      day: selectedDay,
+      day: +selectedDay,
       hours: +date.split(':')[0],
       minutes: +date.split(':')[1],
     };

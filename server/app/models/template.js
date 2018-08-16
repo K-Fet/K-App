@@ -75,9 +75,8 @@ class TemplateUnit extends Model {
         // eslint-disable-next-line
         set(val) {
           const date = new Date();
-          const currDay = date.getDay();
 
-          date.setDate(currDay + (val.day - 1 - currDay));
+          date.setDate(date.getDate() + ((7 + val.day - 1 + date.getDay()) % 7));
           date.setHours(val.hours);
           date.setMinutes(val.minutes);
 
@@ -101,9 +100,8 @@ class TemplateUnit extends Model {
         // eslint-disable-next-line
         set(val) {
           const date = new Date();
-          const currDay = date.getDay();
 
-          date.setDate(date.getDate() + (val.day - 1 - currDay));
+          date.setDate(date.getDate() + ((7 + val.day - 1 + date.getDay()) % 7));
           date.setHours(val.hours);
           date.setMinutes(val.minutes);
 

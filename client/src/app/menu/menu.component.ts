@@ -38,6 +38,15 @@ export class MenuComponent implements OnDestroy, OnInit {
       ],
     },
     {
+      accountType: 'guest',
+      links: [
+        {
+          name: 'Présentation',
+          route: '/presentation',
+        },
+      ],
+    },
+    {
       name: 'Contacts',
       accountType: 'guest',
       links: [

@@ -2,7 +2,7 @@ import { ERRORS400 } from './errors.400';
 import { Router } from '@angular/router';
 import { ToasterService } from '../_services';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, isDevMode } from '@angular/core';
 
 @Injectable()
 export class ErrorsHandler implements ErrorHandler {
@@ -42,9 +42,7 @@ export class ErrorsHandler implements ErrorHandler {
     }
 
     // TODO: Handle Client Error (Angular Error, ReferenceError...). Maybe send it to DB in order to manage it.
-
-    // Log the error in the console
-    // DEV ENV ONLY, DO NOT COMMIT
-    // console.error('Server error happens: ', error);
+    // Log the error in the console if dev mode
+    if (isDevMode()) console.error('Client error happens: ', error);
   }
 }

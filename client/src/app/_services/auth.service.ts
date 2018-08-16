@@ -32,6 +32,10 @@ export class AuthService {
         if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
           this.me().subscribe(() => {
             resolve();
+          // tslint:disable-next-line:align
+          }, (err) => {
+            console.error('Unexpected error occurs: ', err);
+            resolve();
           });
         } else {
           this.clearUser();

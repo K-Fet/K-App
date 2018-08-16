@@ -9,7 +9,7 @@ const { createUserError } = require('../../utils');
  * @returns {Promise<void>}
  */
 async function isBarman(req, res, next) {
-  const user = await authService.me(req.user.jit);
+  const { user } = await authService.me(req.user.jit);
   if (user.specialAccount) next(createUserError('BadRequest', 'SpecialAccount is not applicable for this endpoint'));
 
   req.barman = user.barman;
