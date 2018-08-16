@@ -36,7 +36,7 @@
     "test:back:it": "jest int",
     "test:back:unit": "jest unit --coverage",
     "test:front": "cd client/ && yarn build",
-    "preversion": "yarn test"
+    "preversion": "yarn test && yarn run build"
   },
   "dependencies": {
     "argon2": "0.19.3",
