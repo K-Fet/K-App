@@ -12,7 +12,7 @@ export class ResetPasswordDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<ResetPasswordDialogComponent>, private fb: FormBuilder) {
     this.resetForm = this.fb.group({
-      usernameFormControl: new FormControl('', [Validators.required, Validators.email]),
+      emailFormControl: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 

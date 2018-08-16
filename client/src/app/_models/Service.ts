@@ -1,4 +1,4 @@
-import { Barman } from './index';
+import { Barman } from '.';
 
 export class Service {
 

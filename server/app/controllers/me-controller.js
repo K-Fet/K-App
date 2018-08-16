@@ -75,8 +75,7 @@ async function updateMe(req, res) {
       specialAccount: newSpecialAccount,
       barman: undefined,
     });
-  }
-  if (user.barman) {
+  } else if (user.barman) {
     const schema = BarmanSchema
       .forbiddenKeys('active')
       .min(1);

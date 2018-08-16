@@ -13,8 +13,8 @@
                 <p>Le nouvel utilisateur sera invité à définir son mot de passe grâce à un email de
                     vérification envoyé automatiquement sur son adresse email.</p>
                 <mat-form-field>
-                    <input matInput placeholder="Adresse email" formControlName="username">
-                    <mat-error *ngIf="specialAccountForm.get('username').hasError('email')">
+                    <input matInput placeholder="Adresse email" formControlName="email">
+                    <mat-error *ngIf="specialAccountForm.get('email').hasError('email')">
                         Doit être un email valide.
                     </mat-error>
                 </mat-form-field>

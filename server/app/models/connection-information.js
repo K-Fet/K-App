@@ -20,7 +20,7 @@ class ConnectionInformation extends Model {
         primaryKey: true,
       },
 
-      username: {
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -34,7 +34,7 @@ class ConnectionInformation extends Model {
         type: DataTypes.STRING,
       },
 
-      usernameToken: {
+      emailToken: {
         type: DataTypes.STRING,
       },
     }, {
@@ -76,7 +76,7 @@ class ConnectionInformation extends Model {
 }
 
 const ConnectionInformationSchema = Joi.object().keys({
-  username: Joi.string().email(),
+  email: Joi.string().email(),
 }).min(1);
 
 module.exports = {

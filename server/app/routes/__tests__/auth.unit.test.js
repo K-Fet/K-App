@@ -4,8 +4,8 @@ const mocks = {
   login: jest.fn().mockResolvedValue(true),
   resetPassword: jest.fn().mockResolvedValue(true),
   definePassword: jest.fn().mockResolvedValue(true),
-  usernameVerify: jest.fn().mockResolvedValue(true),
-  cancelUsernameVerify: jest.fn().mockResolvedValue(true),
+  emailVerify: jest.fn().mockResolvedValue(true),
+  cancelEmailVerify: jest.fn().mockResolvedValue(true),
   refresh: jest.fn().mockResolvedValue(true),
   logout: jest.fn().mockResolvedValue(true),
 };
@@ -39,14 +39,14 @@ describe.skip('Auth router', () => {
     expect(mocks.definePassword).toHaveBeenCalledBefore(mockAuthGuard);
   });
 
-  it('should register usernameVerify before guard', () => {
+  it('should register emailVerify before guard', () => {
     require('../auth');
-    expect(mocks.usernameVerify).toHaveBeenCalledBefore(mockAuthGuard);
+    expect(mocks.emailVerify).toHaveBeenCalledBefore(mockAuthGuard);
   });
 
-  it('should register cancelUsernameVerify before guard', () => {
+  it('should register cancelEmailVerify before guard', () => {
     require('../auth');
-    expect(mocks.cancelUsernameVerify).toHaveBeenCalledBefore(mockAuthGuard);
+    expect(mocks.cancelEmailVerify).toHaveBeenCalledBefore(mockAuthGuard);
   });
 
   it('should register refresh after guard', () => {

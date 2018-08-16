@@ -1,8 +1,8 @@
-import { Barman, SpecialAccount, Permission } from './index';
+import { Barman, SpecialAccount, Permission } from '.';
 
 export class ConnectedUser {
 
-  username?: string;
+  email?: string;
   createdAt?: Date;
   accountType: string;
   barman?: Barman;

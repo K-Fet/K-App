@@ -42,7 +42,7 @@ export class BarmanNewComponent implements OnInit {
       nickname: new FormControl('', [Validators.required]),
       facebook: new FormControl('', [Validators.pattern(
         /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w\-]*\/)*([\w\-.]+)(\/)?/i)]),
-      username: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       dateOfBirth: new FormControl('', [Validators.required]),
       flow: new FormControl('', [Validators.required]),
       godFather: new FormControl(''),
@@ -85,8 +85,8 @@ export class BarmanNewComponent implements OnInit {
       let add: number[] = [];
       if (this.barmanForm.controls[key].value) {
         switch (key) {
-          case 'username':
-            this.barman.connection.username = this.barmanForm.controls.username.value;
+          case 'email':
+            this.barman.connection.email = this.barmanForm.controls.email.value;
             break;
           case 'godFather':
             this.barman._embedded.godFather = this.selectedGodFather;

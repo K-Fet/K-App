@@ -44,14 +44,14 @@ async function createBarman(newBarman, _embedded) {
     // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
 
     // eslint-disable-next-line no-param-reassign
-    newBarman.connection.username = newBarman.connection.username.toLowerCase();
+    newBarman.connection.email = newBarman.connection.email.toLowerCase();
 
     const co = await newBarman.connection.save({ transaction });
     // eslint-disable-next-line no-param-reassign
     newBarman.connectionId = co.id;
     await newBarman.save({ transaction });
 
-    await authService.resetPassword(co.username, transaction);
+    await authService.resetPassword(co.email, transaction);
   } catch (err) {
     if (err.userError) throw err;
 
@@ -59,7 +59,7 @@ async function createBarman(newBarman, _embedded) {
     logger.warn('Barman service: Error while creating barman %o', err);
 
     if (err.Errors === sequelize().SequelizeUniqueConstraintError) {
-      throw createUserError('BadUsername', 'a username must be unique');
+      throw createUserError('BadEmail', 'An email must be unique');
     }
 
     throw createServerError('ServerError', 'Error while creating barman');
@@ -70,10 +70,10 @@ async function createBarman(newBarman, _embedded) {
 
   // Welcome email
   try {
-    await mailService.sendWelcomeMail(newBarman.connection.username);
+    await mailService.sendWelcomeMail(newBarman.connection.email);
   } catch (err) {
     await transaction.rollback();
-    logger.error('Error while sending welcome mail at %s, %o', newBarman.connection.username, err);
+    logger.error('Error while sending welcome mail at %s, %o', newBarman.connection.email, err);
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
 
@@ -94,7 +94,7 @@ async function getBarmanById(barmanId) {
       {
         model: ConnectionInformation,
         as: 'connection',
-        attributes: ['id', 'username'],
+        attributes: ['id', 'email'],
       },
       {
         model: Barman,
@@ -160,11 +160,11 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
     }), { transaction });
 
     // If connection information is changed
-    if (updatedBarman.connection && updatedBarman.connection.username) {
-      // We have to load old username
+    if (updatedBarman.connection && updatedBarman.connection.email) {
+      // We have to load old email
       const co = await currentBarman.getConnection();
 
-      await authService.updateUsername(co.username, updatedBarman.connection.username);
+      await authService.updateEmail(co.email, updatedBarman.connection.email);
     }
   } catch (err) {
     if (err.userError) throw err;
@@ -201,7 +201,7 @@ async function deleteBarmanById(barmanId) {
       {
         model: ConnectionInformation,
         as: 'connection',
-        attributes: ['id', 'username'],
+        attributes: ['id', 'email'],
       },
     ],
   });

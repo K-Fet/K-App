@@ -48,7 +48,7 @@ export class SpecialAccountEditComponent implements OnInit {
 
   createForms(): void {
     this.specialAccountForm = this.fb.group({
-      username: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       description: new FormControl(''),
       code: new FormControl('', [Validators.pattern(/^[0-9]{4,}$/)]),
       codeConfirmation: new FormControl(''),
@@ -86,7 +86,7 @@ export class SpecialAccountEditComponent implements OnInit {
     });
     this.route.params.subscribe((params) => {
       this.specialAccountService.getById(params['id']).subscribe((specialAccount: SpecialAccount) => {
-        this.specialAccountForm.get('username').setValue(specialAccount.connection.username);
+        this.specialAccountForm.get('email').setValue(specialAccount.connection.email);
         this.specialAccountForm.get('description')
           .setValue(specialAccount.description ? specialAccount.description : '');
 
@@ -113,7 +113,7 @@ export class SpecialAccountEditComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
-      data: { message: `Edition du compte special ${this.currentSpecialAccount.connection.username}` },
+      data: { message: `Edition du compte special ${this.currentSpecialAccount.connection.email}` },
     });
 
     dialogRef.afterClosed().subscribe((code) => {
@@ -154,9 +154,9 @@ export class SpecialAccountEditComponent implements OnInit {
     if (this.currentSpecialAccount.description !== formValues.description) {
       specialAccount.description = formValues.description;
     }
-    if (this.currentSpecialAccount.connection.username !== formValues.username) {
+    if (this.currentSpecialAccount.connection.email !== formValues.email) {
       specialAccount.connection = {
-        username: formValues.username,
+        email: formValues.email,
       };
     }
     if (formValues.code) {
@@ -193,7 +193,7 @@ export class SpecialAccountEditComponent implements OnInit {
 
   updatePassword(): void {
     this.authService.definePassword(
-      this.currentSpecialAccount.connection.username,
+      this.currentSpecialAccount.connection.email,
       this.passwordForm.value.newPassword,
       null,
       this.passwordForm.value.oldPassword).subscribe(() => {
@@ -225,7 +225,7 @@ export class SpecialAccountEditComponent implements OnInit {
     if (!this.specialAccountForm.valid) {
       return true;
     }
-    return this.currentSpecialAccount.connection.username === this.specialAccountForm.get('username').value
+    return this.currentSpecialAccount.connection.email === this.specialAccountForm.get('email').value
       && this.currentSpecialAccount.description === this.specialAccountForm.get('description').value
       && add.length === 0
       && remove.length === 0

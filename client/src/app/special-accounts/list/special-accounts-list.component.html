@@ -14,9 +14,9 @@
         <mat-card-content>
             <div class="mat-elevation-z3">
                 <mat-table #table [dataSource]="specialAccountData" matSort>
-                    <ng-container matColumnDef="username">
+                    <ng-container matColumnDef="email">
                         <mat-header-cell *matHeaderCellDef mat-sort-header> Email </mat-header-cell>
-                        <mat-cell *matCellDef="let specialAccount"> {{specialAccount.connection.username}} </mat-cell>
+                        <mat-cell *matCellDef="let specialAccount"> {{specialAccount.connection.email}} </mat-cell>
                     </ng-container>
                     <ng-container matColumnDef="description">
                         <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>

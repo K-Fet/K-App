@@ -12,7 +12,7 @@ export class DefinePasswordComponent implements OnInit {
 
   passwordForm: FormGroup;
   token: string;
-  username: string;
+  email: string;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,
@@ -24,11 +24,11 @@ export class DefinePasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      if (params['username'] && params['passwordToken']) {
-        this.username = params['username'];
+      if (params['email'] && params['passwordToken']) {
+        this.email = params['email'];
         this.token = params['passwordToken'];
       } else {
-        this.toasterService.showToaster('Problème dans la récupération du username ou du token');
+        this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
         setTimeout(this.router.navigate(['/login']), 1000);
       }
     });
@@ -43,7 +43,7 @@ export class DefinePasswordComponent implements OnInit {
 
   definePassword(): void {
     const password = this.passwordForm.get('password').value;
-    this.authService.definePassword(this.username, password, this.token, null).subscribe(() => {
+    this.authService.definePassword(this.email, password, this.token, null).subscribe(() => {
       this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
       setTimeout(this.router.navigate(['/login']), 1000);
     });

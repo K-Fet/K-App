@@ -12,7 +12,7 @@ import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.compo
 })
 export class SpecialAccountListComponent implements OnInit {
 
-  displayedColumns = ['username', 'description', 'action'];
+  displayedColumns = ['email', 'description', 'action'];
   specialAccountData: MatTableDataSource<SpecialAccount>;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -28,7 +28,7 @@ export class SpecialAccountListComponent implements OnInit {
   ngOnInit(): void {
     this.update();
     if (!this.ngxPermissionService.getPermissions()['specialaccount:write']) {
-      this.displayedColumns = ['username', 'description'];
+      this.displayedColumns = ['email', 'description'];
     }
   }
 
@@ -56,7 +56,7 @@ export class SpecialAccountListComponent implements OnInit {
   openDialog(specialAccount: SpecialAccount): void {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
-      data: { message: `Suppression du compte special: ${specialAccount.connection.username}` },
+      data: { message: `Suppression du compte special: ${specialAccount.connection.email}` },
     });
 
     dialogRef.afterClosed().subscribe((code) => {

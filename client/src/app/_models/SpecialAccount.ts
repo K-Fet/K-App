@@ -1,4 +1,4 @@
-import { AssociationChanges, ConnectionInformation, Permission } from './index';
+import { AssociationChanges, ConnectionInformation, Permission } from '.';
 
 export class SpecialAccount {
 

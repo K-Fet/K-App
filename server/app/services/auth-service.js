@@ -104,32 +104,32 @@ async function getPermissions(user) {
  * The token will contain every
  * permissions given for the user.
  *
- * @param usernameDirty Username used to login (dirty is because it can contain upper letters)
+ * @param emailDirty Email used to login (dirty is because it can contain upper letters)
  * @param password Unencrypted password
  * @param rememberMe {Number} NUmber of day for jwt expiration
  * @returns {Promise<String>} JWT Signed token
  */
-async function login(usernameDirty, password, rememberMe) {
-  const username = usernameDirty.toLowerCase();
+async function login(emailDirty, password, rememberMe) {
+  const email = emailDirty.toLowerCase();
 
-  const user = await ConnectionInformation.findOne({ where: { username } });
+  const user = await ConnectionInformation.findOne({ where: { email } });
 
-  if (!user) throw createUserError('LoginError', 'Bad username/password combination');
+  if (!user) throw createUserError('LoginError', 'Bad email/password combination');
 
   if (!user.password) throw createUserError('UndefinedPassword', 'You must define password. Please, check your email.');
 
-  if (user.usernameToken) {
-    throw createUserError('UnverifiedUsername', 'A valid email is required to use the app, you could change your ');
+  if (user.emailToken) {
+    throw createUserError('UnverifiedEmail', 'A valid email is required to use the app, you could change your ');
   }
 
-  if (!await verify(user.password, password)) throw createUserError('LoginError', 'Bad username/password combination');
+  if (!await verify(user.password, password)) throw createUserError('LoginError', 'Bad email/password combination');
 
   if (user.passwordToken) {
     await user.update({ passwordToken: null });
   }
 
   delete user.password;
-  delete user.usernameToken;
+  delete user.emailToken;
   delete user.passwordToken;
 
   return createJWT(user, rememberMe);
@@ -174,7 +174,7 @@ async function me(tokenId) {
           {
             model: ConnectionInformation,
             as: 'connection',
-            attributes: ['id', 'username'],
+            attributes: ['id', 'email'],
           },
           {
             model: Kommission,
@@ -194,7 +194,7 @@ async function me(tokenId) {
           {
             model: ConnectionInformation,
             as: 'connection',
-            attributes: ['id', 'username'],
+            attributes: ['id', 'email'],
           },
         ],
       },
@@ -206,7 +206,7 @@ async function me(tokenId) {
   const permissions = await getPermissions(user);
 
   delete user.password;
-  delete user.usernameToken;
+  delete user.emailToken;
   delete user.passwordToken;
 
   return {
@@ -220,27 +220,27 @@ async function me(tokenId) {
  * Launch the procedure to reset the password of an user.
  *
  *
- * @param usernameDirty {String} Username of the user (dirty because it can contain upper letters)
+ * @param emailDirty {String} Email of the user (dirty because it can contain upper letters)
  * @param currTransaction {Object=} Transaction to use, it will no handle commit and rollback !
  * @returns {Promise<void>}
  */
-async function resetPassword(usernameDirty, currTransaction) {
-  const username = usernameDirty.toLowerCase();
+async function resetPassword(emailDirty, currTransaction) {
+  const email = emailDirty.toLowerCase();
   const transaction = currTransaction || await sequelize().transaction();
 
   const co = await ConnectionInformation.findOne({
-    where: { username },
+    where: { email },
     transaction: currTransaction,
   });
 
   if (!co) {
     await transaction.rollback();
-    throw createUserError('UnknownUser', 'Unable to find provided username');
+    throw createUserError('UnknownUser', 'Unable to find provided email');
   }
 
-  if (co.usernameToken) {
+  if (co.emailToken) {
     await transaction.rollback();
-    throw createUserError('UnverifiedUsername', 'A valid email is required to reset the password.');
+    throw createUserError('UnverifiedEmail', 'A valid email is required to reset the password.');
   }
 
   const passwordToken = await generateToken(128);
@@ -260,9 +260,9 @@ async function resetPassword(usernameDirty, currTransaction) {
   }
 
   try {
-    await mailService.sendPasswordResetMail(username, passwordToken);
+    await mailService.sendPasswordResetMail(email, passwordToken);
   } catch (err) {
-    logger.error('Error while sending reset password mail at %s, %o', username, err);
+    logger.error('Error while sending reset password mail at %s, %o', email, err);
 
     await transaction.rollback();
     throw createUserError('MailerError', 'Unable to send email to the provided address');
@@ -275,17 +275,17 @@ async function resetPassword(usernameDirty, currTransaction) {
  * Define a new password for an user.
  * Will reject all existing JWT.
  *
- * @param usernameDirty {String} User's login (dirty because it can contain upper letters)
+ * @param emailDirty {String} User's login (dirty because it can contain upper letters)
  * @param passwordToken {String} Token received by the user
  * @param newPassword {String} New password
  * @param oldPassword {String} Old password (only if !passwordToken)
  * @returns {Promise<void>} Nothing
  */
-async function definePassword(usernameDirty, passwordToken, newPassword, oldPassword) {
-  const username = usernameDirty.toLowerCase();
-  const user = await ConnectionInformation.findOne({ where: { username } });
+async function definePassword(emailDirty, passwordToken, newPassword, oldPassword) {
+  const email = emailDirty.toLowerCase();
+  const user = await ConnectionInformation.findOne({ where: { email } });
 
-  if (!user) throw createUserError('UnknownUser', 'Unable to find provided username');
+  if (!user) throw createUserError('UnknownUser', 'Unable to find provided email');
 
   if (passwordToken) {
     if (!user.passwordToken) {
@@ -296,15 +296,15 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
     }
   } else if (oldPassword) {
     if (!await verify(user.password, oldPassword)) {
-      throw createUserError('LoginError', 'Bad username/password combination');
+      throw createUserError('LoginError', 'Bad email/password combination');
     }
   } else {
     throw createServerError('ServerError', 'Missing parameter');
   }
 
-  if (user.usernameToken) {
+  if (user.emailToken) {
     throw createUserError(
-      'UnverifiedUsername',
+      'UnverifiedEmail',
       'A verified email is required, if you can not gain access to your account, contact an administrator',
     );
   }
@@ -322,7 +322,7 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
         connectionId: user.id,
       },
     });
-    await mailService.sendPasswordUpdate(username);
+    await mailService.sendPasswordUpdate(email);
   } catch (e) {
     logger.warn('AuthService: Error while defining password: %o', e);
     await transaction.rollback();
@@ -332,16 +332,16 @@ async function definePassword(usernameDirty, passwordToken, newPassword, oldPass
 }
 
 /**
- * Change username for a user. Need to be verified.
+ * Change email for a user. Need to be verified.
  *
- * @param currentUsername {String} User's login
- * @param newUsername {String} new user's login
+ * @param currentEmail {String} User's login
+ * @param newEmail {String} new user's login
  * @returns {Promise<void>} Nothing
  */
-async function updateUsername(currentUsername, newUsername) {
+async function updateEmail(currentEmail, newEmail) {
   const co = await ConnectionInformation.findOne({
     where: {
-      username: currentUsername.toLowerCase(),
+      email: currentEmail.toLowerCase(),
     },
   });
 
@@ -351,25 +351,25 @@ async function updateUsername(currentUsername, newUsername) {
     throw createUserError('UndefinedPassword', 'You must define a password. Please, check your email.');
   }
 
-  const usernameToken = await generateToken(128);
+  const emailToken = await generateToken(128);
 
   const transaction = await sequelize().transaction();
 
   try {
     await co.update({
-      usernameToken: await hash(usernameToken + newUsername),
+      emailToken: await hash(emailToken + newEmail),
     }, { transaction });
   } catch (err) {
-    logger.error('Error while creating username token %o', err);
+    logger.error('Error while creating email token %o', err);
     await transaction.rollback();
-    throw createServerError('ServerError', 'Error while change username');
+    throw createServerError('ServerError', 'Error while change email');
   }
 
   try {
-    await mailService.sendVerifyUsernameMail(newUsername, usernameToken, co.id);
-    await mailService.sendUsernameUpdateInformationMail(currentUsername, newUsername, co.id);
+    await mailService.sendVerifyEmailMail(newEmail, emailToken, co.id);
+    await mailService.sendEmailUpdateInformationMail(currentEmail, newEmail, co.id);
   } catch (err) {
-    logger.error('Error while sending reset password mail at %s or %s, %o', currentUsername, newUsername, err);
+    logger.error('Error while sending reset password mail at %s or %s, %o', currentEmail, newEmail, err);
     transaction.rollback();
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
@@ -378,20 +378,20 @@ async function updateUsername(currentUsername, newUsername) {
 }
 
 /**
- * Verify a new username request.
+ * Verify a new email request.
  *
  * @param userId {Number} user id
- * @param username {String} User's login
+ * @param email {String} User's login
  * @param password {String} new user's login
- * @param usernameToken {String} Username token
+ * @param emailToken {String} Email token
  * @returns {Promise<void>} Nothing
  */
-async function usernameVerify(userId, username, password, usernameToken) {
+async function emailVerify(userId, email, password, emailToken) {
   const co = await ConnectionInformation.findById(userId);
 
   if (!co
     || !await verify(co.password, password)
-    || !await verify(co.usernameToken, usernameToken + username)
+    || !await verify(co.emailToken, emailToken + email)
   ) {
     throw createUserError('VerificationError', 'Bad token/password/new email combination.');
   }
@@ -406,8 +406,8 @@ async function usernameVerify(userId, username, password, usernameToken) {
       // 3. For most of providers (for us at least), it is treated the same
       //
       // But know that it's not really good as we can see here: https://stackoverflow.com/questions/9807909
-      username: username.toLowerCase(),
-      usernameToken: null,
+      email: email.toLowerCase(),
+      emailToken: null,
     }, { transaction });
 
     // Revoke all current JWTs
@@ -419,15 +419,15 @@ async function usernameVerify(userId, username, password, usernameToken) {
       },
     });
   } catch (err) {
-    logger.error('Error while creating username token %o', err);
+    logger.error('Error while creating email token %o', err);
     await transaction.rollback();
-    throw createServerError('ServerError', 'Error while change username');
+    throw createServerError('ServerError', 'Error while change email');
   }
 
   try {
-    await mailService.sendUsernameConfirmation(username);
+    await mailService.sendEmailConfirmation(email);
   } catch (err) {
-    logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
+    logger.error('Error while sending a confirmation for email update for %s, %o', email, err);
     transaction.rollback();
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
@@ -436,13 +436,13 @@ async function usernameVerify(userId, username, password, usernameToken) {
 }
 
 /**
- * Cancel a username update request.
+ * Cancel a email update request.
  *
  * @param userId {Number} user id
- * @param username {String} User's login
+ * @param email {String} User's login
  * @returns {Promise<void>} Nothing
  */
-async function cancelUsernameUpdate(userId, username) {
+async function cancelEmailUpdate(userId, email) {
   const co = await ConnectionInformation.findById(userId);
 
   if (!co) {
@@ -453,18 +453,18 @@ async function cancelUsernameUpdate(userId, username) {
 
   try {
     await co.update({
-      usernameToken: null,
+      emailToken: null,
     }, { transaction });
   } catch (err) {
-    logger.error('Error while creating cancel username update for %s %o', username, err);
+    logger.error('Error while creating cancel email update for %s %o', email, err);
     await transaction.rollback();
-    throw createServerError('ServerError', 'Error while change username');
+    throw createServerError('ServerError', 'Error while change email');
   }
 
   try {
-    await mailService.sendCancelUsernameConfirmation(username);
+    await mailService.sendCancelEmailConfirmation(email);
   } catch (err) {
-    logger.error('Error while sending a confirmation for username update for %s, %o', username, err);
+    logger.error('Error while sending a confirmation for email update for %s, %o', email, err);
     transaction.rollback();
     throw createUserError('MailerError', 'Unable to send email to the provided address');
   }
@@ -481,8 +481,8 @@ module.exports = {
   createJWT,
   resetPassword,
   definePassword,
-  updateUsername,
-  usernameVerify,
-  cancelUsernameUpdate,
+  updateEmail,
+  emailVerify,
+  cancelEmailUpdate,
   getPermissions,
 };

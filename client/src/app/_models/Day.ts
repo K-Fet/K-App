@@ -1,4 +1,4 @@
-import { Service } from './index';
+import { Service } from '.';
 import { Moment } from 'moment';
 
 export class Day {

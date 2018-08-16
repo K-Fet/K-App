@@ -45,7 +45,7 @@ import { SpecialAccountEditComponent } from './special-accounts/edit/special-acc
 import { ConfirmationDialogComponent } from './dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ResetPasswordDialogComponent } from './dialogs/reset-password/reset-password.component';
 import { DefinePasswordComponent } from './auth/define-password/define-password.component';
-import { UsernameVerificationComponent } from './auth/username-verification/username-verification.component';
+import { EmailVerificationComponent } from './auth/email-verification/email-verification.component';
 import { TemplatesListComponent } from './templates/list/templates-list.component';
 import { TemplateNewComponent } from './templates/new/templates-new.component';
 import { TemplateViewComponent } from './templates/view/template-view.component';
@@ -141,7 +141,7 @@ export function initAuth(authService: AuthService) {
     ResetPasswordDialogComponent,
     EqualValidator,
     DefinePasswordComponent,
-    UsernameVerificationComponent,
+    EmailVerificationComponent,
     TemplatesListComponent,
     TemplateNewComponent,
     TemplateViewComponent,

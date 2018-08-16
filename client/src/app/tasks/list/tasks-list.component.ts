@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
 
-import { Task, Kommission, TASK_STATES } from '../../_models/index';
-import { TaskService, ToasterService, KommissionService } from '../../_services/index';
+import { Task, Kommission, TASK_STATES } from '../../_models';
+import { TaskService, ToasterService, KommissionService } from '../../_services';
 import { TaskViewDialogComponent } from '../view/task-view.component';
 import { TaskEditNewDialogComponent } from '../edit-new/task-edit-new.component';
 import { ActivatedRoute } from '@angular/router';

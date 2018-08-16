@@ -3,8 +3,8 @@
 const inquirer = require('inquirer');
 const crypto = require('crypto');
 const Joi = require('joi');
-const { hash } = require('../../server/utils/password-manager');
 const { Sequelize } = require('sequelize');
+const { hash } = require('../../server/utils/password-manager');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../../server/app/models');
 const mysqlConf = require('./mysql');
 const { start: syncPermissions } = require('../../server/bootstrap/permissions');
@@ -27,8 +27,8 @@ async function askQuestions(configObj) {
     },
     {
       type: 'input',
-      name: 'adminUsername',
-      message: 'Username (email) for admin?',
+      name: 'adminEmail',
+      message: 'Email for admin?',
       valid: input => Joi.validate(input, Joi.string().email(), { presence: 'required' }),
     },
     {
@@ -54,7 +54,7 @@ async function askQuestions(configObj) {
       password: answers.adminPassword || crypto.randomBytes(10)
         .toString('hex'),
       code: answers.adminCode,
-      username: answers.adminUsername,
+      email: answers.adminEmail,
     },
   };
 }
@@ -72,7 +72,7 @@ function confirmConfig(config) {
     return;
   }
 
-  console.log(`|   |-- Admin username: ${config.account.admin.username}`);
+  console.log(`|   |-- Admin email: ${config.account.admin.email}`);
 }
 
 
@@ -114,7 +114,7 @@ async function configure(config) {
       description: 'Administrator',
       connection: {
         password: await hash(config.account.admin.password),
-        username: config.account.admin.username,
+        email: config.account.admin.email,
       },
     },
     {

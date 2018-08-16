@@ -12,7 +12,7 @@ const { createUserError } = require('../../utils');
  */
 async function login(req, res) {
   const schema = Joi.object().keys({
-    username: Joi.string().required(),
+    email: Joi.string().required(),
     password: Joi.string().required(),
     rememberMe: Joi.number().integer().min(1).max(30),
   });
@@ -20,9 +20,9 @@ async function login(req, res) {
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
-  const { username, password, rememberMe = 1 } = req.body;
+  const { email, password, rememberMe = 1 } = req.body;
 
-  const jwt = await authService.login(username, password, rememberMe);
+  const jwt = await authService.login(email, password, rememberMe);
 
   res.json({ jwt });
 }
@@ -49,13 +49,13 @@ async function logout(req, res) {
  */
 async function resetPassword(req, res) {
   const schema = Joi.object().keys({
-    username: Joi.string().required(),
+    email: Joi.string().required(),
   });
 
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
-  await authService.resetPassword(req.body.username);
+  await authService.resetPassword(req.body.email);
 
   res.send({});
 }
@@ -69,7 +69,7 @@ async function resetPassword(req, res) {
  */
 async function definePassword(req, res) {
   const schema = Joi.object().keys({
-    username: Joi.string().email().required(),
+    email: Joi.string().email().required(),
     password: Joi.string()
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/)
       .error(createUserError(
@@ -89,64 +89,64 @@ async function definePassword(req, res) {
   }
 
   const {
-    username, password, oldPassword, passwordToken,
+    email, password, oldPassword, passwordToken,
   } = req.body;
 
   if (!passwordToken && !oldPassword) {
     throw createUserError('BadRequest', 'Missing passwordToken or oldPassword field');
   }
 
-  await authService.definePassword(username, passwordToken, password, oldPassword);
+  await authService.definePassword(email, passwordToken, password, oldPassword);
 
   res.send({});
 }
 
 /**
- * Verify an username.
+ * Verify an email.
  *
  * @param req Request
  * @param res Response
  * @returns {Promise<void>} Nothing
  */
-async function usernameVerify(req, res) {
+async function emailVerify(req, res) {
   const schema = Joi.object().keys({
     userId: Joi.number().integer().required(),
-    username: Joi.string().email().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().required(),
-    usernameToken: Joi.string().required(),
+    emailToken: Joi.string().required(),
   });
 
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
   const {
-    userId, username, password, usernameToken,
+    userId, email, password, emailToken,
   } = req.body;
-  await authService.usernameVerify(userId, username, password, usernameToken);
+  await authService.emailVerify(userId, email, password, emailToken);
 
   res.send({});
 }
 
 /**
- * Verify an username.
+ * Cancel an email verification.
  *
  * @param req Request
  * @param res Response
  * @returns {Promise<void>} Nothing
  */
-async function cancelUsernameVerify(req, res) {
+async function cancelEmailVerify(req, res) {
   const schema = Joi.object().keys({
     userId: Joi.number().integer().required(),
-    username: Joi.string().email().required(),
+    email: Joi.string().email().required(),
   });
 
   const { error } = schema.validate(req.body);
   if (error) throw createUserError('BadRequest', error.message);
 
   const {
-    userId, username,
+    userId, email,
   } = req.body;
-  await authService.cancelUsernameUpdate(userId, username);
+  await authService.cancelEmailUpdate(userId, email);
 
   res.send({});
 }
@@ -156,6 +156,6 @@ module.exports = {
   logout,
   resetPassword,
   definePassword,
-  usernameVerify,
-  cancelUsernameVerify,
+  emailVerify,
+  cancelEmailVerify,
 };
