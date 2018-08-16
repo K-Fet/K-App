@@ -44,7 +44,6 @@ export class ErrorsHandler implements ErrorHandler {
     // TODO: Handle Client Error (Angular Error, ReferenceError...). Maybe send it to DB in order to manage it.
 
     // Log the error in the console
-    // DEV ENV ONLY, DO NOT COMMIT
-    console.error('Server error happens: ', error);
+    console.error('Client error happens: ', error);
   }
 }
