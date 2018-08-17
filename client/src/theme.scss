@@ -1,0 +1,62 @@
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+$k-app-primary: mat-palette($mat-gray, 900);
+$k-app-accent:  mat-palette($mat-amber, A400);
+$k-app-warn:    mat-palette($mat-red, 500);
+
+$k-app-theme: mat-light-theme($k-app-primary, $k-app-accent, $k-app-warn);
+
+@include angular-material-theme($k-app-theme);
+
+$primary: mat-color($k-app-primary);
+$accent: mat-color($k-app-accent);
+$warn: mat-color($k-app-warn);
+
+// Task theme (must be global because it overides material css rules)
+
+$notStarted: #FFFFFF;
+$inProgress: #FFCC80;
+$abandoned: #FFFFFF ;
+$done: #AED581;
+
+.notStarted {
+  
+  mat-dialog-container {
+    background: $notStarted;
+  }
+}
+
+.inProgress {
+  
+  mat-dialog-container {
+    background: $inProgress;
+  }
+}
+
+.abandoned {
+  
+  mat-dialog-container {
+    background: $abandoned;
+  }
+}
+
+.done {
+  
+  mat-dialog-container {
+    background: $done;
+  }
+}
+
+// Global style
+
+.link {
+  color: rgba(0, 0, 0, .87); // Material color
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.justify {
+  text-align: justify;
+}
