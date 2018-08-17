@@ -25,6 +25,7 @@ export class KommissionViewComponent implements OnInit {
   }
 
   getBarmen(active: boolean): Barman[] {
-    return this.kommission.barmen.filter(b => b.active === active);
+    if (this.kommission) return this.kommission.barmen.filter(b => b.active === active);
+    return [];
   }
 }

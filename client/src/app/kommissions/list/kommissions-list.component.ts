@@ -30,15 +30,8 @@ export class KommissionsListComponent implements OnInit {
   ngOnInit(): void {
     this.update();
     if (!this.ngxPermissionsService.getPermissions()['kommission:write']) {
-      this.displayedColumns = ['name', 'description'];
+      this.displayedColumns = ['name'];
     }
-    this.media.subscribe((change: MediaChange) => {
-      if ((change.mqAlias === 'sm' || change.mqAlias === 'xs') && this.displayedColumns.includes('description')) {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('description'), 1);
-      } else if (!this.displayedColumns.includes('description') && change.mqAlias !== 'xs' && change.mqAlias !== 'sm') {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('name') + 1, 0, 'description');
-      }
-    });
   }
 
   update(): void {
