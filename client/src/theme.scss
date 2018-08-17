@@ -57,6 +57,13 @@ $done: #AED581;
   text-decoration: underline;
 }
 
+.link:hover {
+  color: rgba(97, 97, 97, .9); // Material color
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
 .justify {
   text-align: justify;
 }
