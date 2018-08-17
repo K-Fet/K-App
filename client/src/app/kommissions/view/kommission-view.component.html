@@ -18,13 +18,13 @@
       <p>
         Les barmen actifs de la kommission sont: 
         <span *ngFor="let barman of getBarmen(true); let isLast=last">
-          <a [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
+          <a class="link" [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
         </span>
       </p>
       <p>
         Les vieux de la kommission sont:
         <span *ngFor="let barman of getBarmen(false); let isLast=last">
-          <a [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
+          <a class="link" [routerLink]="'/barmen/' + barman.id">{{ barman.nickname }}</a>{{isLast ? '.' : ', '}}
         </span>
       </p>
       <div *ngIf="kommission">
