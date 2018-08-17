@@ -5,7 +5,6 @@ import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 
 @Component({
   templateUrl: './kommissions-list.component.html',
@@ -23,8 +22,7 @@ export class KommissionsListComponent implements OnInit {
               private toasterService: ToasterService,
               private router: Router,
               private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService,
-              public media: ObservableMedia) {
+              private ngxPermissionsService: NgxPermissionsService) {
   }
 
   ngOnInit(): void {
