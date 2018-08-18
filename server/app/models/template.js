@@ -120,21 +120,21 @@ class TemplateUnit extends Model {
   static associate() {}
 }
 
-const TemplateUnitSchema = Joi.object().keys({
+const TemplateUnitSchema = Joi.object({
   nbMax: Joi.number(),
-  startAt: Joi.object().keys({
+  startAt: Joi.object({
     day: Joi.number(),
     hours: Joi.number(),
     minutes: Joi.number(),
   }),
-  endAt: Joi.object().keys({
+  endAt: Joi.object({
     day: Joi.number(),
     hours: Joi.number(),
     minutes: Joi.number(),
   }),
 });
 
-const TemplateSchema = Joi.object().keys({
+const TemplateSchema = Joi.object({
   id: Joi.number().integer(),
   name: Joi.string(),
   services: Joi

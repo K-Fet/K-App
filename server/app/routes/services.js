@@ -16,7 +16,7 @@ router.get(
 router.post(
   '/',
   guard.check('service:write'),
-  validator.body(Joi.array().items(ServiceSchema.requiredKeys('startAt', 'endAt', ' nbMax')).min(1)),
+  validator.body(Joi.array().items(ServiceSchema.requiredKeys('startAt', 'endAt', 'nbMax')).min(1)),
   am(serviceController.createService),
 );
 router.get(

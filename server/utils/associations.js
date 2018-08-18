@@ -91,6 +91,5 @@ async function setAssociations(embedded, instance, associationObj, transaction, 
 }
 
 module.exports = {
-  setEmbeddedAssociations,
   setAssociations,
 };

@@ -71,7 +71,7 @@ class FeedObject extends Model {
   }
 }
 
-const FeedObjectSchema = Joi.object().keys({
+const FeedObjectSchema = Joi.object({
   id: Joi.number().integer(),
   title: Joi.string(),
   content: Joi.string(),

@@ -79,6 +79,7 @@ router.use((err, req, res, next) => {
       error: errorName,
       message: err.error.toString(),
       type: err.type,
+      details: err.error.details,
     });
   }
 
