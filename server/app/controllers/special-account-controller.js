@@ -1,5 +1,6 @@
 const specialAccountService = require('../services/special-account-service');
 const permissionService = require('../services/permission-service');
+const { createPermissionError } = require('../../utils');
 const { SpecialAccount, ConnectionInformation } = require('../models');
 
 /**

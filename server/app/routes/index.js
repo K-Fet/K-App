@@ -72,8 +72,11 @@ router.use((err, req, res, next) => {
 
   // Express-joi-validation
   if (err.error && err.error.isJoi) {
+    // Handle case where the error is a custom error
+    const errorName = err.error.userError ? err.error.name : 'BadRequest';
+
     return res.status(400).json({
-      error: 'BadRequest',
+      error: errorName,
       message: err.error.toString(),
       type: err.type,
     });

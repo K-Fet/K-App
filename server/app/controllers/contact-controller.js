@@ -1,4 +1,3 @@
-const Joi = require('joi');
 const mailService = require('../services/mail-service');
 const recaptchaService = require('../services/recaptcha-service');
 const { createUserError } = require('../../utils');
@@ -13,15 +12,6 @@ const CONFIG = require('../../config/contactForm');
  * @return {Promise.<void>} Nothing
  */
 async function sendForm(req, res) {
-  const schema = Joi.object().keys({
-    contactFormName: Joi.string().valid('concert', 'event', 'lost', 'website').required(),
-    values: Joi.object().required(),
-    token: Joi.string().required(),
-  });
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   await recaptchaService.recaptchaVerification(req.body.token);
 
   try {

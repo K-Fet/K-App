@@ -1,8 +1,6 @@
 const roleService = require('../services/role-service');
 const permissionService = require('../services/permission-service');
 const { Role } = require('../models');
-const { RoleSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the roles from the database.
@@ -25,15 +23,6 @@ async function getAllRoles(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createRole(req, res) {
-  const schema = RoleSchema.requiredKeys(
-    'name',
-    'description',
-  );
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
-
   let newRole = new Role({
     ...req.body,
     _embedded: undefined, // Remove the only external object
@@ -74,12 +63,6 @@ async function getRoleById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateRole(req, res) {
-  const schema = RoleSchema.min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
-
   let newRole = new Role({
     ...req.body,
     _embedded: undefined, // Remove the only external object

@@ -1,6 +1,4 @@
-const Joi = require('joi');
 const { createUserError } = require('../../utils');
-const FEED_CONFIG = require('../../config/feed');
 const feedService = require('../services/feed-service');
 
 /**
@@ -26,15 +24,6 @@ async function feedWebhooks(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function facebookVerify(req, res) {
-  const schema = Joi.object().keys({
-    'hub.mode': Joi.string().equal('subscribe').required(),
-    'hub.challenge': Joi.string().required(),
-    'hub.verify_token': Joi.equal(FEED_CONFIG.verifyToken),
-  }).required();
-
-  const { error } = schema.validate(req.query);
-  if (error) throw createUserError('BadRequest', error.message);
-
   res.send(req.query['hub.challenge']);
 }
 

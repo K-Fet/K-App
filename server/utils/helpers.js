@@ -70,9 +70,21 @@ function generateToken(byteLength = 48, stringBase = 'base64') {
  */
 const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
 
+/**
+ * This constant is used by Joi to validate query from a request.
+ * It represent an object with a start end end date.
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const RANGE_SCHEMA = Joi.object({
+  startAt: Joi.date().required(),
+  endAt: Joi.date().greater(Joi.ref('start')).required(),
+});
+
 module.exports = {
   cleanObject,
   parseStartAndEnd,
   generateToken,
   ID_SCHEMA,
+  RANGE_SCHEMA,
 };

@@ -16,7 +16,7 @@ router.get(
 router.post(
   '/',
   guard.check('specialaccount:write'),
-  validator.body(SpecialAccountSchema.requiredKeys('code', 'connection', 'connection.username')),
+  validator.body(SpecialAccountSchema.requiredKeys('code', 'connection', 'connection.email')),
   am(codeGuard),
   am(specialAccountController.createSpecialAccount),
 );

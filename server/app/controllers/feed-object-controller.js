@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const feedObjectService = require('../services/feed-object-service');
 const { FeedObject, Media } = require('../models');
-const { MediaSchema, FeedObjectSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch feedObjects from the database with pagination.
@@ -12,17 +9,7 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAll(req, res) {
-  const schema = Joi.object().keys({
-    offset: Joi.number().integer().min(1),
-    limit: Joi.number().integer().min(1).max(100),
-  });
-
-  const { error } = schema.validate(req.query);
-  if (error) throw createUserError('BadRequest', error.message);
-
-  // Cast to number
-  const offset = +req.query.offset || 0;
-  const limit = +req.query.limit || 40;
+  const { offset, limit } = req.query;
 
   const feedObjects = await feedObjectService.getAll(offset, limit);
 
@@ -50,26 +37,6 @@ async function getPinned(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createFeedObject(req, res) {
-  const schema = FeedObjectSchema.requiredKeys([
-    'title',
-    'content',
-    'date',
-    'source',
-  ]);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
-  // Handle media
-  if (req.body.medias) {
-    const mediaSchema = Joi.array().items(MediaSchema.requiredKeys([
-      'url',
-      'type',
-    ]));
-
-    const { mediaError } = mediaSchema.validate(req.body.medias);
-    if (mediaError) throw createUserError('BadRequest', error.message);
-  }
 
   let newFeedObject = new FeedObject({
     ...req.body,
@@ -113,11 +80,6 @@ async function getFeedObjectById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateFeedObject(req, res) {
-  const schema = FeedObjectSchema.min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   let updatedFeedObject = new FeedObject({
     ...req.body,
     medias: undefined,

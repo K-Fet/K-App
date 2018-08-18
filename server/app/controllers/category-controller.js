@@ -1,7 +1,5 @@
 const categoryService = require('../services/category-service');
 const { Category } = require('../models');
-const { CategorySchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the categories from the database.
@@ -24,12 +22,6 @@ async function getAll(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createCategory(req, res) {
-  const schema = CategorySchema.requiredKeys('name');
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
-
   let newCategory = new Category({
     ...req.body,
   });
@@ -64,11 +56,6 @@ async function getCategoryById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateCategory(req, res) {
-  const schema = CategorySchema.min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   let newCategory = new Category({
     ...req.body,
   });
