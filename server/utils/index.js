@@ -2,7 +2,7 @@ const { createUserError, createServerError, createPermissionError } = require('.
 const { verify, hash } = require('./password-manager');
 const { setAssociations, setEmbeddedAssociations } = require('./associations');
 const {
-  cleanObject, generateToken, ID_SCHEMA, RANGE_SCHEMA,
+  cleanObject, generateToken, ID_SCHEMA, RANGE_SCHEMA, joiThrough,
 } = require('./helpers');
 const { getDefaultTemplate } = require('./template-service');
 
@@ -15,6 +15,7 @@ module.exports = {
   cleanObject,
   getDefaultTemplate,
   setAssociations,
+  joiThrough,
   setEmbeddedAssociations,
   generateToken,
   ID_SCHEMA,

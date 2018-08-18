@@ -4,7 +4,7 @@ const guard = require('express-jwt-permissions')();
 const validator = require('express-joi-validation')({ passError: true });
 const { codeGuard } = require('../middlewares/code-guard');
 const am = require('../../utils/async-middleware');
-const { ID_SCHEMA, RANGE_SCHEMA } = require('../../utils');
+const { ID_SCHEMA, RANGE_SCHEMA, joiThrough } = require('../../utils');
 const { MemberSchema } = require('../models/schemas');
 const memberController = require('../controllers/member-controller');
 
@@ -18,8 +18,7 @@ router.get(
 router.post(
   '/',
   guard.check('member:write'),
-  // FIXME: Handle codeGuard
-  validator.body(MemberSchema.requiredKeys('firstName', 'lastName')),
+  validator.body(joiThrough('member', MemberSchema.requiredKeys('firstName', 'lastName'))),
   am(codeGuard),
   am(memberController.createMember),
 );
@@ -35,8 +34,7 @@ router.put(
   '/:id',
   guard.check('member:write'),
   validator.params(ID_SCHEMA),
-  // FIXME: Handle codeGuard
-  validator.body(MemberSchema.min(1)),
+  validator.body(joiThrough('member', MemberSchema.min(1))),
   am(codeGuard),
   am(memberController.updateMember),
 );

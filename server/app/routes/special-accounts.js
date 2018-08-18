@@ -3,7 +3,7 @@ const validator = require('express-joi-validation')({ passError: true });
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
 const { codeGuard } = require('../middlewares/code-guard');
-const { ID_SCHEMA } = require('../../utils');
+const { ID_SCHEMA, joiThrough } = require('../../utils');
 const { SpecialAccountSchema } = require('../models/schemas');
 const specialAccountController = require('../controllers/special-account-controller');
 
@@ -16,8 +16,7 @@ router.get(
 router.post(
   '/',
   guard.check('specialaccount:write'),
-  // FIXME: Handle codeGuard
-  validator.body(SpecialAccountSchema.requiredKeys('code', 'connection', 'connection.email')),
+  validator.body(joiThrough('specialAccount', SpecialAccountSchema.requiredKeys('code', 'connection', 'connection.email'))),
   am(codeGuard),
   am(specialAccountController.createSpecialAccount),
 );
@@ -33,8 +32,7 @@ router.put(
   '/:id',
   guard.check('specialaccount:write'),
   validator.params(ID_SCHEMA),
-  // FIXME: Handle codeGuard
-  validator.body(SpecialAccountSchema.min(1)),
+  validator.body(joiThrough('specialAccount', SpecialAccountSchema.min(1))),
   am(codeGuard),
   am(specialAccountController.updateSpecialAccount),
 );

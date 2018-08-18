@@ -54,9 +54,24 @@ const RANGE_SCHEMA = Joi.object({
   endAt: Joi.date().greater(Joi.ref('start')).required(),
 });
 
+/**
+ * Helper to handle the common pattern where there is a code and an object
+ * inside the body.
+ *
+ * Be careful as it will allow other props.
+ *
+ * @param prop {string} Property name
+ * @param schema {ObjectSchema} Joi object schema
+ * @returns {ObjectSchema} Joi schema
+ */
+function joiThrough(prop, schema) {
+  return Joi.object({ [prop]: schema.required() }).unknown(true);
+}
+
 module.exports = {
   cleanObject,
   generateToken,
+  joiThrough,
   ID_SCHEMA,
   RANGE_SCHEMA,
 };
