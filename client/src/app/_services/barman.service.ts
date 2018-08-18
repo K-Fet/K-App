@@ -20,8 +20,8 @@ export class BarmanService {
   getServices(id: number, start: Moment, end: Moment): Observable<Service[]> {
     return this.http.get<Service[]>(`/api/barmen/${id}/services`, {
       params: {
-        start: (+start).toString(),
-        end: (+end).toString(),
+        startAt: (+start).toString(),
+        endAt: (+end).toString(),
       },
     });
   }
