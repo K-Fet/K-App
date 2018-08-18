@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const Joi = require('joi');
-const { createUserError } = require('./errors');
 
 /**
  * Clean an object by removing 'undefined' fields.
@@ -15,32 +14,6 @@ function cleanObject(obj) {
   // eslint-disable-next-line no-param-reassign
   Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
   return obj;
-}
-
-/**
- * Parse start and end date from query.
- *
- * Will throw if one is missing and if start > end
- *
- * @param query
- * @returns {{start: Date, end: Date}}
- */
-function parseStartAndEnd(query) {
-  if (!query.start || !query.end) {
-    throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
-  }
-
-  const start = new Date(+query.start);
-  const end = new Date(+query.end);
-
-  if (start > end) {
-    throw createUserError('BadRequest', '\'start\' parameter must be inferior to \'end\' parameter');
-  }
-
-  return {
-    start,
-    end,
-  };
 }
 
 /**
@@ -83,7 +56,6 @@ const RANGE_SCHEMA = Joi.object({
 
 module.exports = {
   cleanObject,
-  parseStartAndEnd,
   generateToken,
   ID_SCHEMA,
   RANGE_SCHEMA,

@@ -18,6 +18,7 @@ router.get(
 router.post(
   '/',
   guard.check('member:write'),
+  // FIXME: Handle codeGuard
   validator.body(MemberSchema.requiredKeys('firstName', 'lastName')),
   am(codeGuard),
   am(memberController.createMember),
@@ -34,6 +35,7 @@ router.put(
   '/:id',
   guard.check('member:write'),
   validator.params(ID_SCHEMA),
+  // FIXME: Handle codeGuard
   validator.body(MemberSchema.min(1)),
   am(codeGuard),
   am(memberController.updateMember),
@@ -56,7 +58,7 @@ router.post(
 router.post(
   '/:id/unregister/:year',
   guard.check('member:write'),
-  validator.params(ID_SCHEMA.keys({ year: Joi.number().integer().required() })),
+  validator.params(ID_SCHEMA.append({ year: Joi.number().integer().required() })),
   am(codeGuard),
   am(memberController.unregisterMember),
 );
