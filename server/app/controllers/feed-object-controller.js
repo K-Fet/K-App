@@ -37,7 +37,6 @@ async function getPinned(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createFeedObject(req, res) {
-
   let newFeedObject = new FeedObject({
     ...req.body,
     _embedded: undefined, // Remove the only external object

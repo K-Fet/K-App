@@ -3,7 +3,6 @@ const Joi = require('joi');
 const validator = require('express-joi-validation')({ passError: true });
 const am = require('../../utils/async-middleware');
 const { RANGE_SCHEMA } = require('../../utils');
-const { BarmanSchema, SpecialAccountSchema } = require('../models/schemas');
 const { isBarman } = require('../middlewares/is-barman');
 const meController = require('../controllers/me-controller');
 

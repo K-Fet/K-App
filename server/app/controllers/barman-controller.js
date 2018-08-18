@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const barmanService = require('../services/barman-service');
 const { Barman, ConnectionInformation } = require('../models');
-const { BarmanSchema } = require('../models/schemas');
-const { createUserError, parseStartAndEnd } = require('../../utils');
 
 /**
  * Fetch all the barmen from the database.
@@ -69,9 +66,11 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
+  const newUser = req.body;
+
   let newBarman = new Barman(
     {
-      ...req.body,
+      ...newUser,
       _embedded: undefined, // Remove the only external object
     },
     {
