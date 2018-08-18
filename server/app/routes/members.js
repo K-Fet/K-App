@@ -11,7 +11,7 @@ const memberController = require('../controllers/member-controller');
 router.get(
   '/',
   guard.check('member:read'),
-  validator.query(RANGE_SCHEMA),
+  validator.query(RANGE_SCHEMA.optionalKeys('startAt', 'endAt')),
   am(memberController.getAllMembers),
 );
 
