@@ -1,9 +1,27 @@
 const Joi = require('joi');
+const RateLimit = require('express-rate-limit');
 const router = require('express').Router();
 const validator = require('express-joi-validation')({ passError: true });
 const authController = require('../controllers/auth-controller');
 const am = require('../../utils/async-middleware');
+const { authGuard } = require('../middlewares/auth-guard');
 const { createUserError } = require('../../utils');
+const logger = require('../../logger');
+
+const rateLimiter = new RateLimit({
+  windowMs: 1000 * 60 * 20, // 20 min window
+  delayAfter: 1, // begin slowing down responses after the first request
+  delayMs: 3 * 1000, // slow down subsequent responses by 3 seconds per request
+  max: 5, // start blocking after 5 requests
+  message: 'Too many requests were made to auth related services from this IP, please try again in 20 minutes',
+  onLimitReached: req => logger.warn(`[RATE LIMIT REACHED]: For request ${req.path} by ${req.ip}`),
+});
+
+
+// Use a rate limiter to prevent auth spamming
+// Any abuse with login / reset / define password / email change
+// will be prevented
+router.use(rateLimiter);
 
 router.post(
   '/login',
@@ -58,8 +76,8 @@ router.post(
   am(authController.cancelEmailVerify),
 );
 
-// Add API specific middleware
-router.use(require('../middlewares/auth-guard'));
+// AUTHENTICATION NEEDED
+router.use(authGuard());
 
 router.get(
   '/logout',

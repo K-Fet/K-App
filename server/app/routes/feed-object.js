@@ -6,6 +6,7 @@ const feedObjectController = require('../controllers/feed-object-controller');
 const { ID_SCHEMA } = require('../../utils');
 const { FeedObjectSchema } = require('../models/schemas');
 const am = require('../../utils/async-middleware');
+const { authGuard } = require('../middlewares/auth-guard');
 
 router.get(
   '/',
@@ -23,8 +24,8 @@ router.get(
   am(feedObjectController.getFeedObjectById),
 );
 
-// Add API specific middleware
-router.use(require('../middlewares/auth-guard'));
+// AUTHENTICATION NEEDED
+router.use(authGuard());
 
 router.post(
   '/',
