@@ -52,7 +52,7 @@ class Service extends Model {
   }
 }
 
-const ServiceSchema = Joi.object().keys({
+const ServiceSchema = Joi.object({
   id: Joi.number().integer(),
   startAt: Joi.date().iso(),
   endAt: Joi.date().iso().min(Joi.ref('startAt')),

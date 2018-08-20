@@ -44,7 +44,7 @@ class Registration extends Model {
   }
 }
 
-const RegistrationSchema = Joi.object().keys({
+const RegistrationSchema = Joi.object({
   id: Joi.number().integer(),
   year: Joi.number().integer(),
 });

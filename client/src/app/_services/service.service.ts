@@ -21,8 +21,8 @@ export class ServiceService {
   get(start: Moment, end: Moment): Observable<Service[]> {
     return this.http.get<Service[]>('/api/services', {
       params: {
-        start: (+start).toString(),
-        end: (+end).toString(),
+        startAt: (+start).toString(),
+        endAt: (+end).toString(),
       },
     });
   }

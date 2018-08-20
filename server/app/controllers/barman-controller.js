@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const barmanService = require('../services/barman-service');
 const { Barman, ConnectionInformation } = require('../models');
-const { BarmanSchema } = require('../models/schemas');
-const { createUserError, parseStartAndEnd } = require('../../utils');
 
 /**
  * Fetch all the barmen from the database.
@@ -25,20 +22,6 @@ async function getAllBarmen(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createBarman(req, res) {
-  const schema = BarmanSchema.requiredKeys(
-    'firstName',
-    'lastName',
-    'connection',
-    'connection.email',
-    'nickname',
-    'dateOfBirth',
-    'flow',
-    'active',
-  );
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const newUser = req.body;
 
   let newBarman = new Barman(
@@ -83,11 +66,7 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
-  const schema = BarmanSchema.min(1);
   const newUser = req.body;
-
-  const { error } = schema.validate(newUser);
-  if (error) throw createUserError('BadRequest', error.message);
 
   let newBarman = new Barman(
     {
@@ -136,8 +115,8 @@ async function deleteBarman(req, res) {
 async function getServicesBarman(req, res) {
   const barmanId = req.params.id;
 
-  const { start, end } = parseStartAndEnd(req.query);
-  const services = await barmanService.getBarmanServices(barmanId, start, end);
+  const { startAt, endAt } = req.query;
+  const services = await barmanService.getBarmanServices(barmanId, startAt, endAt);
 
   res.json(services);
 }
@@ -151,12 +130,6 @@ async function getServicesBarman(req, res) {
  */
 async function createServiceBarman(req, res) {
   const barmanId = req.params.id;
-
-  const schema = Joi.array().items(Joi.number().integer().required()).required();
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const servicesId = req.body;
 
   await barmanService.createServiceBarman(barmanId, servicesId);
@@ -173,12 +146,6 @@ async function createServiceBarman(req, res) {
  */
 async function deleteServiceBarman(req, res) {
   const barmanId = req.params.id;
-
-  const schema = Joi.array().items(Joi.number().integer().required()).required();
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const servicesId = req.body;
 
   await barmanService.deleteServiceBarman(barmanId, servicesId);

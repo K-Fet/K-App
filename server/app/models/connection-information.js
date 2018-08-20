@@ -75,7 +75,7 @@ class ConnectionInformation extends Model {
   }
 }
 
-const ConnectionInformationSchema = Joi.object().keys({
+const ConnectionInformationSchema = Joi.object({
   email: Joi.string().email(),
 }).min(1);
 

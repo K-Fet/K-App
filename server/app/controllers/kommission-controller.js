@@ -1,7 +1,5 @@
 const kommissionService = require('../services/kommission-service');
 const { Barman, Kommission } = require('../models');
-const { KommissionSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the kommissions from the database.
@@ -46,15 +44,6 @@ async function getTasks(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createKommission(req, res) {
-  const schema = KommissionSchema.requiredKeys(
-    'name',
-    'description',
-  );
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
-
   let newKommission = new Kommission({
     ...req.body,
     _embedded: undefined, // Remove the only external object
@@ -90,11 +79,6 @@ async function getKommissionById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateKommission(req, res) {
-  const schema = KommissionSchema.min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   let newKommission = new Kommission({
     ...req.body,
     _embedded: undefined, // Remove the only external object

@@ -83,7 +83,7 @@ class Barman extends Model {
   }
 }
 
-const BarmanSchema = Joi.object().keys({
+const BarmanSchema = Joi.object({
   id: Joi.number().integer(),
   firstName: Joi.string(),
   lastName: Joi.string(),

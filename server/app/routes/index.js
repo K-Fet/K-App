@@ -70,6 +70,16 @@ router.use((err, req, res, next) => {
     });
   }
 
+  // Express-joi-validation
+  if (err.error && err.error.isJoi) {
+    return res.status(400).json({
+      error: 'BadRequest',
+      message: err.error.toString(),
+      type: err.type,
+      details: err.error.details,
+    });
+  }
+
   // Express-jwt error
   if (err.name === 'UnauthorizedError') {
     return res.status(401).json({
@@ -78,11 +88,12 @@ router.use((err, req, res, next) => {
     });
   }
 
-  if (err.userError) {
-    logger.verbose('User error for request %s %s. Error name: %s', req.method, req.path, err.name);
+  if (err.userError || (err.error && err.error.userError)) {
+    const e = err.error ? err.error : err;
+    logger.verbose('User error for request %s %s. Error name: %s', req.method, req.path, e.name);
     return res.status(400).json({
-      error: err.name,
-      message: err.message,
+      error: e.name,
+      message: e.message,
     });
   }
 

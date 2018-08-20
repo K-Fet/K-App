@@ -61,13 +61,13 @@ class Task extends Model {
   }
 }
 
-const TaskSchema = Joi.object().keys({
+const TaskSchema = Joi.object({
   id: Joi.number().integer(),
   name: Joi.string(),
   description: Joi.string(),
   deadline: Joi.date().iso(),
   state: Joi.string().valid('Not started', 'In progress', 'Done', 'Abandoned'),
-  _embedded: Joi.object().keys({
+  _embedded: Joi.object({
     barmen: AssociationChangesSchema,
     kommissionId: Joi.number().integer(),
   }),

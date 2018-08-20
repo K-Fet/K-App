@@ -71,7 +71,7 @@ class FeedObject extends Model {
   }
 }
 
-const FeedObjectSchema = Joi.object().keys({
+const FeedObjectSchema = Joi.object({
   id: Joi.number().integer(),
   title: Joi.string(),
   content: Joi.string(),
@@ -79,10 +79,10 @@ const FeedObjectSchema = Joi.object().keys({
   pin: Joi.boolean(),
   source: Joi.string().valid('Kapp', 'Facebook'),
   openLink: Joi.string(),
-  medias: Joi.array().items(MediaSchema.requiredKeys([
+  medias: Joi.array().items(MediaSchema.requiredKeys(
     'url',
     'type',
-  ])),
+  )),
   _embedded: Joi.object({
     categories: AssociationChangesSchema,
   }),

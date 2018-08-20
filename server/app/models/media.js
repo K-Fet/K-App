@@ -41,7 +41,7 @@ class Media extends Model {
   static associate() {}
 }
 
-const MediaSchema = Joi.object().keys({
+const MediaSchema = Joi.object({
   id: Joi.number().integer(),
   url: Joi.string().uri({ scheme: ['https'] }),
   type: Joi.string(),

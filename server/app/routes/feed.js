@@ -1,12 +1,32 @@
 const router = require('express').Router();
+const Joi = require('joi');
+const validator = require('express-joi-validation')({ passError: true });
 const am = require('../../utils/async-middleware');
 const feedController = require('../controllers/feed-controller');
 const feedObjectController = require('../controllers/feed-object-controller');
+const FEED_CONFIG = require('../../config/feed');
 
-router.post('/webhooks', am(feedController.feedWebhooks));
-router.get('/webhooks', am(feedController.facebookVerify));
+router.post(
+  '/webhooks',
+  am(feedController.feedWebhooks),
+);
+router.get(
+  '/webhooks',
+  validator.query(Joi.object({
+    'hub.mode': Joi.string().equal('subscribe').required(),
+    'hub.challenge': Joi.string().required(),
+    'hub.verify_token': Joi.equal(FEED_CONFIG.verifyToken),
+  }).required()),
+  am(feedController.facebookVerify),
+);
 
-router.get('/', am(feedObjectController.get));
-router.get('/pinned', am(feedObjectController.getPinned));
+router.get(
+  '/',
+  am(feedObjectController.get),
+);
+router.get(
+  '/pinned',
+  am(feedObjectController.getPinned),
+);
 
 module.exports = router;

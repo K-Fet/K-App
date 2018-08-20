@@ -3,8 +3,8 @@
 @include mat-core();
 
 $k-app-primary: mat-palette($mat-gray, 900);
-$k-app-accent:  mat-palette($mat-amber, A400);
-$k-app-warn:    mat-palette($mat-red, 500);
+$k-app-accent:  mat-palette($mat-orange, 500);
+$k-app-warn:    mat-palette($mat-red, 600);
 
 $k-app-theme: mat-light-theme($k-app-primary, $k-app-accent, $k-app-warn);
 
@@ -56,6 +56,13 @@ $done: #AED581;
   cursor: pointer;
   text-decoration: underline;
 }
+
+.link:hover {
+  color: rgba(97, 97, 97, .9); // Material color
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 
 .justify {
   text-align: justify;
