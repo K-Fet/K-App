@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const serviceService = require('../services/service-service');
 const { Service } = require('../models/');
-const { ServiceSchema } = require('../models/schemas');
-const { createUserError, parseStartAndEnd } = require('../../utils');
 
 /**
  * Fetch all the services from the database. Include associated barmen.
@@ -12,8 +9,8 @@ const { createUserError, parseStartAndEnd } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllServices(req, res) {
-  const { start, end } = parseStartAndEnd(req.query);
-  const services = await serviceService.getAllServices(start, end);
+  const { startAt, endAt } = req.query;
+  const services = await serviceService.getAllServices(startAt, endAt);
 
   res.json(services);
 }
@@ -26,15 +23,6 @@ async function getAllServices(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createService(req, res) {
-  const schema = Joi.array().items(ServiceSchema.requiredKeys(
-    'startAt',
-    'endAt',
-    'nbMax',
-  )).min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const services = await serviceService.createService(req.body);
 
   return res.json(services);
@@ -65,10 +53,6 @@ async function getServiceById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateService(req, res) {
-  const schema = ServiceSchema.min(1);
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
   let newService = new Service({
     ...req.body,
   });

@@ -20,6 +20,10 @@ async function codeGuard(req, res, next) {
     throw createUserError('BadRequest', 'body.code is missing');
   }
 
+  if (typeof code !== 'string') {
+    throw createUserError('BadRequest', 'body.code is not a string');
+  }
+
   if (!await userService.checkCode(req.user.userId, code)) {
     throw createUserError('CodeError', 'The code provided is wrong');
   }

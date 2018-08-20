@@ -1,9 +1,8 @@
-const Joi = require('joi');
 const authService = require('../services/auth-service');
 const barmanService = require('../services/barman-service');
 const userService = require('../services/user-service');
 const specialAccountService = require('../services/special-account-service');
-const { createUserError, parseStartAndEnd } = require('../../utils');
+const { createUserError } = require('../../utils');
 const {
   Barman,
   SpecialAccount,
@@ -116,8 +115,8 @@ async function updateMe(req, res) {
  * @returns {Promise<void>}
  */
 async function getBarmanService(req, res) {
-  const { start, end } = parseStartAndEnd(req.query);
-  const services = await barmanService.getBarmanServices(req.barman.id, start, end);
+  const { startAt, endAt } = req.query;
+  const services = await barmanService.getBarmanServices(req.barman.id, startAt, endAt);
 
   res.json(services);
 }
@@ -129,11 +128,6 @@ async function getBarmanService(req, res) {
  * @returns {Promise<void>}
  */
 async function addBarmanService(req, res) {
-  const schema = Joi.array().items(Joi.number().integer().required()).required();
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const servicesId = req.body;
 
   await barmanService.createServiceBarman(req.barman.id, servicesId);
@@ -148,11 +142,6 @@ async function addBarmanService(req, res) {
  * @returns {Promise<void>}
  */
 async function removeBarmanService(req, res) {
-  const schema = Joi.array().items(Joi.number().integer().required()).required();
-
-  const { error } = schema.validate(req.body);
-  if (error) throw createUserError('BadRequest', error.message);
-
   const servicesId = req.body;
 
   await barmanService.deleteServiceBarman(req.barman.id, servicesId);

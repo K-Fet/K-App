@@ -44,11 +44,11 @@ class Role extends Model {
 }
 
 
-const RoleSchema = Joi.object().keys({
+const RoleSchema = Joi.object({
   id: Joi.number().integer(),
   name: Joi.string(),
   description: Joi.string(),
-  _embedded: Joi.object().keys({
+  _embedded: Joi.object({
     barmen: AssociationChangesSchema,
     permissions: AssociationChangesSchema,
   }),

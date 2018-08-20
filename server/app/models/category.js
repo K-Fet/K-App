@@ -40,7 +40,7 @@ class Category extends Model {
   }
 }
 
-const CategorySchema = Joi.object().keys({
+const CategorySchema = Joi.object({
   id: Joi.number().integer(),
   name: Joi.string(),
   description: Joi.string(),

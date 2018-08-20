@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { createUserError } = require('./errors');
+const Joi = require('joi');
 
 /**
  * Clean an object by removing 'undefined' fields.
@@ -14,32 +14,6 @@ function cleanObject(obj) {
   // eslint-disable-next-line no-param-reassign
   Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
   return obj;
-}
-
-/**
- * Parse start and end date from query.
- *
- * Will throw if one is missing and if start > end
- *
- * @param query
- * @returns {{start: Date, end: Date}}
- */
-function parseStartAndEnd(query) {
-  if (!query.start || !query.end) {
-    throw createUserError('BadRequest', '\'start\' & \'end\' query parameters are required');
-  }
-
-  const start = new Date(+query.start);
-  const end = new Date(+query.end);
-
-  if (start > end) {
-    throw createUserError('BadRequest', '\'start\' parameter must be inferior to \'end\' parameter');
-  }
-
-  return {
-    start,
-    end,
-  };
 }
 
 /**
@@ -61,8 +35,43 @@ function generateToken(byteLength = 48, stringBase = 'base64') {
   });
 }
 
+/**
+ * This constant is used by Joi to validate params from a request.
+ * It represent an object with a single field id (an integer).
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
+
+/**
+ * This constant is used by Joi to validate query from a request.
+ * It represent an object with a start end end date.
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const RANGE_SCHEMA = Joi.object({
+  startAt: Joi.date().required(),
+  endAt: Joi.date().greater(Joi.ref('startAt')).required(),
+});
+
+/**
+ * Helper to handle the common pattern where there is a code and an object
+ * inside the body.
+ *
+ * Be careful as it will allow other props.
+ *
+ * @param prop {string} Property name
+ * @param schema {ObjectSchema} Joi object schema
+ * @returns {ObjectSchema} Joi schema
+ */
+function joiThrough(prop, schema) {
+  return Joi.object({ [prop]: schema.required() }).unknown(true);
+}
+
 module.exports = {
   cleanObject,
-  parseStartAndEnd,
   generateToken,
+  joiThrough,
+  ID_SCHEMA,
+  RANGE_SCHEMA,
 };

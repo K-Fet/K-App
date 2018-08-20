@@ -47,7 +47,7 @@ class SpecialAccount extends Model {
   }
 }
 
-const SpecialAccountSchema = Joi.object().keys({
+const SpecialAccountSchema = Joi.object({
   id: Joi.number().integer(),
   code: Joi.string().regex(/^[0-9]{4,}$/),
   description: Joi.string(),

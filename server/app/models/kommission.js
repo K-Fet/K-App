@@ -48,11 +48,11 @@ class Kommission extends Model {
   }
 }
 
-const KommissionSchema = Joi.object().keys({
+const KommissionSchema = Joi.object({
   id: Joi.number().integer(),
   name: Joi.string(),
   description: Joi.string(),
-  _embedded: Joi.object().keys({
+  _embedded: Joi.object({
     barmen: AssociationChangesSchema,
   }),
 });

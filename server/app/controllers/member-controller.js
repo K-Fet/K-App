@@ -1,8 +1,5 @@
-const Joi = require('joi');
 const memberService = require('../services/member-service');
 const { Member } = require('../models');
-const { MemberSchema } = require('../models/schemas');
-const { createUserError } = require('../../utils');
 
 /**
  * Fetch all the members from the database.
@@ -12,16 +9,7 @@ const { createUserError } = require('../../utils');
  * @return {Promise.<void>} Nothing
  */
 async function getAllMembers(req, res) {
-  const filters = req.query;
-  const schema = Joi.object().keys({
-    startAt: Joi.number().integer(),
-    endAt: Joi.number().integer(),
-  });
-
-  const { error } = schema.validate(filters);
-  if (error) throw createUserError('BadRequest', error.message);
-
-  const members = await memberService.getAllMembers(filters);
+  const members = await memberService.getAllMembers(req.query);
 
   res.json(members);
 }
@@ -34,16 +22,7 @@ async function getAllMembers(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createMember(req, res) {
-  const reqMember = req.body.member;
-  const schema = MemberSchema.requiredKeys(
-    'firstName',
-    'lastName',
-  );
-
-  const { error } = schema.validate(reqMember);
-  if (error) throw createUserError('BadRequest', error.message);
-
-  let newMember = new Member(reqMember);
+  let newMember = new Member(req.body.member);
 
   newMember = await memberService.createMember(newMember);
 
@@ -75,13 +54,7 @@ async function getMemberById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateMember(req, res) {
-  const reqMember = req.body.member;
-  const schema = MemberSchema.min(1);
-
-  const { error } = schema.validate(reqMember);
-  if (error) throw createUserError('BadRequest', error.message);
-
-  let newMember = new Member(reqMember);
+  let newMember = new Member(req.body.member);
 
   const memberId = req.params.id;
 
