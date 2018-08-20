@@ -51,7 +51,7 @@ const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
  */
 const RANGE_SCHEMA = Joi.object({
   startAt: Joi.date().required(),
-  endAt: Joi.date().greater(Joi.ref('start')).required(),
+  endAt: Joi.date().greater(Joi.ref('startAt')).required(),
 });
 
 /**
