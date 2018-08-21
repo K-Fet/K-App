@@ -129,7 +129,7 @@ ${config.app.publicUrl} { # Your site's address
     
     # Proxy request for API
     proxy /api ${backendList}{
-        policy round_robin      # Use round robin for the backend
+        policy ip_hash          # Use ip hash for the backend (to have nice rate limiting)
         fail_timeout 5m         # Time before considering a backend down
         try_duration 4s         # How long proxy will try to find a backend
         transparent             # Set headers as the proxy except

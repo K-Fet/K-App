@@ -33,6 +33,8 @@ export class ErrorsHandler implements ErrorHandler {
           return toasterService.showToaster('Autorisations non suffisante pour effectuer la requête');
         case 404:
           return toasterService.showToaster('Appel serveur inconnu');
+        case 429:
+          return toasterService.showToaster('Trop de requêtes, veuillez attendre quelques minutes.');
         case 500:
           return toasterService.showToaster(
             'Erreur serveur (indépendant du client). Merci de contacter l\'administrateur.');

@@ -3,6 +3,7 @@ const validator = require('express-joi-validation')({ passError: true });
 const guard = require('express-jwt-permissions')();
 const am = require('../../utils/async-middleware');
 const categoryController = require('../controllers/category-controller');
+const { authGuard } = require('../middlewares/auth-guard');
 const { ID_SCHEMA } = require('../../utils');
 const { CategorySchema } = require('../models/schemas');
 
@@ -17,8 +18,8 @@ router.get(
   am(categoryController.getCategoryById),
 );
 
-// Add API specific middleware
-router.use(require('../middlewares/auth-guard'));
+// AUTHENTICATION NEEDED
+router.use(authGuard());
 
 router.post(
   '/',
