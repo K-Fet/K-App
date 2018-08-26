@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const xhub = require('express-x-hub');
 const logger = require('../../logger');
+const { authGuard } = require('../middlewares/auth-guard');
 const { accessToken } = require('../../config/feed');
 
 // Middlewares
@@ -43,8 +44,8 @@ router.use('/feed', require('./feed'));
 router.use('/feedobjects', require('./feed-object'));
 router.use('/categories', require('./category'));
 
-// Add API specific middleware
-router.use(require('../middlewares/auth-guard'));
+// AUTHENTICATION NEEDED
+router.use(authGuard());
 
 // Dispatch to child routes
 router.use('/me', require('./me'));
