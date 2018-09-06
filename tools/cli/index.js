@@ -1,29 +1,51 @@
 #!/usr/bin/env node
-const backup = require('./backup');
-const createAdminAccount = require('./create-admin-account');
-const install = require('./install');
-const migrate = require('./migrate');
-const populate = require('./populate');
-const release = require('./release');
-const update = require('./update');
+
+const actions = [
+  {
+    key: 'backup',
+    description: 'Save all the database into the `backup` folder',
+    noGui: true,
+  },
+  {
+    key: 'create-admin-account',
+    description: 'Create an admin account if needed',
+    noGui: false,
+  },
+  {
+    key: 'help',
+    description: 'Show this help',
+    noGui: false,
+  },
+  {
+    key: 'install',
+    description: 'Setup/Repair wizard',
+    noGui: false,
+  },
+  {
+    key: 'migrate',
+    description: 'Migrate the current database to the new version',
+    noGui: true,
+  },
+  {
+    key: 'populate',
+    description: 'Populate the database with some generated data',
+    noGui: false,
+  },
+  {
+    key: 'release',
+    description: 'Launch a new release',
+    noGui: false,
+  },
+  {
+    key: 'update',
+    description: 'Handle new update changes',
+    noGui: true,
+  },
+];
 
 if (require.main !== module) {
   console.log('[cli] This script should always be launched alone!');
   process.exit(1);
-}
-
-function showHelp() {
-  console.log('[cli] Usage:');
-  console.log('[cli]    npm run cli <action>');
-  console.log('[cli]');
-  console.log('[cli] Where <action> can be:');
-  console.log('[cli]    backup (no-gui)     : Save all the database into the `backup` folder');
-  console.log('[cli]    create-admin-account: Create an admin account if needed');
-  console.log('[cli]    install             : Setup/Repair wizard');
-  console.log('[cli]    migrate (no-gui)    : Migrate the current database to the new version');
-  console.log('[cli]    populate            : Populate the database with some generated data');
-  console.log('[cli]    release             : Launch a new release');
-  console.log('[cli]    update (no-gui)     : Handle new update changes');
 }
 
 /**
@@ -33,42 +55,25 @@ function showHelp() {
  * @returns {Promise<void>}
  */
 async function main(action) {
+  let finalAction = action;
   if (!action) {
     console.error('[cli] Missing required argument `action`');
-    showHelp();
-    return;
+    finalAction = 'help';
   }
 
-  switch (action) {
-    case 'backup':
-      await backup.run();
-      break;
-    case 'create-admin-account':
-      await createAdminAccount.run();
-      break;
-    case 'help':
-      showHelp();
-      break;
-    case 'install':
-      await install.run();
-      break;
-    case 'migrate':
-      await migrate.run();
-      break;
-    case 'populate':
-      await populate.run();
-      break;
-    case 'release':
-      await release.run();
-      break;
-    case 'update':
-      await update.run();
-      break;
-    default:
-      console.error(`[cli] Unrecognised action '${action}'`);
-      showHelp();
-      break;
+  const found = actions.find(value => value.key === finalAction);
+
+  if (!found) {
+    console.error(`[cli] Unrecognised action '${action}'`);
+    finalAction = 'help';
   }
+
+  // Load the right module for this action
+  // eslint-disable-next-line import/no-dynamic-require,global-require
+  const actionModule = require(`./${finalAction}`);
+
+  // Run the action with some data
+  await actionModule.run({ actions });
 }
 
 main(process.argv[2]).catch((e) => {
