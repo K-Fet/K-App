@@ -52,6 +52,14 @@ monitoring.kfet-insa.fr {
 
 kfet-insa.fr {
 
+    git github.com/K-Fet/K-App {
+    	path  /srv/kapp/
+    	branch  {latest}
+    	interval  -1
+    	hook  /__webhook__ mySuperSecret
+    	then_long  yarn run cli update --cwd=/srv/kapp
+    }
+
     # Serve client app
     root /srv/kapp/client/dist/
 
@@ -74,6 +82,14 @@ kfet-insa.fr {
 ##
 
 staging.kfet-insa.fr {
+
+    git github.com/K-Fet/K-App {
+      path  /srv/kapp-staging/
+      branch  master
+      interval  -1
+      hook  /__webhook__ mySuperSecret
+      then_long  yarn run cli update --cwd=/srv/kapp-staging
+    }
 
     # Serve client app
     root /srv/kapp-staging/client/dist/
