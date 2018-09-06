@@ -3,21 +3,9 @@ const fs = require('fs').promises;
 // eslint-disable-next-line camelcase
 const child_exec = require('child_process');
 const util = require('util');
+const { checkEnv } = require('../utils');
 
 const exec = util.promisify(child_exec.exec);
-
-function checkEnv() {
-  [
-    'DB_HOST',
-    'DB_USER',
-    'DB_PWD',
-    'DB_DATABASE',
-    'BACKUP_DIR',
-    'KEEP_BACKUPS_FOR',
-  ].forEach((t) => {
-    if (!process.env[t]) throw new Error(`Empty or missing env property '${t}'! Check your .env file`);
-  });
-}
 
 async function deleteOldBackups(backupDir, maxOld) {
   const folderFiles = await fs.readdir(backupDir);
@@ -30,8 +18,7 @@ async function deleteOldBackups(backupDir, maxOld) {
         file: b,
         mtimeMs,
       };
-    }),
-  );
+    }));
 
   // maxOld is in number of days
   const limitMs = Date.now() - (maxOld * 1000 * 60 * 60 * 24);
@@ -52,7 +39,14 @@ async function saveDatabase(host, username, password, database, backupDir) {
 }
 
 async function run() {
-  checkEnv();
+  checkEnv(
+    'DB_HOST',
+    'DB_USER',
+    'DB_PWD',
+    'DB_DATABASE',
+    'BACKUP_DIR',
+    'KEEP_BACKUPS_FOR',
+  );
   const {
     DB_HOST, DB_USER, DB_PWD, DB_DATABASE, BACKUP_DIR, KEEP_BACKUPS_FOR,
   } = process.env;
