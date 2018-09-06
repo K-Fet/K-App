@@ -1,0 +1,27 @@
+[Unit]
+Description=K-App provide a large panel of useful tools for associations
+Documentation=https://github.com/K-Fet/K-App
+After=network.target mysql.service
+
+[Service]
+
+Environment=PORT=%i
+Type=simple
+WorkingDirectory=/srv/kapp
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=10
+
+# Logging
+StandardOutput=syslog
+StandardError=syslog
+
+# Security
+DynamicUser=yes
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+
+[Install]
+WantedBy=multi-user.target
