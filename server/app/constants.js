@@ -1,7 +1,7 @@
 module.exports = {
   /**
-     * List all permissions used in the application.
-     */
+   * List all permissions used in the application.
+   */
   PERMISSION_LIST: [
     'barman:read',
     'barman:write',

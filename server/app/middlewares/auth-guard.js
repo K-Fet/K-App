@@ -1,11 +1,10 @@
 const { Router } = require('express');
 const jwt = require('express-jwt');
+const conf = require('nconf');
 const logger = require('../../logger');
 const am = require('../../utils/async-middleware');
 const authService = require('../services/auth-service');
-
-const { jwtSecret } = require('../../config/jwt');
-const { PERMISSION_LIST } = require('../../config/permissions');
+const { PERMISSION_LIST } = require('../constants');
 const { isTokenRevoked } = require('../services/auth-service');
 
 /**
@@ -45,7 +44,7 @@ function authGuard() {
 
   // Install the middleware
   router.use(jwt({
-    secret: jwtSecret,
+    secret: conf.get('web:jwtSecret'),
     isRevoked: isRevokedCallback,
   }));
 

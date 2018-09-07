@@ -1,4 +1,4 @@
-const WEB_CONFIG = require('../config/web');
+const conf = require('nconf');
 const logger = require('../logger');
 
 async function start() {
@@ -8,8 +8,9 @@ async function start() {
 
   // eslint-disable-next-line import/no-extraneous-dependencies,global-require
   const ngrok = require('ngrok');
-  WEB_CONFIG._currentPublicURL = await ngrok.connect(process.env.PORT || 3000);
-  logger.info(`Back is live at ${WEB_CONFIG._currentPublicURL}`);
+  const url = await ngrok.connect(process.env.PORT || 3000);
+  conf.set('web:publicUrl', url);
+  logger.info(`Back is live at ${url}`);
 }
 
 

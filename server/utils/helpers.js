@@ -2,6 +2,20 @@ const crypto = require('crypto');
 const Joi = require('joi');
 
 /**
+ * Current school year.
+ *
+ * For school year 2017-2018, current year will be 2017
+ */
+function getCurrentSchoolYear() {
+  const date = new Date();
+
+  if (date.getMonth() < 7) {
+    return date.getFullYear() - 1;
+  }
+  return date.getFullYear();
+}
+
+/**
  * Clean an object by removing 'undefined' fields.
  *
  * Needed because sequelize does not make difference between null and undefined
@@ -69,6 +83,7 @@ function joiThrough(prop, schema) {
 }
 
 module.exports = {
+  getCurrentSchoolYear,
   cleanObject,
   generateToken,
   joiThrough,

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
+const conf = require('nconf');
 const logger = require('../logger');
-const DB_SEQUELIZE = require('../config/sequelize');
 const models = require('../app/models');
 
 let _sequelize = null;
@@ -27,7 +27,7 @@ function initModel(instance) {
 }
 
 async function start() {
-  const CONF = DB_SEQUELIZE[process.env.NODE_ENV];
+  const CONF = conf.get('db');
 
   logger.debug('Booting sequelize with:', {
     ...CONF,

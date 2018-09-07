@@ -1,6 +1,6 @@
 const { setup, request, teardown } = require('../../utils/setup-teardown-common');
 const { Member, Registration } = require('../../../app/models');
-const { CURRENT_SCHOOL_YEAR } = require('../../../config/misc');
+const { getCurrentSchoolYear } = require('../../../utils');
 
 beforeEach(setup);
 afterEach(teardown);
@@ -13,7 +13,7 @@ describe('Integration::Members::GetMembers', () => {
         firstName: 'John',
         lastName: 'Smith',
         school: 'INSA',
-        registrations: [{ year: CURRENT_SCHOOL_YEAR }],
+        registrations: [{ year: getCurrentSchoolYear() }],
       },
       {
         include: [{ model: Registration, as: 'registrations' }],
@@ -32,7 +32,7 @@ describe('Integration::Members::GetMembers', () => {
         lastName: 'Smith',
         school: 'INSA',
         registrations: expect.arrayContaining([{
-          year: CURRENT_SCHOOL_YEAR,
+          year: getCurrentSchoolYear(),
           createdAt: expect.anything(),
         }]),
       }),
@@ -47,7 +47,7 @@ describe('Integration::Members::GetMembers', () => {
         firstName: 'John',
         lastName: 'Smith',
         school: 'INSA',
-        registrations: [{ year: CURRENT_SCHOOL_YEAR - 1 }],
+        registrations: [{ year: getCurrentSchoolYear() - 1 }],
       },
       {
         include: [{ model: Registration, as: 'registrations' }],
