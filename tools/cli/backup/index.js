@@ -40,24 +40,24 @@ async function saveDatabase(host, username, password, database, backupDir) {
 
 async function run() {
   checkEnv(
-    'DB_HOST',
-    'DB_USER',
-    'DB_PWD',
-    'DB_DATABASE',
+    'DB__HOST',
+    'DB__USERNAME',
+    'DB_PASSWORD',
+    'DB__DATABASE',
     'BACKUP_DIR',
     'KEEP_BACKUPS_FOR',
   );
   const {
-    DB_HOST, DB_USER, DB_PWD, DB_DATABASE, BACKUP_DIR, KEEP_BACKUPS_FOR,
+    DB__HOST, DB__USERNAME, DB_PASSWORD, DB__DATABASE, BACKUP_DIR, KEEP_BACKUPS_FOR,
   } = process.env;
 
   console.log('[backup] Deleting old backups');
   const count = await deleteOldBackups(BACKUP_DIR, KEEP_BACKUPS_FOR);
   console.log(`[backup] Deleted ${count} old backups`);
 
-  console.log(`[backup] Saving current database '${DB_DATABASE}'`);
-  const filename = await saveDatabase(DB_HOST, DB_USER, DB_PWD, DB_DATABASE, BACKUP_DIR);
-  console.log(`[backup] Database '${DB_DATABASE}' saved to '${filename}'`);
+  console.log(`[backup] Saving current database '${DB__DATABASE}'`);
+  const filename = await saveDatabase(DB__HOST, DB__USERNAME, DB_PASSWORD, DB__DATABASE, BACKUP_DIR);
+  console.log(`[backup] Database '${DB__DATABASE}' saved to '${filename}'`);
 }
 
 module.exports = {

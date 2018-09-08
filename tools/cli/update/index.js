@@ -7,10 +7,10 @@ const exec = util.promisify(child_exec.exec);
 
 async function run() {
   checkEnv(
-    'DB_HOST',
-    'DB_USER',
-    'DB_PWD',
-    'DB_DATABASE',
+    'DB__HOST',
+    'DB__USERNAME',
+    'DB__PASSWORD',
+    'DB__DATABASE',
   );
 
   console.log('[update] Install dependencies');

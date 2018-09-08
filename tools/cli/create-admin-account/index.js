@@ -6,7 +6,7 @@ const { hash } = require('../../../server/utils/password-manager');
 const { initModel } = require('../../../server/bootstrap/sequelize');
 const { start: syncPermissions } = require('../../../server/bootstrap/permissions');
 const { ConnectionInformation, SpecialAccount, Permission } = require('../../../server/app/models');
-const { PERMISSION_LIST } = require('../../../server/config/permissions');
+const { PERMISSION_LIST } = require('../../../server/app/constants');
 
 async function checkExistingAdminAccount() {
   const specialAccounts = await SpecialAccount.findAll({
@@ -78,10 +78,10 @@ async function doCreation(admin) {
 
 async function run() {
   checkEnv(
-    'DB_HOST',
-    'DB_USER',
-    'DB_PWD',
-    'DB_DATABASE',
+    'DB__HOST',
+    'DB__USERNAME',
+    'DB__PASSWORD',
+    'DB__DATABASE',
   );
 
   console.log('[create-admin-account] Creating sequelize instance');

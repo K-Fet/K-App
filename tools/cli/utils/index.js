@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Sequelize = require('sequelize');
 
 /**
@@ -19,14 +21,14 @@ function checkEnv(...variables) {
  */
 async function getSequelizeInstance() {
   const {
-    DB_HOST, DB_USER, DB_PWD, DB_DATABASE,
+    DB__HOST, DB__USERNAME, DB__PASSWORD, DB__DATABASE,
   } = process.env;
 
   const sequelize = new Sequelize({
-    host: DB_HOST,
-    username: DB_USER,
-    password: DB_PWD,
-    database: DB_DATABASE,
+    host: DB__HOST,
+    username: DB__USERNAME,
+    password: DB__PASSWORD,
+    database: DB__DATABASE,
     dialect: 'mysql',
     define: {
       charset: 'utf8',
@@ -43,8 +45,22 @@ async function getSequelizeInstance() {
   return sequelize;
 }
 
+/**
+ * Create all directories needed.
+ *
+ * @param pathToCreate
+ */
+function createDirDeep(pathToCreate) {
+  pathToCreate.split(path.sep).reduce((currentPath, folder) => {
+    currentPath += folder + path.sep;
+    if (!fs.existsSync(currentPath)) fs.mkdirSync(currentPath);
+    return currentPath;
+  }, '');
+}
+
 
 module.exports = {
   checkEnv,
+  createDirDeep,
   getSequelizeInstance,
 };

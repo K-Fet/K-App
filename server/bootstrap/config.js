@@ -35,7 +35,9 @@ function start() {
         operatorsAliases: false,
         benchmark: true,
       },
-      mail: {},
+      mail: {
+        port: 587,
+      },
       web: {
         port: 3000,
 
@@ -67,7 +69,6 @@ function start() {
 
       // Mail
       'mail:host',
-      'mail:port',
       'mail:auth:user',
       'mail:auth:pass',
       'mail:contact:concert',

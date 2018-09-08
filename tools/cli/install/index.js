@@ -1,5 +1,8 @@
+const { installCaddy } = require('./caddy-server');
+const { systemd } = require('./systemd');
+
 async function run() {
-  throw new Error('[install] Not implemented');
+  await installCaddy();
 }
 
 module.exports = {
