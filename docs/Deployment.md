@@ -103,9 +103,21 @@ In order to be able to do continuous deployment, we have to let Caddy server res
 the kapp.
 
 Caddy run with the user `www-data` and should be able to do 2 commands:
-- `systemctl restart kapp@`
-- `systemctl restart kapp-staging@`
+- `systemctl restart kapp@*`
+- `systemctl restart kapp-staging@*`
 
 To do this, we use `sudo`:
 
-<!-- TODO Sudo -->
+```bash
+# Create a new file
+visudo -f /etc/sudoers.d/kapp-restart-users
+```
+
+Add this to the file:
+```
+Cmnd_Alias KAPP_CMNDS = /bin/systemctl restart kapp@*, /bin/systemctl restart kapp-staging@*
+Defaults!KAPP_CMDS !requiretty
+www-data ALL = (root) NOPASSWD: KAPP_CMDS
+```
+
+Save and exit, everything should work fine!
