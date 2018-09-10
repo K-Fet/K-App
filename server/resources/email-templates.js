@@ -1,4 +1,3 @@
-// TIPS: Use a html formater to decrypt :) http://htmlformatter.com/
 const fs = require('fs');
 const path = require('path');
 

@@ -57,7 +57,7 @@ kfet-insa.fr {
     	branch  {latest}
     	interval  -1
     	hook  /__webhook__ mySuperSecret
-    	then_long  yarn run cli update
+    	then_long  sudo yarn run cli update
     }
 
     # Serve client app
@@ -88,7 +88,7 @@ staging.kfet-insa.fr {
       branch  master
       interval  -1
       hook  /__webhook__ mySuperSecret
-      then_long  yarn run cli update
+      then_long  sudo yarn run cli update
     }
 
     # Serve client app
