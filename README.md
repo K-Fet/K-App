@@ -23,7 +23,7 @@ And we use *MySQL* as database.
 
 ## Usage
 
-For a production environment, please check [this document](./docs/QuickDeployment.md) 
+For a production environment, please check [this document](./docs/Deployment.md) 
 which explain everything :).
 
 
@@ -32,8 +32,8 @@ which explain everything :).
 ## Developing
 
 To contribute to the project you will need:
-- [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
-- [Yarn](https://yarnpkg.com) version 1.3.2 or higher.
+- [NodeJS](https://nodejs.org/en/) version 10.0.x or higher.
+- [Yarn](https://yarnpkg.com) version 1.9.0 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
@@ -51,58 +51,26 @@ Clone the repo with `git clone https://github.com/K-Fet/K-App.git`.
 
 Then, run `yarn`.
 
+### CLI
+
+The application comes with a small _cli_ which provide multiple actions. 
+Some of them are used only in production, others are used only in development.
+
 ### Configuration
 
-To configure your environnement, you have two choices:
+To configure your environment, copy `/tools/config-samples/.env.example` to `/.env`.
+Then you just have to edit field as you want.
 
-1. Go to `/server/config/` and edit each files with your values.
- Be careful to **NOT COMMIT** these files.
+P.S.: The file `.env` is already ignored by git.
 
-2. Launch the server with environment variables.
 
 ### Environment variables
 
-Here are a list _(usually updated)_ of all the environment variables:
+Environment variables are parsed with [nconf](https://github.com/indexzero/nconf/).
+The separator used is `__` and words are transformed into camelCase.
 
-###### Database 
+E.g.: `WEB__JWT_SECRET` will be access with `conf.get('web:jwtSecret')`.
 
-* `DB_HOST`: Host for the mysql server (default: `localhost`)
-* `DB_USER`: Username for the mysql server (default: `root`)
-* `DB_PWD`:  Password for the mysql server (default: ``)
-* `DB_DATABASE`: Name of the database (default: `kapp`)
-* `DB_DIALECT`: Dialect used (default: `mysql`)
-
-###### Web
-
-* `PORT`: Port for the web app (default: `3000`)
-* `HOSTNAME`: Hostname to serve (default: _all interfaces_)
-* `TRUSTED_PROXY`: Value for [express's proxy configuration](https://expressjs.com/en/guide/behind-proxies.html)
-* `PUBLIC_URL`: Website URL.
-
-###### Email
-
-* `EMAIL_HOST`: SMTP url.
-* `EMAIL_PORT`: Port use for SMTP.
-* `EMAIL_USER`: Email used to send mail.
-* `EMAIL_PASS`: Password of the email.
-
-###### Contact emails
-
-Each variable is a list of email addresses separated by commas (without spaces).
-
-* `CONTACT_CONCERT_MAIL`: Concert events emails
-* `CONTACT_EVENT_MAIL`:  Event emails
-* `CONTACT_LOST_MAIL`: Lost objects emails
-* `CONTACT_WEBSITE_MAIL`: Website problem emails
-
-###### Recaptacha
-
-* `RECAPTCHA_SITE_KEY`: Key used in client side at compilation time (not needed in dev).
-* `RECAPTCHA_SECRET`: Secret for the server side (not needed in dev).
-
-###### JWT
-
-* `JWT_SECRET`: JWT secret to use (default: `devModeSecret` only in development)
 
 ### Launch server
 
@@ -123,13 +91,6 @@ you can install these plugins to watch linter errors.
 
 The app uses [nodemon](https://nodemon.io/) to watch for code change.
 The app will restart or reload when you edit the code.
-
-#### Dev scripts
-
-The folder `/tools/` offer scripts to ease development:
-
-- `node tools/prod-scripts/account.js`: Use it to create a default account in the app.
-- `node tools/dev-scripts/populate-db.js`: Use it to create fake data.
 
 ## Testing (back only)
 
