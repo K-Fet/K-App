@@ -10,8 +10,9 @@ const express = require('../../bootstrap/express');
 const sequelize = require('../../bootstrap/sequelize');
 const config = require('../../bootstrap/config');
 
+config.start();
+
 async function setup() {
-  config.start();
   await sequelize.start();
 
   await Promise.all([
