@@ -31,7 +31,6 @@
     "install:prod": "yarn install --production --loglevel warn",
     "postinstall": "cd client/ && yarn install --production=false",
     "test": "concurrently \"npm:test:*\"",
-    "test:back": "concurrently \"npm:test:back:*\"",
     "test:back:it": "jest int",
     "test:back:unit": "jest unit --coverage",
     "test:front": "cd client/ && yarn build",
