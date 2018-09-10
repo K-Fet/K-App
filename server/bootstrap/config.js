@@ -1,6 +1,5 @@
 const path = require('path');
 const nconf = require('nconf');
-const uuid = require('uuid/v4');
 
 function start() {
   nconf
@@ -55,10 +54,6 @@ function start() {
          */
         level: 'silly',
       },
-    })
-    .overrides({
-      'feed:baseApi': 'https://graph.facebook.com/v3.0',
-      'feed:verifyToken': uuid(),
     })
     .required([
       // Database

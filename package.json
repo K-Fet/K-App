@@ -30,7 +30,6 @@
     "lint": "yarn run eslint && cd client/ && yarn run lint",
     "install:prod": "yarn install --production --loglevel warn",
     "postinstall": "cd client/ && yarn install --production=false",
-    "prod": "NODE_ENV=production node server/index.js",
     "test": "concurrently \"npm:test:*\"",
     "test:back": "concurrently \"npm:test:back:*\"",
     "test:back:it": "jest int",

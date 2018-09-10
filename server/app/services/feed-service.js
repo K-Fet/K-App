@@ -1,6 +1,7 @@
 const rp = require('request-promise-native');
 const conf = require('nconf');
 const logger = require('../../logger');
+const { VERIFY_TOKEN, FB_BASE_API } = require('../constants');
 const { createUserError } = require('../../utils');
 
 /**
@@ -11,12 +12,12 @@ const { createUserError } = require('../../utils');
 async function subscribeWebhook() {
   const options = {
     method: 'POST',
-    url: `${conf.get('feed:baseApi')}/${conf.get('feed:appId')}/subscriptions`,
+    url: `${FB_BASE_API}/${conf.get('feed:appId')}/subscriptions`,
     qs: {
       object: 'page',
       callback_url: `${conf.get('web:publicUrl')}/api/feed/webhooks`,
       include_values: true,
-      verify_token: conf.get('feed:verifyToken'),
+      verify_token: VERIFY_TOKEN,
       fields: [
         'feed',
       ].join(', '),

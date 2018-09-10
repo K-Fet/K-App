@@ -1,3 +1,5 @@
+const uuid = require('uuid/v4');
+
 module.exports = {
   /**
    * List all permissions used in the application.
@@ -32,4 +34,15 @@ module.exports = {
     'template:read',
     'template:write',
   ],
+
+  /**
+   * Facebook verify token.
+   * Generated at runtime
+   */
+  VERIFY_TOKEN: uuid(),
+
+  /**
+   * Facebook base api URL.
+   */
+  FB_BASE_API: 'https://graph.facebook.com/v3.0',
 };

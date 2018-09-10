@@ -1,11 +1,17 @@
 jest.unmock('express');
 
+// Load TEST Config
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', 'tests.env') });
+
 const request = require('supertest');
 const permissions = require('../../bootstrap/permissions');
 const express = require('../../bootstrap/express');
 const sequelize = require('../../bootstrap/sequelize');
+const config = require('../../bootstrap/config');
 
 async function setup() {
+  config.start();
   await sequelize.start();
 
   await Promise.all([

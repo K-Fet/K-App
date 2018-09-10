@@ -6,6 +6,7 @@ After=network.target mysql.service
 [Service]
 
 Environment=PORT=%i
+Environment=NODE_ENV=production
 Type=simple
 WorkingDirectory=/srv/kapp-staging
 ExecStart=/usr/bin/node server/index.js

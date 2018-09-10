@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const Joi = require('joi');
-const conf = require('nconf');
 const validator = require('express-joi-validation')({ passError: true });
 const am = require('../../utils/async-middleware');
 const feedController = require('../controllers/feed-controller');
 const feedObjectController = require('../controllers/feed-object-controller');
+const { VERIFY_TOKEN } = require('../constants');
 
 router.post(
   '/webhooks',
@@ -15,7 +15,7 @@ router.get(
   validator.query(Joi.object({
     'hub.mode': Joi.string().equal('subscribe').required(),
     'hub.challenge': Joi.string().required(),
-    'hub.verify_token': Joi.equal(conf.get('feed:verifyToken')),
+    'hub.verify_token': Joi.equal(VERIFY_TOKEN),
   }).required()),
   am(feedController.facebookVerify),
 );

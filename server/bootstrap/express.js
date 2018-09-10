@@ -3,7 +3,6 @@ const express = require('express');
 const conf = require('nconf');
 const compression = require('compression');
 const logger = require('../logger');
-const routes = require('../app/routes');
 
 let _app = null;
 
@@ -18,7 +17,7 @@ function setProductionEnv() {
     return next();
   });
 
-  if (!conf.get('web:trustedProxy')) {
+  if (!conf.get('web:trustedProxy') && !process.env.UNSAFE_MODE) {
     logger.error('You should not launch this application in production without a secure proxy.');
     logger.error('\tThis app should use a proxy server like Apache, Caddy or Nginx to add a TLS layer');
     logger.error('\tand to serve static files quickly.');
@@ -83,7 +82,10 @@ async function start({ skipHttpServer = false }) {
   _app.set('trust proxy', conf.get('web:trustedProxy'));
 
   // Serve the API first
-  _app.use('/api/', routes);
+  // Lazy load routes because config is loaded in bootstrap
+  // and routes are loaded before bootstrap (with global require)
+  // eslint-disable-next-line global-require
+  _app.use('/api/', require('../app/routes'));
 
   // Then try to send existing files
   _app.use(express.static(conf.get('web:publicFolder')));
