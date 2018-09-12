@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
+const childProcess = require('child_process');
 const Sequelize = require('sequelize');
+
+const execPromise = util.promisify(childProcess.exec);
 
 /**
  * Check if every variables passed in the function is set.
@@ -58,9 +62,23 @@ function createDirDeep(pathToCreate) {
   }, '');
 }
 
+/**
+ * Execute the nodejs child_process::exec function.
+ * The function is promisify.
+ * It easier to mock this function than to mock node modules.
+ *
+ * @param command
+ * @param options
+ * @returns {Promise<{stdout: string, stderr: string}>}
+ */
+function exec(command, options) {
+  return execPromise(command, options);
+}
+
 
 module.exports = {
   checkEnv,
+  exec,
   createDirDeep,
   getSequelizeInstance,
 };

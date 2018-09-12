@@ -1,11 +1,6 @@
 const path = require('path');
 const fs = require('fs').promises;
-// eslint-disable-next-line camelcase
-const child_exec = require('child_process');
-const util = require('util');
-const { checkEnv } = require('../utils');
-
-const exec = util.promisify(child_exec.exec);
+const { checkEnv, exec } = require('../utils');
 
 async function deleteOldBackups(backupDir, maxOld) {
   const folderFiles = await fs.readdir(backupDir);
@@ -42,13 +37,13 @@ async function run() {
   checkEnv(
     'DB__HOST',
     'DB__USERNAME',
-    'DB_PASSWORD',
+    'DB__PASSWORD',
     'DB__DATABASE',
     'BACKUP_DIR',
     'KEEP_BACKUPS_FOR',
   );
   const {
-    DB__HOST, DB__USERNAME, DB_PASSWORD, DB__DATABASE, BACKUP_DIR, KEEP_BACKUPS_FOR,
+    DB__HOST, DB__USERNAME, DB__PASSWORD, DB__DATABASE, BACKUP_DIR, KEEP_BACKUPS_FOR,
   } = process.env;
 
   console.log('[backup] Deleting old backups');
@@ -56,7 +51,7 @@ async function run() {
   console.log(`[backup] Deleted ${count} old backups`);
 
   console.log(`[backup] Saving current database '${DB__DATABASE}'`);
-  const filename = await saveDatabase(DB__HOST, DB__USERNAME, DB_PASSWORD, DB__DATABASE, BACKUP_DIR);
+  const filename = await saveDatabase(DB__HOST, DB__USERNAME, DB__PASSWORD, DB__DATABASE, BACKUP_DIR);
   console.log(`[backup] Database '${DB__DATABASE}' saved to '${filename}'`);
 }
 

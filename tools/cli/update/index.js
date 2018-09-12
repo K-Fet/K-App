@@ -1,9 +1,4 @@
-// eslint-disable-next-line camelcase
-const child_exec = require('child_process');
-const util = require('util');
-const { checkEnv } = require('../utils');
-
-const exec = util.promisify(child_exec.exec);
+const { checkEnv, exec } = require('../utils');
 
 async function run() {
   checkEnv(

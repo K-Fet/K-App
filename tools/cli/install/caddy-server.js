@@ -1,8 +1,4 @@
-const child_process = require('child_process');
-const util = require('util');
-const { createDirDeep } = require('../utils');
-
-const exec = util.promisify(child_process.exec);
+const { createDirDeep, exec } = require('../utils');
 
 const CADDY_SSL_PATH = '/etc/ssl/caddy';
 

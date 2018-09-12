@@ -1,10 +1,8 @@
-/* eslint-disable no-console,camelcase */
-const child_process = require('child_process');
-const util = require('util');
+/* eslint-disable no-console */
+const { exec } = require('../utils');
 const opn = require('opn');
 const serverPackage = require('../../../package');
 
-const exec = util.promisify(child_process.exec);
 const NEW_RELEASE_URL = `${serverPackage.repository.url}/releases/new`;
 
 async function run() {
