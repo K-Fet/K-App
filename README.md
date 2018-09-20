@@ -59,7 +59,7 @@ Some of them are used only in production, others are used only in development.
 ### Configuration
 
 To configure your environment, copy `/tools/config-samples/.env.example` to `/.env`.
-Then you just have to edit field as you want.
+Then you just have to edit field as you want (`cp tools/config-samples/.env.example .env`).
 
 P.S.: The file `.env` is already ignored by git.
 
