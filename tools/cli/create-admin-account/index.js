@@ -24,7 +24,7 @@ async function checkExistingAdminAccount() {
 
   const admins = specialAccounts.filter(s => PERMISSION_LIST.length === s.permissions.length);
 
-  admins.forEach(s => console.log(`[create-admin-acount] Found admin account (email: ${s.connection.email})`));
+  admins.forEach(s => console.log(`[create-admin-account] Found admin account (email: ${s.connection.email})`));
 
   return admins.length;
 }
@@ -52,28 +52,40 @@ async function creationSetup() {
 
   const { email, password, code } = await inquirer.prompt(questions);
 
+  let finalPassword = password;
+
+  if (!password) {
+    console.log('[create-admin-account] No password was provided, generating one:');
+    finalPassword = crypto.randomBytes(10).toString('hex');
+    console.log(`[create-admin-account] Generated password: ${finalPassword}`);
+  }
+
   return {
     code: await hash(code),
     description: 'Administrator',
     connection: {
-      password: await hash(password || crypto.randomBytes(10).toString('hex')),
+      password: await hash(finalPassword),
       email,
     },
   };
 }
 
-async function doCreation(admin) {
-  const newAdmin = await SpecialAccount.create(admin, {
-    include: [
-      {
-        model: ConnectionInformation,
-        as: 'connection',
-      },
-    ],
-  });
+async function doCreation(admin, sequelize) {
+  const transaction = await sequelize.transaction();
+
+  // eslint-disable-next-line no-param-reassign
+  admin.connection.email = admin.connection.email.toLowerCase();
+
+  const co = await ConnectionInformation.create(admin.connection, { transaction });
+  // eslint-disable-next-line no-param-reassign
+  admin.connectionId = co.id;
+
+  const newAdmin = await SpecialAccount.create(admin, { transaction });
 
   const allPerms = await Permission.findAll();
-  await newAdmin.setPermissions(allPerms);
+  await newAdmin.setPermissions(allPerms, { transaction });
+
+  await transaction.commit();
 }
 
 async function run() {
@@ -107,7 +119,7 @@ async function run() {
   }
   console.log('[create-admin-account] Creating admin account');
   const newAdmin = await creationSetup();
-  await doCreation(newAdmin);
+  await doCreation(newAdmin, sequelize);
 
   console.log('[create-admin-account] Admin account created');
 }

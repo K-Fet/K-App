@@ -35,7 +35,7 @@ _Config files are located at_:
 - `/etc/systemd/system/<name>-backup.service`
 - `/etc/systemd/system/<name>-backup.timer`
 
-`<name>`: `kapp` or `kapp-staging` (e.g.)
+Where `<name>` can be anything like `kapp` or `kapp-staging` (e.g.)
 
 #### Caddyserver
 
