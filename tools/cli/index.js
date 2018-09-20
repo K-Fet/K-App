@@ -79,7 +79,9 @@ async function main(action) {
   await actionModule.run({ actions });
 }
 
-main(process.argv[2]).catch((e) => {
-  console.error('[cli] An error happened: ', e);
-  process.exit(1);
-});
+main(process.argv[2])
+  .then(() => process.exit(0))
+  .catch((e) => {
+    console.error('[cli] An error happened: ', e);
+    process.exit(1);
+  });

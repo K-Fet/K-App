@@ -27,9 +27,12 @@ function setProductionEnv() {
     process.exit(1);
   }
 
-  if (process.env.UNSAFE_MODE) {
-    logger.warn('You are in UNSAFE mode, consider stopping using this mode!');
+  if (!process.env.UNSAFE_MODE) {
+    // Configure proxy
+    _app.set('trust proxy', conf.get('web:trustedProxy'));
+    return;
   }
+  logger.warn('You are in UNSAFE mode, consider stopping using this mode!');
 }
 
 function launch() {
@@ -77,9 +80,6 @@ async function start({ skipHttpServer = false }) {
   if (process.env.NODE_ENV === 'production') {
     setProductionEnv();
   }
-
-  // Configure proxy
-  _app.set('trust proxy', conf.get('web:trustedProxy'));
 
   // Serve the API first
   // Lazy load routes because config is loaded in bootstrap
