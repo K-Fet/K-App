@@ -1,8 +1,8 @@
+const conf = require('nconf');
 const mailService = require('../services/mail-service');
 const recaptchaService = require('../services/recaptcha-service');
 const { createUserError } = require('../../utils');
 const logger = require('../../logger');
-const CONFIG = require('../../config/contactForm');
 
 /**
  * Verify request and send form to the appropriate user(s).
@@ -17,16 +17,16 @@ async function sendForm(req, res) {
   try {
     switch (req.body.contactFormName) {
       case 'concert':
-        await mailService.sendContactForm('concert', CONFIG.CONCERT_MAIL, req.body.values);
+        await mailService.sendContactForm('concert', conf.get('mail:contact:concert'), req.body.values);
         break;
       case 'event':
-        await mailService.sendContactForm('évenement | soirée', CONFIG.EVENT_MAIL, req.body.values);
+        await mailService.sendContactForm('évenement | soirée', conf.get('mail:contact:event'), req.body.values);
         break;
       case 'lost':
-        await mailService.sendContactForm('objet perdu', CONFIG.LOST_MAIL, req.body.values);
+        await mailService.sendContactForm('objet perdu', conf.get('mail:contact:lost'), req.body.values);
         break;
       case 'website':
-        await mailService.sendContactForm('problème avec la K-App', CONFIG.WEBSITE_MAIL, req.body.values);
+        await mailService.sendContactForm('problème avec la K-App', conf.get('mail:contact:website'), req.body.values);
         break;
       default:
         break;

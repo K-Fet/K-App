@@ -1,4 +1,4 @@
-const { PERMISSION_LIST } = require('../config/permissions');
+const { PERMISSION_LIST } = require('../app/constants');
 const { Permission } = require('../app/models');
 const logger = require('../logger');
 

@@ -1,8 +1,7 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Member, Registration } = require('../models/');
-const { CURRENT_SCHOOL_YEAR } = require('../../config/misc');
-const { createUserError, createServerError } = require('../../utils');
+const { createUserError, createServerError, getCurrentSchoolYear } = require('../../utils');
 const { sequelize } = require('../../bootstrap/sequelize');
 
 /**
@@ -18,7 +17,7 @@ async function registerMember(memberId, transaction) {
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
-  const year = CURRENT_SCHOOL_YEAR;
+  const year = getCurrentSchoolYear();
 
   const registrations = await member.getRegistrations({ where: { year }, transaction });
 
@@ -59,7 +58,7 @@ async function unregisterMember(memberId, year) {
  *
  * @returns {Promise<Array>} Members
  */
-async function getAllMembers({ startAt = CURRENT_SCHOOL_YEAR, endAt = CURRENT_SCHOOL_YEAR }) {
+async function getAllMembers({ startAt = getCurrentSchoolYear(), endAt = getCurrentSchoolYear() }) {
   logger.verbose('Member service: get all members between %s and %s', startAt, endAt + 1);
   return Member.findAll({
     order: [

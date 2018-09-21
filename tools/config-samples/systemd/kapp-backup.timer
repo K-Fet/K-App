@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for daily backup of %i
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

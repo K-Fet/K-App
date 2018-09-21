@@ -1,6 +1,6 @@
 const rp = require('request-promise-native');
+const conf = require('nconf');
 const { createServerError, createUserError } = require('../../utils');
-const CONFIG = require('../../config/contactForm');
 const logger = require('../../logger');
 
 /**
@@ -13,7 +13,7 @@ async function recaptchaVerification(token) {
     method: 'POST',
     url: 'https://www.google.com/recaptcha/api/siteverify',
     qs: {
-      secret: CONFIG.RECAPTCHA.SECRET,
+      secret: conf.get('web:recaptchaSecret'),
       response: token,
     },
     json: true,

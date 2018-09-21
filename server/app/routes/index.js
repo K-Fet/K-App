@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const conf = require('nconf');
 const xhub = require('express-x-hub');
 const logger = require('../../logger');
 const { authGuard } = require('../middlewares/auth-guard');
-const { accessToken } = require('../../config/feed');
 
 // Middlewares
 
@@ -24,7 +24,7 @@ router.use(morgan(
 
 router.use(xhub({
   algorithm: 'sha1',
-  secret: accessToken,
+  secret: conf.get('feed:accessToken'),
 }));
 router.use(bodyParser.json());
 

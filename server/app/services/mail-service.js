@@ -1,8 +1,5 @@
 const nodemailer = require('nodemailer');
-const EMAIL_CONFIG = require('../../config/mail');
-const WEB_CONFIG = require('../../config/web');
-
-const CONFIG = EMAIL_CONFIG[process.env.NODE_ENV || 'development'];
+const conf = require('nconf');
 const TRANSLATION = require('../../resources/contact-form-field-translations');
 const EMAIL_TEMPLATES = require('../../resources/email-templates');
 
@@ -27,10 +24,10 @@ function createMailTemplate(emailBody) {
  * @returns {Promise<void>} Nothing
  */
 async function sendMail(to, subject, html) {
-  const transporter = nodemailer.createTransport(CONFIG);
+  const transporter = nodemailer.createTransport(conf.get('mail'));
 
   const mailOptions = {
-    from: CONFIG.auth.user,
+    from: conf.get('mail:auth:user'),
     to,
     subject,
     html,
@@ -51,11 +48,11 @@ async function sendPasswordResetMail(email, token) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -77,11 +74,11 @@ async function sendVerifyEmailMail(email, token, userId) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -103,13 +100,13 @@ async function sendEmailUpdateInformationMail(email, newEmail, userId) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_NEW_EMAIL':
           return newEmail;
         case 'MAIL_LINK':
-          return `${WEB_CONFIG.publicURL}/cancel-email-update?userId=${userId}&email=${email}`;
+          return `${conf.get('web:publicUrl')}/cancel-email-update?userId=${userId}&email=${email}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -129,7 +126,7 @@ async function sendEmailConfirmation(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -151,7 +148,7 @@ async function sendPasswordUpdate(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -173,7 +170,7 @@ async function sendCancelEmailConfirmation(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return WEB_CONFIG.publicURL;
+          return conf.get('web:publicUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -194,7 +191,7 @@ async function sendWelcomeMail(email) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.WELCOME).replace(REGEX_TOKEN, (matches, replaceToken) => {
     switch (replaceToken) {
       case 'MAIL_WEBSITE':
-        return WEB_CONFIG.publicURL;
+        return conf.get('web:publicUrl');
       case 'MAIL_EMAIL':
         return email;
       default:

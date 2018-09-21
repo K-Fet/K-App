@@ -1,16 +1,16 @@
 const Sequelize = require('sequelize');
+const conf = require('nconf');
 const logger = require('../logger');
-const DB_SEQUELIZE = require('../config/sequelize');
 const models = require('../app/models');
 
 let _sequelize = null;
 
-function initModel() {
+function initModel(instance) {
   logger.debug('Loading models into sequelize');
 
   // Call init for all models
 
-  Object.values(models).forEach(m => m.init(_sequelize));
+  Object.values(models).forEach(m => m.init(instance));
 
   logger.debug('Models initialized ! Loading associations now...');
 
@@ -27,7 +27,7 @@ function initModel() {
 }
 
 async function start() {
-  const CONF = DB_SEQUELIZE[process.env.NODE_ENV];
+  const CONF = conf.get('db');
 
   logger.debug('Booting sequelize with:', {
     ...CONF,
@@ -44,7 +44,7 @@ async function start() {
 
   _sequelize = new Sequelize(CONF);
 
-  initModel();
+  initModel(_sequelize);
 
   await _sequelize.sync();
 
@@ -53,6 +53,7 @@ async function start() {
 
 module.exports = {
   start,
+  initModel,
   /**
    * Return a sequelize instance.
    * @return {Sequelize}

@@ -1,0 +1,105 @@
+###########################################
+##
+## K-Fêt Caddyfile
+##
+##  - Monitoring
+##  - K-App (kfet-insa.fr)
+##  - K-App staging (staging.kfet-insa.fr)
+##
+###########################################
+
+##
+#  Monitoring
+##
+
+monitoring.kfet-insa.fr {
+	proxy / localhost:19999
+	basicauth / admin yourPassword
+}
+
+##
+#  K-App snippets
+##
+
+# Base site configuration with
+# cache control and compression
+(kappBasic) {
+    # Compress responses
+    gzip
+
+    # Add cache for one day (except for API calls)
+    header / Cache-Control "public, max-age=86400"
+    header /api -Cache-Control
+
+    # Remove Server header
+    header / -Server
+
+    # Log everything to stdout, treated by journalctl
+    log stdout
+}
+
+# Rewrite everything that does not exist to index
+(kappNotFoundHandler) {
+    rewrite {
+        if {path} not_starts_with /api
+        to {path} /
+    }
+}
+
+##
+#  K-App
+##
+
+kfet-insa.fr {
+
+    git github.com/K-Fet/K-App {
+    	path  /srv/kapp/
+    	branch  {latest}
+    	interval  -1
+    	hook  /__webhook__ mySuperSecret
+    	then_long  sudo yarn run cli update
+    }
+
+    # Serve client app
+    root /srv/kapp/client/dist/
+
+    import kappBasic
+
+    # Proxy request for API
+    proxy /api localhost:3000-3003 {
+        policy ip_hash          # Use ip hash for the backend (to have nice rate limiting)
+        fail_timeout 5m         # Time before considering a backend down
+        try_duration 4s         # How long proxy will try to find a backend
+        transparent             # Set headers as the proxy except
+    }
+
+    import kappNotFoundHandler
+}
+
+
+##
+#  K-App
+##
+
+staging.kfet-insa.fr {
+
+    git github.com/K-Fet/K-App {
+      path  /srv/kapp-staging/
+      branch  master
+      interval  -1
+      hook  /__webhook__ mySuperSecret
+      then_long  sudo yarn run cli update
+    }
+
+    # Serve client app
+    root /srv/kapp-staging/client/dist/
+
+    import kappBasic
+
+    # Proxy request for API
+    proxy /api localhost:3050 {
+        transparent             # Set headers as the proxy except
+    }
+
+    import kappNotFoundHandler
+}

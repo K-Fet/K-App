@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const uuidv4 = require('uuid/v4');
+const conf = require('nconf');
 const logger = require('../../logger');
 const { sequelize } = require('../../bootstrap/sequelize');
-const { jwtSecret } = require('../../config/jwt');
 const {
   verify, createUserError, createServerError, generateToken, hash,
 } = require('../../utils');
@@ -48,7 +48,7 @@ async function createJWT(user, rememberMe) {
     jit: id,
     exp,
     userId: user.id,
-  }, jwtSecret);
+  }, conf.get('web:jwtSecret'));
 }
 
 /**
