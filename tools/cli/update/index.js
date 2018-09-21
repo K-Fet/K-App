@@ -24,12 +24,13 @@ async function run() {
 
   try {
     console.log('[update] Restarting services');
-    // TODO Staging switch with env variable
-    await exec('sudo systemctl restart kapp@*');
+    await exec(`sudo systemctl restart ${process.env.DB__DATABASE}@*`);
     console.log('[update] Services restarted');
   } catch (e) {
-    console.error('[update] Unable to restart services! You must add this command with sudo');
-    console.error('[update] You MUST restart services with `sudo systemctl restart kapp@*`!');
+    console.error(`[update] Unable to restart services! (got exit code ${e.code}) You must add this command with sudo`);
+    console.error(`[update]   stdout: ${e.stdout}`);
+    console.error(`[update]   stderr: ${e.stderr}`);
+    console.error(`[update] You MUST restart services with \`sudo systemctl restart ${process.env.DB__DATABASE}@*\`!`);
   }
 }
 

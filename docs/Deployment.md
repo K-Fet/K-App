@@ -97,6 +97,8 @@ yarn
 yarn run cli install
 ```
 
+N.B.: It's important to name the database exactly the same name as the folder!
+
 ### Configure `sudo`
 
 In order to be able to do continuous deployment, we have to let Caddy server restart
@@ -116,8 +118,8 @@ visudo -f /etc/sudoers.d/kapp-restart-users
 Add this to the file:
 ```
 Cmnd_Alias KAPP_CMNDS = /bin/systemctl restart kapp@*, /bin/systemctl restart kapp-staging@*
-Defaults!KAPP_CMDS !requiretty
-www-data ALL = (root) NOPASSWD: KAPP_CMDS
+Defaults!KAPP_CMNDS !requiretty
+www-data ALL = (root) NOPASSWD: KAPP_CMNDS
 ```
 
 Save and exit, everything should work fine!
