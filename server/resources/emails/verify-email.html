@@ -1,0 +1,41 @@
+<tr>
+  <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
+    <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0"> <!-- Body content -->
+      <tr>
+        <td class="content-cell"><h1>Hey {{ MAIL_EMAIL }},</h1>
+          <p>Vous avez récemment demandé à changer votre adresse email pour K-App. Cliquez sur le bouton ci-dessous pour
+            vérifier votre nouvelle adresse email</p> <!-- Action -->
+          <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td align="center">
+                <!-- Border based button https://litmus.com/blog/a-guide-to-bulletproof-buttons-in-email-design -->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td align="center">
+                      <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td><a href="{{ MAIL_LINK }}" class="button button--green" target="_blank"> Vérifier votre
+                            adresse email (email)</a></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <p>Si vous n'avez pas fait cette demande, vous pouvez ignorer ce mail ou bien <a
+            href="{{MAIL_WEBSITE}}/contact/website">nous contacter</a>. </p>
+          <p>Cordialement, <br>La team K-App</p> <!-- Sub copy -->
+          <table class="body-sub">
+            <tr>
+              <td><p class="sub">Si vous avez des problèmes avec le bouton, vous pouvez copier l'url directement dans
+                votre navigateur. </p>
+                <p class="sub">{{MAIL_LINK}}</p></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>

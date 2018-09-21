@@ -1,270 +1,123 @@
 # Deployment
 
-This document will explain how to deploy 
-the application on a Debian 9 Linux.
+This document explain how the server is deployed.
 
-
-A shorter version is available [here](./QuickDeployment.md).
-
-
-## Backups 
-
-To see how to make automatic backups, see [Backups](./Backups.md).
-
-## First installation
-
-### Requirements
+## Requirements
 
 To run the project you will need:
-- [NodeJS](https://nodejs.org/en/) version 8.7.x or higher.
-- [Yarn](https://yarnpkg.com)version 1.3.2 or higher.
+- [NodeJS](https://nodejs.org/en/) version 10.0.X or higher.
+- [Yarn](https://yarnpkg.com) version 1.9.0 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
 - [Git](https://git-scm.com)
+- [sudo](https://www.sudo.ws/)
+
+After installing NodeJS,
+you have to install `node-gyp` as recommended [here](https://www.npmjs.com/package/node-gyp#installation).
+
+## Process
+
+The application work in a continuous deployment system, 
+where everything put on master is deployed directly on a _staging_ environment 
+and when a new release is made through Github, the server automatically update it-self.
+
+### The server
+
+In a fully configured server, there are multiple things working together:
+
+#### systemd
+
+Systemd is the service manager in Linux. 
+It will handle for us _auto-restart_ in case of failure and on reboot.
+It will also provide a secure environment for the application.
+
+_Config files are located at_:
+- `/etc/systemd/system/<name>@.service`
+- `/etc/systemd/system/<name>-backup.service`
+- `/etc/systemd/system/<name>-backup.timer`
+
+Where `<name>` can be anything like `kapp` or `kapp-staging` (e.g.)
+
+#### Caddyserver
+
+[Caddy](https://caddyserver.com/) is a really, really good web-server.
+We use it for a lot of things:
+- SSL/HTTPS for free
+- Proxy/Load balancing for NodeJS
+- Git hooks (continuous deployment)
+- Serving static files
+
+_Config files are located at_:
+- `/srv/caddy/Caddyfile`
+- `/etc/systemd/system/caddy.service`
+
+#### NodeJS
+
+NodeJS is used by the app. 
+It can be launch as many time as we want (with different PORT of course).
+
+_Config files are located at_:
+- `/srv/kapp/.env`
+- `/srv/kapp-staging/.env`
+
+Each application environment (_production_, _staging_, etc.) needs its own folder.
+
+### Github webhooks
+
+Github must be configured to send a notification to the server 
+when a new release is created (production) or when a PR is merge on `master` (staging)
 
 
-### Systemd configuration
+### Releasing a new version
 
-We will use `systemd` to monitor and control our app.
-We need to create a new file containing the service configuration.
+In order to update the server, just release a new version with the script:
 
-Create a new file `/etc/systemd/system/kapp@.service` with: 
-
-```
-[Unit]
-Description=K-App provide a large panel of useful tools for associations
-Documentation=https://github.com/K-Fet/K-App
-After=network.target mysql.service
-
-[Service]
-
-######################################################
-##
-##      NODEJS SERVER CONFIGURATION
-##
-
-# Port where the server will listen
-# With '%i' we can launch app with `systemctl start kapp@3000`
-Environment=PORT=%i
-
-# Do not serve directly internet
-Environment=HOSTNAME=localhost
-
-#  Database configuration
-#       Default can be found in the /server/config/ folder of the project.
-
-# MySQL address
-#Environment=DB_HOST=myexternaldatabase.com:4245
-
-# Login user/password
-Environment=DB_USER=kapp
-Environment=DB_PWD=ComplicatedPassword
-
-# Database to use
-#   Warning: if define, backup config must also be changed.
-#Environment=DB_DATABASE=my_awesome_database
-
-
-# JWT Secret
-Environment=JWT_SECRET=UltraComplicatedSecret
-
-
-### SERVER CONFIGURATION
-
-# Launch
-
-Type=simple
-WorkingDirectory=/srv/kapp/
-ExecStart=/usr/bin/node server/index.js
-Restart=on-failure
-RestartSec=10
-
-# Logging
-StandardOutput=syslog
-StandardError=syslog
-
-# Security
-
-DynamicUser=yes
-
-# 'CAP_NET_BIND_SERVICE' if PORT is less than 1024
-CapabilityBoundingSet=
-NoNewPrivileges=yes
-ProtectControlGroups=yes
-ProtectKernelModules=yes
-
-[Install]
-WantedBy=multi-user.target
+```bash
+yarn run cli release <version>
 ```
 
+> `<version>` must be a SemVer version
 
-### Proxying / Load balancing
+After that, a new tag is created and you **must** create a Github release (it will update the server).
 
-There are several tools that can be used as proxies.
-Why add a proxy in front of the _NodeJS_ server?
-- **Load balancing**: NodeJS run in a single threaded environment, 
-if you want to use all the available CPU cores of your machine, 
-you can launch multiple instance of the application and let the load balancer 
-share the load between instances.
+## First time
 
-- **Caching, Compression**: The proxy can send the front app files 
-to clients, with compression and cache control.
-
-- **Security**: By default, the NodeJS ***does not*** use _HTTPS_. 
-It can be configured in `/server/config/web.js`, but not by environment variables.
-Instead, you can add HTTPS directly in the proxy 
-(n.b.: data between _Proxy_ and _NodeJS_ ***will not*** be encrypted). 
-
-#### Caddy
-
-[Caddy](https://caddyserver.com/) is a really good web server, with automatic HTTPS, 
-and an easy configuration.
-
-First, install _Caddy_ : `curl https://getcaddy.com | bash -s personal http.cache`.
-
-Next create a `Caddyfile` in a private folder (not accessible by the NodeJS server):
-You can use `/etc/`
-
-```
-kapp.example.com  { # Your site's address
-
-    # Serve client app
-    root /srv/kapp/client/dist/
-    
-    # Compress responses
-    gzip
-    
-    # Set usefull headers
-    header / {
-        # Cache application for one day
-        Cache-Control "public, max-age=86400"
-    }
-    
-    # Log everything to stdout, treated by journalctl
-    log stdout
-    
-    # Proxy request for API
-    proxy /api locahost:3000 {
-        policy round_robin      # Use round robin for the backend
-        fail_timeout 5m         # Time before considering a backend down
-        try_duration 4s         # How long proxy will try to find a backend
-        transparent             # Set headers as the proxy except
-    }
-}
-```
-
-#### Nginx
-
-[`Nginx`](https://nginx.org/en/) is a well known web server. 
-Documentation is available on their site.
-
-
-### Database configuration
-
-#### Create the database
-
-First connect to mysql shell with ***root*** access,
-then create the app database:
-
-```mysql
-CREATE DATABASE kapp;
-```
-
-Then Sequelize gonna create everything it wants to work.
-
-#### Create the user
-
-Let's start by making two new users within the MySQL shell:
-
-```mysql
-CREATE USER 'kapp-user'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
-CREATE USER 'kapp-backup'@'localhost' IDENTIFIED BY 'ComplicatedPassword';
-```
-
-The first will be for the application, the second will be used to backup data.
-To grant access to the database, do this:
-
-```mysql
-GRANT ALL ON `kapp`.* TO 'kapp-user'@'localhost';
-GRANT SELECT, LOCK TABLES ON `kapp`.* TO 'kapp-backup'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### Get the sources
-
-Now that everything is wired up, we can clone the project
-and we will be almost done.
+### Clone the sources and install dependencies
 
 ```bash
 cd /srv/
 
 # Clone the repo under the 'kapp' folder
 git clone https://github.com/K-Fet/K-App.git kapp
+cd kapp/
 
-# Launch the update process to init
-./kapp/tools/update.sh
+# Install dependencies
+yarn
+
+# Run cli and follow instructions
+yarn run cli install
 ```
 
+### Configure `sudo`
 
-## Usage
+In order to be able to do continuous deployment, we have to let Caddy server restart
+the kapp.
 
-### Launching
+Caddy run with the user `www-data` and should be able to do 2 commands:
+- `systemctl restart kapp@*`
+- `systemctl restart kapp-staging@*`
 
-If you want to launch an instance of the server,
-do this:
+To do this, we use `sudo`:
 
 ```bash
-systemctl start kapp@3000.service
-```
-With `3000` as the web port. 
-
-
-### Updating
-
-Updating is quite simple, you just have to launch this script:
-```bash
-./kapp/tools/update.sh
+# Create a new file
+visudo -f /etc/sudoers.d/kapp-restart-users
 ```
 
-It will pull the latest release from git and restart everything.
-
-
-### Get the latest release
-
-```bash
-cd /srv/
-
-# Clone the repo under the 'kapp' folder
-git clone https://github.com/K-Fet/K-App.git kapp
-
-# Launch the update process
-./kapp/tools/update.sh
+Add this to the file:
+```
+Cmnd_Alias KAPP_CMNDS = /bin/systemctl restart kapp@*, /bin/systemctl restart kapp-staging@*
+Defaults!KAPP_CMDS !requiretty
+www-data ALL = (root) NOPASSWD: KAPP_CMDS
 ```
 
-Here we use the `/srv/kapp` base folder for our app. 
-Be free to change it, but this will change 
-the service config and the backup config.
-
-### One last thing
-
-You will need an admin account to manage your application.
-
-To do that you have to launch this script:
-```bash
-node ./kapp/tools/prod-scripts/account.js
-```
-
-### Ready, Set, Go! 
-
-Everything is ready, we just need to launch an instance of the server.
-
-For this, execute: `systemctl start kapp@3000.service`, 
-where `3000` is the web port.
-
-To let the server reboot after machine reboot, 
-execute :`systemctl enable kapp@3000.service`
-
-
-## Migration System
-
-The project uses [umzug](https://github.com/sequelize/umzug) 
-to automatically migrate database schema on update. 
+Save and exit, everything should work fine!

@@ -1,5 +1,4 @@
 const { createLogger, format, transports: { Console } } = require('winston');
-const LOGGER_CONFIG = require('./config/logger');
 
 const fixErrorProperties = (o) => {
   if (o instanceof Error) {
@@ -32,7 +31,7 @@ const stringify = format((info) => {
 });
 
 const logger = createLogger({
-  level: LOGGER_CONFIG.level,
+  level: process.env.LOGGER__LEVEL || 'silly',
   transports: [
     new Console(),
   ],

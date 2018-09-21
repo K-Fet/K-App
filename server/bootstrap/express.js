@@ -1,9 +1,8 @@
 const http = require('http');
 const express = require('express');
+const conf = require('nconf');
 const compression = require('compression');
 const logger = require('../logger');
-const routes = require('../app/routes');
-const WEB_CONFIG = require('../config/web');
 
 let _app = null;
 
@@ -18,7 +17,7 @@ function setProductionEnv() {
     return next();
   });
 
-  if (!WEB_CONFIG.trustedProxy) {
+  if (!conf.get('web:trustedProxy') && !process.env.UNSAFE_MODE) {
     logger.error('You should not launch this application in production without a secure proxy.');
     logger.error('\tThis app should use a proxy server like Apache, Caddy or Nginx to add a TLS layer');
     logger.error('\tand to serve static files quickly.');
@@ -28,21 +27,25 @@ function setProductionEnv() {
     process.exit(1);
   }
 
-  if (process.env.UNSAFE_MODE) {
-    logger.warn('You are in UNSAFE mode, consider stopping using this mode!');
+  if (!process.env.UNSAFE_MODE) {
+    // Configure proxy
+    _app.set('trust proxy', conf.get('web:trustedProxy'));
+    return;
   }
+  logger.warn('You are in UNSAFE mode, consider stopping using this mode!');
 }
 
 function launch() {
   return new Promise((resolve, reject) => {
     const server = http.createServer(_app);
+    const port = conf.get('web:port');
 
     server.on('error', (error) => {
       if (error.syscall !== 'listen') return reject(error);
 
-      const bind = typeof WEB_CONFIG.port === 'string'
-        ? `Pipe ${WEB_CONFIG.port}`
-        : `Port ${WEB_CONFIG.port}`;
+      const bind = typeof port === 'string'
+        ? `Pipe ${port}`
+        : `Port ${port}`;
 
       // Handle specific listen errors with friendly messages.
       switch (error.code) {
@@ -66,7 +69,7 @@ function launch() {
     });
 
     // Listen on provided port, on provided interface or all of them.
-    server.listen(WEB_CONFIG.port, WEB_CONFIG.hostname);
+    server.listen(port, conf.get('web:hostname'));
   });
 }
 
@@ -78,17 +81,17 @@ async function start({ skipHttpServer = false }) {
     setProductionEnv();
   }
 
-  // Configure proxy
-  _app.set('trust proxy', WEB_CONFIG.trustedProxy);
-
   // Serve the API first
-  _app.use('/api/', routes);
+  // Lazy load routes because config is loaded in bootstrap
+  // and routes are loaded before bootstrap (with global require)
+  // eslint-disable-next-line global-require
+  _app.use('/api/', require('../app/routes'));
 
   // Then try to send existing files
-  _app.use(express.static(WEB_CONFIG.publicFolder));
+  _app.use(express.static(conf.get('web:publicFolder')));
 
   // Otherwise send index.html
-  _app.get('*', (req, res) => res.sendFile(`${WEB_CONFIG.publicFolder}/index.html`));
+  _app.get('*', (req, res) => res.sendFile(`${conf.get('web:publicFolder')}/index.html`));
 
   if (!skipHttpServer) await launch();
 }
