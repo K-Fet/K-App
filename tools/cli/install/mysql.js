@@ -38,7 +38,7 @@ async function createDatabase(co, database) {
 
   if (!databases.length) {
     console.info(`[install] Creating the database ${database}`);
-    await co.query(`CREATE DATABASE ${database}`);
+    await co.query(`CREATE DATABASE '${database}'`);
   }
 }
 
