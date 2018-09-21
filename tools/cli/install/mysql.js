@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
 
 async function setMysqlInfo() {
-  const answers = inquirer.prompt([
+  const answers = await inquirer.prompt([
     {
       type: 'input',
       name: 'DB__HOST',
