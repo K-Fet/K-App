@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
 
 async function setMysqlInfo() {
