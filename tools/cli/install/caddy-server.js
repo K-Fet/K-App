@@ -1,8 +1,23 @@
+const inquirer = require('inquirer');
 const { createDirDeep, exec } = require('../utils');
 
 const CADDY_SSL_PATH = '/etc/ssl/caddy';
 
 async function installCaddy() {
+  const { install } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'install',
+      message: 'Install Caddyserver?',
+      default: false,
+    },
+  ]);
+
+  if (!install) {
+    console.log('[install] Skipping caddy installation');
+    return;
+  }
+
   console.log('[install] Installing Caddy Server');
   const caddyPlugins = [
     'http.cache',
