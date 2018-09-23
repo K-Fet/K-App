@@ -59,7 +59,7 @@ async function createUser(co, database) {
 
   const [users] = await co.query(`SELECT user FROM mysql.user WHERE user LIKE '${database}-u-%'`);
   if (users.length) {
-    console.warn(`[install] Found mysql user(s): ${users.map(u => u.user).join(',')}`);
+    console.warn(`[install] Found mysql user(s): ${users.map(u => u.user).join(', ')}`);
     console.warn('[install] It should be deleted');
     console.warn('[install] Creating a new user anyway...');
   }
@@ -88,7 +88,7 @@ async function mysqlInstall() {
   await testConnection(co);
   await createDatabase(co, database);
   await createUser(co, database);
-  await initModel(getSequelizeInstance());
+  await initModel(await getSequelizeInstance());
 }
 
 module.exports = {
