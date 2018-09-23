@@ -26,7 +26,7 @@ async function run() {
 
   try {
     console.log('[update] Restarting services');
-    await exec(`sudo systemctl restart ${process.env.DB__DATABASE}@*`);
+    await exec(`sudo /bin/systemctl restart ${process.env.DB__DATABASE}@*`);
     console.log('[update] Services restarted');
   } catch (e) {
     console.error(`[update] Unable to restart services! (got exit code ${e.code}) You must add this command with sudo`);

@@ -1,5 +1,6 @@
 function systemd() {
   console.log('[install] In order to configure systemd, you must do this:');
+  console.log('[install]   - `chown -R www-data:www-data /srv/kapp`');
   console.log('[install]   - Copy files under tools/config-samples/ into /etc/systemd/system/');
   console.log('[install]   - Edit these files as needed (if you uses /srv/ as folder it should be good)');
   console.log('[install]   - Reload systemd config with `systemctl daemon-reload`');
