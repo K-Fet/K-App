@@ -88,7 +88,11 @@ async function mysqlInstall() {
   await testConnection(co);
   await createDatabase(co, database);
   await createUser(co, database);
-  await initModel(await getSequelizeInstance());
+
+  const sequelize = await getSequelizeInstance();
+  await initModel(sequelize);
+
+  await sequelize.sync();
 }
 
 module.exports = {
