@@ -67,6 +67,16 @@ Github must be configured to send a notification to the server
 when a new release is created (production) or when a PR is merge on `master` (staging)
 
 
+### MySQL
+
+Some notes about MySQL:
+
+- MySQL 8+ uses a new authentification process which is not handled yet by node-mysql.
+  In order to use MySQL, you need to use the old system with this command :
+  `alter user 'USER'@'localhost' identified with mysql_native_password by 'PASSWORD';`.
+
+- By default, mysql on linux is case sensitive, but it must be configured to be insensitive with [this](https://dba.stackexchange.com/questions/59407/).
+
 ### Releasing a new version
 
 In order to update the server, just release a new version with the script:
