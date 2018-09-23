@@ -15,7 +15,9 @@ async function run() {
 
   console.log('[update] Build front');
   // TODO Add front env variables when Angular handle it
-  await exec('yarn run build', { env: {} });
+  //  We need to do it because dotenv add process variables but it will not
+  //  be sent with child_process.
+  await exec('yarn run build');
   console.log('[update] Front build completed');
 
   console.log('[update] Migrate database');

@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
+const { getSequelizeInstance } = require('../utils');
+const { initModel } = require('../../../server/bootstrap/sequelize');
 
 async function setMysqlInfo() {
   const answers = await inquirer.prompt([
@@ -86,6 +88,7 @@ async function mysqlInstall() {
   await testConnection(co);
   await createDatabase(co, database);
   await createUser(co, database);
+  await initModel(getSequelizeInstance());
 }
 
 module.exports = {
