@@ -109,7 +109,7 @@ yarn run cli install
 
 N.B.: It's important to name the database exactly the same name as the folder!
 
-### Configure `sudo`
+### Configure `polkit`
 
 In order to be able to do continuous deployment, we have to let Caddy server restart
 the kapp.
@@ -118,18 +118,31 @@ Caddy run with the user `www-data` and should be able to do 2 commands:
 - `systemctl restart kapp@*`
 - `systemctl restart kapp-staging@*`
 
-To do this, we use `sudo`:
+To do this, we use `polkit`.
+
+Because `debian` uses polkit version 0.105 and we need at least version 0.106,
+we must install it ourselves.
+
+#### Install dependencies
+
+We will use `polkit-1.0.115`:
+
+Debian packages are already provided in `tools/config-samples/polkit/debs/`,
+to install, run:
 
 ```bash
-# Create a new file
-visudo -f /etc/sudoers.d/kapp-restart-users
+# Install the old version first to have the proper config
+apt install policykit-1 
+# Install all libs
+dpkg -i lib*.deb
+# Install polkit
+dpkg -i tools/config-samples/polkit/debs/policykit-1_0.115-1_amd64.deb
 ```
 
-Add this to the file:
-```
-Cmnd_Alias KAPP_CMNDS = /bin/systemctl restart kapp@*, /bin/systemctl restart kapp-staging@*
-Defaults!KAPP_CMNDS !requiretty
-www-data ALL = (root) NOPASSWD: KAPP_CMNDS
-```
+#### Add custom rule
 
-Save and exit, everything should work fine!
+We just need to copy the `.rules` file to the polkit config folder:
+
+```bash
+cp tools/config-samples/polkit/42-kapp-restart-instances.rules /etc/polkit-1/rules.d/
+```

@@ -26,13 +26,13 @@ async function run() {
 
   try {
     console.log('[update] Restarting services');
-    await exec(`sudo /bin/systemctl restart ${process.env.DB__DATABASE}@*`);
+    await exec(`systemctl restart ${process.env.DB__DATABASE}@*`);
     console.log('[update] Services restarted');
   } catch (e) {
-    console.error(`[update] Unable to restart services! (got exit code ${e.code}) You must add this command with sudo`);
+    console.error(`[update] Unable to restart services! (got exit code ${e.code}) You must configure polkit to allow restart for this app`);
     console.error(`[update]   stdout: ${e.stdout}`);
     console.error(`[update]   stderr: ${e.stderr}`);
-    console.error(`[update] You MUST restart services with \`sudo systemctl restart ${process.env.DB__DATABASE}@*\`!`);
+    console.error(`[update] You MUST restart services with \`systemctl restart ${process.env.DB__DATABASE}@*\`!`);
   }
 }
 
