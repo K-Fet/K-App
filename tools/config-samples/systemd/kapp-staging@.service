@@ -5,7 +5,7 @@ After=network.target mysql.service
 
 [Service]
 
-Environment=PORT=%i
+Environment=WEB__PORT=%i
 Environment=NODE_ENV=production
 Type=simple
 WorkingDirectory=/srv/kapp-staging
