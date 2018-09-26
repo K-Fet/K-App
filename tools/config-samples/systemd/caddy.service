@@ -28,7 +28,7 @@ LimitNPROC=512
 
 PrivateTmp=true
 # We must disable this flag in order to use sudo (from the caddyfile)
-; PrivateDevices=true
+PrivateDevices=true
 ProtectHome=true
 ProtectSystem=full
 ReadWriteDirectories=/etc/ssl/caddy

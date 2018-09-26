@@ -27,7 +27,7 @@ async function deleteOldBackups(backupDir, maxOld) {
 
 async function saveDatabase(host, username, password, database, backupDir) {
   const filename = path.join(backupDir, `${(new Date().toISOString())}.${database}.sql.gz`);
-  const command = `mysqldump -h ${host} -u ${username} -p ${password} ${database} | gzip -9 > ${filename}`;
+  const command = `mysqldump -h ${host} -u ${username} -p${password} ${database} | gzip -9 > ${filename}`;
 
   await exec(command);
   return filename;
