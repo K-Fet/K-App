@@ -1,4 +1,5 @@
 const fs = require('fs').promises;
+const path = require('path');
 const { run } = require('../backup');
 const utils = require('../utils');
 
@@ -52,9 +53,9 @@ it('should delete old databases', async () => {
   // When
   await run();
 
-  expect(fs.unlink).toHaveBeenNthCalledWith(1, '1.sql.gz');
-  expect(fs.unlink).toHaveBeenNthCalledWith(2, '2.sql.gz');
-  expect(fs.unlink).toHaveBeenNthCalledWith(3, '3.sql.gz');
+  expect(fs.unlink).toHaveBeenNthCalledWith(1, path.join('dir', '1.sql.gz'));
+  expect(fs.unlink).toHaveBeenNthCalledWith(2, path.join('dir', '2.sql.gz'));
+  expect(fs.unlink).toHaveBeenNthCalledWith(3, path.join('dir', '3.sql.gz'));
 });
 
 it('should execute mysql dump with all parameters', async () => {
