@@ -65,5 +65,5 @@ it('should execute mysql dump with all parameters', async () => {
   await run();
 
   expect(utils.exec).toHaveBeenCalledWith(
-    expect.stringMatching(/^(?=.*\bmysqldump\b)(?=.*\bpassword\b)(?=.*\busername\b)(?=.*\bdatabase\b).+/));
+    expect.stringMatching(/^(?=.*\bmysqldump\b)(?=.*password\b)(?=.*\busername\b)(?=.*\bdatabase\b).+/));
 });
