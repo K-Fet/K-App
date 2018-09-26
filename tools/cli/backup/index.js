@@ -10,7 +10,7 @@ async function deleteOldBackups(backupDir, maxOld) {
     .map(async (b) => {
       const { mtimeMs } = await fs.stat(path.join(backupDir, b));
       return {
-        file: b,
+        file: path.join(backupDir, b),
         mtimeMs,
       };
     }));
