@@ -61,11 +61,18 @@ export class AuthService {
   }
 
   definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Observable<any> {
+    if (oldPassword) {
+      return this.http.put('api/auth/reset-password', {
+        email,
+        password,
+        passwordToken,
+        oldPassword,
+      });
+    }
     return this.http.put('api/auth/reset-password', {
       email,
       password,
       passwordToken,
-      oldPassword,
     });
   }
 
