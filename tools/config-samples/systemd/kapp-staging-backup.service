@@ -4,4 +4,4 @@ Description=Schedule of a backup of the k-app staging database
 [Service]
 Type=oneshot
 WorkingDirectory=/srv/kapp-staging
-ExecStart=npm run cli backup
+ExecStart=/usr/bin/npm run cli backup
