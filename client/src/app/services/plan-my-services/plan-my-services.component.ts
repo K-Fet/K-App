@@ -51,7 +51,7 @@ export class PlanMyServicesComponent implements OnInit {
       return currentDay;
     });
     this.dayServices = this.days.filter((currentDay) => {
-      return currentDay.active === true;
+      return currentDay.active;
     }).map((currentDay) => {
       currentDay.services.map((service) => {
         if (service.barmen && service.barmen.length === 0) {
@@ -85,7 +85,7 @@ export class PlanMyServicesComponent implements OnInit {
   }
 
   getCurrentDayIndex(): number {
-    return this.days.indexOf(this.days.filter(day => day.active === true)[0]);
+    return this.days.indexOf(this.days.filter(day => day.active)[0]);
   }
 
   removeService(service: Service): void {

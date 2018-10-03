@@ -75,10 +75,10 @@ export class RoleEditComponent implements OnInit {
     });
     // Associations
     const add = this.permissions.filter((permission) => {
-      return permission.isChecked === true && permission.initial !== permission.isChecked;
+      return permission.isChecked && permission.initial !== permission.isChecked;
     });
     const remove = this.permissions.filter((permission) => {
-      return permission.isChecked === false && permission.initial !== permission.isChecked;
+      return !permission.isChecked && permission.initial !== permission.isChecked;
     });
     if (add.length > 0) {
       role._embedded = {
