@@ -79,13 +79,11 @@ Some notes about MySQL:
 
 ### Releasing a new version
 
-In order to update the server, just release a new version with the script:
+In order to update the server, just use the yarn command:
 
 ```bash
-yarn run cli release <version>
+yarn version
 ```
-
-> `<version>` must be a SemVer version
 
 After that, a new tag is created and you **must** create a Github release (it will update the server).
 
