@@ -51,7 +51,7 @@ function generateToken(byteLength = 48, stringBase = 'base64') {
 
 /**
  * This constant is used by Joi to validate params from a request.
- * It represent an object with a single field id (an integer).
+ * It represents an object with a single field id (an integer).
  *
  * @type {ObjectSchema} Joi schema
  */
@@ -59,7 +59,7 @@ const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
 
 /**
  * This constant is used by Joi to validate query from a request.
- * It represent an object with a start end end date.
+ * It represents an object with a start and end date.
  *
  * @type {ObjectSchema} Joi schema
  */

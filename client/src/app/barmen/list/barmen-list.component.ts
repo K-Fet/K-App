@@ -14,8 +14,8 @@ export class BarmenListComponent implements OnInit {
   displayedColumns = ['nickname', 'lastName', 'firstName', 'action'];
   barmenData: MatTableDataSource<Barman>;
   barmen: Barman[];
-  activeFilter: Boolean;
-  oldFilter: Boolean;
+  activeFilter: boolean;
+  oldFilter: boolean;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;

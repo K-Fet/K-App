@@ -242,8 +242,32 @@ async function deleteBarmanById(barmanId) {
  */
 async function getBarmenServices(startDate, endDate) {
   logger.verbose('Barman service: retreive services of all active barmen');
-  // TODO: when a barmen have an leaveAt attribute
-  return Promise.resolve({ startDate, endDate });
+  const barmen = await Barman.findAll({
+    where: {
+      leaveAt: {
+        [Op.or]: {
+          [Op.gte]: startDate,
+          [Op.eq]: null,
+        },
+      },
+    },
+    include: [
+      {
+        model: Service,
+        required: false,
+        as: 'services',
+        where: {
+          startAt: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate },
+            ],
+          },
+        },
+      },
+    ],
+  });
+  return barmen;
 }
 
 /**

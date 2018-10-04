@@ -24,6 +24,7 @@ router.post(
 router.get(
   '/services',
   guard.check('barman:read'),
+  validator.query(RANGE_SCHEMA),
   am(barmanController.getServicesBarmen),
 );
 

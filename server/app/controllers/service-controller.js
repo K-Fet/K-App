@@ -10,6 +10,7 @@ const { Service } = require('../models/');
  */
 async function getAllServices(req, res) {
   const { startAt, endAt } = req.query;
+  console.log(startAt);
   const services = await serviceService.getAllServices(startAt, endAt);
 
   res.json(services);

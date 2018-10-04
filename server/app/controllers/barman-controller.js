@@ -125,6 +125,7 @@ async function deleteBarman(req, res) {
  */
 async function getServicesBarmen(req, res) {
   const { startAt, endAt } = req.query;
+  console.log(startAt);
   const barmen = await barmanService.getBarmenServices(startAt, endAt);
 
   res.json(barmen);
