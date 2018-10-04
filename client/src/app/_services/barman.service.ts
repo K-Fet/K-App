@@ -34,6 +34,15 @@ export class BarmanService {
     return this.http.post<Barman>('/api/barmen', barman);
   }
 
+  getAllActiveBarmenWithServices(start: Moment, end: Moment): Observable<Barman[]> {
+    return this.http.get<Barman[]>('/api/barmen/services', {
+      params: {
+        startAt: (+start).toString(),
+        endAt: (+end).toString(),
+      },
+    });
+  }
+
   addService(id: number, services: number[]): Observable<Service> {
     return this.http.post<Service>(`/api/barmen/${id}/services`, services);
   }

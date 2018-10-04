@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Service } from '../../_models';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { BarmanService, ServiceService } from '../../_services';
-import { forkJoin, Observable } from 'rxjs';
 
 interface BarmanServiceData {
   name: string;
@@ -29,24 +27,13 @@ export class BarmanServiceNumberComponent implements OnInit {
   constructor(private barmanService: BarmanService, private serviceService: ServiceService) { }
 
   ngOnInit(): void {
-    let barmanDataTable: BarmanServiceData[] = [];
-    this.barmanService.getAll().subscribe((barmen) => {
-      this.serviceService.getWeek().subscribe((week) => {
-        const services$: Observable<Service[]>[] = [];
-        const activeBarmen = barmen.filter(barman => !barman.leaveAt);
-        activeBarmen.forEach((barman) => {
-          services$.push(this.barmanService.getServices(barman.id, week.start, week.end));
-        });
-        forkJoin(services$).subscribe((services) => {
-          barmanDataTable = [];
-          activeBarmen.forEach((barman) => {
-            barmanDataTable.push({
-              name: barman.nickname,
-              services: services[activeBarmen.indexOf(barman)].length,
-            });
-          });
-          this.barmenData.data = barmanDataTable;
-        });
+    this.serviceService.getWeek().subscribe((week) => {
+      this.barmanService.getAllActiveBarmenWithServices(week.start, week.end)
+      .subscribe((barmen) => {
+        this.barmenData.data = barmen.map(barman => ({
+          name: barman.nickname,
+          services: barman.services.length,
+        }));
       });
     });
   }
