@@ -88,7 +88,7 @@ export class SpecialAccountNewComponent implements OnInit {
 
     // Associations
     const add = this.permissions.filter((permission) => {
-      return permission.isChecked === true;
+      return permission.isChecked;
     });
     if (add.length > 0) {
       specialAccount._embedded = {
@@ -102,7 +102,7 @@ export class SpecialAccountNewComponent implements OnInit {
 
   disable(): boolean {
     const add = this.permissions.filter((permission) => {
-      return permission.isChecked === true;
+      return permission.isChecked;
     });
 
     if (!this.specialAccountForm.valid) {

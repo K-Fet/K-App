@@ -4,7 +4,7 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { BarmanService, ServiceService } from '../../_services';
 import { forkJoin, Observable } from 'rxjs';
 
-interface barmanServiceData {
+interface BarmanServiceData {
   name: string;
   services: number;
 }
@@ -16,7 +16,7 @@ interface barmanServiceData {
 export class BarmanServiceNumberComponent implements OnInit {
 
   displayedColumns = ['name', 'services'];
-  barmenData: MatTableDataSource<barmanServiceData> = new MatTableDataSource();
+  barmenData: MatTableDataSource<BarmanServiceData> = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -29,7 +29,7 @@ export class BarmanServiceNumberComponent implements OnInit {
   constructor(private barmanService: BarmanService, private serviceService: ServiceService) { }
 
   ngOnInit(): void {
-    let barmanDataTable: barmanServiceData[] = [];
+    let barmanDataTable: BarmanServiceData[] = [];
     this.barmanService.getAll().subscribe((barmen) => {
       this.serviceService.getWeek().subscribe((week) => {
         const services$: Observable<Service[]>[] = [];

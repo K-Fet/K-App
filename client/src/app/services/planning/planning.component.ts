@@ -21,7 +21,7 @@ export class PlanningComponent implements OnInit {
       return currentDay;
     });
     this.dayServices = this.days.filter((currentDay) => {
-      return currentDay.active === true;
+      return currentDay.active;
     }).map((currentDay) => {
       currentDay.services.map((service) => {
         if (service.barmen && service.barmen.length === 0) {
