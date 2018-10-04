@@ -35,11 +35,6 @@ const actions = [
     noGui: false,
   },
   {
-    key: 'release',
-    description: 'Launch a new release',
-    noGui: false,
-  },
-  {
     key: 'update',
     description: 'Handle new update changes',
     noGui: true,

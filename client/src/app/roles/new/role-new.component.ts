@@ -41,7 +41,7 @@ export class RoleNewComponent implements OnInit {
     const role = new Role(this.roleForm.value);
     // Associations
     const add = this.permissions.filter((permission) => {
-      return permission.isChecked === true;
+      return permission.isChecked;
     });
     if (add.length > 0) {
       role._embedded = {

@@ -9,7 +9,7 @@ async function run() {
   );
 
   console.log('[update] Install dependencies');
-  await exec('yarn run install:prod');
+  await exec('yarn run install --non-interactive --frozen-lockfile');
   console.log('[update] Dependencies installed');
 
 
@@ -17,7 +17,7 @@ async function run() {
   // TODO Add front env variables when Angular handle it
   //  We need to do it because dotenv add process variables but it will not
   //  be sent with child_process.
-  await exec('yarn run build');
+  await exec('yarn run build:prod');
   console.log('[update] Front build completed');
 
   console.log('[update] Migrate database');
