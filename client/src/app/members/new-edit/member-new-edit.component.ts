@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MemberService, ToasterService } from '../../_services';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Member, AVAILABLE_SCHOOLS } from '../../_models';
 import { FormArray } from '@angular/forms/src/model';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 @Component({
-  templateUrl: './member-new.component.html',
+  templateUrl: './member-new-edit.component.html',
 })
 
-export class MemberNewComponent implements OnInit {
+export class MemberNewEditComponent implements OnInit {
+  memberId: number;
+
   formArray: FormArray;
   memberFormGroup: FormGroup;
   barmanFormGroup: FormGroup;
@@ -22,11 +24,13 @@ export class MemberNewComponent implements OnInit {
     private memberService: MemberService,
     private toasterService: ToasterService,
     private router: Router,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.initForm();
-    this.initValidation();
+    this.initEdit();
+    this.initNameValidation();
   }
 
   initForm(): void {
@@ -49,12 +53,25 @@ export class MemberNewComponent implements OnInit {
     });
   }
 
-  initValidation(): void {
+  initNameValidation(): void {
     this.memberFormGroup.controls.lastName.valueChanges.subscribe((value) => {
       this.memberFormGroup.controls.lastName.setValue(this.nameFormatter(value), { emitEvent: false });
     });
     this.memberFormGroup.controls.firstName.valueChanges.subscribe((value) => {
       this.memberFormGroup.controls.firstName.setValue(this.nameFormatter(value), { emitEvent: false });
+    });
+  }
+
+  initEdit(): void {
+    this.route.params.subscribe((params) => {
+      if (params.id) {
+        this.memberId = +params['id'];
+        this.memberService.getById(+this.memberId).subscribe((member) => {
+          this.memberFormGroup.controls.lastName.setValue(member.lastName);
+          this.memberFormGroup.controls.firstName.setValue(member.firstName);
+          this.memberFormGroup.controls.school.setValue(member.school);
+        });
+      }
     });
   }
 
@@ -65,11 +82,20 @@ export class MemberNewComponent implements OnInit {
     return newName;
   }
 
-  add(): void {
+  submitForm(): void {
     const member = new Member(...this.memberFormGroup.value);
-    this.memberService.create(member, this.barmanFormGroup.controls.code.value).subscribe(() => {
-      this.toasterService.showToaster('Adhérent créé');
-      this.router.navigate(['/members']);
-    });
+    const code = this.barmanFormGroup.controls.code.value;
+    if (this.memberId) {
+      member.id = this.memberId;
+      this.memberService.update(member, code).subscribe(() => {
+        this.toasterService.showToaster('Utilisateur modifié');
+        this.router.navigate(['/members']);
+      });
+    } else {
+      this.memberService.create(member, code).subscribe(() => {
+        this.toasterService.showToaster('Adhérent créé');
+        this.router.navigate(['/members']);
+      });
+    }
   }
 }
