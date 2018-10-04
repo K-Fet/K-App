@@ -1,4 +1,5 @@
 const barmanService = require('../services/barman-service');
+const { createUserError } = require('../../utils/');
 const { Barman, ConnectionInformation } = require('../models');
 
 /**
@@ -9,7 +10,8 @@ const { Barman, ConnectionInformation } = require('../models');
  * @return {Promise.<void>} Nothing
  */
 async function getAllBarmen(req, res) {
-  const barmen = await barmanService.getAllBarmen();
+  const { active } = req.query;
+  const barmen = await barmanService.getAllBarmen(active);
 
   res.json(barmen);
 }
@@ -66,11 +68,19 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
-  const newUser = req.body;
+  const updatedBarman = req.body;
+
+  const oldBarman = await barmanService.getBarmanById(updatedBarman.id);
+
+  if (updatedBarman.leaveAt
+    && new Date(oldBarman.createdAt) > new Date(updatedBarman.leaveAt)
+    || Date.now() < new Date(updatedBarman.leaveAt)) {
+    throw createUserError('BadLeaveAtDate', 'LeaveAt can not be before createdAt or after now');
+  }
 
   let newBarman = new Barman(
     {
-      ...newUser,
+      ...updatedBarman,
       _embedded: undefined, // Remove the only external object
     },
     {
@@ -85,7 +95,7 @@ async function updateBarman(req, res) {
 
   const barmanId = req.params.id;
 
-  newBarman = await barmanService.updateBarmanById(barmanId, newBarman, newUser._embedded);
+  newBarman = await barmanService.updateBarmanById(barmanId, newBarman, updatedBarman._embedded);
 
   res.json(newBarman);
 }
@@ -103,6 +113,21 @@ async function deleteBarman(req, res) {
   const barman = await barmanService.deleteBarmanById(barmanId);
 
   res.json(barman);
+}
+
+/**
+ * Get the services of all active barmen.
+ * The barmen could be not active now but were active during the asked period.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function getServicesBarmen(req, res) {
+  const { startAt, endAt } = req.query;
+  const barmen = await barmanService.getBarmenServices(startAt, endAt);
+
+  res.json(barmen);
 }
 
 /**
@@ -159,6 +184,7 @@ module.exports = {
   getBarmanById,
   updateBarman,
   deleteBarman,
+  getServicesBarmen,
   getServicesBarman,
   createServiceBarman,
   deleteServiceBarman,

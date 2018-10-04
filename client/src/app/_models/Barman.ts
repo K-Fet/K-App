@@ -12,7 +12,7 @@ export class Barman {
   facebook: string;
   dateOfBirth: Date;
   flow: string;
-  active: boolean;
+  leaveAt: Date;
 
     // Associations
 

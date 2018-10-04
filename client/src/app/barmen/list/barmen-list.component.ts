@@ -13,6 +13,8 @@ export class BarmenListComponent implements OnInit {
 
   displayedColumns = ['nickname', 'lastName', 'firstName', 'action'];
   barmenData: MatTableDataSource<Barman>;
+  activeFilter: Boolean;
+  barmen: Barman[];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -24,6 +26,7 @@ export class BarmenListComponent implements OnInit {
 
   ngOnInit(): void {
     this.barmanService.getAll().subscribe((barmen) => {
+      this.barmen = barmen;
       this.barmenData = new MatTableDataSource(barmen);
       this.barmenData.paginator = this.paginator;
       this.barmenData.sort = this.sort;
@@ -39,6 +42,13 @@ export class BarmenListComponent implements OnInit {
 
   applyFilter(filterValue: string): void {
     this.barmenData.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyActiveFilter(): void {
+    const filteredBarmen = this.activeFilter ? this.barmen.filter(barman => !barman.leaveAt) : this.barmen;
+    this.barmenData = new MatTableDataSource(filteredBarmen);
+    this.barmenData.paginator = this.paginator;
+    this.barmenData.sort = this.sort;
   }
 
   view(barman: Barman): void {

@@ -49,9 +49,8 @@ class Barman extends Model {
         type: DataTypes.TEXT,
       },
 
-      active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
+      leaveAt: {
+        type: DataTypes.DATEONLY,
       },
     }, {
       sequelize,
@@ -88,7 +87,7 @@ const BarmanSchema = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
   connection: ConnectionInformationSchema,
-  active: Joi.boolean(),
+  leaveAt: Joi.string().isoDate(),
   nickname: Joi.string(),
   // eslint-disable-next-line
   facebook: Joi.string().regex(

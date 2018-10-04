@@ -17,8 +17,14 @@ router.post(
   '/',
   guard.check('barman:write'),
   validator.body(BarmanSchema.requiredKeys('firstName', 'lastName', 'connection',
-    'connection.email', 'nickname', 'dateOfBirth', 'flow', 'active')),
+    'connection.email', 'nickname', 'dateOfBirth', 'flow')),
   am(barmanController.createBarman),
+);
+
+router.get(
+  '/services',
+  guard.check('barman:read'),
+  am(barmanController.getServicesBarmen),
 );
 
 router.get(

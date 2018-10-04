@@ -1,59 +1,63 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title>
-                <section class="mat-typography">
-                    <h1>Liste des Barmen</h1>
-                </section>
-            </mat-card-title>
-            <div fxFlex></div>
-            <a mat-mini-fab color="accent" routerLink="/barmen/new" *ngxPermissionsOnly="['barman:write']">
-                <mat-icon>add</mat-icon>
-            </a>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="header">
-                <mat-form-field>
-                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des barmen">
-                </mat-form-field>
-            </div>
-            <div class="mat-elevation-z3">
-                <mat-table #table [dataSource]="barmenData" matSort>
-                    <ng-container matColumnDef="nickname">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.nickname}} </mat-cell>
-                    </ng-container>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title>
+        <section class="mat-typography">
+          <h1>Liste des Barmen</h1>
+        </section>
+      </mat-card-title>
+      <div fxFlex></div>
+      <a mat-mini-fab color="accent" routerLink="/barmen/new" *ngxPermissionsOnly="['barman:write']">
+        <mat-icon>add</mat-icon>
+      </a>
+    </mat-card-header>
+    <mat-card-content fxLayout="column" fxLayoutGap="20px">
+      <div fxLayout="column"  fxLayoutAlign="center center">
+        <div fxLayout="row" class="header">
+          <mat-form-field fxFlex.gt-xs="400px">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des barmen">
+          </mat-form-field>
+        </div>
+        <div fxLayoutAlign="center">
+          <mat-checkbox [(ngModel)]="activeFilter" (change)="applyActiveFilter()">Actifs seulement</mat-checkbox>
+        </div>
+      </div>
+      <div class="mat-elevation-z3">
+        <mat-table #table [dataSource]="barmenData" matSort>
+          <ng-container matColumnDef="nickname">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
+            <mat-cell *matCellDef="let barman"> {{barman.nickname}} </mat-cell>
+          </ng-container>
 
-                    <ng-container matColumnDef="lastName">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.lastName}} </mat-cell>
-                    </ng-container>
+          <ng-container matColumnDef="lastName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+            <mat-cell *matCellDef="let barman"> {{barman.lastName}} </mat-cell>
+          </ng-container>
 
-                    <ng-container matColumnDef="firstName">
-                        <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
-                        <mat-cell *matCellDef="let barman"> {{barman.firstName}} </mat-cell>
-                    </ng-container>
+          <ng-container matColumnDef="firstName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom </mat-header-cell>
+            <mat-cell *matCellDef="let barman"> {{barman.firstName}} </mat-cell>
+          </ng-container>
 
-                    <ng-container matColumnDef="action">
-                        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-                        <mat-cell *matCellDef="let barman" >
-                            <div fxLayout="row">
-                                <button mat-icon-button (click)="edit(barman)" *ngxPermissionsOnly="['barman:write']"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button (click)="view(barman)"><mat-icon>zoom_in</mat-icon></button>
-                            </div>
-                        </mat-cell>
-                    </ng-container>
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+            <mat-cell *matCellDef="let barman" >
+              <div fxLayout="row">
+                <button mat-icon-button (click)="edit(barman)" *ngxPermissionsOnly="['barman:write']"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button (click)="view(barman)"><mat-icon>zoom_in</mat-icon></button>
+              </div>
+            </mat-cell>
+          </ng-container>
 
-                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                </mat-table>
-
-                <mat-paginator #paginator
-                    [pageIndex]="0"
-                    [pageSize]="10"
-                    [pageSizeOptions]="[5, 10, 25, 100]">
-                </mat-paginator>
-            </div>
-        </mat-card-content>
-    </mat-card>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator
+            [pageIndex]="0"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
