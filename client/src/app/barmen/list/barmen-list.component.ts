@@ -13,8 +13,9 @@ export class BarmenListComponent implements OnInit {
 
   displayedColumns = ['nickname', 'lastName', 'firstName', 'action'];
   barmenData: MatTableDataSource<Barman>;
-  activeFilter: Boolean;
   barmen: Barman[];
+  activeFilter: Boolean;
+  oldFilter: Boolean;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -45,7 +46,16 @@ export class BarmenListComponent implements OnInit {
   }
 
   applyActiveFilter(): void {
+    this.oldFilter = false;
     const filteredBarmen = this.activeFilter ? this.barmen.filter(barman => !barman.leaveAt) : this.barmen;
+    this.barmenData = new MatTableDataSource(filteredBarmen);
+    this.barmenData.paginator = this.paginator;
+    this.barmenData.sort = this.sort;
+  }
+
+  applyOldFilter(): void {
+    this.activeFilter = false;
+    const filteredBarmen = this.oldFilter ? this.barmen.filter(barman => barman.leaveAt) : this.barmen;
     this.barmenData = new MatTableDataSource(filteredBarmen);
     this.barmenData.paginator = this.paginator;
     this.barmenData.sort = this.sort;

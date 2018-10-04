@@ -18,8 +18,10 @@
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des barmen">
           </mat-form-field>
         </div>
-        <div fxLayoutAlign="center">
+        <div fxLayoutAlign="center" fxLayoutGap="10px"
+          fxLayout.xs="column">
           <mat-checkbox [(ngModel)]="activeFilter" (change)="applyActiveFilter()">Actifs seulement</mat-checkbox>
+          <mat-checkbox [(ngModel)]="oldFilter" (change)="applyOldFilter()">Vieux seulement</mat-checkbox>
         </div>
       </div>
       <div class="mat-elevation-z3">
