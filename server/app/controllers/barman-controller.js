@@ -70,14 +70,6 @@ async function getBarmanById(req, res) {
 async function updateBarman(req, res) {
   const updatedBarman = req.body;
 
-  const oldBarman = await barmanService.getBarmanById(updatedBarman.id);
-
-  if (updatedBarman.leaveAt
-    && new Date(oldBarman.createdAt) > new Date(updatedBarman.leaveAt)
-    || Date.now() < new Date(updatedBarman.leaveAt)) {
-    throw createUserError('BadLeaveAtDate', 'LeaveAt can not be before createdAt or after now');
-  }
-
   let newBarman = new Barman(
     {
       ...updatedBarman,

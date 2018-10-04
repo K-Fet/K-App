@@ -151,6 +151,12 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
   if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
+  if ((updatedBarman.leaveAt
+    && new Date(currentBarman.createdAt) > new Date(currentBarman.leaveAt))
+    || Date.now() < new Date(updatedBarman.leaveAt)) {
+    throw createUserError('BadLeaveAtDate', 'LeaveAt can not be before createdAt or after now');
+  }
+
   logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
 
   const transaction = await sequelize().transaction();
@@ -357,7 +363,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-  if (!barman.leaveAt) throw createUserError('BadRequest', 'Barman must be an active barman');
+  if (barman.leaveAt) throw createUserError('BadRequest', 'Barman must be an active barman');
 
   const count = await Service.count({
     where: {
