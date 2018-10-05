@@ -1,8 +1,10 @@
-const { Op } = require('sequelize');
+const Sequelize = require('sequelize');
 const logger = require('../../logger');
 const { Member, Registration } = require('../models/');
 const { createUserError, createServerError, getCurrentSchoolYear } = require('../../utils');
 const { sequelize } = require('../../bootstrap/sequelize');
+
+const { Op } = Sequelize;
 
 /**
  * Register a member for a new year.
@@ -205,6 +207,30 @@ async function deleteMember(memberId) {
   return member;
 }
 
+/**
+ * Search members which match query parameter in all database.
+ *
+ * @param query {string} query.
+ * @return {Promise<Member[]>} Members which match the query
+ */
+async function searchMembers(query) {
+  logger.verbose('Member service: searching members with query %s', query);
+  const where = Sequelize.where(
+    Sequelize.fn('concat', Sequelize.col('firstName'), ' ', Sequelize.col('lastName')),
+    'like',
+    `%${query}%`,
+  );
+  const members = await Member.findAll({
+    where,
+    include: [{
+      model: Registration,
+      as: 'registrations',
+      attributes: ['year', 'createdAt'],
+    }],
+  });
+
+  return members;
+}
 
 module.exports = {
   getAllMembers,
@@ -214,4 +240,5 @@ module.exports = {
   deleteMember,
   registerMember,
   unregisterMember,
+  searchMembers,
 };

@@ -108,6 +108,18 @@ async function unregisterMember(req, res) {
   res.send(registration);
 }
 
+/**
+ * Search a member in all database
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise<void>} Nothing
+ */
+async function searchMembers(req, res) {
+  const members = await memberService.searchMembers(req.query.q);
+
+  res.send(members);
+}
 
 module.exports = {
   getAllMembers,
@@ -117,4 +129,5 @@ module.exports = {
   deleteMember,
   registerMember,
   unregisterMember,
+  searchMembers,
 };

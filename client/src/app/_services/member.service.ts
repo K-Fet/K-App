@@ -33,4 +33,12 @@ export class MemberService {
   register(id: number): Observable<Registration> {
     return this.http.post<Registration>(`/api/members/${id}/register`, {});
   }
+
+  search(query: string): Observable<Member[]> {
+    return this.http.get<Member[]>('/api/members/search', {
+      params: {
+        q: query,
+      },
+    });
+  }
 }

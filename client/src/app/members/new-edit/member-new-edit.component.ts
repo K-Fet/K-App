@@ -11,10 +11,13 @@ import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 export class MemberNewEditComponent implements OnInit {
   memberId: number;
-
-  memberFormGroup: FormGroup;
-
+  reRegistration = false;
+  registrationForm: FormGroup;
   availableSchools = AVAILABLE_SCHOOLS;
+  searchedMembers: Member[] = [];
+  searchQuery: string;
+  spinner = false;
+  notEnoughCharacters = false;
 
   constructor(
     private memberService: MemberService,
@@ -30,7 +33,7 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   initForm(): void {
-    this.memberFormGroup = this.formBuilder.group({
+    this.registrationForm = this.formBuilder.group({
       lastName: ['', Validators.required],
       firstName: ['', Validators.required],
       school: ['', Validators.required],
@@ -40,11 +43,11 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   initNameValidation(): void {
-    this.memberFormGroup.controls.lastName.valueChanges.subscribe((value) => {
-      this.memberFormGroup.controls.lastName.setValue(this.nameFormatter(value), { emitEvent: false });
+    this.registrationForm.controls.lastName.valueChanges.subscribe((value) => {
+      this.registrationForm.controls.lastName.setValue(this.nameFormatter(value), { emitEvent: false });
     });
-    this.memberFormGroup.controls.firstName.valueChanges.subscribe((value) => {
-      this.memberFormGroup.controls.firstName.setValue(this.nameFormatter(value), { emitEvent: false });
+    this.registrationForm.controls.firstName.valueChanges.subscribe((value) => {
+      this.registrationForm.controls.firstName.setValue(this.nameFormatter(value), { emitEvent: false });
     });
   }
 
@@ -53,14 +56,14 @@ export class MemberNewEditComponent implements OnInit {
       if (params.id) {
         this.memberId = +params['id'];
         this.memberService.getById(+this.memberId).subscribe((member) => {
-          this.memberFormGroup.controls.lastName.setValue(member.lastName);
-          this.memberFormGroup.controls.firstName.setValue(member.firstName);
-          this.memberFormGroup.controls.school.setValue(member.school);
+          this.registrationForm.controls.lastName.setValue(member.lastName);
+          this.registrationForm.controls.firstName.setValue(member.firstName);
+          this.registrationForm.controls.school.setValue(member.school);
         });
+        this.registrationForm.controls.statuts.setValue(true);
+        this.registrationForm.controls.ri.setValue(true);
       }
     });
-    this.memberFormGroup.controls.statuts.setValue(true);
-    this.memberFormGroup.controls.ri.setValue(true);
   }
 
   nameFormatter(name: string): string {
@@ -70,11 +73,27 @@ export class MemberNewEditComponent implements OnInit {
     return newName;
   }
 
-  submitForm(): void {
+  search(): void {
+    this.searchQuery = this.nameFormatter(this.searchQuery);
+    this.notEnoughCharacters = this.searchQuery.length <= 3 ? true : false;
+    if (!this.notEnoughCharacters) {
+      this.spinner = true;
+      this.memberService.search(this.searchQuery)
+      .subscribe((members) => {
+        this.searchedMembers = members;
+        this.spinner = false;
+      },         (e) => {
+        this.spinner = false;
+        throw e;
+      });
+    }
+  }
+
+  submitRegistrationForm(): void {
     const member = new Member({
-      lastName: this.memberFormGroup.get('lastName').value,
-      firstName: this.memberFormGroup.get('firstName').value,
-      school: this.memberFormGroup.get('school').value,
+      lastName: this.registrationForm.get('lastName').value,
+      firstName: this.registrationForm.get('firstName').value,
+      school: this.registrationForm.get('school').value,
     });
     if (this.memberId) {
       member.id = this.memberId;

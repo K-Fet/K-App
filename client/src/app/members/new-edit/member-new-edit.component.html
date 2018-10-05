@@ -11,53 +11,83 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="memberFormGroup" fxLayout="column" fxLayoutAlign="center" (ngSubmit)="submitForm()">
-        <mat-form-field>
-          <input matInput placeholder="Prénom" autocorrect="off" autofocus
-            formControlName="firstName" required>
-          <mat-error *ngIf="memberFormGroup.controls.firstName.hasError('required')">
-            Prénom <strong>requis</strong>
+      <div fxLayoutAlign="center">
+        <mat-checkbox *ngIf="!memberId" [(ngModel)]="reRegistration">Ré-inscription</mat-checkbox>
+      </div>
+      <ng-container *ngIf="!reRegistration; else autoForm">
+        <section class="mat-typography">
+          <h3>Nouvelle adhésion</h3>
+        </section>
+        <form [formGroup]="registrationForm" fxLayout="column" fxLayoutAlign="center"
+          (ngSubmit)="submitRegistrationForm()">
+          <mat-form-field>
+            <input matInput placeholder="Prénom" autocorrect="off" autofocus
+              formControlName="firstName" required>
+            <mat-error *ngIf="registrationForm.controls.firstName.hasError('required')">
+              Prénom <strong>requis</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Nom de famille" autocorrect="off"
+              formControlName="lastName" required>
+            <mat-error *ngIf="registrationForm.controls.lastName.hasError('required')">
+              Nom de famille <strong>requis</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="École" formControlName="school">
+              <mat-option *ngFor="let school of availableSchools" [value]="school">
+                {{school}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="registrationForm.controls.school.hasError('required')">
+              École <strong>requise</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="statuts">
+            Indiquer au client qu'il accepte les
+            <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a>
+            de l'association
+          </mat-checkbox>
+          <mat-error *ngIf="registrationForm.get('statuts').hasError('validCheckbox')">
+            Le client doit <strong>accepter</strong> les statuts
           </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Nom de famille" autocorrect="off"
-            formControlName="lastName" required>
-          <mat-error *ngIf="memberFormGroup.controls.lastName.hasError('required')">
-            Nom de famille <strong>requis</strong>
+          <mat-checkbox formControlName="ri">
+            Indiquer au client qu'il accepte le
+            <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a>
+            de l'association
+          </mat-checkbox>
+          <mat-error *ngIf="registrationForm.get('ri').hasError('validCheckbox')">
+            Le client doit <strong>accepter</strong> le réglement intérieur
           </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-select placeholder="École" formControlName="school">
-            <mat-option *ngFor="let school of availableSchools" [value]="school">
-              {{school}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="memberFormGroup.controls.school.hasError('required')">
-            École <strong>requise</strong>
-          </mat-error>
-        </mat-form-field>
-        <mat-checkbox formControlName="statuts">
-          Indiquer au client qu'il accepte les
-          <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a>
-          de l'association
-        </mat-checkbox>
-        <mat-error *ngIf="memberFormGroup.get('statuts').hasError('validCheckbox')">
-          Le client doit <strong>accepter</strong> les statuts
-        </mat-error>
-        <mat-checkbox formControlName="ri">
-          Indiquer au client qu'il accepte le
-          <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a>
-          de l'association
-        </mat-checkbox>
-        <mat-error *ngIf="memberFormGroup.get('ri').hasError('validCheckbox')">
-          Le client doit <strong>accepter</strong> le réglement intérieur
-        </mat-error>
-        <div fxLayoutAlign="center">
-          <button fxFlex="50" mat-button type="submit" [disabled]="!memberFormGroup.valid">
-            Enregistrer
-          </button>
+          <div fxLayoutAlign="center">
+            <button fxFlex="50" mat-button type="submit" [disabled]="!registrationForm.valid">
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </ng-container>
+      <ng-template #autoForm>
+        <div fxLayout="column">
+          <mat-form-field>
+            <input matInput placeholder="Rechercher par nom / prénom"
+            (keyup)="search()" [(ngModel)]="searchQuery">
+          </mat-form-field>
+          <ng-container *ngIf="spinner; else results">
+            <div fxLayoutAlign="center">
+              <div class="spinner"></div>
+            </div>
+          </ng-container>
+          <ng-template #results>
+            <mat-error *ngIf="notEnoughCharacters">
+              Votre recherche doit contenir au moins 4 caractères
+            </mat-error>
+            <p>
+              {{ searchedMembers | json }}
+            </p>
+          </ng-template>
         </div>
-      </form>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

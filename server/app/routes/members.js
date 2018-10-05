@@ -4,7 +4,7 @@ const guard = require('express-jwt-permissions')();
 const validator = require('express-joi-validation')({ passError: true });
 const { codeGuard } = require('../middlewares/code-guard');
 const am = require('../../utils/async-middleware');
-const { ID_SCHEMA, RANGE_SCHEMA } = require('../../utils');
+const { ID_SCHEMA, RANGE_SCHEMA, SEARCH_SCHEMA } = require('../../utils');
 const { MemberSchema } = require('../models/schemas');
 const memberController = require('../controllers/member-controller');
 
@@ -20,6 +20,13 @@ router.post(
   guard.check('member:write'),
   validator.body(MemberSchema.requiredKeys(['firstName', 'lastName', 'school'])),
   am(memberController.createMember),
+);
+
+router.get(
+  '/search',
+  guard.check('member:read'),
+  validator.query(SEARCH_SCHEMA),
+  am(memberController.searchMembers),
 );
 
 router.get(
