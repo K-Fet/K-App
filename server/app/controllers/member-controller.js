@@ -116,7 +116,8 @@ async function unregisterMember(req, res) {
  * @return {Promise<void>} Nothing
  */
 async function searchMembers(req, res) {
-  const members = await memberService.searchMembers(req.query.q);
+  const { query, active } = req.body;
+  const members = await memberService.searchMembers(query, active);
 
   res.send(members);
 }

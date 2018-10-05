@@ -22,10 +22,10 @@ router.post(
   am(memberController.createMember),
 );
 
-router.get(
+router.post(
   '/search',
   guard.check('member:read'),
-  validator.query(SEARCH_SCHEMA),
+  validator.body(SEARCH_SCHEMA.requiredKeys('query')),
   am(memberController.searchMembers),
 );
 

@@ -34,11 +34,10 @@ export class MemberService {
     return this.http.post<Registration>(`/api/members/${id}/register`, {});
   }
 
-  search(query: string): Observable<Member[]> {
-    return this.http.get<Member[]>('/api/members/search', {
-      params: {
-        q: query,
-      },
+  search(query: string, active: boolean): Observable<Member[]> {
+    return this.http.post<Member[]>('/api/members/search', {
+      query,
+      active,
     });
   }
 }

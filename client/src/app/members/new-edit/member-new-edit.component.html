@@ -70,22 +70,56 @@
       <ng-template #autoForm>
         <div fxLayout="column">
           <mat-form-field>
-            <input matInput placeholder="Rechercher par nom / prénom"
+            <input matInput placeholder="Rechercher par nom / prénom" autofocus
             (keyup)="search()" [(ngModel)]="searchQuery">
           </mat-form-field>
-          <ng-container *ngIf="spinner; else results">
-            <div fxLayoutAlign="center">
-              <div class="spinner"></div>
+          <div class="mat-elevation-z3">
+            <mat-table #table [dataSource]="searchedMembersData" matSort>
+              <ng-container matColumnDef="lastName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Nom</mat-header-cell>
+                <mat-cell *matCellDef="let member"> {{member.lastName}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="firstName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom</mat-header-cell>
+                <mat-cell *matCellDef="let member"> {{member.firstName}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="school">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> École</mat-header-cell>
+                <mat-cell *matCellDef="let member"> {{member.school}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="lastActive">
+                <mat-header-cell *matHeaderCellDef> Dernière activité</mat-header-cell>
+                <mat-cell *matCellDef="let member"> {{getLastActive(member)}}</mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"
+                (click)="isActive(row) ? null : openRegisterDialog(row)">
+              </mat-row>
+
+            </mat-table>
+
+            <div class="tableInfos">
+              <div fxLayoutAlign="center" *ngIf="notEnoughCharacters">
+                <mat-error>
+                  Votre recherche doit contenir au moins 4 caractères
+                </mat-error>
+              </div>
+              <div fxLayoutAlign="center" *ngIf="spinner">
+                <div class="spinner"></div>
+              </div>
+              <div fxLayoutAlign="center" *ngIf="searchedMembersData?.data.length === 0">
+                Aucun résultat...
+              </div>
             </div>
-          </ng-container>
-          <ng-template #results>
-            <mat-error *ngIf="notEnoughCharacters">
-              Votre recherche doit contenir au moins 4 caractères
-            </mat-error>
-            <p>
-              {{ searchedMembers | json }}
-            </p>
-          </ng-template>
+
+            <mat-paginator #paginator [pageIndex]="0" [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]">
+            </mat-paginator>
+          </div>
         </div>
       </ng-template>
     </mat-card-content>

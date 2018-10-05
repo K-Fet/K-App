@@ -211,23 +211,35 @@ async function deleteMember(memberId) {
  * Search members which match query parameter in all database.
  *
  * @param query {string} query.
+ * @param active {boolean} define if the result include only active members (true),
+ * inactive members (false) or both(null).
  * @return {Promise<Member[]>} Members which match the query
  */
-async function searchMembers(query) {
+async function searchMembers(query, active) {
   logger.verbose('Member service: searching members with query %s', query);
-  const where = Sequelize.where(
+
+  const whereClause = Sequelize.where(
     Sequelize.fn('concat', Sequelize.col('firstName'), ' ', Sequelize.col('lastName')),
-    'like',
+    Op.like,
     `%${query}%`,
   );
-  const members = await Member.findAll({
-    where,
+
+  const options = {
+    where: whereClause,
+    order: [
+      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+    ],
     include: [{
       model: Registration,
       as: 'registrations',
       attributes: ['year', 'createdAt'],
     }],
-  });
+  };
+
+  if (active) options.include.where = { year: { [Op.eq]: getCurrentSchoolYear() } };
+  else if (active === false) options.include.where = { year: { [Op.ne]: getCurrentSchoolYear() } };
+
+  const members = await Member.findAll(options);
 
   return members;
 }
