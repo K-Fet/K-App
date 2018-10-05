@@ -11,70 +11,49 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="form" fxLayout="column" fxLayoutAlign="center" (ngSubmit)="submitForm()">
-        <mat-vertical-stepper formArrayName="formArray" linear>
-          <mat-step formGroupName="0" [stepControl]="formArray.get([0])"
-            label="Partie Client - Attention PRÉNOM FIRST">
-            <div fxLayout="column" fxLayoutAlign="center">
-              <mat-form-field>
-                <input matInput placeholder="Prénom" autocorrect="off"
-                  formControlName="firstName" required>
-                <mat-error *ngIf="memberFormGroup.controls.firstName.hasError('required')">
-                  Prénom <strong>requis</strong>
-                </mat-error>
-              </mat-form-field>
-              <mat-form-field>
-                <input matInput placeholder="Nom de famille" autocorrect="off"
-                  formControlName="lastName" required>
-                <mat-error *ngIf="memberFormGroup.controls.lastName.hasError('required')">
-                  Nom de famille <strong>requis</strong>
-                </mat-error>
-              </mat-form-field>
-              <mat-form-field>
-                <mat-select placeholder="École" formControlName="school">
-                  <mat-option *ngFor="let school of availableSchools" [value]="school">
-                    {{school}}
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="memberFormGroup.controls.school.hasError('required')">
-                  École <strong>requise</strong>
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </mat-step>
-          <mat-step formGroupName="1" [stepControl]="formArray.get([1])" label="Partie Barman">
-            <div fxLayout="column" fxLayoutAlign="center">
-              <mat-checkbox formControlName="statut">
-                Indiquer au client qu'il accepte les
-                <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a>
-                de l'association
-              </mat-checkbox>
-              <mat-error *ngIf="barmanFormGroup.get('statut').hasError('validCheckbox')">
-                Le client doit <strong>accepter</strong> les statuts
-              </mat-error>
-              <mat-checkbox formControlName="ri">
-                Indiquer au client qu'il accepte le
-                <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a>
-                de l'association
-              </mat-checkbox>
-              <mat-error *ngIf="barmanFormGroup.get('ri').hasError('validCheckbox')">
-                Le client doit <strong>accepter</strong> le réglement intérieur
-              </mat-error>
-              <mat-form-field>
-                <input matInput type="password" placeholder="Code" formControlName="code" required>
-              </mat-form-field>
-              <mat-error *ngIf="barmanFormGroup.controls.code.hasError('required')
-                && barmanFormGroup.controls.code.dirty">
-                Code barman <strong>requis</strong>
-              </mat-error>
-              <mat-error *ngIf="barmanFormGroup.get('code').hasError('pattern')">
-                Le code doit comporter seulement des chiffres, 4 au minimum.
-              </mat-error>
-            </div>
-          </mat-step>
-        </mat-vertical-stepper>
+      <form [formGroup]="memberFormGroup" fxLayout="column" fxLayoutAlign="center" (ngSubmit)="submitForm()">
+        <mat-form-field>
+          <input matInput placeholder="Prénom" autocorrect="off" autofocus
+            formControlName="firstName" required>
+          <mat-error *ngIf="memberFormGroup.controls.firstName.hasError('required')">
+            Prénom <strong>requis</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Nom de famille" autocorrect="off"
+            formControlName="lastName" required>
+          <mat-error *ngIf="memberFormGroup.controls.lastName.hasError('required')">
+            Nom de famille <strong>requis</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select placeholder="École" formControlName="school">
+            <mat-option *ngFor="let school of availableSchools" [value]="school">
+              {{school}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="memberFormGroup.controls.school.hasError('required')">
+            École <strong>requise</strong>
+          </mat-error>
+        </mat-form-field>
+        <mat-checkbox formControlName="statuts">
+          Indiquer au client qu'il accepte les
+          <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a>
+          de l'association
+        </mat-checkbox>
+        <mat-error *ngIf="memberFormGroup.get('statuts').hasError('validCheckbox')">
+          Le client doit <strong>accepter</strong> les statuts
+        </mat-error>
+        <mat-checkbox formControlName="ri">
+          Indiquer au client qu'il accepte le
+          <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a>
+          de l'association
+        </mat-checkbox>
+        <mat-error *ngIf="memberFormGroup.get('ri').hasError('validCheckbox')">
+          Le client doit <strong>accepter</strong> le réglement intérieur
+        </mat-error>
         <div fxLayoutAlign="center">
-          <button fxFlex="50" mat-button type="submit" [disabled]="!form.valid">
+          <button fxFlex="50" mat-button type="submit" [disabled]="!memberFormGroup.valid">
             Enregistrer
           </button>
         </div>

@@ -22,7 +22,7 @@ async function getAllMembers(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createMember(req, res) {
-  let newMember = new Member(req.body.member);
+  let newMember = new Member(req.body);
 
   newMember = await memberService.createMember(newMember);
 
@@ -54,7 +54,7 @@ async function getMemberById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateMember(req, res) {
-  let newMember = new Member(req.body.member);
+  let newMember = new Member(req.body);
 
   const memberId = req.params.id;
 

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MemberService, ToasterService } from '../../_services';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Member, AVAILABLE_SCHOOLS } from '../../_models';
-import { FormArray } from '@angular/forms/src/model';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 
 @Component({
@@ -13,10 +12,7 @@ import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 export class MemberNewEditComponent implements OnInit {
   memberId: number;
 
-  formArray: FormArray;
   memberFormGroup: FormGroup;
-  barmanFormGroup: FormGroup;
-  form: FormGroup;
 
   availableSchools = AVAILABLE_SCHOOLS;
 
@@ -38,18 +34,8 @@ export class MemberNewEditComponent implements OnInit {
       lastName: ['', Validators.required],
       firstName: ['', Validators.required],
       school: ['', Validators.required],
-    });
-    this.barmanFormGroup = this.formBuilder.group({
-      statut: [true, ValidateCheckbox],
-      ri: [true, ValidateCheckbox],
-      code: ['', [Validators.required, Validators.pattern(/^[0-9]{4,}$/)]],
-    });
-    this.formArray = this.formBuilder.array([
-      this.memberFormGroup,
-      this.barmanFormGroup,
-    ]);
-    this.form = this.formBuilder.group({
-      formArray: this.formArray,
+      statuts: [false, ValidateCheckbox],
+      ri: [false, ValidateCheckbox],
     });
   }
 
@@ -73,6 +59,8 @@ export class MemberNewEditComponent implements OnInit {
         });
       }
     });
+    this.memberFormGroup.controls.statuts.setValue(true);
+    this.memberFormGroup.controls.ri.setValue(true);
   }
 
   nameFormatter(name: string): string {
@@ -83,16 +71,19 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   submitForm(): void {
-    const member = new Member(...this.memberFormGroup.value);
-    const code = this.barmanFormGroup.controls.code.value;
+    const member = new Member({
+      lastName: this.memberFormGroup.get('lastName').value,
+      firstName: this.memberFormGroup.get('firstName').value,
+      school: this.memberFormGroup.get('school').value,
+    });
     if (this.memberId) {
       member.id = this.memberId;
-      this.memberService.update(member, code).subscribe(() => {
+      this.memberService.update(member).subscribe(() => {
         this.toasterService.showToaster('Utilisateur modifié');
         this.router.navigate(['/members']);
       });
     } else {
-      this.memberService.create(member, code).subscribe(() => {
+      this.memberService.create(member).subscribe(() => {
         this.toasterService.showToaster('Adhérent créé');
         this.router.navigate(['/members']);
       });

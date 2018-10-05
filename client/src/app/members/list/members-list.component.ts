@@ -7,6 +7,7 @@ import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.compo
 import { NgxPermissionsService } from 'ngx-permissions';
 import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
+import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   templateUrl: './members-list.component.html',
@@ -52,8 +53,8 @@ export class MembersListComponent implements OnInit {
     });
   }
 
-  register(member: Member, code: number) {
-    this.memberService.register(member.id, code).subscribe(({ year }) => {
+  register(member: Member) {
+    this.memberService.register(member.id).subscribe(({ year }) => {
       this.toasterService.showToaster(`Adhérent inscrit pour l'année ${year}-${year + 1}`);
       this.update();
     });
@@ -111,16 +112,16 @@ export class MembersListComponent implements OnInit {
   }
 
   openRegisterDialog(member: Member): void {
-    const dialogRef = this.dialog.open(CodeDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
         message: `Inscription de ${member.firstName} ${member.lastName} ` +
-          `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1}`,
+          `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1} ?`,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.register(member, result);
+      if (result) this.register(member);
     });
   }
 }
