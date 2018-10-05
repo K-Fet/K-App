@@ -9,7 +9,7 @@ async function run() {
   );
 
   console.log('[update] Install dependencies');
-  await exec('yarn run install --non-interactive --frozen-lockfile');
+  await exec('yarn install --non-interactive --frozen-lockfile');
   console.log('[update] Dependencies installed');
 
 
