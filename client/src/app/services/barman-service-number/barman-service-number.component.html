@@ -1,30 +1,36 @@
 <mat-card>
-    <mat-card-header>
-        <mat-card-title>
-            <section class="mat-typography">
-                <h1>Nombre de services fixés</h1>
-            </section>
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <div class="mat-elevation-z3">
-            <mat-table [dataSource]="barmenData" matSort>
-                <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
-                    <mat-cell *matCellDef="let barman">{{ barman.name }}</mat-cell>
-                </ng-container>
+  <mat-card-header>
+    <mat-card-title>
+      <section class="mat-typography">
+        <h1>Nombre de services fixés</h1>
+      </section>
+    </mat-card-title>
+    <mat-card-subtitle>
+      N'oubliez pas de tenir à jour les vieux barmen pour qu'il n'apparaissent plus dans le tableau.
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div fxLayoutAlign="center">
 
-                <ng-container matColumnDef="services">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de service(s) fixé(s) </mat-header-cell>
-                    <mat-cell *matCellDef="let barman">{{ barman.services }}</mat-cell>
-                </ng-container>
+    </div>
+    <div class="mat-elevation-z3">
+      <mat-table [dataSource]="barmenData" matSort>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Surnom </mat-header-cell>
+          <mat-cell *matCellDef="let barman">{{ barman.name }}</mat-cell>
+        </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            </mat-table>
+        <ng-container matColumnDef="services">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de service(s) fixé(s) </mat-header-cell>
+          <mat-cell *matCellDef="let barman">{{ barman.services }}</mat-cell>
+        </ng-container>
 
-            <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
-            </mat-paginator>
-        </div>
-    </mat-card-content>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+      <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
 </mat-card>
