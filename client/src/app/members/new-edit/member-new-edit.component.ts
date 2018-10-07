@@ -85,7 +85,7 @@ export class MemberNewEditComponent implements OnInit {
 
   search(): void {
     this.searchQuery = this.nameFormatter(this.searchQuery);
-    this.notEnoughCharacters = this.searchQuery.length <= 3 ? true : false;
+    this.notEnoughCharacters = this.searchQuery.length < 3;
     if (!this.notEnoughCharacters) {
       this.spinner = true;
       this.memberService.search(this.searchQuery, false)

@@ -76,7 +76,7 @@ const RANGE_SCHEMA = Joi.object({
  * @type {ObjectSchema} Joi schema
  */
 const SEARCH_SCHEMA = Joi.object({
-  query: Joi.string().regex(/[a-z -]{4,}/i),
+  query: Joi.string().regex(/[a-z -]{3,}/i),
   active: Joi.boolean(),
 });
 

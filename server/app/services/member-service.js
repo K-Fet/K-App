@@ -226,20 +226,11 @@ async function searchMembers(query, active) {
 
   const options = {
     where: whereClause,
-    order: [
-      [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
-    ],
-    include: [{
-      model: Registration,
-      as: 'registrations',
-      attributes: ['year', 'createdAt'],
-    }],
   };
 
-  if (active) options.include.where = { year: { [Op.eq]: getCurrentSchoolYear() } };
-  else if (active === false) options.include.where = { year: { [Op.ne]: getCurrentSchoolYear() } };
+  const scope = active ? 'active' : 'inactive';
 
-  const members = await Member.findAll(options);
+  const members = await Member.scope(scope).findAll(options);
 
   return members;
 }

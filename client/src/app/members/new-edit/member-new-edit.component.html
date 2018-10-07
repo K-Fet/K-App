@@ -97,7 +97,7 @@
 
               <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
               <mat-row *matRowDef="let row; columns: displayedColumns;"
-                (click)="isActive(row) ? null : openRegisterDialog(row)">
+                (click)="openRegisterDialog(row)">
               </mat-row>
 
             </mat-table>
@@ -105,7 +105,7 @@
             <div class="tableInfos">
               <div fxLayoutAlign="center" *ngIf="notEnoughCharacters">
                 <mat-error>
-                  Votre recherche doit contenir au moins 4 caractères
+                  Votre recherche doit contenir au moins 3 caractères
                 </mat-error>
               </div>
               <div fxLayoutAlign="center" *ngIf="spinner">
