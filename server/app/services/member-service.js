@@ -228,11 +228,13 @@ async function searchMembers(query, active) {
     where: whereClause,
   };
 
-  const scope = active ? 'active' : 'inactive';
+  let scope = null;
+  if (active === true) scope = 'active';
+  if (active === false) scope = 'inactive';
 
-  const members = await Member.scope(scope).findAll(options);
+  logger.verbose('Member service: searching using scope %s', scope);
 
-  return members;
+  return Member.scope(scope).findAll(options);
 }
 
 module.exports = {
