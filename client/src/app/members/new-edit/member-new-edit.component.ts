@@ -1,12 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MemberService, ToasterService } from '../../_services';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Member, AVAILABLE_SCHOOLS } from '../../_models';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AVAILABLE_SCHOOLS, Member } from '../../_models';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
-import { MatSort, MatPaginator, MatTableDataSource, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { Observable } from 'rxjs';
+import { debounceTime, filter, finalize, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './member-new-edit.component.html',
@@ -15,17 +17,13 @@ import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/c
 
 export class MemberNewEditComponent implements OnInit {
   memberId: number;
-  reRegistration = false;
   registrationForm: FormGroup;
-  availableSchools = AVAILABLE_SCHOOLS;
-  searchedMembersData: MatTableDataSource<Member>;
-  displayedColumns = ['lastName', 'firstName', 'school', 'lastActive'];
-  searchQuery: string;
-  spinner = false;
-  notEnoughCharacters = false;
+  isLoading = false;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  filteredSchools: Observable<string[]>;
+
+  searchQuery = new FormControl();
+  filteredMembers: Observable<Member[]>;
 
   constructor(
     private memberService: MemberService,
@@ -34,12 +32,30 @@ export class MemberNewEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
     this.initEdit();
     this.initNameValidation();
+
+    this.filteredSchools = this.registrationForm.controls.school.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this.filterSchool(value)),
+      );
+
+    this.filteredMembers = this.searchQuery.valueChanges
+      .pipe(
+        filter(value => value.length >= 3),
+        debounceTime(300),
+        // FIXME isLoading does not work for now, getting a 'ExpressionChangedAfterItHasBeenCheckedError'
+        // tap(() => this.isLoading = true),
+        // input is a string at first but become a object when a member is selected
+        map(value => typeof value === 'string' ? value : `${value.firstName} ${value.lastName}`),
+        switchMap(value => this.searchMembers(value)
+          .pipe(finalize(() => this.isLoading = false))),
+      );
   }
 
   initForm(): void {
@@ -53,54 +69,33 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   initNameValidation(): void {
-    this.registrationForm.controls.lastName.valueChanges.subscribe((value) => {
-      this.registrationForm.controls.lastName.setValue(this.nameFormatter(value), { emitEvent: false });
-    });
-    this.registrationForm.controls.firstName.valueChanges.subscribe((value) => {
-      this.registrationForm.controls.firstName.setValue(this.nameFormatter(value), { emitEvent: false });
-    });
+    const { lastName, firstName } = this.registrationForm.controls;
+
+    lastName.valueChanges.subscribe(value => lastName.setValue(this.nameFormatter(value)));
+    firstName.valueChanges.subscribe(value => firstName.setValue(this.nameFormatter(value)));
   }
 
-  initEdit(): void {
-    this.route.params.subscribe((params) => {
-      if (params.id) {
-        this.memberId = +params['id'];
-        this.memberService.getById(+this.memberId).subscribe((member) => {
-          this.registrationForm.controls.lastName.setValue(member.lastName);
-          this.registrationForm.controls.firstName.setValue(member.firstName);
-          this.registrationForm.controls.school.setValue(member.school);
-        });
-        this.registrationForm.controls.statuts.setValue(true);
-        this.registrationForm.controls.ri.setValue(true);
-      }
+  async initEdit(): Promise<void> {
+    const { id } = await this.route.params.toPromise();
+
+    if (!id) return;
+
+    const { lastName, firstName, school, statuts, ri } = this.registrationForm.controls;
+    this.memberId = +id;
+    this.memberService.getById(+this.memberId).subscribe((member) => {
+      lastName.setValue(member.lastName);
+      firstName.setValue(member.firstName);
+      school.setValue(member.school);
+      statuts.setValue(true);
+      ri.setValue(true);
     });
   }
 
   nameFormatter(name: string): string {
-    const newName = !name ? name :
-      name.replace(/[\wÀ-ÿ]+(\S&-)*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+    if (!name) return '';
+    return name
+      .replace(/[\wÀ-ÿ]+(\S&-)*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
       .replace(/[`~!@#$%^&*()_|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-    return newName;
-  }
-
-  search(): void {
-    this.searchQuery = this.nameFormatter(this.searchQuery);
-    this.notEnoughCharacters = this.searchQuery.length < 3;
-    if (!this.notEnoughCharacters) {
-      this.spinner = true;
-      this.memberService.search(this.searchQuery, false)
-      .subscribe((members) => {
-        this.searchedMembersData = new MatTableDataSource(members);
-        this.searchedMembersData.paginator = this.paginator;
-        this.searchedMembersData.sort = this.sort;
-        this.spinner = false;
-      },         (e) => {
-        this.spinner = false;
-        throw e;
-      });
-    } else {
-      this.searchedMembersData = undefined;
-    }
   }
 
   submitRegistrationForm(): void {
@@ -156,5 +151,20 @@ export class MemberNewEditComponent implements OnInit {
       this.toasterService.showToaster(`Adhérent inscrit pour l'année ${year}-${year + 1}`);
       this.router.navigate(['/members']);
     });
+  }
+
+  private filterSchool(value: string) {
+    const school = value.toLowerCase();
+    return AVAILABLE_SCHOOLS.filter(s => s.toLowerCase().includes(school));
+  }
+
+  private searchMembers(value: string) {
+    return this.memberService.search(value, false);
+  }
+
+  displayMember(member: Member) {
+    if (member) {
+      return `${member.firstName} ${member.lastName} — ${member.school}`;
+    }
   }
 }

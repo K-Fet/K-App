@@ -12,34 +12,35 @@
     </mat-card-header>
     <mat-card-content>
       <div fxLayoutAlign="center">
-        <mat-checkbox *ngIf="!memberId" [(ngModel)]="reRegistration">Ré-inscription</mat-checkbox>
+        <mat-slide-toggle *ngIf="!memberId" [(ngModel)]="reRegistration">Ré-inscription</mat-slide-toggle>
       </div>
       <ng-container *ngIf="!reRegistration; else autoForm">
         <section class="mat-typography">
           <h3>Nouvelle adhésion</h3>
         </section>
         <form [formGroup]="registrationForm" fxLayout="column" fxLayoutAlign="center"
-          (ngSubmit)="submitRegistrationForm()">
+              (ngSubmit)="submitRegistrationForm()">
           <mat-form-field>
             <input matInput placeholder="Prénom" autocorrect="off" autofocus
-              formControlName="firstName" required>
+                   formControlName="firstName" required>
             <mat-error *ngIf="registrationForm.controls.firstName.hasError('required')">
               Prénom <strong>requis</strong>
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <input matInput placeholder="Nom de famille" autocorrect="off"
-              formControlName="lastName" required>
+                   formControlName="lastName" required>
             <mat-error *ngIf="registrationForm.controls.lastName.hasError('required')">
               Nom de famille <strong>requis</strong>
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <mat-select placeholder="École" formControlName="school">
-              <mat-option *ngFor="let school of availableSchools" [value]="school">
+            <input type="text" placeholder="École" matInput formControlName="school" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let school of filteredSchools | async" [value]="option">
                 {{school}}
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
             <mat-error *ngIf="registrationForm.controls.school.hasError('required')">
               École <strong>requise</strong>
             </mat-error>
@@ -70,56 +71,24 @@
       <ng-template #autoForm>
         <div fxLayout="column">
           <mat-form-field>
-            <input matInput placeholder="Rechercher par nom / prénom" autofocus
-            (keyup)="search()" [(ngModel)]="searchQuery">
+            <input type="text" placeholder="Rechercher par nom / prénom" autofocus matInput
+                   [formControl]="searchQuery" [matAutocomplete]="auto">
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayMember"
+              (optionSelected)="openRegisterDialog($event.option.value)"
+            >
+              <mat-option *ngIf="isLoading">
+                <mat-spinner diameter="50"></mat-spinner>
+              </mat-option>
+              <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let member of filteredMembers | async" [value]="member" style="height: 55px;line-height: 20px;">
+                  {{member.firstName}} {{member.lastName}}<br>
+                  <span class="mat-caption">{{getLastActive(member)}}</span>
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
           </mat-form-field>
-          <div class="mat-elevation-z3">
-            <mat-table #table [dataSource]="searchedMembersData" matSort>
-              <ng-container matColumnDef="lastName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Nom</mat-header-cell>
-                <mat-cell *matCellDef="let member"> {{member.lastName}}</mat-cell>
-              </ng-container>
-
-              <ng-container matColumnDef="firstName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Prénom</mat-header-cell>
-                <mat-cell *matCellDef="let member"> {{member.firstName}}</mat-cell>
-              </ng-container>
-
-              <ng-container matColumnDef="school">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> École</mat-header-cell>
-                <mat-cell *matCellDef="let member"> {{member.school}}</mat-cell>
-              </ng-container>
-
-              <ng-container matColumnDef="lastActive">
-                <mat-header-cell *matHeaderCellDef> Dernière activité</mat-header-cell>
-                <mat-cell *matCellDef="let member"> {{getLastActive(member)}}</mat-cell>
-              </ng-container>
-
-              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumns;"
-                (click)="openRegisterDialog(row)">
-              </mat-row>
-
-            </mat-table>
-
-            <div class="tableInfos">
-              <div fxLayoutAlign="center" *ngIf="notEnoughCharacters">
-                <mat-error>
-                  Votre recherche doit contenir au moins 3 caractères
-                </mat-error>
-              </div>
-              <div fxLayoutAlign="center" *ngIf="spinner">
-                <div class="spinner"></div>
-              </div>
-              <div fxLayoutAlign="center" *ngIf="searchedMembersData?.data.length === 0">
-                Aucun résultat...
-              </div>
-            </div>
-
-            <mat-paginator #paginator [pageIndex]="0" [pageSize]="10"
-              [pageSizeOptions]="[5, 10, 25, 100]">
-            </mat-paginator>
-          </div>
         </div>
       </ng-template>
     </mat-card-content>

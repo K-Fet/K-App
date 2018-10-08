@@ -71,12 +71,12 @@ const RANGE_SCHEMA = Joi.object({
 /**
  * This constant is used by Joi to validate query from a request.
  * It represent an object with a search query.
- * This query must contain at least 4 characters
+ * This query must contain at least 3 characters
  *
  * @type {ObjectSchema} Joi schema
  */
 const SEARCH_SCHEMA = Joi.object({
-  query: Joi.string().regex(/[a-z -]{3,}/i),
+  query: Joi.string().min(3).required(),
   active: Joi.boolean(),
 });
 
