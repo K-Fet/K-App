@@ -1,7 +1,6 @@
 const { Model, DataTypes, Op } = require('sequelize');
 const Joi = require('joi');
 const { Registration } = require('./registration');
-const { getCurrentSchoolYear } = require('../../utils');
 
 /**
  * This class represents a member.

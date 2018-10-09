@@ -32,7 +32,8 @@ export class MemberNewEditComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     public dialog: MatDialog,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -155,6 +156,10 @@ export class MemberNewEditComponent implements OnInit {
 
   private filterSchool(value: string) {
     const school = value.toLowerCase();
+
+    // Send all schools if one is selected (in case of wrong click)
+    if (AVAILABLE_SCHOOLS.find(s => s.toLowerCase() === school)) return AVAILABLE_SCHOOLS;
+
     return AVAILABLE_SCHOOLS.filter(s => s.toLowerCase().includes(school));
   }
 
