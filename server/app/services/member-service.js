@@ -1,10 +1,9 @@
-const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Member, Registration } = require('../models/');
 const { createUserError, createServerError, getCurrentSchoolYear } = require('../../utils');
 const { sequelize } = require('../../bootstrap/sequelize');
 
-const { Op } = Sequelize;
 
 /**
  * Register a member for a new year.
@@ -218,23 +217,23 @@ async function deleteMember(memberId) {
 async function searchMembers(query, active) {
   logger.verbose('Member service: searching members with query %s', query);
 
-  const whereClause = Sequelize.where(
-    Sequelize.fn('concat', Sequelize.col('firstName'), ' ', Sequelize.col('lastName')),
-    Op.like,
-    `%${query}%`,
-  );
-
-  const options = {
-    where: whereClause,
-  };
-
   let scope = null;
   if (active === true) scope = 'active';
   if (active === false) scope = 'inactive';
 
   logger.verbose('Member service: searching using scope %s', scope);
 
-  return Member.scope(scope).findAll(options);
+  return Member
+    .scope({ method: [scope, getCurrentSchoolYear()] })
+    .findAll({
+      // TODO Use FULLTEXT search !
+      //   Howto: https://stackoverflow.com/a/49901695/5285167
+      where: sequelize().where(
+        sequelize().fn('concat', sequelize().col('firstName'), ' ', sequelize().col('lastName')),
+        Op.like,
+        `%${query}%`,
+      ),
+    });
 }
 
 module.exports = {

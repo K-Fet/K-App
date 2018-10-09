@@ -39,38 +39,40 @@ class Member extends Model {
       paranoid: true,
 
       scopes: {
-        active: {
-          order: [
-            [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
-          ],
-          include: [
-            {
-              model: Registration,
-              as: 'registrations',
-              attributes: ['year', 'createdAt'],
-              where: {
-                year: {
-                  [Op.eq]: getCurrentSchoolYear(),
+        active(value) {
+          return {
+            order: [
+              [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+            ],
+            include: [
+              {
+                model: Registration,
+                as: 'registrations',
+                attributes: ['year', 'createdAt'],
+                where: {
+                  year: {
+                    [Op.eq]: value,
+                  },
                 },
               },
-            },
-          ],
+            ],
+          };
         },
-        inactive: {
-          // TODO
-          // where: {
-          //   [Op.notIn]: this.scope('active').findAll(),
-          // },
-          // order: [
-          //   [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
-          // ],
-          // include: [
-          //   {
-          //     model: Registration,
-          //     as: 'registrations',
-          //     attributes: ['year', 'createdAt'],
-          //   },
-          // ],
+        inactive(value) {
+          return {
+            order: [
+              [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+            ],
+            include: [
+              {
+                model: Registration,
+                as: 'registrations',
+                attributes: ['year', 'createdAt'],
+              },
+            ],
+            group: 'id',
+            having: sequelize.where(sequelize.fn('MAX', sequelize.col('registrations.year')), { [Op.lt]: value }),
+          };
         },
       },
     });
