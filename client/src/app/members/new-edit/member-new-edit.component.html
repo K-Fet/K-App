@@ -84,7 +84,7 @@
               <ng-container *ngIf="!isLoading">
                 <mat-option *ngFor="let member of filteredMembers | async" [value]="member" style="height: 55px;line-height: 20px;">
                   {{member.firstName}} {{member.lastName}}<br>
-                  <span class="mat-caption">{{getLastActive(member)}}</span>
+                  <span class="mat-caption">{{getLastActive(member)}}</span> — {{member.school}}
                 </mat-option>
               </ng-container>
             </mat-autocomplete>

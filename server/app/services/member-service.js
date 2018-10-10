@@ -224,7 +224,7 @@ async function searchMembers(query, active) {
   logger.verbose('Member service: searching using scope %s', scope);
 
   return Member
-    .scope({ method: [scope, getCurrentSchoolYear()] })
+    .scope(scope)
     .findAll({
       // TODO Use FULLTEXT search !
       //   Howto: https://stackoverflow.com/a/49901695/5285167
