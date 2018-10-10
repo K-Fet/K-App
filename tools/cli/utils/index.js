@@ -75,10 +75,27 @@ function exec(command, options) {
   return execPromise(command, options);
 }
 
+/**
+ * Test MySQL connection.
+ * Throw in case of failure
+ *
+ * @param co
+ * @returns {Promise<void>}
+ */
+async function testConnection(co) {
+  try {
+    await co.query('SELECT 1+1 AS CoTest');
+  } catch (e) {
+    console.error('[install] Unable to connect to the database, aborting installation', e);
+    throw new Error('Unable to connect to the database');
+  }
+}
+
 
 module.exports = {
   checkEnv,
   exec,
   createDirDeep,
   getSequelizeInstance,
+  testConnection,
 };
