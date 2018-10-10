@@ -8,6 +8,10 @@ async function run() {
     'DB__DATABASE',
   );
 
+  console.log('[update] Backuping database');
+  await exec('yarn run cli backup', { env: process.env });
+  console.log('[update] Database backed up');
+
   console.log('[update] Install dependencies');
   await exec('yarn install --non-interactive --frozen-lockfile');
   console.log('[update] Dependencies installed');

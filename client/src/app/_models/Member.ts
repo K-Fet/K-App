@@ -1,5 +1,7 @@
 import { Registration } from './Registration';
 
+export const AVAILABLE_SCHOOLS = ['INSA', 'Polytech', 'CPE', 'Lyon 1', 'Autre'];
+
 export class Member {
 
   id: number;

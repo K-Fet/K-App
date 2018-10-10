@@ -42,6 +42,11 @@ const actions = [
     noGui: false,
   },
   {
+    key: 'script',
+    description: 'Run a custom script in tools/cli/script/',
+    noGui: false,
+  },
+  {
     key: 'update',
     description: 'Handle new update changes',
     noGui: true,

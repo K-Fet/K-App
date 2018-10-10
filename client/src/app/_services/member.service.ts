@@ -18,19 +18,26 @@ export class MemberService {
     return this.http.get<Member>(`/api/members/${id}`);
   }
 
-  create(member: Member, code: number): Observable<Member> {
-    return this.http.post<Member>('/api/members', { code, member });
+  create(member: Member): Observable<Member> {
+    return this.http.post<Member>('/api/members', member);
   }
 
-  update(member: Member, code: number): Observable<Member> {
-    return this.http.put<Member>(`/api/members/${member.id}`, { code, member });
+  update(member: Member): Observable<Member> {
+    return this.http.put<Member>(`/api/members/${member.id}`, member);
   }
 
   delete(id: number, code: number): Observable<Member> {
     return this.http.post<Member>(`/api/members/${id}/delete`, { code });
   }
 
-  register(id: number, code: number): Observable<Registration> {
-    return this.http.post<Registration>(`/api/members/${id}/register`, { code });
+  register(id: number): Observable<Registration> {
+    return this.http.post<Registration>(`/api/members/${id}/register`, {});
+  }
+
+  search(query: string, active: boolean): Observable<Member[]> {
+    return this.http.post<Member[]>('/api/members/search', {
+      query,
+      active,
+    });
   }
 }

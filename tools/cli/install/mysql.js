@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
-const { getSequelizeInstance } = require('../utils');
+const { getSequelizeInstance, testConnection } = require('../utils');
 const { initModel } = require('../../../server/bootstrap/sequelize');
 
 async function setMysqlInfo() {
@@ -41,15 +41,6 @@ async function createDatabase(co, database) {
   if (!databases.length) {
     console.info(`[install] Creating the database ${database}`);
     await co.query(`CREATE DATABASE \`${database}\``);
-  }
-}
-
-async function testConnection(co) {
-  try {
-    await co.query('SELECT 1+1 AS CoTest');
-  } catch (e) {
-    console.error('[install] Unable to connect to the database, aborting installation', e);
-    throw new Error('Unable to connect to the database');
   }
 }
 

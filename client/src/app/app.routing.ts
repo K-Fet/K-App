@@ -8,8 +8,7 @@ import { ActiveGuard } from './_guards/active.guard';
 // Components
 import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
-import { MemberNewComponent } from './members/new/member-new.component';
-import { MemberEditComponent } from './members/edit/member-edit.component';
+import { MemberNewEditComponent } from './members/new-edit/member-new-edit.component';
 import { KommissionsListComponent } from './kommissions/list/kommissions-list.component';
 import { KommissionNewComponent } from './kommissions/new/kommission-new.component';
 import { KommissionEditComponent } from './kommissions/edit/kommission-edit.component';
@@ -70,11 +69,11 @@ const routes: Routes = [
     data: generateData('member:read'),
   },
   {
-    path: 'members/new', component: MemberNewComponent, canActivate: [NgxPermissionsGuard],
+    path: 'members/new', component: MemberNewEditComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('member:write'),
   },
   {
-    path: 'members/:id', component: MemberEditComponent, canActivate: [NgxPermissionsGuard],
+    path: 'members/:id', component: MemberNewEditComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('member:write'),
   },
   {

@@ -1,5 +1,6 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes, Op } = require('sequelize');
 const Joi = require('joi');
+const { Registration } = require('./registration');
 
 /**
  * This class represents a member.
@@ -35,6 +36,44 @@ class Member extends Model {
 
       // Do not delete row, even when the user delete is account
       paranoid: true,
+
+      scopes: {
+        active(value) {
+          return {
+            order: [
+              [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+            ],
+            include: [
+              {
+                model: Registration,
+                as: 'registrations',
+                attributes: ['year', 'createdAt'],
+                where: {
+                  year: {
+                    [Op.eq]: value,
+                  },
+                },
+              },
+            ],
+          };
+        },
+        inactive(value) {
+          return {
+            order: [
+              [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
+            ],
+            include: [
+              {
+                model: Registration,
+                as: 'registrations',
+                attributes: ['year', 'createdAt'],
+              },
+            ],
+            group: 'id',
+            having: sequelize.where(sequelize.fn('MAX', sequelize.col('registrations.year')), { [Op.lt]: value }),
+          };
+        },
+      },
     });
   }
 
@@ -42,7 +81,7 @@ class Member extends Model {
   /**
    * Set associations for the model.
    */
-  static associate({ Registration }) {
+  static associate({ Registration }) { // eslint-disable-line no-shadow
     this.hasMany(Registration, { as: 'registrations', onDelete: 'CASCADE', foreignKey: 'memberId' });
   }
 }
