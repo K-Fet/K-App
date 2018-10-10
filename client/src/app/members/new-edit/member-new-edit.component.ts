@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MemberService, ToasterService } from '../../_services';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AVAILABLE_SCHOOLS, Member } from '../../_models';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
 import { MatDialog } from '@angular/material';
 import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { Observable } from 'rxjs';
-import { debounceTime, filter, finalize, map, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, finalize, map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './member-new-edit.component.html',
@@ -37,9 +37,19 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initForm();
+    this.initForms();
+    this.initNameFormatter();
     this.initEdit();
-    this.initNameValidation();
+  }
+
+  private initForms() {
+    this.registrationForm = this.formBuilder.group({
+      lastName: ['', Validators.required],
+      firstName: ['', Validators.required],
+      school: ['', Validators.required],
+      statuts: [false, ValidateCheckbox],
+      ri: [false, ValidateCheckbox],
+    });
 
     this.filteredSchools = this.registrationForm.controls.school.valueChanges
       .pipe(
@@ -60,44 +70,42 @@ export class MemberNewEditComponent implements OnInit {
       );
   }
 
-  initForm(): void {
-    this.registrationForm = this.formBuilder.group({
-      lastName: ['', Validators.required],
-      firstName: ['', Validators.required],
-      school: ['', Validators.required],
-      statuts: [false, ValidateCheckbox],
-      ri: [false, ValidateCheckbox],
-    });
-  }
-
-  initNameValidation(): void {
+  private initNameFormatter(): void {
     const { lastName, firstName } = this.registrationForm.controls;
 
-    lastName.valueChanges.subscribe(value => lastName.setValue(this.nameFormatter(value)));
-    firstName.valueChanges.subscribe(value => firstName.setValue(this.nameFormatter(value)));
+    const nameFormatter = (name: string = ''): string =>
+      name
+        .replace(/[\wÀ-ÿ]+(\S&-)*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+        .replace(/[`~!@#$%^&*()_|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+
+    lastName.valueChanges.subscribe(value => lastName.setValue(nameFormatter(value)));
+    firstName.valueChanges.subscribe(value => firstName.setValue(nameFormatter(value)));
   }
 
-  async initEdit(): Promise<void> {
-    const { id } = await this.route.params.toPromise();
-
-    if (!id) return;
-
+  private initEdit(): void {
     const { lastName, firstName, school, statuts, ri } = this.registrationForm.controls;
-    this.memberId = +id;
-    this.memberService.getById(+this.memberId).subscribe((member) => {
-      lastName.setValue(member.lastName);
-      firstName.setValue(member.firstName);
-      school.setValue(member.school);
-      statuts.setValue(true);
-      ri.setValue(true);
-    });
-  }
+    console.log('DEBUG1');
 
-  nameFormatter(name: string): string {
-    if (!name) return '';
-    return name
-      .replace(/[\wÀ-ÿ]+(\S&-)*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
-      .replace(/[`~!@#$%^&*()_|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+    this.route.paramMap.subscribe(_ => console.log('DEBUG2'));
+    this.route.params.subscribe(_ => console.log('DEBUG3'));
+    this.route.params.pipe(tap(_ => console.log('DEBUG4')));
+    this.route.queryParamMap.subscribe(_ => console.log('DEBUG6'));
+    this.route.queryParamMap.pipe(tap(_ => console.log('DEBUG7')));
+
+    this.route.paramMap.pipe(
+      tap(_ => console.log('DEBUG5')),
+      switchMap((params: ParamMap) => params.get('id')),
+      filter(id => !!id),
+      tap(id => this.memberId = +id),
+      switchMap(() => this.memberService.getById(this.memberId)),
+      tap((member) => {
+        lastName.setValue(member.lastName);
+        firstName.setValue(member.firstName);
+        school.setValue(member.school);
+        statuts.setValue(true);
+        ri.setValue(true);
+      }),
+    );
   }
 
   submitRegistrationForm(): void {

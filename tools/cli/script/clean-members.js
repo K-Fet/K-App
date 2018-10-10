@@ -10,7 +10,7 @@ function genQueryName(table, field) {
 
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     .split('')
-    .map(letter => `${prefix} REPLACE(${field}, ' ${letter.toLowerCase()}', '${letter}') ${suffix}`)
+    .map(letter => `${prefix} REPLACE(${field}, ' ${letter.toLowerCase()}', ' ${letter}') ${suffix}`)
     .join('');
 
   return q + letters;

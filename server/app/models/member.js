@@ -1,5 +1,6 @@
 const { Model, DataTypes, Op } = require('sequelize');
 const Joi = require('joi');
+const { getCurrentSchoolYear } = require('../../utils');
 const { Registration } = require('./registration');
 
 /**
@@ -38,7 +39,7 @@ class Member extends Model {
       paranoid: true,
 
       scopes: {
-        active(value) {
+        active() {
           return {
             order: [
               [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
@@ -50,14 +51,14 @@ class Member extends Model {
                 attributes: ['year', 'createdAt'],
                 where: {
                   year: {
-                    [Op.eq]: value,
+                    [Op.eq]: getCurrentSchoolYear(),
                   },
                 },
               },
             ],
           };
         },
-        inactive(value) {
+        inactive() {
           return {
             order: [
               [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
@@ -70,7 +71,7 @@ class Member extends Model {
               },
             ],
             group: 'id',
-            having: sequelize.where(sequelize.fn('MAX', sequelize.col('registrations.year')), { [Op.lt]: value }),
+            having: sequelize.where(sequelize.fn('MAX', sequelize.col('registrations.year')), { [Op.lt]: getCurrentSchoolYear() }),
           };
         },
       },
