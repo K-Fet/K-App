@@ -19,6 +19,7 @@ export class MemberNewEditComponent implements OnInit {
   memberId: number;
   registrationForm: FormGroup;
   isLoading = false;
+  reRegistration = false;
 
   filteredSchools: Observable<string[]>;
 
