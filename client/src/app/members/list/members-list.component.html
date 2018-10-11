@@ -6,6 +6,9 @@
           <h1>Liste des adhérents</h1>
         </section>
       </mat-card-title>
+      <mat-card-subtitle>
+        Pour l'année {{ currentSchoolYear }} - {{ currentSchoolYear + 1 }}
+      </mat-card-subtitle>
       <div fxFlex></div>
       <a mat-mini-fab color="accent" routerLink="/members/new" *ngxPermissionsOnly="['member:write']">
         <mat-icon>add</mat-icon>

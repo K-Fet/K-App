@@ -4,11 +4,13 @@ import { MemberService, ToasterService } from '../../_services';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AVAILABLE_SCHOOLS, Member } from '../../_models';
 import { ValidateCheckbox } from '../../_validators/checkbox.validator';
+import { ValidateSchool } from '../../_validators/school.validator';
 import { MatDialog } from '@angular/material';
 import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { debounceTime, filter, finalize, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { UpdateSchoolDialogComponent } from '../../dialogs/update-school/update-school.component';
 
 @Component({
   templateUrl: './member-new-edit.component.html',
@@ -46,7 +48,7 @@ export class MemberNewEditComponent implements OnInit {
     this.registrationForm = this.formBuilder.group({
       lastName: ['', Validators.required],
       firstName: ['', Validators.required],
-      school: ['', Validators.required],
+      school: ['', [Validators.required, ValidateSchool]],
       statuts: [false, ValidateCheckbox],
       ri: [false, ValidateCheckbox],
     });
@@ -78,34 +80,30 @@ export class MemberNewEditComponent implements OnInit {
         .replace(/[\wÀ-ÿ]+(\S&-)*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
         .replace(/[`~!@#$%^&*()_|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
 
-    lastName.valueChanges.subscribe(value => lastName.setValue(nameFormatter(value)));
-    firstName.valueChanges.subscribe(value => firstName.setValue(nameFormatter(value)));
+    lastName.valueChanges.subscribe((value) => {
+      return lastName.setValue(nameFormatter(value), { emitEvent: false });
+    });
+    firstName.valueChanges.subscribe((value) => {
+      return firstName.setValue(nameFormatter(value), { emitEvent: false });
+    });
   }
 
   private initEdit(): void {
     const { lastName, firstName, school, statuts, ri } = this.registrationForm.controls;
-    console.log('DEBUG1');
-
-    this.route.paramMap.subscribe(_ => console.log('DEBUG2'));
-    this.route.params.subscribe(_ => console.log('DEBUG3'));
-    this.route.params.pipe(tap(_ => console.log('DEBUG4')));
-    this.route.queryParamMap.subscribe(_ => console.log('DEBUG6'));
-    this.route.queryParamMap.pipe(tap(_ => console.log('DEBUG7')));
 
     this.route.paramMap.pipe(
-      tap(_ => console.log('DEBUG5')),
-      switchMap((params: ParamMap) => params.get('id')),
+      map((params: ParamMap) => params.get('id')),
       filter(id => !!id),
       tap(id => this.memberId = +id),
       switchMap(() => this.memberService.getById(this.memberId)),
       tap((member) => {
-        lastName.setValue(member.lastName);
-        firstName.setValue(member.firstName);
-        school.setValue(member.school);
+        lastName.setValue(member.lastName, { emitEvent: false });
+        firstName.setValue(member.firstName, { emitEvent: false });
+        school.setValue(member.school, { emitEvent: false });
         statuts.setValue(true);
         ri.setValue(true);
       }),
-    );
+    ).subscribe();
   }
 
   submitRegistrationForm(): void {
@@ -142,18 +140,39 @@ export class MemberNewEditComponent implements OnInit {
   }
 
   openRegisterDialog(member: Member): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '350px',
-      data: {
-        title: 'Confirmation',
-        message: `Inscription de ${member.firstName} ${member.lastName} ` +
-          `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1} ?`,
-      },
-    });
+    if (!ValidateSchool({ value: member.school })) {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '350px',
+        data: {
+          title: 'Confirmation',
+          message: `Inscription de ${member.firstName} ${member.lastName} ` +
+            `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1} ?`,
+        },
+      });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.register(member);
-    });
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) this.register(member);
+      });
+    } else {
+      const dialogRef = this.dialog.open(UpdateSchoolDialogComponent, {
+        width: '350px',
+        data: {
+          member,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((school) => {
+        if (school) {
+          const updatedMember = new Member({ school, id: member.id });
+          forkJoin([this.memberService.update(updatedMember),
+            this.memberService.register(member.id)])
+            .subscribe(() => {
+              this.toasterService.showToaster('Adhérent mis à jour et ré-inscrit.');
+              this.router.navigate(['/members']);
+            });
+        }
+      });
+    }
   }
 
   register(member: Member) {

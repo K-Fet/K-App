@@ -5,7 +5,7 @@ import { MemberService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 
 @Component({
   templateUrl: './members-list.component.html',
@@ -18,6 +18,8 @@ export class MembersListComponent implements OnInit {
 
   deletedMember: Member;
 
+  currentSchoolYear = CURRENT_SCHOOL_YEAR;
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -26,7 +28,6 @@ export class MembersListComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog,
               private ngxPermissionsService: NgxPermissionsService,
-              public media: ObservableMedia,
   ) { }
 
   ngOnInit(): void {
@@ -34,17 +35,10 @@ export class MembersListComponent implements OnInit {
     if (!this.ngxPermissionsService.getPermissions()['member:write']) {
       this.displayedColumns = ['lastName', 'firstName', 'school'];
     }
-    this.media.subscribe((change: MediaChange) => {
-      if (change.mqAlias === 'xs' && this.displayedColumns.includes('school')) {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('school'), 1);
-      } else if (!this.displayedColumns.includes('school')) {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('firstName') + 1, 0, 'school');
-      }
-    });
   }
 
   update(): void {
-    this.memberService.getAll().subscribe((members) => {
+    this.memberService.getAll(CURRENT_SCHOOL_YEAR, CURRENT_SCHOOL_YEAR + 1).subscribe((members) => {
       this.membersData = new MatTableDataSource(members);
       this.membersData.paginator = this.paginator;
       this.membersData.sort = this.sort;

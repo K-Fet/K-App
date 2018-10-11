@@ -44,6 +44,9 @@
             <mat-error *ngIf="registrationForm.controls.school.hasError('required')">
               École <strong>requise</strong>
             </mat-error>
+            <mat-error *ngIf="registrationForm.controls.school.hasError('invalidSchool')">
+              L'école doit être dans la liste proposée
+            </mat-error>
           </mat-form-field>
           <mat-checkbox formControlName="statuts">
             Indiquer au client qu'il accepte les

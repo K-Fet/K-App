@@ -4,14 +4,14 @@ const guard = require('express-jwt-permissions')();
 const validator = require('express-joi-validation')({ passError: true });
 const { codeGuard } = require('../middlewares/code-guard');
 const am = require('../../utils/async-middleware');
-const { ID_SCHEMA, RANGE_SCHEMA, SEARCH_SCHEMA } = require('../../utils');
+const { ID_SCHEMA, YEAR_SCHEMA, SEARCH_SCHEMA } = require('../../utils');
 const { MemberSchema } = require('../models/schemas');
 const memberController = require('../controllers/member-controller');
 
 router.get(
   '/',
   guard.check('member:read'),
-  validator.query(RANGE_SCHEMA.optionalKeys('startAt', 'endAt')),
+  validator.query(YEAR_SCHEMA.optionalKeys('startAt', 'endAt')),
   am(memberController.getAllMembers),
 );
 

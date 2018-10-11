@@ -1,7 +1,9 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Member, Registration } = require('../models/');
-const { createUserError, createServerError, getCurrentSchoolYear } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, getCurrentSchoolYear,
+} = require('../../utils');
 const { sequelize } = require('../../bootstrap/sequelize');
 
 
@@ -59,8 +61,8 @@ async function unregisterMember(memberId, year) {
  *
  * @returns {Promise<Array>} Members
  */
-async function getAllMembers({ startAt = getCurrentSchoolYear(), endAt = getCurrentSchoolYear() }) {
-  logger.verbose('Member service: get all members between %s and %s', startAt, endAt + 1);
+async function getAllMembers({ startAt, endAt }) {
+  logger.verbose('Member service: get all members between %s and %s', startAt, endAt);
   return Member.findAll({
     order: [
       ['lastName', 'ASC'],
@@ -161,11 +163,11 @@ async function updateMember(memberId, updatedMember) {
 
   logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
 
-  await currentMember.update({
+  await currentMember.update(cleanObject({
     firstName: updatedMember.firstName,
     lastName: updatedMember.lastName,
     school: updatedMember.school,
-  });
+  }));
 
   return currentMember.reload({
     order: [
