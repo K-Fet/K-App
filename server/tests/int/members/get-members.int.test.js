@@ -2,6 +2,8 @@ const { setup, request, teardown } = require('../../utils/setup-teardown-common'
 const { Member, Registration } = require('../../../app/models');
 const { getCurrentSchoolYear } = require('../../../utils');
 
+const CURRENT_SCHOOL_YEAR = getCurrentSchoolYear();
+
 beforeEach(setup);
 afterEach(teardown);
 
@@ -13,7 +15,7 @@ describe('Integration::Members::GetMembers', () => {
         firstName: 'John',
         lastName: 'Smith',
         school: 'INSA',
-        registrations: [{ year: getCurrentSchoolYear() }],
+        registrations: [{ year: CURRENT_SCHOOL_YEAR }],
       },
       {
         include: [{ model: Registration, as: 'registrations' }],
@@ -22,7 +24,9 @@ describe('Integration::Members::GetMembers', () => {
 
     // When
 
-    const { body: members } = await request().get('/api/members').expect(200);
+    const { body: members } = await request()
+      .get(`/api/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
+      .expect(200);
 
     // Then
 
@@ -32,7 +36,7 @@ describe('Integration::Members::GetMembers', () => {
         lastName: 'Smith',
         school: 'INSA',
         registrations: expect.arrayContaining([{
-          year: getCurrentSchoolYear(),
+          year: CURRENT_SCHOOL_YEAR,
           createdAt: expect.anything(),
         }]),
       }),
@@ -47,7 +51,7 @@ describe('Integration::Members::GetMembers', () => {
         firstName: 'John',
         lastName: 'Smith',
         school: 'INSA',
-        registrations: [{ year: getCurrentSchoolYear() - 1 }],
+        registrations: [{ year: CURRENT_SCHOOL_YEAR - 1 }],
       },
       {
         include: [{ model: Registration, as: 'registrations' }],
@@ -56,7 +60,9 @@ describe('Integration::Members::GetMembers', () => {
 
     // When
 
-    const { body: members } = await request().get('/api/members').expect(200);
+    const { body: members } = await request()
+      .get(`/api/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
+      .expect(200);
 
     // Then
 
