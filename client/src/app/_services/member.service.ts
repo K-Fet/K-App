@@ -8,10 +8,15 @@ export class MemberService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Member[]> {
+  getAll(startAt: number, endAt: number): Observable<Member[]> {
     // TODO: Make this customizable
     // For now we load all members, but API will send only those who are registered for this year.
-    return this.http.get<Member[]>('/api/members?startAt=2000');
+    return this.http.get<Member[]>('/api/members', {
+      params: {
+        startAt: startAt.toString(),
+        endAt: endAt.toString(),
+      },
+    });
   }
 
   getById(id: number): Observable<Member> {

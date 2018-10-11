@@ -67,6 +67,7 @@ import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.compo
 import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 import { FeedComponent } from './feed/feed.component';
 import { PresentationComponent } from './presentation/presentation.component';
+import { UpdateSchoolDialogComponent } from './dialogs/update-school/update-school.component';
 
 // Services
 import {
@@ -163,6 +164,7 @@ export function initAuth(authService: AuthService) {
     MyTasksComponent,
     FeedComponent,
     PresentationComponent,
+    UpdateSchoolDialogComponent,
   ],
   entryComponents: [
     CodeDialogComponent,
@@ -170,6 +172,7 @@ export function initAuth(authService: AuthService) {
     ResetPasswordDialogComponent,
     TaskEditNewDialogComponent,
     TaskViewDialogComponent,
+    UpdateSchoolDialogComponent,
   ],
   imports: [
     CommonModule,
