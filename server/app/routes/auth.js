@@ -9,10 +9,10 @@ const { createUserError } = require('../../utils');
 const logger = require('../../logger');
 
 const rateLimiter = new RateLimit({
-  windowMs: 1000 * 60 * 20, // 20 min window
-  delayAfter: 1, // begin slowing down responses after the first request
-  delayMs: 1000, // slow down subsequent responses by 1 second per request
-  max: 5, // start blocking after 5 requests
+  windowMs: 1000 * 60 * 15, // 15 min window
+  delayAfter: 3, // begin slowing down responses after the first request
+  delayMs: 500, // slow down subsequent responses by 0.5 second per request
+  max: 10, // start blocking after 10 requests
   message: 'Too many requests were made to auth related services from this IP, please try again in 20 minutes',
   onLimitReached: req => logger.warn(`[RATE LIMIT REACHED]: For request ${req.path} by ${req.ip}`),
 });
