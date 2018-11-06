@@ -65,7 +65,7 @@ function createDirDeep(pathToCreate) {
 /**
  * Execute the nodejs child_process::exec function.
  * The function is promisify.
- * It easier to mock this function than to mock node modules.
+ * It easier to mock this function than to mock node packages.
  *
  * @param command
  * @param options
