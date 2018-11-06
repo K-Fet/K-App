@@ -43,9 +43,13 @@ A module contains all objects who are highly related (e.g. A `Member` and a `Reg
 A module should **always** have an `index.js` which export at least 2 things: 
 ```js
 module.exports = {
-  routes: "An express Router with services we want to expose",
+  routes: "An express Router with webservices we want to expose",
   services: "An object with services we want to expose to other services from the same package",
 }
 ```
 
 Modules can communicate with each other where packages cannot. They will share _models_ or _utils_.
+
+### Models
+
+Models are contained in a _package_. 
