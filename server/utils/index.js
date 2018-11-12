@@ -1,3 +1,4 @@
+const am = require('./async-middleware');
 const { createUserError, createServerError, createPermissionError } = require('./errors');
 const { verify, hash } = require('./password-manager');
 const { setAssociations } = require('./associations');
@@ -7,6 +8,7 @@ const {
 const { getDefaultTemplate } = require('./template-service');
 
 module.exports = {
+  am,
   createUserError,
   createServerError,
   createPermissionError,

@@ -19,6 +19,12 @@ const PACKAGES = [
     // eslint-disable-next-line global-require
     loader: require('./inventory-management/loader'),
   },
+  {
+    name: 'members',
+    description: 'This package handle everything related to members',
+    // eslint-disable-next-line global-require
+    loader: require('./members/loader'),
+  },
 ];
 
 /**
