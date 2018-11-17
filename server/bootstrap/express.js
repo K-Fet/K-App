@@ -3,6 +3,7 @@ const express = require('express');
 const conf = require('nconf');
 const compression = require('compression');
 const logger = require('../logger');
+const moleculerApp = require('../moleculer-app');
 
 let _app = null;
 
@@ -73,6 +74,11 @@ function launch() {
   });
 }
 
+async function launchMoleculer() {
+  // TODO Add some logging
+  await moleculerApp.start({ express: _app });
+}
+
 async function start({ skipHttpServer = false }) {
   _app = express();
 
@@ -92,6 +98,8 @@ async function start({ skipHttpServer = false }) {
 
   // Otherwise send index.html
   _app.get('*', (req, res) => res.sendFile(`${conf.get('web:publicFolder')}/index.html`));
+
+  await launchMoleculer();
 
   if (!skipHttpServer) await launch();
 }
