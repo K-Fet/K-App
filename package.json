@@ -49,6 +49,8 @@
     "inquirer": "^6.2.0",
     "joi": "^13.7.0",
     "jsonwebtoken": "^8.3.0",
+    "moleculer": "^0.13.4",
+    "moleculer-web": "^0.8.3",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.1",
     "nconf": "^0.10.0",
