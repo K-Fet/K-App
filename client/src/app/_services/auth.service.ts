@@ -48,7 +48,7 @@ export class AuthService {
   }
 
   login(email: string, password: string, rememberMe: number): Observable<any> {
-    return this.http.post('/api/auth/login', { email, password, rememberMe })
+    return this.http.post('/api/v1/auth/login', { email, password, rememberMe })
       .pipe(tap((jwt: { jwt: string, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
@@ -56,20 +56,20 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.get('/api/auth/logout')
+    return this.http.get('/api/v1/auth/logout')
       .pipe(tap(this.clearUser.bind(this)));
   }
 
   definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Observable<any> {
     if (oldPassword) {
-      return this.http.put('api/auth/reset-password', {
+      return this.http.put('api/v1/auth/reset-password', {
         email,
         password,
         passwordToken,
         oldPassword,
       });
     }
-    return this.http.put('api/auth/reset-password', {
+    return this.http.put('api/v1/auth/reset-password', {
       email,
       password,
       passwordToken,
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   verifyEmail(userId: number, email: string, password: string, emailToken: string): Observable<any> {
-    return this.http.post('api/auth/email-verification', {
+    return this.http.post('api/v1/auth/email-verification', {
       userId,
       email,
       password,
@@ -86,7 +86,7 @@ export class AuthService {
   }
 
   cancelEmailUpdate(userId: number, email: string) {
-    return this.http.post('api/auth/cancel-email-verification', {
+    return this.http.post('api/v1/auth/cancel-email-verification', {
       userId,
       email,
     });
@@ -119,7 +119,7 @@ export class AuthService {
   }
 
   me(): Observable<any> {
-    return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/me')
+    return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/v1/me')
       .pipe(
         tap(({ user: { barman, specialAccount }, permissions }) => {
           if (barman) {
@@ -145,6 +145,6 @@ export class AuthService {
   }
 
   resetPassword(email: string): Observable<any> {
-    return this.http.post('/api/auth/reset-password', { email });
+    return this.http.post('/api/v1/auth/reset-password', { email });
   }
 }

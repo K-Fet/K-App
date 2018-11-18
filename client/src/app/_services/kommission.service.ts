@@ -14,22 +14,22 @@ export class KommissionService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Kommission[]> {
-    return this.http.get<Kommission[]>('/api/kommissions');
+    return this.http.get<Kommission[]>('/api/v1/kommissions');
   }
 
   getById(id: number): Observable<Kommission> {
-    return this.http.get<Kommission>(`/api/kommissions/${id}`);
+    return this.http.get<Kommission>(`/api/v1/kommissions/${id}`);
   }
 
   create(kommission: Kommission): Observable<Kommission> {
-    return this.http.post<Kommission>('/api/kommissions', kommission);
+    return this.http.post<Kommission>('/api/v1/kommissions', kommission);
   }
 
   update(kommission: Kommission): Observable<Kommission> {
-    return this.http.put<Kommission>(`/api/kommissions/${kommission.id}`, kommission);
+    return this.http.put<Kommission>(`/api/v1/kommissions/${kommission.id}`, kommission);
   }
 
   delete(id: number): Observable<Kommission> {
-    return this.http.post<Kommission>(`/api/kommissions/${id}/delete`, null);
+    return this.http.post<Kommission>(`/api/v1/kommissions/${id}/delete`, null);
   }
 }

@@ -21,6 +21,6 @@ export class MeService {
       };
     }
 
-    return this.http.put('/api/me', body);
+    return this.http.put('/api/v1/me', body);
   }
 }

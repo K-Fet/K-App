@@ -12,7 +12,7 @@ export class PermissionService {
               private ngxPermissions: NgxPermissionsService) {}
 
   getAll(): Observable<Permission[]> {
-    return this.http.get<Permission[]>('/api/permissions')
+    return this.http.get<Permission[]>('/api/v1/permissions')
       .pipe(
         concatMap((perms) => {
           const obs = [];
