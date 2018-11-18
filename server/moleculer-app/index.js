@@ -1,11 +1,18 @@
-const { ServiceBroker } = require('moleculer');
+const path = require('path');
+const { ServiceBroker, Logger } = require('moleculer');
+const JoiValidator = require('./utils/joi.validator');
+const logger = require('../logger');
 
-const broker = new ServiceBroker();
+const broker = new ServiceBroker({
+  logger: () => Logger.extend(logger),
+  validation: true,
+  validator: new JoiValidator(),
+});
 
-async function start({ express }) {
-  broker.loadService('./services');
+async function start({ expressApp, apiPath }) {
+  broker.loadServices(path.join(__dirname, 'services'));
 
-  express.use('/api/v2', broker.getLocalService('api').express());
+  expressApp.use(apiPath, broker.getLocalService('api').express());
 
   await broker.start();
 }

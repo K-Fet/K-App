@@ -74,11 +74,6 @@ function launch() {
   });
 }
 
-async function launchMoleculer() {
-  // TODO Add some logging
-  await moleculerApp.start({ express: _app });
-}
-
 async function start({ skipHttpServer = false }) {
   _app = express();
 
@@ -91,15 +86,15 @@ async function start({ skipHttpServer = false }) {
   // Lazy load routes because config is loaded in bootstrap
   // and routes are loaded before bootstrap (with global require)
   // eslint-disable-next-line global-require
-  _app.use('/api/', require('../app/routes'));
+  _app.use('/api/v1/', require('../app/routes'));
+
+  await moleculerApp.start({ expressApp: _app, apiPath: '/api/v2' });
 
   // Then try to send existing files
   _app.use(express.static(conf.get('web:publicFolder')));
 
   // Otherwise send index.html
   _app.get('*', (req, res) => res.sendFile(`${conf.get('web:publicFolder')}/index.html`));
-
-  await launchMoleculer();
 
   if (!skipHttpServer) await launch();
 }
