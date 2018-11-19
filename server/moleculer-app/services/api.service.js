@@ -13,7 +13,7 @@ module.exports = {
       mappingPolicy: 'all',
 
       // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging
-      mergeParams: false,
+      // mergeParams: false,
 
       // List all routes
       aliases: {
