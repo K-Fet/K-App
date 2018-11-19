@@ -1,5 +1,13 @@
 const { MoleculerError } = require('moleculer').Errors;
 const ApiGateway = require('moleculer-web');
+const jwt = require('jsonwebtoken');
+const xhub = require('express-x-hub');
+const conf = require('nconf');
+const util = require('util');
+const authService = require('../../app/services/auth-service');
+
+const { UnAuthorizedError, ERR_INVALID_TOKEN, ERR_NO_TOKEN } = ApiGateway.Errors;
+const jwtVerify = util.promisify(jwt.verify);
 
 module.exports = {
   name: 'api',
@@ -8,20 +16,44 @@ module.exports = {
   settings: {
     middleware: true,
 
-    routes: [{
-      // Allow only declared routes
-      mappingPolicy: 'all',
+    use: [
+      xhub({
+        algorithm: 'sha1',
+        secret: conf.get('feed:accessToken'),
+      }),
+    ],
 
-      // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging
-      // mergeParams: false,
+    routes: [
+      {
+        path: '/health',
 
-      // List all routes
-      aliases: {
-        'GET stock-events': 'stock-events.list',
-        'GET stock-events/:id': 'stock-events.get',
-        'POST stock-events': 'stock-events.create',
+        authorization: true,
+
+        whitelist: [
+          '$node.*',
+        ],
       },
-    }],
+      {
+        authorization: false,
+
+        path: '/inventory-management',
+
+        // Allow only declared routes
+        mappingPolicy: 'all',
+
+        // See moleculerjs/moleculer#419
+        // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging
+        // mergeParams: false,
+
+
+        // List all routes
+        aliases: {
+          'GET stock-events': 'inventory-management.stock-events.list',
+          'GET stock-events/:id': 'inventory-management.stock-events.get',
+          'POST stock-events': 'inventory-management.stock-events.create',
+        },
+      },
+    ],
 
     onError(req, res, err) {
       if (res.headersSent) {
@@ -58,6 +90,31 @@ module.exports = {
       res.end(JSON.stringify(errObj, null, 2));
 
       this.logResponse(req, res);
+    },
+  },
+
+  methods: {
+    async authorize(ctx, route, req) {
+      // Read the token from header
+      const auth = req.headers.authorization;
+      if (!auth || !auth.startsWith('Bearer')) throw new UnAuthorizedError(ERR_NO_TOKEN);
+
+      // Decode JWT
+      const token = auth.slice(7);
+      let decoded = null;
+      try {
+        decoded = jwtVerify(token, conf.get('web:jwtSecret'));
+      } catch (e) {
+        throw new UnAuthorizedError(ERR_INVALID_TOKEN);
+      }
+
+      // Check token
+      // TODO: Use moleculer service insteadof old app
+      const revoked = await authService.isTokenRevoked(decoded.jit);
+      if (revoked) throw new UnAuthorizedError(ERR_INVALID_TOKEN);
+
+      // Populate ctx.meta.user
+      ctx.meta.user = await authService.me(req.user.jit);
     },
   },
 };

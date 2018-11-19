@@ -11,7 +11,7 @@ const stockEventSchema = Joi.object({
 });
 
 module.exports = {
-  name: 'stock-events',
+  name: 'inventory-management.stock-events',
   mixins: [DbService],
   adapter: new MongooseAdapter('mongodb://localhost/moleculer-demo', { useNewUrlParser: true }),
 

@@ -1,4 +1,4 @@
-²const Joi = require('joi');
+const Joi = require('joi');
 const BaseValidator = require('moleculer').Validator;
 const { ValidationError } = require('moleculer').Errors;
 
