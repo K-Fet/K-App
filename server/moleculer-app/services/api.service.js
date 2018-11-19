@@ -25,13 +25,22 @@ module.exports = {
 
     routes: [
       {
-        path: '/health',
+        path: '/admin',
 
         authorization: true,
 
-        whitelist: [
-          '$node.*',
-        ],
+        // Allow only declared routes
+        mappingPolicy: 'restrict',
+
+        // List all routes
+        aliases: {
+          'GET list': 'admin.internal.list',
+          'GET services': 'admin.internal.services',
+          'GET actions': 'admin.internal.actions',
+          'GET events': 'admin.internal.events',
+          'GET health': 'admin.internal.health',
+          'GET options': 'admin.internal.options',
+        },
       },
       {
         authorization: false,
@@ -103,7 +112,7 @@ module.exports = {
       const token = auth.slice(7);
       let decoded = null;
       try {
-        decoded = jwtVerify(token, conf.get('web:jwtSecret'));
+        decoded = await jwtVerify(token, conf.get('web:jwtSecret'));
       } catch (e) {
         throw new UnAuthorizedError(ERR_INVALID_TOKEN);
       }
@@ -114,7 +123,7 @@ module.exports = {
       if (revoked) throw new UnAuthorizedError(ERR_INVALID_TOKEN);
 
       // Populate ctx.meta.user
-      ctx.meta.user = await authService.me(req.user.jit);
+      ctx.meta.user = await authService.me(decoded.jit);
     },
   },
 };
