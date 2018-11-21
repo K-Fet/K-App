@@ -1,5 +1,5 @@
 const DbService = require('moleculer-db');
-const MongooseAdapter = require('moleculer-db-adapter-mongoose');
+// const MongooseAdapter = require('moleculer-db-adapter-mongoose');
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
@@ -13,7 +13,6 @@ const stockEventSchema = Joi.object({
 module.exports = {
   name: 'inventory-management.stock-events',
   mixins: [DbService],
-  adapter: new MongooseAdapter('mongodb://localhost/moleculer-demo', { useNewUrlParser: true }),
 
   model: mongoose.model('StockEvent', mongoose.Schema({
     refProduct: { type: Number, required: true, min: 0 },

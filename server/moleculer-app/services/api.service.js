@@ -43,12 +43,12 @@ module.exports = {
         },
       },
       {
-        authorization: false,
-
         path: '/inventory-management',
 
+        authorization: true,
+
         // Allow only declared routes
-        mappingPolicy: 'all',
+        mappingPolicy: 'restrict',
 
         // See moleculerjs/moleculer#419
         // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging

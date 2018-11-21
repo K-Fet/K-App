@@ -25,7 +25,7 @@ describe('Integration::Members::GetMembers', () => {
     // When
 
     const { body: members } = await request()
-      .get(`/api/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
+      .get(`/api/v1/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
       .expect(200);
 
     // Then
@@ -61,7 +61,7 @@ describe('Integration::Members::GetMembers', () => {
     // When
 
     const { body: members } = await request()
-      .get(`/api/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
+      .get(`/api/v1/members?startAt=${CURRENT_SCHOOL_YEAR}&endAt=${CURRENT_SCHOOL_YEAR + 1}`)
       .expect(200);
 
     // Then
