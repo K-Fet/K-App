@@ -33,6 +33,8 @@ module.exports = {
 
     'template:read',
     'template:write',
+
+    'inventory-management:providers:list',
   ],
 
   /**
