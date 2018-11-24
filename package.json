@@ -52,6 +52,7 @@
     "moleculer": "^0.13.4",
     "moleculer-db": "^0.7.6",
     "moleculer-db-adapter-mongoose": "^0.7.2",
+    "moleculer-db-adapter-sequelize": "^0.1.10",
     "moleculer-middleware-permissions": "1.0.0",
     "moleculer-web": "^0.8.3",
     "mongoose": "^5.3.12",

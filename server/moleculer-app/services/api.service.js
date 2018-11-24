@@ -54,12 +54,14 @@ module.exports = {
         // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging
         // mergeParams: false,
 
+        bodyParsers: { json: true },
 
         // List all routes
         aliases: {
           'GET stock-events': 'inventory-management.stock-events.list',
           'GET stock-events/:id': 'inventory-management.stock-events.get',
           'POST stock-events': 'inventory-management.stock-events.create',
+          'REST providers': 'inventory-management.providers',
         },
       },
     ],
