@@ -35,7 +35,7 @@ export class BarmanService {
   }
 
   getAllActiveBarmenWithServices(start: Moment, end: Moment): Observable<Barman[]> {
-    return this.http.get<Barman[]>('/api/barmen/services', {
+    return this.http.get<Barman[]>('/api/v1/barmen/services', {
       params: {
         startAt: (+start).toString(),
         endAt: (+end).toString(),
