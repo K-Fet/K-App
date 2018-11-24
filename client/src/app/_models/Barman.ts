@@ -28,7 +28,7 @@ export class Barman {
     roles?: AssociationChanges,
   };
 
-  public isActive(): Boolean {
+  public isActive(): boolean {
     return this.leaveAt ? false : true;
   }
 
