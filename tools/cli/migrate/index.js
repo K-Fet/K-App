@@ -36,7 +36,9 @@ async function run() {
   const sequelize = await getSequelizeInstance();
   const umzug = await getUmzugInstance(sequelize);
 
-  const migrations = await umzug.up();
+  const migrations = (process.argv[3] && process.argv[3] === 'down')
+    ? await umzug.down() // Revert the last executed migration
+    : await umzug.up(); // Execute all pending / not yet executed migrations
 
   console.log(`[migrate] Migration done, applied ${migrations.length} update scripts:`);
 

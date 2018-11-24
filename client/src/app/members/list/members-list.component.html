@@ -6,6 +6,9 @@
           <h1>Liste des adhérents</h1>
         </section>
       </mat-card-title>
+      <mat-card-subtitle>
+        Pour l'année {{ currentSchoolYear }} - {{ currentSchoolYear + 1 }}
+      </mat-card-subtitle>
       <div fxFlex></div>
       <a mat-mini-fab color="accent" routerLink="/members/new" *ngxPermissionsOnly="['member:write']">
         <mat-icon>add</mat-icon>
@@ -34,23 +37,10 @@
             <mat-cell *matCellDef="let member"> {{member.school}}</mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="lastActive">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Dernière activité</mat-header-cell>
-            <mat-cell *matCellDef="let member"> {{getLastActive(member)}}</mat-cell>
-          </ng-container>
-
           <ng-container matColumnDef="action">
             <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
             <mat-cell *matCellDef="let member">
-              <div fxFlex fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="center center">
-                <button
-                  mat-icon-button
-                  matTooltip="Inscrire pour cette année"
-                  (click)="openRegisterDialog(member)"
-                  *ngIf="needRegistration(member)"
-                >
-                  <mat-icon>how_to_reg</mat-icon>
-                </button>
+              <div fxFlex fxLayout="row" fxLayoutAlign.xs="center center">
                 <button mat-icon-button (click)="edit(member)">
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -65,7 +55,9 @@
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
 
-        <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+        <mat-paginator
+          class="hide-paginator-total"
+          #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
         </mat-paginator>
       </div>
     </mat-card-content>

@@ -1,8 +1,11 @@
 const { Op } = require('sequelize');
 const logger = require('../../logger');
 const { Member, Registration } = require('../models/');
-const { createUserError, createServerError, getCurrentSchoolYear } = require('../../utils');
+const {
+  createUserError, createServerError, cleanObject, getCurrentSchoolYear,
+} = require('../../utils');
 const { sequelize } = require('../../bootstrap/sequelize');
+
 
 /**
  * Register a member for a new year.
@@ -58,8 +61,8 @@ async function unregisterMember(memberId, year) {
  *
  * @returns {Promise<Array>} Members
  */
-async function getAllMembers({ startAt = getCurrentSchoolYear(), endAt = getCurrentSchoolYear() }) {
-  logger.verbose('Member service: get all members between %s and %s', startAt, endAt + 1);
+async function getAllMembers({ startAt, endAt }) {
+  logger.verbose('Member service: get all members between %s and %s', startAt, endAt);
   return Member.findAll({
     order: [
       ['lastName', 'ASC'],
@@ -160,11 +163,11 @@ async function updateMember(memberId, updatedMember) {
 
   logger.verbose('Member service: updating member named %s %s', currentMember.firstName, currentMember.lastName);
 
-  await currentMember.update({
+  await currentMember.update(cleanObject({
     firstName: updatedMember.firstName,
     lastName: updatedMember.lastName,
     school: updatedMember.school,
-  });
+  }));
 
   return currentMember.reload({
     order: [
@@ -205,6 +208,35 @@ async function deleteMember(memberId) {
   return member;
 }
 
+/**
+ * Search members which match query parameter in all database.
+ *
+ * @param query {string} query.
+ * @param active {boolean} define if the result include only active members (true),
+ * inactive members (false) or both(null).
+ * @return {Promise<Member[]>} Members which match the query
+ */
+async function searchMembers(query, active) {
+  logger.verbose('Member service: searching members with query %s', query);
+
+  let scope = null;
+  if (active === true) scope = 'active';
+  if (active === false) scope = 'inactive';
+
+  logger.verbose('Member service: searching using scope %s', scope);
+
+  return Member
+    .scope(scope)
+    .findAll({
+      // TODO Use FULLTEXT search !
+      //   Howto: https://stackoverflow.com/a/49901695/5285167
+      where: sequelize().where(
+        sequelize().fn('concat', sequelize().col('firstName'), ' ', sequelize().col('lastName')),
+        Op.like,
+        `%${query}%`,
+      ),
+    });
+}
 
 module.exports = {
   getAllMembers,
@@ -214,4 +246,5 @@ module.exports = {
   deleteMember,
   registerMember,
   unregisterMember,
+  searchMembers,
 };

@@ -10,15 +10,15 @@ export class BarmanService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Barman[]> {
-    return this.http.get<Barman[]>('/api/barmen');
+    return this.http.get<Barman[]>('/api/v1/barmen');
   }
 
   getById(id: number): Observable<Barman> {
-    return this.http.get<Barman>(`/api/barmen/${id}`);
+    return this.http.get<Barman>(`/api/v1/barmen/${id}`);
   }
 
   getServices(id: number, start: Moment, end: Moment): Observable<Service[]> {
-    return this.http.get<Service[]>(`/api/barmen/${id}/services`, {
+    return this.http.get<Service[]>(`/api/v1/barmen/${id}/services`, {
       params: {
         startAt: (+start).toString(),
         endAt: (+end).toString(),
@@ -27,11 +27,11 @@ export class BarmanService {
   }
 
   getTasks(): Observable<Task[]> {
-    return this.http.get<Task[]>('/api/me/tasks');
+    return this.http.get<Task[]>('/api/v1/me/tasks');
   }
 
   create(barman: Barman): Observable<Barman> {
-    return this.http.post<Barman>('/api/barmen', barman);
+    return this.http.post<Barman>('/api/v1/barmen', barman);
   }
 
   getAllActiveBarmenWithServices(start: Moment, end: Moment): Observable<Barman[]> {
@@ -44,18 +44,18 @@ export class BarmanService {
   }
 
   addService(id: number, services: number[]): Observable<Service> {
-    return this.http.post<Service>(`/api/barmen/${id}/services`, services);
+    return this.http.post<Service>(`/api/v1/barmen/${id}/services`, services);
   }
 
   removeService(id: number, services: number[]): Observable<Service> {
-    return this.http.post<Service>(`/api/barmen/${id}/services/delete`, services);
+    return this.http.post<Service>(`/api/v1/barmen/${id}/services/delete`, services);
   }
 
   update(barman: Barman): Observable<Barman> {
-    return this.http.put<Barman>(`/api/barmen/${barman.id}`, barman);
+    return this.http.put<Barman>(`/api/v1/barmen/${barman.id}`, barman);
   }
 
   delete(id: number): Observable<Barman> {
-    return this.http.post<Barman>(`/api/barmen/${id}/delete`, null);
+    return this.http.post<Barman>(`/api/v1/barmen/${id}/delete`, null);
   }
 }

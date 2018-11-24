@@ -26,12 +26,24 @@ const actions = [
   },
   {
     key: 'migrate',
-    description: 'Migrate the current database to the new version',
+    description: 'Migrate the current database to the new version.'
+      + 'Will execute all pending / not yet executed migration scripts'
+      + 'localized in `./migrate/scripts/`',
+    noGui: true,
+  },
+  {
+    key: 'migrate down',
+    description: 'Revert the last executed migration script.',
     noGui: true,
   },
   {
     key: 'populate',
     description: 'Populate the database with some generated data',
+    noGui: false,
+  },
+  {
+    key: 'script',
+    description: 'Run a custom script in tools/cli/script/',
     noGui: false,
   },
   {

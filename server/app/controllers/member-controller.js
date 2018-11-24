@@ -22,7 +22,7 @@ async function getAllMembers(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function createMember(req, res) {
-  let newMember = new Member(req.body.member);
+  let newMember = new Member(req.body);
 
   newMember = await memberService.createMember(newMember);
 
@@ -54,7 +54,7 @@ async function getMemberById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateMember(req, res) {
-  let newMember = new Member(req.body.member);
+  let newMember = new Member(req.body);
 
   const memberId = req.params.id;
 
@@ -108,6 +108,19 @@ async function unregisterMember(req, res) {
   res.send(registration);
 }
 
+/**
+ * Search a member in all database
+ *
+ * @param req Request
+ * @param res Response
+ * @return {Promise<void>} Nothing
+ */
+async function searchMembers(req, res) {
+  const { query, active } = req.body;
+  const members = await memberService.searchMembers(query, active);
+
+  res.send(members);
+}
 
 module.exports = {
   getAllMembers,
@@ -117,4 +130,5 @@ module.exports = {
   deleteMember,
   registerMember,
   unregisterMember,
+  searchMembers,
 };

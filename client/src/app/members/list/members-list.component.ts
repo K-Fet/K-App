@@ -5,7 +5,6 @@ import { MemberService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
 import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
 import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 
 @Component({
@@ -14,10 +13,12 @@ import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
 })
 export class MembersListComponent implements OnInit {
 
-  displayedColumns = ['lastName', 'firstName', 'school', 'lastActive', 'action'];
+  displayedColumns = ['lastName', 'firstName', 'school', 'action'];
   membersData: MatTableDataSource<Member>;
 
   deletedMember: Member;
+
+  currentSchoolYear = CURRENT_SCHOOL_YEAR;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -27,35 +28,20 @@ export class MembersListComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog,
               private ngxPermissionsService: NgxPermissionsService,
-              public media: ObservableMedia,
   ) { }
 
   ngOnInit(): void {
     this.update();
     if (!this.ngxPermissionsService.getPermissions()['member:write']) {
-      this.displayedColumns = ['lastName', 'firstName', 'lastActive', 'school'];
+      this.displayedColumns = ['lastName', 'firstName', 'school'];
     }
-    this.media.subscribe((change: MediaChange) => {
-      if (change.mqAlias === 'xs' && this.displayedColumns.includes('school')) {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('school'), 1);
-      } else if (!this.displayedColumns.includes('school')) {
-        this.displayedColumns.splice(this.displayedColumns.indexOf('firstName') + 1, 0, 'school');
-      }
-    });
   }
 
   update(): void {
-    this.memberService.getAll().subscribe((members) => {
+    this.memberService.getAll(CURRENT_SCHOOL_YEAR, CURRENT_SCHOOL_YEAR + 1).subscribe((members) => {
       this.membersData = new MatTableDataSource(members);
       this.membersData.paginator = this.paginator;
       this.membersData.sort = this.sort;
-    });
-  }
-
-  register(member: Member, code: number) {
-    this.memberService.register(member.id, code).subscribe(({ year }) => {
-      this.toasterService.showToaster(`Adhérent inscrit pour l'année ${year}-${year + 1}`);
-      this.update();
     });
   }
 
@@ -75,20 +61,6 @@ export class MembersListComponent implements OnInit {
     this.membersData.filter = filterValue.trim().toLowerCase();
   }
 
-  getLastActive(member: Member): string {
-    // TODO: Enhance the display with badge maybe
-    if (member.registrations && member.registrations.length > 0) {
-      // Ordered from the last registration to the oldest
-      const { year } = member.registrations[0];
-
-      if (year === CURRENT_SCHOOL_YEAR) {
-        return 'Actif';
-      }
-      return `Inactif depuis ${year}-${year + 1}`;
-    }
-    return 'Aucune activité';
-  }
-
   openDeleteDialog(member: Member): void {
     this.deletedMember = member;
     const dialogRef = this.dialog.open(CodeDialogComponent, {
@@ -100,27 +72,6 @@ export class MembersListComponent implements OnInit {
       if (result) {
         this.delete(this.deletedMember, result);
       }
-    });
-  }
-
-  needRegistration(member: Member): boolean {
-    return !(member.registrations
-      && member.registrations.length > 0
-      && member.registrations[0].year === CURRENT_SCHOOL_YEAR);
-
-  }
-
-  openRegisterDialog(member: Member): void {
-    const dialogRef = this.dialog.open(CodeDialogComponent, {
-      width: '350px',
-      data: {
-        message: `Inscription de ${member.firstName} ${member.lastName} ` +
-          `pour l'année ${CURRENT_SCHOOL_YEAR}-${CURRENT_SCHOOL_YEAR + 1}`,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) this.register(member, result);
     });
   }
 }

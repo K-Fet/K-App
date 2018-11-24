@@ -19,7 +19,7 @@ export class ServiceService {
   constructor(private http: HttpClient) { }
 
   get(start: Moment, end: Moment): Observable<Service[]> {
-    return this.http.get<Service[]>('/api/services', {
+    return this.http.get<Service[]>('/api/v1/services', {
       params: {
         startAt: (+start).toString(),
         endAt: (+end).toString(),
@@ -28,23 +28,23 @@ export class ServiceService {
   }
 
   getById(id: number): Observable<Service> {
-    return this.http.get<Service>(`/api/services/${id}`);
+    return this.http.get<Service>(`/api/v1/services/${id}`);
   }
 
   getBarmen(id: number): Observable<Barman[]> {
-    return this.http.get<Barman[]>(`/api/services/${id}/barmen`);
+    return this.http.get<Barman[]>(`/api/v1/services/${id}/barmen`);
   }
 
   create(services: Service[]): Observable<Service[]> {
-    return this.http.post<Service[]>('/api/services', services);
+    return this.http.post<Service[]>('/api/v1/services', services);
   }
 
   update(service: Service): Observable<Service> {
-    return this.http.put<Service>(`/api/services/${service.id}`, service);
+    return this.http.put<Service>(`/api/v1/services/${service.id}`, service);
   }
 
   delete(id: number): Observable<Service> {
-    return this.http.post<Service>(`/api/services/${id}/delete`, null);
+    return this.http.post<Service>(`/api/v1/services/${id}/delete`, null);
   }
 
   getWeek(): Observable<{ start: Moment, end: Moment }> {

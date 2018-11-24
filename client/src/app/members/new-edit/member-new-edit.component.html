@@ -1,0 +1,99 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/members">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <section class="mat-typography">
+          <h1>Formulaire adhérent</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div fxLayoutAlign="center">
+        <mat-slide-toggle *ngIf="!memberId" [(ngModel)]="reRegistration">Ré-inscription</mat-slide-toggle>
+      </div>
+      <ng-container *ngIf="!reRegistration; else autoForm">
+        <section class="mat-typography">
+          <h3>Nouvelle adhésion</h3>
+        </section>
+        <form [formGroup]="registrationForm" fxLayout="column" fxLayoutAlign="center"
+              (ngSubmit)="submitRegistrationForm()">
+          <mat-form-field>
+            <input matInput placeholder="Prénom" autocorrect="off" autofocus
+                   formControlName="firstName" required>
+            <mat-error *ngIf="registrationForm.controls.firstName.hasError('required')">
+              Prénom <strong>requis</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Nom de famille" autocorrect="off"
+                   formControlName="lastName" required>
+            <mat-error *ngIf="registrationForm.controls.lastName.hasError('required')">
+              Nom de famille <strong>requis</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input type="text" placeholder="École" matInput formControlName="school" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let school of filteredSchools | async" [value]="school">
+                {{school}}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="registrationForm.controls.school.hasError('required')">
+              École <strong>requise</strong>
+            </mat-error>
+            <mat-error *ngIf="registrationForm.controls.school.hasError('invalidSchool')">
+              L'école doit être dans la liste proposée
+            </mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="statuts">
+            Indiquer au client qu'il accepte les
+            <a target="_blank" href="./assets/Statuts ARGIL.pdf">statuts</a>
+            de l'association
+          </mat-checkbox>
+          <mat-error *ngIf="registrationForm.get('statuts').hasError('validCheckbox')">
+            Le client doit <strong>accepter</strong> les statuts
+          </mat-error>
+          <mat-checkbox formControlName="ri">
+            Indiquer au client qu'il accepte le
+            <a target="_blank" href="./assets/Reglement interieur ARGIL.pdf">réglement intérieur</a>
+            de l'association
+          </mat-checkbox>
+          <mat-error *ngIf="registrationForm.get('ri').hasError('validCheckbox')">
+            Le client doit <strong>accepter</strong> le réglement intérieur
+          </mat-error>
+          <div fxLayoutAlign="center">
+            <button fxFlex="50" mat-button type="submit" [disabled]="!registrationForm.valid">
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </ng-container>
+      <ng-template #autoForm>
+        <div fxLayout="column">
+          <mat-form-field>
+            <input type="text" placeholder="Rechercher par nom / prénom" autofocus matInput
+                   [formControl]="searchQuery" [matAutocomplete]="auto">
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="displayMember"
+              (optionSelected)="openRegisterDialog($event.option.value)"
+            >
+              <mat-option *ngIf="isLoading">
+                <mat-spinner diameter="50"></mat-spinner>
+              </mat-option>
+              <ng-container *ngIf="!isLoading">
+                <mat-option *ngFor="let member of filteredMembers | async" [value]="member" style="height: 55px;line-height: 20px;">
+                  {{member.firstName}} {{member.lastName}}<br>
+                  <span class="mat-caption">{{getLastActive(member)}}</span> — {{member.school}}
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

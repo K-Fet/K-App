@@ -20,4 +20,5 @@ export const ERRORS400 = {
   VerificationError: 'Erreur de vérification',
   NoPasswordToken: 'Erreur, votre mot de passe est surement déjà défini',
   BadLeaveAtDate: 'Erreur, la date de départ ne peut pas être avant la date d\'entrée ou après aujourd\'hui',
+  MemberAlreadyRegistered: 'Erreur, l\'adhérent est déjà inscrit pour l\'année',
 };

@@ -19,8 +19,7 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './auth/login/login.component';
 import { MembersListComponent } from './members/list/members-list.component';
-import { MemberNewComponent } from './members/new/member-new.component';
-import { MemberEditComponent } from './members/edit/member-edit.component';
+import { MemberNewEditComponent } from './members/new-edit/member-new-edit.component';
 import { ServiceExplorerComponent } from './services/services-explorer/services-explorer.component';
 import { MyServicesComponent } from './services/my-services/my-services.component';
 import { PlanningComponent } from './services/planning/planning.component';
@@ -68,6 +67,7 @@ import { TaskEditNewDialogComponent } from './tasks/edit-new/task-edit-new.compo
 import { TaskViewDialogComponent } from './tasks/view/task-view.component';
 import { FeedComponent } from './feed/feed.component';
 import { PresentationComponent } from './presentation/presentation.component';
+import { UpdateSchoolDialogComponent } from './dialogs/update-school/update-school.component';
 
 // Services
 import {
@@ -114,8 +114,7 @@ export function initAuth(authService: AuthService) {
     LoginComponent,
     MenuComponent,
     MembersListComponent,
-    MemberNewComponent,
-    MemberEditComponent,
+    MemberNewEditComponent,
     ServiceExplorerComponent,
     MyServicesComponent,
     PlanningComponent,
@@ -165,6 +164,7 @@ export function initAuth(authService: AuthService) {
     MyTasksComponent,
     FeedComponent,
     PresentationComponent,
+    UpdateSchoolDialogComponent,
   ],
   entryComponents: [
     CodeDialogComponent,
@@ -172,6 +172,7 @@ export function initAuth(authService: AuthService) {
     ResetPasswordDialogComponent,
     TaskEditNewDialogComponent,
     TaskViewDialogComponent,
+    UpdateSchoolDialogComponent,
   ],
   imports: [
     CommonModule,

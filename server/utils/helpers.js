@@ -69,6 +69,29 @@ const RANGE_SCHEMA = Joi.object({
 });
 
 /**
+ * This constant is used by Joi to validate query from a request.
+ * It represent an object with a start end end year date.
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const YEAR_SCHEMA = Joi.object({
+  startAt: Joi.number().min(2018).required(),
+  endAt: Joi.number().greater(Joi.ref('startAt')).required(),
+});
+
+/**
+ * This constant is used by Joi to validate query from a request.
+ * It represent an object with a search query.
+ * This query must contain at least 3 characters
+ *
+ * @type {ObjectSchema} Joi schema
+ */
+const SEARCH_SCHEMA = Joi.object({
+  query: Joi.string().min(3),
+  active: Joi.boolean(),
+});
+
+/**
  * Helper to handle the common pattern where there is a code and an object
  * inside the body.
  *
@@ -89,4 +112,6 @@ module.exports = {
   joiThrough,
   ID_SCHEMA,
   RANGE_SCHEMA,
+  YEAR_SCHEMA,
+  SEARCH_SCHEMA,
 };

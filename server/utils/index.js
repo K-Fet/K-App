@@ -1,12 +1,14 @@
+const am = require('./async-middleware');
 const { createUserError, createServerError, createPermissionError } = require('./errors');
 const { verify, hash } = require('./password-manager');
 const { setAssociations } = require('./associations');
 const {
-  getCurrentSchoolYear, cleanObject, generateToken, ID_SCHEMA, RANGE_SCHEMA, joiThrough,
+  getCurrentSchoolYear, cleanObject, generateToken, ID_SCHEMA, RANGE_SCHEMA, YEAR_SCHEMA, SEARCH_SCHEMA, joiThrough,
 } = require('./helpers');
 const { getDefaultTemplate } = require('./template-service');
 
 module.exports = {
+  am,
   createUserError,
   createServerError,
   createPermissionError,
@@ -20,4 +22,6 @@ module.exports = {
   generateToken,
   ID_SCHEMA,
   RANGE_SCHEMA,
+  YEAR_SCHEMA,
+  SEARCH_SCHEMA,
 };
