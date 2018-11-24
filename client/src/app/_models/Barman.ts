@@ -29,7 +29,7 @@ export class Barman {
   };
 
   public isActive(): boolean {
-    return this.leaveAt ? false : true;
+    return !this.leaveAt;
   }
 
   constructor(values: Object = {}) {
