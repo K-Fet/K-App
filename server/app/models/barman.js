@@ -87,7 +87,7 @@ const BarmanSchema = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
   connection: ConnectionInformationSchema,
-  leaveAt: Joi.string().isoDate(),
+  leaveAt: Joi.date().max('now').allow(null),
   nickname: Joi.string(),
   // eslint-disable-next-line
   facebook: Joi.string().regex(

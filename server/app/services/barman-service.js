@@ -152,8 +152,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
   if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
   if ((updatedBarman.leaveAt
-    && new Date(currentBarman.createdAt) > new Date(currentBarman.leaveAt))
-    || Date.now() < new Date(updatedBarman.leaveAt)) {
+    && new Date(currentBarman.createdAt) > new Date(updatedBarman.leaveAt))) {
     throw createUserError('BadLeaveAtDate', 'LeaveAt can not be before createdAt or after now');
   }
 
@@ -246,7 +245,7 @@ async function deleteBarmanById(barmanId) {
  * @param endDate {Date} ending date for services
  * @returns {Promise<Array>} Barmen's services
  */
-async function getBarmenServices(startDate, endDate) {
+async function getServicesBarmen(startDate, endDate) {
   logger.verbose('Barman service: retreive services of all active barmen');
   const barmen = await Barman.findAll({
     where: {
@@ -284,7 +283,7 @@ async function getBarmenServices(startDate, endDate) {
  * @param endDate {Date} ending date for services
  * @returns {Promise<Array>} Barmen's services
  */
-async function getBarmanServices(barmanId, startDate, endDate) {
+async function getServicesBarman(barmanId, startDate, endDate) {
   logger.verbose('Barman service: retreive services of the barman ', barmanId);
 
   const barman = await Barman.findById(barmanId);
@@ -393,8 +392,8 @@ module.exports = {
   getBarmanById,
   deleteBarmanById,
   updateBarmanById,
-  getBarmenServices,
-  getBarmanServices,
+  getServicesBarmen,
+  getServicesBarman,
   createServiceBarman,
   deleteServiceBarman,
 };

@@ -14,7 +14,7 @@ export class ActiveGuard implements CanActivate {
     return this.authService.$currentUser
       .pipe(
         map((connectedUser) => {
-          if (connectedUser.isBarman() && !connectedUser.barman.leaveAt) {
+          if (connectedUser.isBarman() && connectedUser.barman.isActive()) {
             return true;
           }
 

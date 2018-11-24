@@ -116,7 +116,7 @@ async function deleteBarman(req, res) {
  */
 async function getServicesBarmen(req, res) {
   const { startAt, endAt } = req.query;
-  const barmen = await barmanService.getBarmenServices(startAt, endAt);
+  const barmen = await barmanService.getServicesBarmen(startAt, endAt);
 
   res.json(barmen);
 }
@@ -132,7 +132,7 @@ async function getServicesBarman(req, res) {
   const barmanId = req.params.id;
 
   const { startAt, endAt } = req.query;
-  const services = await barmanService.getBarmanServices(barmanId, startAt, endAt);
+  const services = await barmanService.getServicesBarman(barmanId, startAt, endAt);
 
   res.json(services);
 }

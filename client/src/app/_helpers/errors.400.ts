@@ -19,6 +19,6 @@ export const ERRORS400 = {
   CaptchaVerificationFailed: 'Erreur dans la validation du captcha côté serveur, merci d\'essayer à nouveau',
   VerificationError: 'Erreur de vérification',
   NoPasswordToken: 'Erreur, votre mot de passe est surement déjà défini',
-  BadLeaveAtDate: 'Erreur, la date de départ ne peut pas être avant la date d\'entrée ou après aujourd\'hui',
+  BadLeaveAtDate: 'Erreur, la date de départ ne peut pas être avant la date d\'entrée',
   MemberAlreadyRegistered: 'Erreur, l\'adhérent est déjà inscrit pour l\'année',
 };

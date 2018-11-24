@@ -26,7 +26,7 @@ export class BarmenListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.barmanService.getAll().subscribe((barmen) => {
+    this.barmanService.getAll().subscribe((barmen: Barman[]) => {
       this.barmen = barmen;
       this.barmenData = new MatTableDataSource(barmen);
       this.barmenData.paginator = this.paginator;
@@ -47,7 +47,9 @@ export class BarmenListComponent implements OnInit {
 
   applyActiveFilter(): void {
     this.oldFilter = false;
-    const filteredBarmen = this.activeFilter ? this.barmen.filter(barman => !barman.leaveAt) : this.barmen;
+    const filteredBarmen = this.activeFilter ?
+      this.barmen.filter(barman => new Barman(barman).isActive()) :
+      this.barmen;
     this.barmenData = new MatTableDataSource(filteredBarmen);
     this.barmenData.paginator = this.paginator;
     this.barmenData.sort = this.sort;
@@ -55,7 +57,9 @@ export class BarmenListComponent implements OnInit {
 
   applyOldFilter(): void {
     this.activeFilter = false;
-    const filteredBarmen = this.oldFilter ? this.barmen.filter(barman => barman.leaveAt) : this.barmen;
+    const filteredBarmen = this.oldFilter ?
+      this.barmen.filter(barman => !(new Barman(barman).isActive())) :
+      this.barmen;
     this.barmenData = new MatTableDataSource(filteredBarmen);
     this.barmenData.paginator = this.paginator;
     this.barmenData.sort = this.sort;

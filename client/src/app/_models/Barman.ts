@@ -28,6 +28,10 @@ export class Barman {
     roles?: AssociationChanges,
   };
 
+  public isActive(): Boolean {
+    return this.leaveAt ? false : true;
+  }
+
   constructor(values: Object = {}) {
     Object.assign(this, values);
   }
