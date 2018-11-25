@@ -305,6 +305,9 @@ async function getServicesBarman(barmanId, startDate, endDate) {
         as: 'barmen',
       },
     ],
+    order: [
+      ['startAt', 'ASC'],
+    ],
   });
 }
 
