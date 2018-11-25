@@ -294,8 +294,6 @@ async function getServicesBarman(barmanId, startDate, endDate) {
     where: {
       startAt: {
         [Op.gte]: startDate,
-      },
-      endAt: {
         [Op.lte]: endDate,
       },
     },

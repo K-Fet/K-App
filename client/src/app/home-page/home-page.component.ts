@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services';
-import { ConnectedUser } from '../_models';
+import { ConnectedUser, Barman } from '../_models';
 
 @Component({
   templateUrl: './home-page.component.html',
@@ -28,7 +28,11 @@ export class HomePageComponent implements OnInit {
     return '';
   }
 
-  isConnected(): Boolean {
+  isConnected(): boolean {
     return this.currentUser.accountType !== 'Guest';
+  }
+
+  isActive(): boolean {
+    return new Barman(this.currentUser.barman).isActive();
   }
 }
