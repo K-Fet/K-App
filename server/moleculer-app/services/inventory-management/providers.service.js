@@ -2,6 +2,7 @@ const DbService = require('moleculer-db');
 const MongooseAdapter = require('moleculer-db-adapter-mongoose');
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 
 const model = {
   mongoose: mongoose.model('Providers', mongoose.Schema({
@@ -16,27 +17,8 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.providers',
-  mixins: [DbService],
+  mixins: [DbService, JoiDbActionsMixin(model.joi)],
   adapter: new MongooseAdapter('mongodb://localhost/moleculer-demo', { useNewUrlParser: true }),
 
   model: model.mongoose,
-
-  actions: {
-    find: {
-      permissions: ['inventory-management:providers:find'],
-    },
-    count: {},
-    list: {
-      permissions: ['inventory-management:providers:list'],
-    },
-    create: {
-      params: model.joi,
-    },
-    insert: {},
-    get: {},
-    update: {
-      params: model.joi,
-    },
-    remove: {},
-  },
 };
