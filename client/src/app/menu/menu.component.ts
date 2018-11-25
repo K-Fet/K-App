@@ -1,11 +1,10 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AuthService, ToasterService } from '../_services';
 import { ConnectedUser } from '../_models';
 import { MatSidenav } from '@angular/material';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { Router } from '@angular/router';
-import * as Hammer from 'hammerjs';
 
 interface Link {
   name: string;
@@ -168,26 +167,12 @@ export class MenuComponent implements OnDestroy, OnInit {
               private ngxRolesService: NgxRolesService,
               private router: Router,
               changeDetectorRef: ChangeDetectorRef,
-              media: MediaMatcher,
-              elementRef: ElementRef) {
+              media: MediaMatcher) {
     this.mobileQuery = media.matchMedia('(max-width: 599px)');
     this.sidenavQuery = media.matchMedia('(max-width: 1480px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.sidenavQuery.addListener(this._mobileQueryListener);
-
-    delete Hammer.defaults.cssProps.userSelect;
-    const hammertime = new Hammer(elementRef.nativeElement, {});
-    hammertime.on('panright', () => {
-      if (!this.user.isGuest()) {
-        this.sideNav.open();
-      }
-    });
-    hammertime.on('panleft', () => {
-      if (!this.user.isGuest()) {
-        this.sideNav.close();
-      }
-    });
   }
 
   logout(): void {
