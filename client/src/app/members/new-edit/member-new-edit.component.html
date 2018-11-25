@@ -21,17 +21,17 @@
         <form [formGroup]="registrationForm" fxLayout="column" fxLayoutAlign="center"
               (ngSubmit)="submitRegistrationForm()">
           <mat-form-field>
-            <input matInput placeholder="Prénom" autocorrect="off" autofocus
-                   formControlName="firstName" required>
-            <mat-error *ngIf="registrationForm.controls.firstName.hasError('required')">
-              Prénom <strong>requis</strong>
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Nom de famille" autocorrect="off"
+            <input matInput placeholder="Nom de famille" autocorrect="off" autofocus
                    formControlName="lastName" required>
             <mat-error *ngIf="registrationForm.controls.lastName.hasError('required')">
               Nom de famille <strong>requis</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Prénom" autocorrect="off"
+                   formControlName="firstName" required>
+            <mat-error *ngIf="registrationForm.controls.firstName.hasError('required')">
+              Prénom <strong>requis</strong>
             </mat-error>
           </mat-form-field>
           <mat-form-field>
