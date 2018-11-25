@@ -20,7 +20,7 @@ export class ServiceExplorerComponent implements OnInit {
   }
 
   isActive(): boolean {
-    return this.user.isBarman() && this.user.barman.active;
+    return this.user.isBarman() && this.user.barman.isActive();
   }
 
   hasServiceWritePerm(): boolean {

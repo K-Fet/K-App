@@ -9,7 +9,8 @@ const { Barman, ConnectionInformation } = require('../models');
  * @return {Promise.<void>} Nothing
  */
 async function getAllBarmen(req, res) {
-  const barmen = await barmanService.getAllBarmen();
+  const { active } = req.query;
+  const barmen = await barmanService.getAllBarmen(active);
 
   res.json(barmen);
 }
@@ -66,11 +67,11 @@ async function getBarmanById(req, res) {
  * @return {Promise.<void>} Nothing
  */
 async function updateBarman(req, res) {
-  const newUser = req.body;
+  const updatedBarman = req.body;
 
   let newBarman = new Barman(
     {
-      ...newUser,
+      ...updatedBarman,
       _embedded: undefined, // Remove the only external object
     },
     {
@@ -85,7 +86,7 @@ async function updateBarman(req, res) {
 
   const barmanId = req.params.id;
 
-  newBarman = await barmanService.updateBarmanById(barmanId, newBarman, newUser._embedded);
+  newBarman = await barmanService.updateBarmanById(barmanId, newBarman, updatedBarman._embedded);
 
   res.json(newBarman);
 }
@@ -106,6 +107,21 @@ async function deleteBarman(req, res) {
 }
 
 /**
+ * Get the services of all active barmen.
+ * The barmen could be not active now but were active during the asked period.
+ *
+ * @param req Request
+ * @param res Response
+ * @returns {Promise<void>} Nothing
+ */
+async function getServicesBarmen(req, res) {
+  const { startAt, endAt } = req.query;
+  const barmen = await barmanService.getServicesBarmen(startAt, endAt);
+
+  res.json(barmen);
+}
+
+/**
  * Get the services of a barman
  *
  * @param req Request
@@ -116,7 +132,7 @@ async function getServicesBarman(req, res) {
   const barmanId = req.params.id;
 
   const { startAt, endAt } = req.query;
-  const services = await barmanService.getBarmanServices(barmanId, startAt, endAt);
+  const services = await barmanService.getServicesBarman(barmanId, startAt, endAt);
 
   res.json(services);
 }
@@ -159,6 +175,7 @@ module.exports = {
   getBarmanById,
   updateBarman,
   deleteBarman,
+  getServicesBarmen,
   getServicesBarman,
   createServiceBarman,
   deleteServiceBarman,

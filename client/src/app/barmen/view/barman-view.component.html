@@ -1,84 +1,108 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title fxLayout="row">
-                <a mat-button routerLink="/barmen"><mat-icon>arrow_back</mat-icon></a>
-                <section class="mat-typography">
-                    <h1>{{barman?.nickname}}</h1>
-                </section>
-            </mat-card-title>
-            <div fxFlex></div>
-            <button mat-mini-fab color="accent" (click)="openConfirmationDialog()" *ngxPermissionsOnly="['barman:write']">
-                <mat-icon>delete</mat-icon>
-            </button>
-        </mat-card-header>
-        <mat-card-content>
-            <mat-list>
-                <h3 mat-subheader>Informations</h3>
-                <mat-list-item>
-                    <h4 matLine>Surnom barman</h4>
-                    <p matLine>{{barman?.nickname}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Prénom</h4>
-                    <p matLine>{{barman?.firstName}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Nom</h4>
-                    <p matLine>{{barman?.lastName}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Adresse email</h4>
-                    <p matLine>{{barman?.connection?.email}}</p>
-                </mat-list-item>
-                <mat-list-item *ngIf="barman.facebook">
-                    <h4 matLine>Facebook</h4>
-                    <p matLine>{{barman?.facebook}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Cheminement</h4>
-                    <p matLine style="white-space: normal;">{{barman?.flow}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Parrain / Marraine</h4>
-                    <p matLine>{{barman?.godFather?.nickname}}</p>
-                </mat-list-item>
-                <mat-divider></mat-divider>
-                <h3 mat-subheader>Kommission(s)</h3>
-                <div *ngIf="barman.kommissions?.length !== 0; else elseBlock">
-                    <mat-list-item *ngFor="let kommission of barman.kommissions">
-                        <p matLine>{{kommission.name}} depuis le {{kommission.KommissionWrapper.createdAt |  date:'d MMM y'}}</p>
-                    </mat-list-item>
-                </div>
-                <ng-template #elseBlock>
-                    <mat-list-item>
-                        <p>Aucune kommission</p>
-                    </mat-list-item>
-                </ng-template>
-                <mat-divider></mat-divider>
-                <h3 mat-subheader>Role(s)</h3>
-                <div *ngIf="barman.roles?.length !== 0; else elseTemplate">
-                    <mat-list-item *ngFor="let role of barman.roles">
-                        <p matLine>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
-                    </mat-list-item>
-                </div>
-                <ng-template #elseTemplate>
-                    <mat-list-item>
-                        <p>Aucun role</p>
-                    </mat-list-item>
-                </ng-template>
-                <mat-divider></mat-divider>
-                <h3 mat-subheader>Dates</h3>
-                <mat-list-item>
-                    <h4 matLine>Date d'entrée</h4>
-                    <p matLine>{{barman?.createdAt | date:'d MMM y'}}</p>
-                </mat-list-item>
-                <mat-list-item>
-                    <h4 matLine>Date de dernière modification</h4>
-                    <p matLine>{{barman?.updatedAt |  date:'d MMM y'}}</p>
-                </mat-list-item>
-                <!-- TODO Add departure date (change model ?) -->
-            </mat-list>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/barmen"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>{{barman?.nickname}}</h1>
+        </section>
+      </mat-card-title>
+      <div fxFlex></div>
+      <button mat-mini-fab color="accent" (click)="openConfirmationDialog()" *ngxPermissionsOnly="['barman:write']">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <h3 mat-subheader>Informations</h3>
+        <mat-list-item>
+          <h4 matLine>Surnom barman</h4>
+          <p matLine>{{barman?.nickname}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Prénom</h4>
+          <p matLine>{{barman?.firstName}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Nom</h4>
+          <p matLine>{{barman?.lastName}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Adresse email</h4>
+          <p matLine>{{barman?.connection?.email}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Facebook</h4>
+          <p matLine>
+            <ng-container *ngIf="barman?.facebook; else noFacebook">
+              <a [href]="barman?.facebook" >Lien vers le profil facebook</a>
+            </ng-container>
+            <ng-template #noFacebook>
+              Pas de profil renseigné ...
+            </ng-template>
+          </p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Cheminement</h4>
+          <p matLine style="white-space: normal;">{{barman?.flow}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Parrain / Marraine</h4>
+          <p matLine>
+            <ng-container *ngIf="barman?.godFather?.nickname; else noGodFather">
+              {{barman?.godFather?.nickname}}
+            </ng-container>
+            <ng-template #noFacebook>
+              Pas de parrain/marraine renseigné...
+            </ng-template>
+          </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Kommission(s)</h3>
+        <div *ngIf="barman.kommissions?.length !== 0; else elseBlock">
+          <mat-list-item *ngFor="let kommission of barman.kommissions">
+            <p matLine>{{kommission.name}} depuis le {{kommission.KommissionWrapper.createdAt |  date:'d MMM y'}}</p>
+          </mat-list-item>
+        </div>
+        <ng-template #elseBlock>
+          <mat-list-item>
+            <p>Aucune kommission</p>
+          </mat-list-item>
+        </ng-template>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Role(s)</h3>
+        <div *ngIf="barman.roles?.length !== 0; else elseTemplate">
+          <mat-list-item *ngFor="let role of barman.roles">
+            <p matLine>{{role.name}} depuis le {{role.RoleWrapper.createdAt |  date:'d MMM y'}}</p>
+          </mat-list-item>
+        </div>
+        <ng-template #elseTemplate>
+          <mat-list-item>
+            <p>Aucun role</p>
+          </mat-list-item>
+        </ng-template>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Dates</h3>
+        <mat-list-item>
+          <h4 matLine>Date d'entrée</h4>
+          <p matLine>{{barman?.createdAt | date:'d MMM y'}}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Date de sortie</h4>
+          <p mat-line>
+            <ng-container *ngIf="barman?.leaveAt; else noLeaveAt">
+              {{barman?.leaveAt}}
+            </ng-container>
+            <ng-template #noLeaveAt>
+              Ce barman est encore actif!
+            </ng-template>
+          </p>
+        </mat-list-item>
+        <mat-list-item>
+          <h4 matLine>Date de dernière modification</h4>
+          <p matLine>{{barman?.updatedAt |  date:'d MMM y'}}</p>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
 </div>

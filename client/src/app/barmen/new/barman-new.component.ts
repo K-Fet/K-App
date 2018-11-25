@@ -48,7 +48,6 @@ export class BarmanNewComponent implements OnInit {
       godFather: new FormControl(''),
       roles: new FormControl(''),
       kommissions: new FormControl(''),
-      active: new FormControl(''),
     });
     this.startDate.setFullYear(this.startDate.getFullYear() - 20);
   }
@@ -111,6 +110,5 @@ export class BarmanNewComponent implements OnInit {
         }
       }
     });
-    this.barman.active = this.barmanForm.controls.active.value || false;
   }
 }

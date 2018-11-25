@@ -59,7 +59,7 @@ export class BarmanEditComponent implements OnInit {
       godFather: new FormControl(''),
       roles: new FormControl(''),
       kommissions: new FormControl(''),
-      active: new FormControl(''),
+      leaveAt: new FormControl(''),
     });
 
     function passwordMatchValidator(g: FormGroup): ValidationErrors | null {
@@ -110,7 +110,7 @@ export class BarmanEditComponent implements OnInit {
         this.barmanForm.controls.email.setValue(barman.connection.email);
         this.barmanForm.controls.dateOfBirth.setValue(barman.dateOfBirth);
         this.barmanForm.controls.flow.setValue(barman.flow);
-        this.barmanForm.controls.active.setValue(barman.active);
+        this.barmanForm.controls.leaveAt.setValue(barman.leaveAt);
 
         this.selectedGodFather = barman.godFather ? barman.godFather.id : undefined;
         this.selectedKommissions = barman.kommissions.map(k => k.id);

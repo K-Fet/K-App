@@ -12,7 +12,7 @@ export class Barman {
   facebook: string;
   dateOfBirth: Date;
   flow: string;
-  active: boolean;
+  leaveAt: Date;
 
     // Associations
 
@@ -27,6 +27,10 @@ export class Barman {
     kommissions?: AssociationChanges,
     roles?: AssociationChanges,
   };
+
+  public isActive(): boolean {
+    return !this.leaveAt;
+  }
 
   constructor(values: Object = {}) {
     Object.assign(this, values);
