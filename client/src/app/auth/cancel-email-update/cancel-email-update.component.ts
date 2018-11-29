@@ -24,7 +24,7 @@ export class CancelEmailUpdateComponent implements OnInit {
         this.email = params['email'];
       } else {
         this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
-        setTimeout(this.router.navigate(['/login']), 1000);
+        this.router.navigate(['/login']);
       }
     });
   }
@@ -32,7 +32,7 @@ export class CancelEmailUpdateComponent implements OnInit {
   cancelEmail(): void {
     this.authService.cancelEmailUpdate(this.userId, this.email).subscribe(() => {
       this.toasterService.showToaster('Annulation enregistré, veuillez vous connecter');
-      setTimeout(this.router.navigate(['/login']), 1000);
+      this.router.navigate(['/login']);
     });
   }
 }

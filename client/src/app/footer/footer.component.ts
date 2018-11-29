@@ -15,8 +15,7 @@ export class FooterComponent implements OnInit {
   constructor() {
     this.version = versions.version;
     this.link = `${versions.repo}/commit/${versions.revision}`;
-    this.tooltip = Object
-      .keys(versions)
+    this.tooltip = ['version', 'revision', 'branch']
       .map(k => `${k}: ${versions[k]}`)
       .join(' ');
   }
