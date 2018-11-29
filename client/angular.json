@@ -17,6 +17,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
+              "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
@@ -40,6 +41,13 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 }
               ]
             }
@@ -74,11 +82,6 @@
           }
         }
       }
-    },
-    "K-App-e2e": {
-      "root": "",
-      "sourceRoot": "",
-      "projectType": "application"
     }
   },
   "defaultProject": "K-App",
