@@ -5,6 +5,11 @@ module.exports = {
    * List all permissions used in the application.
    */
   PERMISSION_LIST: [
+    // This is a special permissions that allow the user to be updated
+    // when new permissions are created.
+    // It's important that ONLY ONE user has this permission.
+    'admin:upgrade',
+
     'barman:read',
     'barman:write',
 
@@ -33,9 +38,12 @@ module.exports = {
 
     'template:read',
     'template:write',
-
-    'inventory-management:providers:list',
   ],
+
+  /**
+   * Name of the permission which will allow to update admin with newly created permissions.
+   */
+  ADMIN_UPGRADE_PERMISSION: 'admin:upgrade',
 
   /**
    * Facebook verify token.
