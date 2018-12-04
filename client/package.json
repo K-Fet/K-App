@@ -21,8 +21,11 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
-    "prebuild:prod": "node git.version.js",
     "build:prod": "ng build --prod",
+    "prestart": "yarn run gitversion",
+    "prebuild": "yarn run gitversion",
+    "prebuild:prod": "yarn run gitversion",
+    "gitversion": "node git.version.js",
     "lint:ts": "ng lint",
     "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "yarn run lint:ts && yarn run lint:css"
