@@ -31,7 +31,7 @@ export class EmailVerificationComponent implements OnInit {
         this.userId = params['userId'];
       } else {
         this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
-        setTimeout(this.router.navigate(['/login']), 1000);
+        this.router.navigate(['/login']);
       }
     });
   }
@@ -46,7 +46,7 @@ export class EmailVerificationComponent implements OnInit {
     const password = this.passwordForm.get('password').value;
     this.authService.verifyEmail(this.userId, this.email, password, this.token).subscribe(() => {
       this.toasterService.showToaster('Enregistré, veuillez vous connecter');
-      setTimeout(this.router.navigate(['/login']), 1000);
+      this.router.navigate(['/login']);
     });
   }
 }

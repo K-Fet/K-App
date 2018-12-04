@@ -66,3 +66,7 @@ node_modules/
 
 # Ignore backups
 backups/
+
+### Client version
+# Should be ignored because its auto-generated and change after git commit/merge
+client/src/environments/versions.ts

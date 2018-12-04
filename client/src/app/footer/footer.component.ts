@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { versions } from '../../environments/versions';
 
 @Component({
   selector: 'app-footer',
@@ -8,9 +8,17 @@ import { environment } from '../../environments/environment';
 })
 export class FooterComponent implements OnInit {
 
-  version: string = environment.VERSION;
+  version: string;
+  link: string;
+  tooltip: string;
 
-  constructor() { }
+  constructor() {
+    this.version = versions.version;
+    this.link = `${versions.repo}/commit/${versions.revision}`;
+    this.tooltip = ['version', 'revision', 'branch']
+      .map(k => `${k}: ${versions[k]}`)
+      .join(' ');
+  }
 
   ngOnInit() {
 

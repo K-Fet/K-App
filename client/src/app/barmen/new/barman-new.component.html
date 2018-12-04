@@ -50,7 +50,6 @@
                         <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-checkbox formControlName="active">Actif</mat-checkbox>
                 <div fxLayoutAlign="center">
                     <button fxFlex="50" mat-button type="button" (click)="add()"
                     [disabled]="!barmanForm.valid">Ajouter</button>

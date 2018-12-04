@@ -76,7 +76,6 @@ async function updateMe(req, res) {
     });
   } else if (user.barman) {
     const schema = BarmanSchema
-      .forbiddenKeys('active')
       .min(1);
 
     const newUser = req.body.barman;

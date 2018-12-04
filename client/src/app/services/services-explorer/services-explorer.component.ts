@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../_services';
-import { ConnectedUser } from '../../_models';
+import { ConnectedUser, Barman } from '../../_models';
 import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
@@ -20,7 +20,7 @@ export class ServiceExplorerComponent implements OnInit {
   }
 
   isActive(): boolean {
-    return this.user.isBarman() && this.user.barman.active;
+    return this.user.isBarman() && new Barman(this.user.barman).isActive();
   }
 
   hasServiceWritePerm(): boolean {

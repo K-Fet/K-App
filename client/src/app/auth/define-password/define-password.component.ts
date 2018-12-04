@@ -29,7 +29,7 @@ export class DefinePasswordComponent implements OnInit {
         this.token = params['passwordToken'];
       } else {
         this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
-        setTimeout(this.router.navigate(['/login']), 1000);
+        this.router.navigate(['/login']);
       }
     });
   }
@@ -45,7 +45,7 @@ export class DefinePasswordComponent implements OnInit {
     const password = this.passwordForm.get('password').value;
     this.authService.definePassword(this.email, password, this.token, null).subscribe(() => {
       this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
-      setTimeout(this.router.navigate(['/login']), 1000);
+      this.router.navigate(['/login']);
     });
   }
 }

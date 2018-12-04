@@ -1,72 +1,75 @@
 <div fxLayoutAlign="center">
-    <div fxFlex class="max-width" fxLayout="column" fxLayoutGap="20px">
-        <app-week-picker></app-week-picker>
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>
-                    <section class="mat-typography">
-                        <h1>Fixer mes services</h1>
-                    </section>
-                </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <section class="mat-typography">
-                    <h2>Actuellement ...</h2>
-                </section>
-                <mat-list *ngIf="myServices">
-                    <mat-list-item *ngFor="let service of myServices">
-                        <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                        <span class="first-letter-uppercase">
-                            {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-                <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
-                <mat-divider></mat-divider>
-                <section class="mat-typography">
-                    <h2>Ajouter mes services ...</h2>
-                </section>
-                <div fxLayout="row">
-                    <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
-                        <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
-                            {{day.name}}
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <mat-list *ngIf="dayServices">
-                        <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center" class="mat-list-item-word-wrap">
-                            <p mat-line>
-                                <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button" mat-icon-button (click)="addService(service)">
-                                    <mat-icon>add</mat-icon>
-                                </button>
-                                <ng-template #elseBlock>
-                                    <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
-                                </ng-template>
-                                De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
-                                <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
-                            </p>
-                            <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
-                                Avec
-                                <span *ngFor="let barman of service.barmen; let idx = index">
-                                    {{barman.nickname}}
-                                    <span *ngIf="service.barmen.length != (idx+1)">, </span>
-                                </span>
-                            </span>
-                            <span mat-line *ngIf="!service.barmen" class="mat-caption">
-                                Aucun barmen pour le moment...
-                            </span>
-                        </mat-list-item>
-                    </mat-list>
-                    <p *ngIf="!dayServices">
-                        Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a surement pas encore ouvert les services.
-                    </p>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
+  <div fxFlex class="max-width" fxLayout="column" fxLayoutGap="20px">
+    <app-week-picker></app-week-picker>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          <section class="mat-typography">
+            <h1>Fixer mes services</h1>
+          </section>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <section class="mat-typography">
+          <h2>Actuellement ...</h2>
+        </section>
+        <mat-list *ngIf="myServices">
+          <mat-list-item *ngFor="let service of myServices">
+            <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <span class="first-letter-uppercase">
+              {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de {{service.startAt | date:'H'}}h à {{service.endAt |
+              date:'H'}}h
+            </span>
+          </mat-list-item>
+        </mat-list>
+        <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
+        <mat-divider></mat-divider>
+        <section class="mat-typography">
+          <h2>Ajouter mes services ...</h2>
+        </section>
+        <div fxLayout="row">
+          <div fxFlex="{{100/days.length}}" fxLayoutAlign="center" *ngFor="let day of days">
+            <button mat-fab color="primary" (click)="day.active ? null : updateDayDetails(day)" [color]="day.active ? 'accent' : 'primary'">
+              {{day.name}}
+            </button>
+          </div>
+        </div>
+        <div>
+          <mat-list *ngIf="dayServices">
+            <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center" class="mat-list-item-word-wrap">
+              <p mat-line>
+                <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button"
+                  mat-icon-button (click)="addService(service)">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <ng-template #elseBlock>
+                  <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </ng-template>
+                De {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                <span [style.color]="getColor(service)">({{service.barmen?.length || '0'}}/{{service.nbMax}})</span>
+              </p>
+              <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
+                Avec
+                <span *ngFor="let barman of service.barmen; let idx = index">
+                  {{barman.nickname}}
+                  <span *ngIf="service.barmen.length != (idx+1)">, </span>
+                </span>
+              </span>
+              <span mat-line *ngIf="!service.barmen" class="mat-caption">
+                Aucun barmen pour le moment...
+              </span>
+            </mat-list-item>
+          </mat-list>
+          <p *ngIf="!dayServices">
+            Aucun service n'est possible pour la semaine pour l'instant. L'administrateur n'a surement pas encore
+            ouvert les services.
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

@@ -42,7 +42,7 @@ export class TaskEditNewDialogComponent implements OnInit {
 
   ngOnInit () {
     this.kommissionService.getById(+this.data.kommission.id).subscribe((kommission) => {
-      this.barmen = kommission.barmen.filter(b => b.active);
+      this.barmen = kommission.barmen.filter(b => new Barman(b).isActive());
     });
     this.createForm();
   }

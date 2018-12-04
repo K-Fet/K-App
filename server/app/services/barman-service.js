@@ -13,15 +13,22 @@ const mailService = require('./mail-service');
 /**
  * Return all barmen of the app.
  *
+ * @param active {boolean}
  * @returns {Promise<Array>} Barmen
  */
-async function getAllBarmen() {
+async function getAllBarmen(active) {
   logger.verbose('Barman service: get all barmen');
-  return Barman.findAll({
+  const params = {
     order: [
       ['nickname', 'ASC'],
     ],
-  });
+  };
+  if (active) {
+    params.where = {
+      leaveAt: null,
+    };
+  }
+  return Barman.findAll(params);
 }
 
 /**
@@ -144,6 +151,11 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 
   if (!currentBarman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
+  if ((updatedBarman.leaveAt
+    && new Date(currentBarman.createdAt) > new Date(updatedBarman.leaveAt))) {
+    throw createUserError('BadLeaveAtDate', 'LeaveAt can not be before createdAt or after now');
+  }
+
   logger.verbose('Barman service: updating barman named %s %s', currentBarman.firstName, currentBarman.lastName);
 
   const transaction = await sequelize().transaction();
@@ -156,7 +168,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
       facebook: updatedBarman.facebook,
       dateOfBirth: updatedBarman.dateOfBirth,
       flow: updatedBarman.flow,
-      active: updatedBarman.active,
+      leaveAt: updatedBarman.leaveAt,
     }), { transaction });
 
     // If connection information is changed
@@ -226,6 +238,44 @@ async function deleteBarmanById(barmanId) {
 }
 
 /**
+ * Get the services of all active barmen.
+ * The barmen could be not active now but were active during the asked period.
+ *
+ * @param startDate {Date} starting date for services
+ * @param endDate {Date} ending date for services
+ * @returns {Promise<Array>} Barmen's services
+ */
+async function getServicesBarmen(startDate, endDate) {
+  logger.verbose('Barman service: retreive services of all active barmen');
+  const barmen = await Barman.findAll({
+    where: {
+      leaveAt: {
+        [Op.or]: {
+          [Op.gte]: startDate,
+          [Op.eq]: null,
+        },
+      },
+    },
+    include: [
+      {
+        model: Service,
+        required: false,
+        as: 'services',
+        where: {
+          startAt: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate },
+            ],
+          },
+        },
+      },
+    ],
+  });
+  return barmen;
+}
+
+/**
  * Get the services of a barman
  *
  * @param barmanId {number} barman id
@@ -233,21 +283,17 @@ async function deleteBarmanById(barmanId) {
  * @param endDate {Date} ending date for services
  * @returns {Promise<Array>} Barmen's services
  */
-async function getBarmanServices(barmanId, startDate, endDate) {
+async function getServicesBarman(barmanId, startDate, endDate) {
   logger.verbose('Barman service: retreive services of the barman ', barmanId);
 
   const barman = await Barman.findById(barmanId);
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-  if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
-
   return barman.getServices({
     where: {
       startAt: {
         [Op.gte]: startDate,
-      },
-      endAt: {
         [Op.lte]: endDate,
       },
     },
@@ -256,6 +302,9 @@ async function getBarmanServices(barmanId, startDate, endDate) {
         model: Barman,
         as: 'barmen',
       },
+    ],
+    order: [
+      ['startAt', 'ASC'],
     ],
   });
 }
@@ -274,7 +323,7 @@ async function createServiceBarman(barmanId, servicesId) {
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-  if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
+  if (barman.leaveAt) throw createUserError('BadRequest', 'Barman must be an active barman');
 
 
   const count = await Service.count({
@@ -314,7 +363,7 @@ async function deleteServiceBarman(barmanId, servicesId) {
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
-  if (!barman.active) throw createUserError('BadRequest', 'Barman must be an active barman');
+  if (barman.leaveAt) throw createUserError('BadRequest', 'Barman must be an active barman');
 
   const count = await Service.count({
     where: {
@@ -344,7 +393,8 @@ module.exports = {
   getBarmanById,
   deleteBarmanById,
   updateBarmanById,
-  getBarmanServices,
+  getServicesBarmen,
+  getServicesBarman,
   createServiceBarman,
   deleteServiceBarman,
 };

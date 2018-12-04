@@ -1,87 +1,90 @@
 <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-        <mat-card-header>
-            <mat-card-title fxLayout="row">
-                <a mat-button routerLink="/barmen" *ngxPermissionsOnly="['barman:read']"><mat-icon>arrow_back</mat-icon></a>
-                <section class="mat-typography">
-                    <h1>Modifier un Barman</h1>
-                </section>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form [formGroup]="barmanForm" fxLayout="column" (ngSubmit)="edit()">
-                <h4>Informations personnelles</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Nom de famille" formControlName="lastName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Prénom" formControlName="firstName">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Date de naissance" formControlName="dateOfBirth" [owlDateTimeTrigger]="dateOfBirthDT" [owlDateTime]="dateOfBirthDT">
-                    <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" [startAt]="startDate" #dateOfBirthDT></owl-date-time>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Facebook (un lien URL)" formControlName="facebook">
-                </mat-form-field>
-                <h4>Informations de connection</h4>
-                <mat-form-field>
-                    <input matInput placeholder="Adresse email" formControlName="email">
-                </mat-form-field>
-                <div *ngxPermissionsOnly="['barman:write']" fxLayout="column">
-                    <h4>Informations relative à la K-Fêt</h4>
-                    <mat-form-field>
-                        <input matInput placeholder="Surnom" formControlName="nickname">
-                    </mat-form-field>
-                    <mat-form-field>
-                        <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
-                            <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
-                            <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
-                            <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-checkbox formControlName="active">Actif</mat-checkbox>
-                </div>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
-                </div>
-            </form>
-            <mat-divider></mat-divider>
-            <form [formGroup]="passwordForm" fxLayout="column" (ngSubmit)="updatePassword()" *ngIf="isMe()" fxLayout="column">
-                <h4>Modification du mot de passe</h4>
-                <mat-form-field fxFlex>
-                    <input matInput type="password" placeholder="Mot de passe actuel" formControlName="oldPassword">
-                </mat-form-field>
-                <div fxLayout.xs="column">
-                    <mat-form-field fxFlex.gt-xs="45">
-                        <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="newPassword">
-                    </mat-form-field>
-                    <div fxFlex></div>
-                    <mat-form-field fxFlex.gt-xs="45">
-                        <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
-                    </mat-form-field>
-                </div>
-                <span class="mat-error" *ngIf="passwordForm.invalid 
-                    && passwordForm.controls['oldPassword'].dirty
-                    && passwordForm.controls['newPassword'].dirty
-                    && passwordForm.controls['newPasswordConfirm'].dirty">
-                    {{getErrorMessage()}}
-                </span>
-                <div fxLayoutAlign="center">
-                    <button fxFlex="50" mat-button type="submit" [disabled]="!passwordForm.dirty || !passwordForm.valid">Modifier</button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/barmen" *ngxPermissionsOnly="['barman:read']"><mat-icon>arrow_back</mat-icon></a>
+        <section class="mat-typography">
+          <h1>Modifier un Barman</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="barmanForm" fxLayout="column" (ngSubmit)="edit()">
+        <h4>Informations personnelles</h4>
+        <mat-form-field>
+          <input matInput placeholder="Nom de famille" formControlName="lastName">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Prénom" formControlName="firstName">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Date de naissance" formControlName="dateOfBirth" [owlDateTimeTrigger]="dateOfBirthDT" [owlDateTime]="dateOfBirthDT">
+          <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" [startAt]="startDate" #dateOfBirthDT></owl-date-time>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Facebook (un lien URL)" formControlName="facebook">
+        </mat-form-field>
+        <h4>Informations de connection</h4>
+        <mat-form-field>
+          <input matInput placeholder="Adresse email" formControlName="email">
+        </mat-form-field>
+        <div *ngxPermissionsOnly="['barman:write']" fxLayout="column">
+          <h4>Informations relative à la K-Fêt</h4>
+          <mat-form-field>
+            <input matInput placeholder="Surnom" formControlName="nickname">
+          </mat-form-field>
+          <mat-form-field>
+            <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Date de départ" formControlName="leaveAt" [owlDateTimeTrigger]="leaveAtDT" [owlDateTime]="leaveAtDT">
+            <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" #leaveAtDT></owl-date-time>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
+              <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
+              <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Roles" multiple formControlName="roles" [(ngModel)]="selectedRoles" name="role">
+              <mat-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxLayoutAlign="center">
+            <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
+        </div>
+      </form>
+      <mat-divider></mat-divider>
+      <form [formGroup]="passwordForm" fxLayout="column" (ngSubmit)="updatePassword()" *ngIf="isMe()" fxLayout="column">
+        <h4>Modification du mot de passe</h4>
+        <mat-form-field fxFlex>
+          <input matInput type="password" placeholder="Mot de passe actuel" formControlName="oldPassword">
+        </mat-form-field>
+        <div fxLayout.xs="column">
+          <mat-form-field fxFlex.gt-xs="45">
+            <input matInput type="password" placeholder="Nouveau mot de passe" formControlName="newPassword">
+          </mat-form-field>
+          <div fxFlex></div>
+          <mat-form-field fxFlex.gt-xs="45">
+            <input matInput type="password" placeholder="Confirmation" formControlName="newPasswordConfirm">
+          </mat-form-field>
+        </div>
+        <span class="mat-error" *ngIf="passwordForm.invalid
+          && passwordForm.controls['oldPassword'].dirty
+          && passwordForm.controls['newPassword'].dirty
+          && passwordForm.controls['newPasswordConfirm'].dirty">
+          {{getErrorMessage()}}
+        </span>
+        <div fxLayoutAlign="center">
+          <button fxFlex="50" mat-button type="submit" [disabled]="!passwordForm.dirty || !passwordForm.valid">Modifier</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>

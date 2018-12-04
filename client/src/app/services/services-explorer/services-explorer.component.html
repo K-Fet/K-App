@@ -1,11 +1,10 @@
 <div fxLayoutAlign="center">
-    <div fxLayout="column" fxLayoutGap="20px" class="max-width" style="width:100%">
-        <app-week-picker fxFlex></app-week-picker>
-        <div fxLayout="row" fxLayout.lt-md="column"
-            fxLayoutGap="20px">
-            <app-my-services fxFlex *ngIf="isActive()"></app-my-services>
-            <app-planning fxFlex></app-planning>
-        </div>
-        <app-barman-service-number *ngIf="hasServiceWritePerm()"></app-barman-service-number>
+  <div fxLayout="column" fxLayoutGap="20px" class="max-width" style="width:100%">
+    <app-week-picker fxFlex></app-week-picker>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px">
+      <app-my-services fxFlex *ngIf="isActive()"></app-my-services>
+      <app-planning fxFlex></app-planning>
     </div>
+    <app-barman-service-number *ngIf="hasServiceWritePerm()"></app-barman-service-number>
+  </div>
 </div>
