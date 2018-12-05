@@ -27,7 +27,8 @@ async function getAllPermissions() {
 async function hasEnoughPermissions(userPerms, wantedPerms) {
   if (!wantedPerms) return;
 
-  const editedPerms = [...new Set([...wantedPerms.add, ...wantedPerms.remove])];
+  const mergedPerms = [...(wantedPerms.add || []), ...(wantedPerms.remove || [])];
+  const editedPerms = [...new Set(mergedPerms)];
 
   const perms = await Permission.findAll({
     where: {
@@ -44,7 +45,7 @@ async function hasEnoughPermissions(userPerms, wantedPerms) {
   // and throw error in this case. This permission shouldn't be change in any
   // circumstance.
   const upgradePerm = perms.find(p => ADMIN_UPGRADE_PERMISSION === p.name);
-  if (upgradePerm) throw createUserError(`You can't update the ${ADMIN_UPGRADE_PERMISSION} permission. Please contact the administrator.`);
+  if (upgradePerm) throw createUserError('ReservedPermission', `You can't update the ${ADMIN_UPGRADE_PERMISSION} permission. Please contact the administrator.`);
 
   // Check if the user doing the action actually have the permissions he tries to add/remove
   const res = perms.find(p => !userPerms.includes(p.name));
