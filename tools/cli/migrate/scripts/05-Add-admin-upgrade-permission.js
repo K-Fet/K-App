@@ -10,7 +10,7 @@ module.exports = {
     const [upgradePerm] = await query(`SELECT * FROM permissions WHERE name='${ADMIN_UPGRADE_PERMISSION}'`, params);
 
     if (!upgradePerm) {
-      await query(`INSERT INTO permissions VALUES (${ADMIN_UPGRADE_PERMISSION})`);
+      await query(`INSERT INTO permissions VALUES ('${ADMIN_UPGRADE_PERMISSION}')`);
     }
     // Get upgrade permId
     const [{ id: permId }] = await query(`SELECT id FROM permissions WHERE name='${ADMIN_UPGRADE_PERMISSION}'`, params);
@@ -18,7 +18,7 @@ module.exports = {
     // List every other permissions (used to find supposed admin)
     const perms = await query(`SELECT id FROM permissions WHERE name!='${ADMIN_UPGRADE_PERMISSION}'`, params);
 
-    // Get the special account who have already every permissions
+    // Get the special account who has already every permissions
     const [{ SpecialAccountId: adminId }] = await query(
       `SELECT SpecialAccountId 
         FROM specialaccountpermissions 
