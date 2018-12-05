@@ -57,6 +57,12 @@ async function start() {
   logger.info('Syncing permissions: starting...');
   await updatePermissions();
   logger.info('Syncing permissions: done.');
+
+  if (process.env.NODE_ENV === 'test') {
+    logger.warn('[TESTING]: Skipping admin permission upgrade');
+    return;
+  }
+
   logger.info('Syncing admin permissions: starting...');
   await upgradeAdminPermissions();
   logger.info('Syncing admin permissions: done.');
