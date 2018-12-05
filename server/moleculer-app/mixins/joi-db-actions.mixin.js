@@ -1,27 +1,28 @@
 const Joi = require('joi');
 
+const JOI_ID = Joi.alt(
+  Joi.string(),
+  Joi.number(),
+  Joi.array(),
+);
+const JOI_STRING_OR_STRING_ARRAY = Joi.alt(
+  Joi.string(),
+  Joi.array().items(Joi.string()),
+);
+
 module.exports = function joiDbActions(joiModel) {
   return {
     actions: {
       find: {
         permissions: true,
         params: Joi.object({
-          populate: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
-          fields: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          populate: JOI_STRING_OR_STRING_ARRAY,
+          fields: JOI_STRING_OR_STRING_ARRAY,
           limit: Joi.number().integer().min(0),
           offset: Joi.number().integer().min(0),
           sort: Joi.string(),
           search: Joi.string(),
-          searchField: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          searchField: JOI_STRING_OR_STRING_ARRAY,
           query: Joi.object(),
         }),
       },
@@ -29,32 +30,20 @@ module.exports = function joiDbActions(joiModel) {
         permissions: true,
         params: Joi.object({
           search: Joi.string(),
-          searchFields: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          searchFields: JOI_STRING_OR_STRING_ARRAY,
           query: Joi.object(),
         }),
       },
       list: {
         permissions: true,
         params: Joi.object({
-          populate: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
-          fields: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          populate: JOI_STRING_OR_STRING_ARRAY,
+          fields: JOI_STRING_OR_STRING_ARRAY,
           page: Joi.number().integer().min(1),
           pageSize: Joi.number().integer().min(0),
           sort: Joi.string(),
           search: Joi.string(),
-          searchField: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          searchField: JOI_STRING_OR_STRING_ARRAY,
           query: Joi.object(),
         }),
       },
@@ -72,34 +61,22 @@ module.exports = function joiDbActions(joiModel) {
       get: {
         permissions: true,
         params: Joi.object({
-          id: Joi.alt(
-            Joi.string(),
-            Joi.number(),
-            Joi.array(),
-          ).required(),
-          populate: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
-          fields: Joi.alt(
-            Joi.string(),
-            Joi.array().items(Joi.string()),
-          ),
+          id: JOI_ID.required(),
+          populate: JOI_STRING_OR_STRING_ARRAY,
+          fields: JOI_STRING_OR_STRING_ARRAY,
           mapping: Joi.bool(),
         }),
       },
       update: {
         permissions: true,
-        params: joiModel,
+        params: joiModel.append({
+          id: JOI_ID.required(),
+        }),
       },
       remove: {
         permissions: true,
         params: Joi.object({
-          id: Joi.alt(
-            Joi.string(),
-            Joi.number(),
-            Joi.array(),
-          ).required(),
+          id: JOI_ID.required(),
         }),
       },
     },
