@@ -414,6 +414,16 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@ng-dynamic-forms/core@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/core/-/core-7.0.1.tgz#907cda6adeb06b5cba068cdb82a1110d3877a937"
+  integrity sha512-4SkcrVsqKmrMr0grbExhir4RwmWIetvqbBXT1bVF4qh/rLzIF6jzEFepm1D4djdlF1XDrGl8vPoRw738ATjZxw==
+
+"@ng-dynamic-forms/ui-material@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/ui-material/-/ui-material-7.0.1.tgz#870817a2d4e4ec17b29df28533f2bc7486bf8c7d"
+  integrity sha512-EP+j586mEBmmEkAUHUIM2uYe4yDz0WkykEtXB1+ZAc4S6i9jlYf7wB64VJ/eI4NMQUvf6Ag3DR+rHKQ9coe6uQ==
+
 "@ngtools/webpack@7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-7.1.0.tgz#20f401f85822923032f19dbd745ad4efb027847d"

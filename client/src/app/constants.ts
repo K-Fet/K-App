@@ -1,4 +1,4 @@
-export const ERRORS400 = {
+export const BAD_REQUEST_ERRORS = {
   LoginError: 'Erreur d\'authentification: combinaison email / mot de passe invalide.',
   LogoutError: 'Erreur de deconnexion: la déconnexion a échouée du côté serveur.',
   RemovedValueProhibited: 'Suppression impossible, la requête n\'autorise pas la suppression d\'associations.',
@@ -22,3 +22,38 @@ export const ERRORS400 = {
   BadLeaveAtDate: 'Erreur, la date de départ ne peut pas être avant la date d\'entrée',
   MemberAlreadyRegistered: 'Erreur, l\'adhérent est déjà inscrit pour l\'année',
 };
+
+export const ROLES = [
+  {
+    name: 'TEMPLATE_MANAGER',
+    permissions: [
+      'template:read',
+      'template:write',
+    ],
+  },
+  {
+    name: 'SERVICE_MANAGER',
+    permissions: [
+      'service:read',
+      'service:write',
+    ],
+  },
+  {
+    name: 'SERVICE_PLAN',
+    permissions: [
+      'service:read',
+      'barman:read',
+    ],
+  },
+];
+
+function getCurrentSchoolYear() {
+  const date = new Date();
+
+  if (date.getMonth() < 7) {
+    return date.getFullYear() - 1;
+  }
+  return date.getFullYear();
+}
+
+export const CURRENT_SCHOOL_YEAR = getCurrentSchoolYear();

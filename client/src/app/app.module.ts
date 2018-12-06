@@ -8,6 +8,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { CoreModule } from './core/core.module';
+import { MomentModule } from 'ngx-moment';
+
+// Load moment french locale
+import 'moment/locale/fr';
+import * as moment from 'moment';
+
+moment.locale('fr');
 
 @NgModule({
   declarations: [
@@ -18,10 +25,10 @@ import { CoreModule } from './core/core.module';
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    MomentModule,
     CoreModule,
     AppRoutingModule,
   ],
-  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

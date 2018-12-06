@@ -1,11 +1,11 @@
-import { ERRORS400 } from './errors.400';
+import { BAD_REQUEST_ERRORS } from '../constants';
 import { Router } from '@angular/router';
-import { ToasterService } from '../../core/services/toaster.service';
+import { ToasterService } from './services/toaster.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandler, Injectable, Injector, isDevMode } from '@angular/core';
 
 @Injectable()
-export class ErrorsHandler implements ErrorHandler {
+export class AppErrorHandler implements ErrorHandler {
 
   constructor(
     // Because the ErrorHandler is created before the providers,
@@ -25,7 +25,7 @@ export class ErrorsHandler implements ErrorHandler {
       }
       switch (error.status) {
         case 400:
-          return toasterService.showToaster(ERRORS400[error.error.error]);
+          return toasterService.showToaster(BAD_REQUEST_ERRORS[error.error.error]);
         case 401:
           router.navigate(['/login']);
           return toasterService.showToaster('Opération non autorisée, redirection ...');

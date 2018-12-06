@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 // Angular material imports
 import { CdkTableModule } from '@angular/cdk/table';
@@ -38,8 +36,7 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-
+// TODO Remove unused components
 @NgModule({
   exports: [
     CdkTableModule,
@@ -74,10 +71,6 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    FormsModule,
-    FlexLayoutModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
   ],
 })
 export class MaterialModule {}

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { InventoryManagementRoutingModule } from './inventory-management-routing.module';
 import { HelloWorldComponent } from './hello-world/hello-world.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [HelloWorldComponent],
   imports: [
-    CommonModule,
+    SharedModule,
     InventoryManagementRoutingModule,
   ],
 })

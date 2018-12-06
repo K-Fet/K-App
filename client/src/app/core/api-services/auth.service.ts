@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConnectedUser, Permission } from '../../shared-old/models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
-import { ROLES } from '../../shared-old/helpers/roles';
+import { ROLES } from '../../constants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
