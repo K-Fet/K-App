@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Kommission } from '../../shared-old/models';
+import { Kommission } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()

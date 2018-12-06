@@ -1,19 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser, Permission } from '../../shared-old/models';
+import { ConnectedUser, Permission } from '../../shared/models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
 
   $currentUser: BehaviorSubject<ConnectedUser>;
 
+  // Suppose the user is already logged in
+  // Prevent a redirection
+  isLoggedIn: boolean = true;
+  redirectUrl: string;
+
   constructor(private http: HttpClient,
+              private router: Router,
               private ngxPermissionsService: NgxPermissionsService,
               private ngxRolesService: NgxRolesService) { }
 
@@ -32,7 +39,7 @@ export class AuthService {
         if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
           this.me().subscribe(() => {
             resolve();
-          // tslint:disable-next-line:align
+            // tslint:disable-next-line:align
           }, (err) => {
             console.error('Unexpected error occurs: ', err);
             resolve();
@@ -52,6 +59,11 @@ export class AuthService {
       .pipe(tap((jwt: { jwt: string, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
+
+        if (this.redirectUrl) {
+          this.router.navigate([this.redirectUrl]);
+          this.redirectUrl = null;
+        }
       }));
   }
 
@@ -101,6 +113,8 @@ export class AuthService {
     this.ngxRolesService.flushRoles();
     if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
     if (sessionStorage.getItem('currentUser')) sessionStorage.removeItem('currentUser');
+
+    this.isLoggedIn = false;
   }
 
   private saveUser(jwt, rememberMe): void {
@@ -122,6 +136,8 @@ export class AuthService {
     return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/v1/me')
       .pipe(
         tap(({ user: { barman, specialAccount }, permissions }) => {
+          this.isLoggedIn = true;
+
           if (barman) {
             this.$currentUser.next(new ConnectedUser({
               barman,

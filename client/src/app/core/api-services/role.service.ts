@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Role } from '../../shared-old/models';
+import { Role } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()

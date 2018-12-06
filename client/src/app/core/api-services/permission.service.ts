@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Permission } from '../../shared-old/models';
+import { Permission } from '../../shared/models';
 import { forkJoin, from, Observable } from 'rxjs';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { concatMap } from 'rxjs/operators';

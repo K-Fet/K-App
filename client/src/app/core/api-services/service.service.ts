@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Barman, Day, Service } from '../../shared-old/models';
+import { Barman, Day, Service } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import * as moment from 'moment';

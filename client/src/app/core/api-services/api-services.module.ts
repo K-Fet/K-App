@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { AuthService } from './auth.service';
 import { BarmanService } from './barman.service';
-import { ContactService } from './contact.service';
 import { KommissionService } from './kommission.service';
 import { MemberService } from './member.service';
 import { MeService } from './me.service';
@@ -22,7 +21,6 @@ import { TemplateService } from './template.service';
   providers: [
     AuthService,
     BarmanService,
-    ContactService,
     KommissionService,
     MemberService,
     MeService,

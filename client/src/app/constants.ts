@@ -57,3 +57,5 @@ function getCurrentSchoolYear() {
 }
 
 export const CURRENT_SCHOOL_YEAR = getCurrentSchoolYear();
+
+export const AVAILABLE_SCHOOLS = ['INSA', 'Polytech', 'CPE', 'Lyon 1', 'Autre'];

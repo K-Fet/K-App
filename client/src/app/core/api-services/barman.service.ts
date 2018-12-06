@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Barman, Service, Task } from '../../shared-old/models';
+import { Barman, Service, Task } from '../../shared/models';
 import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 

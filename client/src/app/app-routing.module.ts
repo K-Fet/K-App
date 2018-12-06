@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: './inventory-management/inventory-management.module#InventoryManagementModule',
   },
   {
+    path: 'contact',
+    loadChildren: './contact/contact.module#ContactModule',
+  },
+  {
     path: '',
     redirectTo: '/legacy',
     pathMatch: 'full',

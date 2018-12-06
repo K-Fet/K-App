@@ -1,4 +1,3 @@
-// TODO Not used for now
 .main-nav {
   position: fixed;
   top: 0;
@@ -7,7 +6,6 @@
   z-index: 5;
 }
 
-// TODO Not used for now
 .sidenav-container {
   position: absolute;
   top: 0;
@@ -16,7 +14,6 @@
   right: 0;
 }
 
-// TODO Not used for now
 .sidenav {
   width: 256px;
   border-right: 1px solid rgba(0, 0, 0, .14);
@@ -33,12 +30,11 @@
   padding: 0 20px 0 20px;
 }
 
-.home {
+.header {
   font-family: "MedievalSharp", cursive;
   cursor: pointer;
 }
 
-// TODO Not used for now
 .footer {
   height: 110px;
 }
