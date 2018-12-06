@@ -47,6 +47,7 @@
     "@ng-dynamic-forms/core": "^7.0.1",
     "@ng-dynamic-forms/ui-material": "^7.0.1",
     "angular2-recaptcha": "^1.1.0",
+    "angular2-text-mask": "^9.0.0",
     "core-js": "^2.5.7",
     "hammerjs": "^2.0.8",
     "jwt-decode": "^2.2.0",

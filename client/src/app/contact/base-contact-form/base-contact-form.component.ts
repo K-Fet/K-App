@@ -4,6 +4,7 @@ import {
   DynamicFormService,
 } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-base-contact-form',
@@ -15,9 +16,12 @@ export class BaseContactFormComponent implements OnInit {
   @Input() title: string;
   @Input() model: DynamicFormModel;
 
-  @Output() submit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>();
 
   formGroup: FormGroup;
+
+  token: string;
+  siteKey: string = environment.RECAPTCHA_SITE_KEY;
 
   constructor(private formService: DynamicFormService) { }
 
@@ -25,7 +29,11 @@ export class BaseContactFormComponent implements OnInit {
     this.formGroup = this.formService.createFormGroup(this.model);
   }
 
-  onNgSubmit(event) {
-    return this.submit.emit(event);
+  onCaptchaComplete(response: string): void {
+    this.token = response;
+  }
+
+  onNgSubmit() {
+    return this.onSubmit.emit({ token: this.token, value: this.formGroup.value });
   }
 }

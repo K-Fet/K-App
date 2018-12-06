@@ -7,7 +7,6 @@ import { ROLES } from '../../constants';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +19,6 @@ export class AuthService {
   redirectUrl: string;
 
   constructor(private http: HttpClient,
-              private router: Router,
               private ngxPermissionsService: NgxPermissionsService,
               private ngxRolesService: NgxRolesService) { }
 
@@ -59,11 +57,6 @@ export class AuthService {
       .pipe(tap((jwt: { jwt: string, permissions: Permission }) => {
         this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
         this.me().subscribe();
-
-        if (this.redirectUrl) {
-          this.router.navigate([this.redirectUrl]);
-          this.redirectUrl = null;
-        }
       }));
   }
 

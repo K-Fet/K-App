@@ -8,6 +8,6 @@ export class ContactService {
   constructor(private http: HttpClient) { }
 
   send(contactFormName: string, values: Object, token: string): Observable<any> {
-    return this.http.post('/api/contact', { contactFormName, values, token });
+    return this.http.post('/api/v1/contact', { contactFormName, values, token });
   }
 }

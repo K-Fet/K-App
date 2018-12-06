@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 import { ContactRoutingModule } from './contact-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -16,6 +17,7 @@ import { ContactFormComponent } from './contact-form/contact-form.component';
   ],
   imports: [
     SharedModule,
+    ReCaptchaModule,
     ContactRoutingModule,
   ],
 })
