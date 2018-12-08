@@ -10,7 +10,7 @@ module.exports = {
     const [upgradePerm] = await query(`SELECT * FROM permissions WHERE name='${ADMIN_UPGRADE_PERMISSION}'`, params);
 
     if (!upgradePerm) {
-      await query(`INSERT INTO permissions VALUES ('${ADMIN_UPGRADE_PERMISSION}')`);
+      await query(`INSERT INTO permissions (name) VALUES ('${ADMIN_UPGRADE_PERMISSION}')`);
     }
     // Get upgrade permId
     const [{ id: permId }] = await query(`SELECT id FROM permissions WHERE name='${ADMIN_UPGRADE_PERMISSION}'`, params);

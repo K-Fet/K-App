@@ -8,6 +8,7 @@ To run the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 10.0.X or higher.
 - [Yarn](https://yarnpkg.com) version 1.9.0 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher.
+- [MongoDB](https://www.mongodb.com/download-center/community) version 4.0 or higher.
 - [Git](https://git-scm.com)
 - [sudo](https://www.sudo.ws/)
 
@@ -76,6 +77,11 @@ Some notes about MySQL:
   `alter user 'USER'@'localhost' identified with mysql_native_password by 'PASSWORD';`.
 
 - By default, mysql on linux is case sensitive, but it must be configured to be insensitive with [this](https://dba.stackexchange.com/questions/59407/).
+
+### MongoDB
+
+There is a work in progress to move everything to a NoSQL database.
+It means that we must use two different databases simultaneously for now.
 
 ### Releasing a new version
 

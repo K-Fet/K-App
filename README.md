@@ -35,6 +35,7 @@ To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 10.0.x or higher.
 - [Yarn](https://yarnpkg.com) version 1.9.0 or higher.
 - [MySQL](https://dev.mysql.com/downloads/mysql) version 5.7 or higher. Please note that your MYSQL server must be configured as `case insensitive` in order to perform migration scripts ([how to](https://dba.stackexchange.com/a/69330))
+- [MongoDB](https://www.mongodb.com/download-center/community) version 4.0 or higher.
 - [Python 3](https://www.python.org/download/releases/3.0/) latest version.
 - Git. For [windows](https://git-scm.com/downloads), for linux : `sudo apt-get install git`
 

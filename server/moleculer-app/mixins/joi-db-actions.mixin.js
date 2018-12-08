@@ -15,7 +15,7 @@ module.exports = function joiDbActions(joiModel) {
     actions: {
       find: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           populate: JOI_STRING_OR_STRING_ARRAY,
           fields: JOI_STRING_OR_STRING_ARRAY,
           limit: Joi.number().integer().min(0),
@@ -28,7 +28,7 @@ module.exports = function joiDbActions(joiModel) {
       },
       count: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           search: Joi.string(),
           searchFields: JOI_STRING_OR_STRING_ARRAY,
           query: Joi.object(),
@@ -36,7 +36,7 @@ module.exports = function joiDbActions(joiModel) {
       },
       list: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           populate: JOI_STRING_OR_STRING_ARRAY,
           fields: JOI_STRING_OR_STRING_ARRAY,
           page: Joi.number().integer().min(1),
@@ -49,18 +49,18 @@ module.exports = function joiDbActions(joiModel) {
       },
       create: {
         permissions: true,
-        params: joiModel,
+        params: () => joiModel,
       },
       insert: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           entities: Joi.array().items(joiModel),
           entity: joiModel,
         }).without('entities', 'entity'),
       },
       get: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           id: JOI_ID.required(),
           populate: JOI_STRING_OR_STRING_ARRAY,
           fields: JOI_STRING_OR_STRING_ARRAY,
@@ -69,13 +69,13 @@ module.exports = function joiDbActions(joiModel) {
       },
       update: {
         permissions: true,
-        params: joiModel.append({
+        params: () => joiModel.append({
           id: JOI_ID.required(),
         }),
       },
       remove: {
         permissions: true,
-        params: Joi.object({
+        params: () => Joi.object({
           id: JOI_ID.required(),
         }),
       },

@@ -32,7 +32,9 @@ async function populatePermissions(sb) {
 async function start({ expressApp, apiPath }) {
   broker.loadServices(path.join(__dirname, 'services'));
 
-  expressApp.use(apiPath, broker.getLocalService('api').express());
+  expressApp.use(apiPath,
+    broker.getLocalService('api').express(),
+    (req, res) => res.sendStatus(404));
 
   await broker.start();
 
