@@ -62,6 +62,8 @@ function start() {
       'db:database',
       'db:password',
 
+      'mongodb:url',
+
       // Mail
       'mail:host',
       'mail:auth:user',

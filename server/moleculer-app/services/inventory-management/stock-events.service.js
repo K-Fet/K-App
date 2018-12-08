@@ -1,44 +1,31 @@
-const DbService = require('moleculer-db');
-// const MongooseAdapter = require('moleculer-db-adapter-mongoose');
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const JoiDbActions = require('../../mixins/joi-db-actions.mixin');
+const DbMixin = require('../../mixins/db-service.mixin');
 
-const stockEventSchema = Joi.object({
-  refProduct: Joi.number().integer().required(),
-  diff: Joi.number().required(),
-  type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery'),
-  refOrder: Joi.string(),
-});
-
-module.exports = {
-  name: 'inventory-management.stock-events',
-  mixins: [DbService],
-
-  model: mongoose.model('StockEvent', mongoose.Schema({
-    refProduct: { type: Number, required: true, min: 0 },
+const model = {
+  mongoose: mongoose.model('StockEvent', mongoose.Schema({
+    product: { type: Number, required: true, min: 0 },
     diff: { type: Number, required: true },
     type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
     date: { type: Date, default: Date.now },
     refOrder: { type: String },
   })),
+  joi: Joi.object({
+    product: Joi.number().integer().required(),
+    diff: Joi.number().required(),
+    type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery'),
+    refOrder: Joi.string(),
+  }),
+};
 
-  actions: {
-    create: {
-      params: Joi.object({
-        params: Joi.any(),
-        query: Joi.any(),
-        body: stockEventSchema.required(),
-      }),
-      async handler(ctx) {
-        const entity = ctx.params.body;
+module.exports = {
+  name: 'inventory-management.stock-events',
+  mixins: [DbMixin(model.mongoose), JoiDbActions(model.joi)],
 
-        return this.validateEntity(entity)
-        // Apply idField
-          .then(e => this.adapter.beforeSaveTransformID(e, this.settings.idField))
-          .then(e => this.adapter.insert(e))
-          .then(doc => this.transformDocuments(ctx, {}, doc))
-          .then(json => this.entityChanged('created', json, ctx).then(() => json));
-      },
+  settings: {
+    populates: {
+      product: 'inventory-management.products.get',
     },
   },
 };

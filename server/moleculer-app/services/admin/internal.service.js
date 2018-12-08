@@ -3,42 +3,42 @@ module.exports = {
 
   actions: {
     list: {
-      permissions: ['internal:list'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.list');
       },
     },
 
     services: {
-      permissions: ['internal:services'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.services');
       },
     },
 
     actions: {
-      permissions: ['internal:actions'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.actions');
       },
     },
 
     events: {
-      permissions: ['internal:events'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.events');
       },
     },
 
     health: {
-      permissions: ['internal:health'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.health');
       },
     },
 
     options: {
-      permissions: ['internal:options'],
+      permissions: true,
       handler(ctx) {
         return ctx.call('$node.options');
       },

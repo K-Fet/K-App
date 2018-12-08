@@ -17,10 +17,13 @@ async function boot(options = {}) {
 
   await sequelize.start(options);
 
+  // Start express (and so moleculer) before synchronising permissions
+  // in order to have loaded all auto-generated permissions
+  await express.start(options);
+
   await Promise.all([
     feed.start(options),
     permissions.start(options),
-    express.start(options),
   ]);
 }
 
