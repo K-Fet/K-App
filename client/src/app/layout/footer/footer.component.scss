@@ -1,0 +1,11 @@
+@import "../../../theme";
+
+.text {
+  text-align: center;
+  font-size: .8em;
+  color: rgba(0, 0, 0, .87);
+}
+
+.accent {
+  color: $warn;
+}

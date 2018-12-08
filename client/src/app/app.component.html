@@ -1,61 +1,63 @@
-<app-loader></app-loader>
+<div class="footer-wrapper">
+  <app-loader></app-loader>
 
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
-  <button mat-icon-button (click)="sn.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
+  <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+    <button mat-icon-button (click)="sn.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
 
-  <a class="nav-link home" href="/">K-App</a>
+    <button class="home" routerLink="/" mat-button>K-App</button>
 
-  <div fxFlex></div>
+    <div fxFlex></div>
 
-  <mat-menu #userInfo="matMenu" [overlapTrigger]="false" class="connected-user-information">
-    <div *ngIf="user?.barman">
-      <h4>Compte Barman {{user.barman.nickname}}</h4>
-      <p>Membre depuis le {{user.barman.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
-      <div fxLayoutAlign="end">
-        <a mat-raised-button routerLink="/barmen/{{user.barman.id}}/edit">Modifier mes informations</a>
+    <mat-menu #userInfo="matMenu" [overlapTrigger]="false" class="connected-user-information">
+      <div *ngIf="user?.barman">
+        <h4>Compte Barman {{user.barman.nickname}}</h4>
+        <p>Membre depuis le {{user.barman.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
+        <div fxLayoutAlign="end">
+          <a mat-raised-button routerLink="/barmen/{{user.barman.id}}/edit">Modifier mes informations</a>
+        </div>
       </div>
-    </div>
-    <div *ngIf="user?.specialAccount">
-      <h4>Compte spécial {{user.specialAccount.connection.email}}</h4>
-      <p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
-      <div fxLayoutAlign="end">
-        <a mat-raised-button routerLink="/specialaccounts/{{user.specialAccount.id}}">Modifier mes informations</a>
+      <div *ngIf="user?.specialAccount">
+        <h4>Compte spécial {{user.specialAccount.connection.email}}</h4>
+        <p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
+        <div fxLayoutAlign="end">
+          <a mat-raised-button routerLink="/specialaccounts/{{user.specialAccount.id}}">Modifier mes informations</a>
+        </div>
       </div>
-    </div>
-  </mat-menu>
+    </mat-menu>
 
-  <div [ngSwitch]="user?.isGuest()">
-    <div *ngSwitchCase="true">
-      <button *ngIf="!user.isGuest()" mat-icon-button [matMenuTriggerFor]="userInfo">
+    <div *ngIf="!user?.isGuest()">
+      <button mat-icon-button [matMenuTriggerFor]="userInfo">
         <mat-icon class="example-icon">person</mat-icon>
       </button>
 
-      <button type="button" mat-icon-button (click)="logout()" *ngIf="!user.isGuest()">
+      <button type="button" mat-icon-button (click)="logout()">
         <mat-icon>power_settings_new</mat-icon>
       </button>
     </div>
-    <div *ngSwitchDefault>
+
+    <div *ngIf="user?.isGuest()">
       <button mat-stroked-button type="button" routerLink="login">
         Se connecter
       </button>
     </div>
-  </div>
-</mat-toolbar>
+  </mat-toolbar>
 
-<mat-sidenav-container>
-  <mat-sidenav #sn [fixedTopGap]="mobileQuery.matches ? 56 : 64" fixedBottomGap="50"
-               [mode]="sidenavQuery.matches ? 'over' : 'side'"
-               fixedInViewport="true">
-    <app-nav-menu></app-nav-menu>
-  </mat-sidenav>
+  <mat-sidenav-container>
+    <mat-sidenav #sn [fixedTopGap]="mobileQuery.matches ? 56 : 64" fixedBottomGap="50"
+                 [mode]="sidenavQuery.matches ? 'over' : 'side'"
+                 fixedInViewport="true">
+      <app-nav-menu></app-nav-menu>
+    </mat-sidenav>
 
-  <mat-sidenav-content [style.marginTop.px]="mobileQuery.matches ? 56 : 64" class="content-container">
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+    <mat-sidenav-content [style.marginTop.px]="mobileQuery.matches ? 56 : 64" class="content-container">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 
-<footer>
+  <div class="footer-push"></div>
+</div>
+<footer class="footer">
   <app-footer></app-footer>
 </footer>

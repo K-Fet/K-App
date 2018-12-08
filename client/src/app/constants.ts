@@ -21,6 +21,7 @@ export const BAD_REQUEST_ERRORS = {
   NoPasswordToken: 'Erreur, votre mot de passe est surement déjà défini',
   BadLeaveAtDate: 'Erreur, la date de départ ne peut pas être avant la date d\'entrée',
   MemberAlreadyRegistered: 'Erreur, l\'adhérent est déjà inscrit pour l\'année',
+  ReservedPermission: 'La permission admin:upgrade est réservée. Veuillez contacter l\'administrateur.',
 };
 
 export const ROLES = [

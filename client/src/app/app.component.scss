@@ -23,6 +23,10 @@
   z-index: 9999;
 }
 
+.home {
+  font-family: "MedievalSharp", cursive;
+}
+
 .content-container {
   padding-top: 16px;
   padding-left: 16px;
@@ -33,12 +37,11 @@
   padding: 0 20px 0 20px;
 }
 
-.home {
-  font-family: "MedievalSharp", cursive;
-  cursor: pointer;
+.footer-wrapper {
+  min-height: 100vh;
+  margin-bottom: -56px;
 }
 
-// TODO Not used for now
-.footer {
-  height: 110px;
+.footer, .footer-push {
+  height: 56px;
 }
