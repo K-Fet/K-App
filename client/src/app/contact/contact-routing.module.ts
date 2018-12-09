@@ -23,6 +23,10 @@ const routes: Routes = [
     component: ContactFormComponent,
     data: { type: 'website' },
   },
+  {
+    path: '',
+    redirectTo: '/',
+  },
 ];
 
 @NgModule({
