@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { HomePageComponent } from './home-page/home-page.component';
+import { HomePageComponent } from './home/home-page/home-page.component';
+import { PresentationComponent } from './presentation/presentation.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'contact',
     loadChildren: './contact/contact.module#ContactModule',
+  },
+  {
+    path: 'presentation',
+    component: PresentationComponent,
   },
   {
     path: '',

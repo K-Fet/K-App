@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../_services';
-import { ConnectedUser, Barman } from '../_models';
+import { AuthService } from '../../core/api-services/auth.service';
+import { ConnectedUser, Barman } from '../../shared/models';
 
 @Component({
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'],
 })
-
 export class HomePageComponent implements OnInit {
 
   private currentUser: ConnectedUser;
@@ -22,7 +21,8 @@ export class HomePageComponent implements OnInit {
   getName(): string {
     if (this.currentUser.specialAccount) {
       return this.currentUser.email;
-    } if (this.currentUser.barman) {
+    }
+    if (this.currentUser.barman) {
       return this.currentUser.barman.nickname;
     }
     return '';

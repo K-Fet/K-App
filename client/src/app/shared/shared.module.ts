@@ -8,6 +8,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { EqualValidator } from './directives/equal-validator.directive';
 import { DynamicFormsMaterialUIModule } from '@ng-dynamic-forms/ui-material';
 import { DynamicFormsCoreModule } from '@ng-dynamic-forms/core';
+import { MomentModule } from 'ngx-moment';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DynamicFormsCoreModule } from '@ng-dynamic-forms/core';
     ReactiveFormsModule,
     DynamicFormsCoreModule,
     DynamicFormsMaterialUIModule,
+    MomentModule,
     NgxPermissionsModule,
     FlexLayoutModule,
     // TODO Use material date picker
