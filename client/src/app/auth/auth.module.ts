@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { ResetPasswordDialogComponent } from './reset-password-dialog/reset-password-dialog.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +12,7 @@ import { ResetPasswordDialogComponent } from './reset-password-dialog/reset-pass
     ResetPasswordDialogComponent,
   ],
   imports: [
-    CommonModule,
+    SharedModule,
     AuthRoutingModule,
   ],
 })

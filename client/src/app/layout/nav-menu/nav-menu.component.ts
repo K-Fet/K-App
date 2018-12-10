@@ -21,7 +21,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Accueil',
-        route: '/',
+        route: '/home',
       },
     ],
   },
@@ -30,7 +30,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Présentation',
-        route: '/presentation',
+        route: '/home/presentation',
       },
     ],
   },
@@ -61,17 +61,17 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Planning',
-        route: '/services-explorer',
+        route: '/services/services-explorer',
         permissions: ['service:read'],
       },
       {
         name: 'Ouvrir les services',
-        route: '/open-services',
+        route: '/services/open-services',
         permissions: ['TEMPLATE_MANAGER'],
       },
       {
         name: 'Liste des services',
-        route: '/services-manager',
+        route: '/services/services-manager',
         permissions: ['SERVICE_MANAGER'],
       },
     ],
@@ -107,7 +107,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Roles',
-        route: '/roles',
+        route: '/acl/roles',
         permissions: ['role:read'],
       },
     ],
@@ -116,7 +116,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Comptes spéciaux',
-        route: '/specialaccounts',
+        route: '/acl/specialaccounts',
         permissions: ['specialaccount:read'],
       },
     ],
@@ -125,7 +125,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Templates',
-        route: '/templates',
+        route: '/services/templates',
         permissions: ['template:write'],
       },
     ],

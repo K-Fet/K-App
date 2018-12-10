@@ -10,7 +10,6 @@ import { FooterComponent } from './layout/footer/footer.component';
 import { LoaderComponent } from './layout/loader/loader.component';
 import { NavMenuComponent } from './layout/nav-menu/nav-menu.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { PresentationComponent } from './presentation/presentation.component';
 
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
@@ -30,7 +29,6 @@ moment.locale('fr');
     LoaderComponent,
     NavMenuComponent,
     NotFoundComponent,
-    PresentationComponent,
   ],
   imports: [
     BrowserModule,

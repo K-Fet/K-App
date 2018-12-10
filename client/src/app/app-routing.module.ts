@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { PresentationComponent } from './presentation/presentation.component';
 
 const routes: Routes = [
   {
@@ -37,12 +36,12 @@ const routes: Routes = [
     loadChildren: './services/services.module#ServicesModule',
   },
   {
-    path: 'presentation',
-    component: PresentationComponent,
+    path: 'home',
+    loadChildren: './home/home.module#HomeModule',
   },
   {
     path: '',
-    loadChildren: './home/home.module#HomeModule',
+    redirectTo: '/home',
     pathMatch: 'full',
   },
   {

@@ -1,28 +1,3 @@
-// TODO Not used for now
-.main-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  z-index: 5;
-}
-
-// TODO Not used for now
-.sidenav-container {
-  position: absolute;
-  top: 0;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-}
-
-// TODO Not used for now
-.sidenav {
-  width: 256px;
-  border-right: 1px solid rgba(0, 0, 0, .14);
-  z-index: 9999;
-}
-
 .home {
   font-family: "MedievalSharp", cursive;
   font-size: large;
