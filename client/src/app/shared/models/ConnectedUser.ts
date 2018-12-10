@@ -14,10 +14,10 @@ export class ConnectedUser {
   }
 
   public isGuest(): boolean {
-    return this.accountType === 'Guest' ? true : false;
+    return this.accountType === 'Guest';
   }
 
   public isBarman(): boolean {
-    return this.accountType === 'Barman' ? true : false;
+    return this.accountType === 'Barman';
   }
 }

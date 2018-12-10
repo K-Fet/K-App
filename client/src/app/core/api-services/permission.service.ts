@@ -19,7 +19,7 @@ export class PermissionService {
 
           perms.forEach((p) => {
             return obs.push(
-              from(this.ngxPermissions.hasPermission(p.name as string)
+              from(this.ngxPermissions.hasPermission(p.name)
                 .then((hasP) => {
                   p.disabled = !hasP;
                   return p;

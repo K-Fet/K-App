@@ -9,7 +9,6 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-base-contact-form',
   templateUrl: './base-contact-form.component.html',
-  styleUrls: ['./base-contact-form.component.scss'],
 })
 export class BaseContactFormComponent implements OnInit {
 
