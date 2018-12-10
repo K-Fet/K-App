@@ -10,14 +10,18 @@
         </section>
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="formGroup" fxLayoutAlign="center" fxLayout="column"
-            (ngSubmit)="onNgSubmit()">
-        <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
+    <mat-card-content fxLayoutAlign="center" fxLayout="column">
+      <form [formGroup]="formGroup" (ngSubmit)="onNgSubmit()">
+        <dynamic-material-form [group]="formGroup" [model]="model" [layout]="layout">
+          <ng-template modelType="GROUP" let-legend="legend" align="START">
+            <h4 *ngIf="legend">{{ legend }}</h4>
+          </ng-template>
+        </dynamic-material-form>
         <re-captcha (captchaResponse)="onCaptchaComplete($event)" site_key="{{siteKey}}"></re-captcha>
-
-        <div fxLayoutAlign="center">
-          <button fxFlex="50" mat-button type="submit" [disabled]="!this.formGroup.valid || this.token === undefined">
+        <div fxLayout="row">
+          <div fxFlex></div>
+          <button mat-raised-button type="submit" color="primary"
+                  [disabled]="!this.formGroup.valid || this.token === undefined">
             Envoyer
           </button>
         </div>

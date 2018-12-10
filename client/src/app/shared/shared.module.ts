@@ -10,6 +10,7 @@ import { DynamicFormsMaterialUIModule } from '@ng-dynamic-forms/ui-material';
 import { DynamicFormsCoreModule } from '@ng-dynamic-forms/core';
 import { MomentModule } from 'ngx-moment';
 import { DialogsModule } from './dialogs/dialogs.module';
+import { DynamicControlsModule } from './dynamic-controls/dynamic-controls.module';
 
 @NgModule({
   declarations: [
@@ -23,11 +24,14 @@ import { DialogsModule } from './dialogs/dialogs.module';
     ReactiveFormsModule,
     DynamicFormsCoreModule,
     DynamicFormsMaterialUIModule,
+    // Custom Forms Control
+    DynamicControlsModule,
     MomentModule,
     DialogsModule,
     NgxPermissionsModule,
     FlexLayoutModule,
     // TODO Use material date picker
+    //  If needed, import it only in the concerned module
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
   ],

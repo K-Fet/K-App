@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
+  DynamicFormLayout,
   DynamicFormModel,
   DynamicFormService,
 } from '@ng-dynamic-forms/core';
@@ -14,6 +15,7 @@ export class BaseContactFormComponent implements OnInit {
 
   @Input() title: string;
   @Input() model: DynamicFormModel;
+  @Input() layout: DynamicFormLayout;
 
   @Output() onSubmit: EventEmitter<any> = new EventEmitter<any>();
 
