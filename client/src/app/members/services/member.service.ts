@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Member, Registration } from '../../shared/models';
 import { Observable } from 'rxjs';
+import { Member } from '../models/Member';
+import { Registration } from '../models/Registration';
 
 @Injectable()
 export class MemberService {
