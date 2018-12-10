@@ -25,23 +25,25 @@
 
 .home {
   font-family: "MedievalSharp", cursive;
+  font-size: large;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
 .content-container {
+  flex: 1;
+  position: relative;
+}
+
+.content {
   padding-top: 16px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-bottom: 10px;
 }
 
 .connected-user-information {
   padding: 0 20px 0 20px;
-}
-
-.footer-wrapper {
-  min-height: 100vh;
-  margin-bottom: -56px;
-}
-
-.footer, .footer-push {
-  height: 56px;
 }

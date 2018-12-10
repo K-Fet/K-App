@@ -1,9 +1,16 @@
 @import "../../../theme";
 
+.footer {
+  border-top: 1px solid rgba(0, 0, 0, .14);
+}
+
 .text {
   text-align: center;
   font-size: .8em;
   color: rgba(0, 0, 0, .87);
+
+  margin-top: 10px;
+  margin-bottom: 9px;
 }
 
 .accent {
