@@ -14,7 +14,6 @@ import { PresentationComponent } from './presentation/presentation.component';
 
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { HomeModule } from './home/home.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -40,8 +39,6 @@ moment.locale('fr');
     HttpClientModule,
     CoreModule,
     SharedModule,
-    // Eager load HomeModule
-    HomeModule,
     NgxPermissionsModule.forRoot(),
     AppRoutingModule,
   ],

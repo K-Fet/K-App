@@ -1,21 +1,40 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { HomePageComponent } from './home/home-page/home-page.component';
 import { PresentationComponent } from './presentation/presentation.component';
 
 const routes: Routes = [
   {
-    path: 'legacy',
-    loadChildren: './legacy-app/legacy-app.module#LegacyAppModule',
+    path: 'acl',
+    loadChildren: './acl/acl.module#AclModule',
+  },
+  {
+    path: 'auth',
+    loadChildren: './auth/auth.module#AuthModule',
+  },
+  {
+    path: 'barmen',
+    loadChildren: './barmen/barmen.module#BarmenModule',
+  },
+  {
+    path: 'contact',
+    loadChildren: './contact/contact.module#ContactModule',
   },
   {
     path: 'inventory-management',
     loadChildren: './inventory-management/inventory-management.module#InventoryManagementModule',
   },
   {
-    path: 'contact',
-    loadChildren: './contact/contact.module#ContactModule',
+    path: 'kommissions',
+    loadChildren: './kommissions/kommissions.module#KommissionsModule',
+  },
+  {
+    path: 'members',
+    loadChildren: './members/members.module#MembersModule',
+  },
+  {
+    path: 'services',
+    loadChildren: './services/services.module#ServicesModule',
   },
   {
     path: 'presentation',
@@ -23,7 +42,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    component: HomePageComponent,
+    loadChildren: './home/home.module#HomeModule',
     pathMatch: 'full',
   },
   {
@@ -33,7 +52,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules,
+    }),
+  ],
   exports: [RouterModule],
   providers: [],
 })

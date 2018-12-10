@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { HelloWorldComponent } from './hello-world/hello-world.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HelloWorldComponent,
+    component: HomePageComponent,
   },
 ];
 
@@ -14,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class LegacyAppRoutingModule {}
+export class HomeRoutingModule {}
