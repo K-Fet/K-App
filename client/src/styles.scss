@@ -1,6 +1,6 @@
+@import url("https://fonts.googleapis.com/css?family=MedievalSharp|Roboto:300,400,500");
 // Picker
 @import "~ng-pick-datetime/assets/style/picker.min.css";
-@import url("https://fonts.googleapis.com/css?family=MedievalSharp|Roboto:300,400,500");
 
 body {
   font-family: Roboto, sans-serif;
@@ -50,6 +50,7 @@ body {
 }
 
 @keyframes sk-scaleout {
+
   0% {
     transform: scale(0);
   }
