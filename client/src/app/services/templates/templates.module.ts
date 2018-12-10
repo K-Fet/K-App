@@ -7,7 +7,7 @@ import { TemplatesRoutingModule } from './templates-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    TemplatesRoutingModule
-  ]
+    TemplatesRoutingModule,
+  ],
 })
 export class TemplatesModule { }

@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MemberService, ToasterService } from '../../_services';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { AVAILABLE_SCHOOLS, Member } from '../../_models';
-import { ValidateCheckbox } from '../../_validators/checkbox.validator';
-import { ValidateSchool } from '../../_validators/school.validator';
 import { MatDialog } from '@angular/material';
-import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { Observable, forkJoin } from 'rxjs';
 import { debounceTime, filter, finalize, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { UpdateSchoolDialogComponent } from '../../dialogs/update-school/update-school.component';
+import { ToasterService } from '../../core/services/toaster.service';
+import { MemberService } from '../services/member.service';
+import { Member } from '../models/Member';
+import { ValidateSchool } from '../../shared/validators/school.validator';
+import { ValidateCheckbox } from '../../shared/validators/checkbox.validator';
+import { AVAILABLE_SCHOOLS, CURRENT_SCHOOL_YEAR } from '../../constants';
+import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { UpdateSchoolDialogComponent } from '../../shared/dialogs/update-school/update-school.component';
 
 @Component({
   templateUrl: './member-new-edit.component.html',

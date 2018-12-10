@@ -3,8 +3,7 @@ import { MatDialogRef } from '@angular/material';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-reset-password-dialog',
-  templateUrl: './reset-password.component.html',
+  templateUrl: './reset-password-dialog.component.html',
 })
 export class ResetPasswordDialogComponent {
 
@@ -14,9 +13,5 @@ export class ResetPasswordDialogComponent {
     this.resetForm = this.fb.group({
       emailFormControl: new FormControl('', [Validators.required, Validators.email]),
     });
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }

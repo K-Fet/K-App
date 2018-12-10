@@ -7,7 +7,7 @@ import { RolesRoutingModule } from './roles-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    RolesRoutingModule
-  ]
+    RolesRoutingModule,
+  ],
 })
 export class RolesModule { }

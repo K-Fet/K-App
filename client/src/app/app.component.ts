@@ -5,7 +5,6 @@ import { ToasterService } from './core/services/toaster.service';
 import { Router } from '@angular/router';
 import { MatSidenav } from '@angular/material';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

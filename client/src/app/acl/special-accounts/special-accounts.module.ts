@@ -7,7 +7,7 @@ import { SpecialAccountsRoutingModule } from './special-accounts-routing.module'
   declarations: [],
   imports: [
     CommonModule,
-    SpecialAccountsRoutingModule
-  ]
+    SpecialAccountsRoutingModule,
+  ],
 })
 export class SpecialAccountsModule { }

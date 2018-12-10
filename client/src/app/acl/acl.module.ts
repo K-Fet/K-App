@@ -7,7 +7,7 @@ import { AclRoutingModule } from './acl-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    AclRoutingModule
-  ]
+    AclRoutingModule,
+  ],
 })
 export class AclModule { }

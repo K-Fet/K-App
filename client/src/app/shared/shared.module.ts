@@ -9,6 +9,7 @@ import { EqualValidator } from './directives/equal-validator.directive';
 import { DynamicFormsMaterialUIModule } from '@ng-dynamic-forms/ui-material';
 import { DynamicFormsCoreModule } from '@ng-dynamic-forms/core';
 import { MomentModule } from 'ngx-moment';
+import { DialogsModule } from './dialogs/dialogs.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MomentModule } from 'ngx-moment';
     DynamicFormsCoreModule,
     DynamicFormsMaterialUIModule,
     MomentModule,
+    DialogsModule,
     NgxPermissionsModule,
     FlexLayoutModule,
     // TODO Use material date picker

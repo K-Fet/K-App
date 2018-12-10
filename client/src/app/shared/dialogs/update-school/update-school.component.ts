@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ValidateSchool } from '../../_validators/school.validator';
+import { ValidateSchool } from '../../validators/school.validator';
 import { startWith } from 'rxjs/internal/operators/startWith';
 import { map } from 'rxjs/operators';
-import { AVAILABLE_SCHOOLS } from '../../_models';
+import { AVAILABLE_SCHOOLS } from '../../../constants';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-update-school-dialog',
   templateUrl: './update-school.component.html',
 })
 export class UpdateSchoolDialogComponent {
@@ -16,7 +15,10 @@ export class UpdateSchoolDialogComponent {
   schoolForm: FormGroup;
   filteredSchools: Observable<string[]>;
 
-  constructor(public dialogRef: MatDialogRef<UpdateSchoolDialogComponent>, private fb: FormBuilder) {
+  constructor(
+    public dialogRef: MatDialogRef<UpdateSchoolDialogComponent>,
+    private fb: FormBuilder,
+  ) {
     this.schoolForm = this.fb.group({
       school: new FormControl('', [Validators.required, ValidateSchool]),
     });
@@ -35,9 +37,5 @@ export class UpdateSchoolDialogComponent {
     if (AVAILABLE_SCHOOLS.find(s => s.toLowerCase() === school)) return AVAILABLE_SCHOOLS;
 
     return AVAILABLE_SCHOOLS.filter(s => s.toLowerCase().includes(school));
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
   }
 }

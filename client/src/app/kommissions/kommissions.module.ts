@@ -7,7 +7,7 @@ import { KommissionsRoutingModule } from './kommissions-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    KommissionsRoutingModule
-  ]
+    KommissionsRoutingModule,
+  ],
 })
 export class KommissionsModule { }

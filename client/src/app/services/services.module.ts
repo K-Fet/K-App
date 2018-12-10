@@ -7,7 +7,7 @@ import { ServicesRoutingModule } from './services-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    ServicesRoutingModule
-  ]
+    ServicesRoutingModule,
+  ],
 })
 export class ServicesModule { }

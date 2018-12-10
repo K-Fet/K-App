@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Member } from '../../_models';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { MemberService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { CURRENT_SCHOOL_YEAR } from '../../_helpers/currentYear';
+import { CURRENT_SCHOOL_YEAR } from '../../constants';
+import { Member } from '../models/Member';
+import { CodeDialogComponent } from '../../shared/dialogs/code-dialog/code-dialog.component';
+import { MemberService } from '../services/member.service';
+import { ToasterService } from '../../core/services/toaster.service';
 
 @Component({
   templateUrl: './members-list.component.html',

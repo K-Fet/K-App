@@ -7,7 +7,7 @@ import { TasksRoutingModule } from './tasks-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    TasksRoutingModule
-  ]
+    TasksRoutingModule,
+  ],
 })
 export class TasksModule { }

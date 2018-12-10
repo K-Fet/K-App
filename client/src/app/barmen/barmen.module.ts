@@ -7,7 +7,7 @@ import { BarmenRoutingModule } from './barmen-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    BarmenRoutingModule
-  ]
+    BarmenRoutingModule,
+  ],
 })
 export class BarmenModule { }
