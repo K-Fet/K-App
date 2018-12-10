@@ -34,10 +34,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     {
       provide: DYNAMIC_FORM_CONTROL_MAP_FN,
       useValue: (model: DynamicFormControlModel): Type<DynamicFormControl> | null => {
-        switch (model.type) {
-          case DYNAMIC_FORM_CONTROL_TYPE_DATEPICKER:
-            return DynamicOwlDateTimeComponent;
-        }
+        if (model.type === DYNAMIC_FORM_CONTROL_TYPE_DATEPICKER) return DynamicOwlDateTimeComponent;
       },
     },
   ],

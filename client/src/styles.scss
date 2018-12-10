@@ -39,6 +39,10 @@ body {
   white-space: normal;
 }
 
+.form-field-block .mat-form-field {
+  display: block;
+}
+
 .spinner {
   width: 40px;
   height: 40px;

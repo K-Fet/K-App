@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-not-found',
   template: `
     <div fxLayoutAlign="center center" style="height: 100%">
-      <img src="./assets/404.png"/>
+      <img src="./assets/404.png" alt="Page Introuvable"/>
     </div>
   `,
 })

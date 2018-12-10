@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
   DynamicDatePickerModel,
-  DynamicFormGroupModel, DynamicFormLayout,
+  DynamicFormGroupModel,
   DynamicFormModel,
   DynamicInputModel,
   DynamicTextAreaModel,
@@ -43,7 +43,6 @@ const BASE_INFO_FORM_GROUP = new DynamicFormGroupModel({
     <app-base-contact-form
       [title]="formTitle"
       [model]="formModel"
-      [layout]="formLayout"
       (onSubmit)="submit($event)"
     ></app-base-contact-form>
   `,
@@ -51,7 +50,6 @@ const BASE_INFO_FORM_GROUP = new DynamicFormGroupModel({
 export class ContactFormComponent implements OnInit {
 
   formModel: DynamicFormModel = [];
-  formLayout: DynamicFormLayout = {};
   formTitle: string;
   formName: string;
 
@@ -67,11 +65,6 @@ export class ContactFormComponent implements OnInit {
       switch (data.type) {
         case 'concert':
           this.formTitle = 'Contact pour un concert';
-          this.formLayout = {
-            concert: {
-              element: {},
-            },
-          };
           this.formModel = [
             BASE_INFO_FORM_GROUP,
             new DynamicFormGroupModel({
@@ -96,6 +89,7 @@ export class ContactFormComponent implements OnInit {
                 new DynamicTextAreaModel({
                   id: 'description',
                   label: 'Description rapide',
+                  rows: 6,
                   validators: { required: null },
                 }),
               ],
@@ -133,6 +127,7 @@ export class ContactFormComponent implements OnInit {
                 new DynamicTextAreaModel({
                   id: 'description',
                   label: 'Description rapide',
+                  rows: 6,
                   validators: { required: null },
                 }),
               ],
@@ -141,18 +136,80 @@ export class ContactFormComponent implements OnInit {
           break;
         case 'lost':
           this.formTitle = 'Contact pour un objet perdu';
-          this.formModel = [];
+          this.formModel = [
+            BASE_INFO_FORM_GROUP,
+            new DynamicFormGroupModel({
+              id: 'object',
+              legend: 'L\'objet perdu',
+              group: [
+                new DynamicInputModel({
+                  id: 'objectName',
+                  label: 'Nom de l\'objet',
+                  validators: { required: null },
+                }),
+                new DynamicInputModel({
+                  id: 'lostDate',
+                  label: 'Pour une association ?',
+                  validators: { required: null },
+                }),
+                new DynamicDatePickerModel({
+                  id: 'lostDate',
+                  label: 'Date de perte',
+                  validators: { required: null },
+                }),
+                new DynamicTextAreaModel({
+                  id: 'description',
+                  label: 'Description rapide',
+                  rows: 6,
+                  validators: { required: null },
+                }),
+              ],
+            }),
+          ];
           break;
         case 'website':
           this.formTitle = 'Contact pour un problème avec le site';
-          this.formModel = [];
+          this.formModel = [
+            new DynamicFormGroupModel({
+              id: 'info',
+              legend: 'Vos informations',
+              group: [
+                new DynamicInputModel({
+                  id: 'lastName',
+                  label: 'Nom',
+                  validators: { required: null },
+                }),
+                new DynamicInputModel({
+                  id: 'firstName',
+                  label: 'Prénom',
+                  validators: { required: null },
+                }),
+              ],
+            }),
+            new DynamicFormGroupModel({
+              id: 'website',
+              legend: 'Le problème du site',
+              group: [
+                new DynamicInputModel({
+                  id: 'pageName',
+                  label: 'Nom de de la page',
+                  validators: { required: null },
+                }),
+                new DynamicTextAreaModel({
+                  id: 'description',
+                  label: 'Description rapide',
+                  rows: 6,
+                  validators: { required: null },
+                }),
+              ],
+            }),
+          ];
           break;
       }
     });
   }
 
   submit(event) {
-    // TODO Send
     this.contactService.send(this.formName, event.value, event.token).subscribe(() => {
       this.toasterService.showToaster('Votre demande a bien été enregistrée. Nous y donnerons suite dès que possible!');
       this.router.navigate(['/']);
