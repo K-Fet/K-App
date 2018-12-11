@@ -1,9 +1,8 @@
 import { Service } from '.';
-import { Moment } from 'moment';
 
 export class Day {
   name: string;
-  date: Moment;
+  date: Date;
   active: boolean;
   services: Service[];
 

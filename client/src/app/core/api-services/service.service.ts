@@ -3,13 +3,10 @@ import { HttpClient } from '@angular/common/http';
 
 import { Barman, Day, Service } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-import * as moment from 'moment';
-// tslint:disable-next-line:no-duplicate-imports
-import { Moment } from 'moment';
+import { endOfWeek, getISODay, startOfWeek } from 'date-fns';
 
 // The K-Fêt week change every thusday ( = 4 )
-export const DEFAULT_WEEK_SWITCH: number = 4;
+export const DEFAULT_WEEK_SWITCH = 4;
 const WEEK_DAY_SHORT: string[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Injectable()
@@ -18,11 +15,11 @@ export class ServiceService {
 
   constructor(private http: HttpClient) { }
 
-  get(start: Moment, end: Moment): Observable<Service[]> {
+  get(start: Date, end: Date): Observable<Service[]> {
     return this.http.get<Service[]>('/api/v1/services', {
       params: {
-        startAt: (+start).toString(),
-        endAt: (+end).toString(),
+        startAt: start.toISOString(),
+        endAt: end.toISOString(),
       },
     });
   }
@@ -47,52 +44,31 @@ export class ServiceService {
     return this.http.post<Service>(`/api/v1/services/${id}/delete`, null);
   }
 
-  getWeek(): Observable<{ start: Moment, end: Moment }> {
+  getWeek(): Observable<{ start: Date, end: Date }> {
     return new Observable((week) => {
-      this.$weekInterval.subscribe((weekInterval) => {
-        const start: Moment = moment.utc().set({
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        });
-        const end: Moment = moment.utc().set({
-          hour: 23,
-          minute: 59,
-          second: 59,
-          millisecond: 59,
-        });
-        if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
-          start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1).subtract(1, 'week');
-          end.isoWeekday(+DEFAULT_WEEK_SWITCH);
-        } else {
-          start.isoWeekday(+DEFAULT_WEEK_SWITCH + 1);
-          end.isoWeekday(+DEFAULT_WEEK_SWITCH).add(1, 'week');
-        }
-        if (weekInterval < 0) {
-          start.subtract(Math.abs(+weekInterval), 'week');
-          end.subtract(Math.abs(+weekInterval), 'week');
-        } else if (weekInterval > 0) {
-          start.add(Math.abs(+weekInterval), 'week');
-          end.add(Math.abs(+weekInterval), 'week');
-        }
+      this.$weekInterval.subscribe(() => {
+        const start: Date = startOfWeek(new Date(), { weekStartsOn: DEFAULT_WEEK_SWITCH });
+        const end: Date = endOfWeek(new Date(), { weekStartsOn: DEFAULT_WEEK_SWITCH });
+
+        // TODO Add one week if needed
         week.next({ start, end });
       });
     });
   }
 
-  getPlanning(start: Moment, end: Moment): Observable<Day[]> {
+  getPlanning(start: Date, end: Date): Observable<Day[]> {
     const days: Day[] = [];
     return Observable.create((observer) => {
       this.get(start, end).subscribe(
         (services) => {
+          // TODO Clean up this mess
           services.forEach((service) => {
-            const name = WEEK_DAY_SHORT[moment(service.startAt).isoWeekday()];
+            const name = WEEK_DAY_SHORT[getISODay(service.startAt)];
             const index = days.map(currentDay => currentDay.name).indexOf(name);
             if (index === -1) {
               const day = {
-                name: WEEK_DAY_SHORT[moment(service.startAt).isoWeekday()],
-                date: moment.utc(service.startAt),
+                name: WEEK_DAY_SHORT[getISODay(service.startAt)],
+                date: service.startAt,
                 active: false,
                 services: [],
               };

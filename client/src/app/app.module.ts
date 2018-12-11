@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { DateFnsModule, DateFnsConfigurationService } from 'ngx-date-fns';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './layout/footer/footer.component';
@@ -16,11 +17,12 @@ import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
-// Load moment french locale
-import 'moment/locale/fr';
-import * as moment from 'moment';
+// Load date-fns french locale
+// @ts-ignore
+import * as frLocale from 'date-fns/locale/fr/index.js';
 
-moment.locale('fr');
+const frenchConfig = new DateFnsConfigurationService();
+frenchConfig.setLocale(frLocale);
 
 @NgModule({
   declarations: [
@@ -38,7 +40,11 @@ moment.locale('fr');
     CoreModule,
     SharedModule,
     NgxPermissionsModule.forRoot(),
+    DateFnsModule.forRoot(),
     AppRoutingModule,
+  ],
+  providers: [
+    { provide: DateFnsConfigurationService, useValue: frenchConfig }, // <-- All pipies in French by default
   ],
   bootstrap: [AppComponent],
 })
