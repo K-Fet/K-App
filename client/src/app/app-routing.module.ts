@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const routes: Routes = [
   {
     path: 'acl',
+    data: { permissions: { only: ['roles:read', 'special-accounts:read'] } },
+    canLoad: [NgxPermissionsGuard],
     loadChildren: './acl/acl.module#AclModule',
   },
   {
@@ -13,6 +16,8 @@ const routes: Routes = [
   },
   {
     path: 'barmen',
+    data: { permissions: { only: 'barmen:read' } },
+    canLoad: [NgxPermissionsGuard],
     loadChildren: './barmen/barmen.module#BarmenModule',
   },
   {
@@ -25,14 +30,20 @@ const routes: Routes = [
   },
   {
     path: 'kommissions',
+    data: { permissions: { only: 'kommissions:read' } },
+    canLoad: [NgxPermissionsGuard],
     loadChildren: './kommissions/kommissions.module#KommissionsModule',
   },
   {
     path: 'members',
+    data: { permissions: { only: 'members:read' } },
+    canLoad: [NgxPermissionsGuard],
     loadChildren: './members/members.module#MembersModule',
   },
   {
     path: 'services',
+    data: { permissions: { only: 'services:read' } },
+    canLoad: [NgxPermissionsGuard],
     loadChildren: './services/services.module#ServicesModule',
   },
   {

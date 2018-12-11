@@ -5,6 +5,7 @@ import { MemberService } from './services/member.service';
 import { SharedModule } from '../shared/shared.module';
 import { MembersListComponent } from './list/members-list.component';
 import { MemberNewEditComponent } from './new-edit/member-new-edit.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { MemberNewEditComponent } from './new-edit/member-new-edit.component';
   ],
   imports: [
     SharedModule,
+    NgxPermissionsModule.forChild(),
     MembersRoutingModule,
   ],
   providers: [
