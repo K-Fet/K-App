@@ -147,11 +147,6 @@ export class ContactFormComponent implements OnInit {
                   label: 'Nom de l\'objet',
                   validators: { required: null },
                 }),
-                new DynamicInputModel({
-                  id: 'lostDate',
-                  label: 'Pour une association ?',
-                  validators: { required: null },
-                }),
                 new DynamicDatePickerModel({
                   id: 'lostDate',
                   label: 'Date de perte',

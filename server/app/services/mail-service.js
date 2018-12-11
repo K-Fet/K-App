@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const conf = require('nconf');
 const TRANSLATION = require('../../resources/contact-form-field-translations');
 const EMAIL_TEMPLATES = require('../../resources/email-templates');
+const { flatten } = require('../../utils');
 
 const REGEX_TOKEN = /{{\s*([a-zA-Z_]+)\s*}}/g;
 
@@ -218,14 +219,12 @@ async function sendContactForm(formName, emails, values) {
           return formName;
         case 'FORM_VALUES': {
           let html = '<p><ul>';
-          Object.keys(values).forEach((value) => {
+          Object.keys(flatten(values)).forEach((value) => {
             html += `<li><b>${TRANSLATION[value] ? TRANSLATION[value].french : value}</b>: ${values[value]}</li>`;
           });
           html += '</ul></p>';
           return html;
         }
-        case 'MAIL_EMAIL':
-          return '{{ MAIL_EMAIL }}';
         default:
           return `??${replaceToken}??`;
       }

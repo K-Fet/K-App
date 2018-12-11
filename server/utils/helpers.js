@@ -50,6 +50,44 @@ function generateToken(byteLength = 48, stringBase = 'base64') {
 }
 
 /**
+ * Flatten object.
+ * Inspired of https://github.com/hughsk/flat
+ *
+ * @param target
+ * @param opts
+ */
+function flatten(target, opts = {}) {
+  const options = {
+    delimiter: '.',
+    ...opts,
+  };
+  const output = {};
+
+  function step(object, prev, currentDepth = 1) {
+    Object.keys(object).forEach((key) => {
+      const value = object[key];
+      const isarray = options.safe && Array.isArray(value);
+      const type = Object.prototype.toString.call(value);
+      const isobject = (type === '[object Object]' || type === '[object Array]');
+
+      const newKey = prev
+        ? prev + options.delimiter + key
+        : key;
+
+      if (!isarray && isobject && Object.keys(value).length && (!options.maxDepth || currentDepth < options.maxDepth)) {
+        return step(value, newKey, currentDepth + 1);
+      }
+
+      output[newKey] = value;
+      return undefined;
+    });
+  }
+
+  step(target);
+  return output;
+}
+
+/**
  * This constant is used by Joi to validate params from a request.
  * It represents an object with a single field id (an integer).
  *
@@ -108,6 +146,7 @@ function joiThrough(prop, schema) {
 module.exports = {
   getCurrentSchoolYear,
   cleanObject,
+  flatten,
   generateToken,
   joiThrough,
   ID_SCHEMA,

@@ -3,7 +3,8 @@ const { createUserError, createServerError, createPermissionError } = require('.
 const { verify, hash } = require('./password-manager');
 const { setAssociations } = require('./associations');
 const {
-  getCurrentSchoolYear, cleanObject, generateToken, ID_SCHEMA, RANGE_SCHEMA, YEAR_SCHEMA, SEARCH_SCHEMA, joiThrough,
+  getCurrentSchoolYear, cleanObject, generateToken,
+  ID_SCHEMA, RANGE_SCHEMA, YEAR_SCHEMA, SEARCH_SCHEMA, joiThrough, flatten,
 } = require('./helpers');
 const { getDefaultTemplate } = require('./template-service');
 
@@ -14,6 +15,7 @@ module.exports = {
   createPermissionError,
   verify,
   hash,
+  flatten,
   cleanObject,
   getCurrentSchoolYear,
   getDefaultTemplate,
