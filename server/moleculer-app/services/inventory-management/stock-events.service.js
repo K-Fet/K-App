@@ -9,13 +9,13 @@ const model = {
     diff: { type: Number, required: true },
     type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
     date: { type: Date, default: Date.now },
-    refOrder: { type: String },
+    order: { type: Number },
   })),
   joi: Joi.object({
     product: Joi.number().integer().required(),
     diff: Joi.number().required(),
     type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery'),
-    refOrder: Joi.string(),
+    order: Joi.number(),
   }),
 };
 
@@ -26,6 +26,7 @@ module.exports = {
   settings: {
     populates: {
       product: 'inventory-management.products.get',
+      order: 'inventory-management.orders.get'
     },
   },
 };
