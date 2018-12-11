@@ -2,7 +2,9 @@
   <mat-card fxFlex class="max-width">
     <mat-card-header>
       <mat-card-title fxLayout="row">
-        <a mat-button routerLink="/barmen" *ngxPermissionsOnly="['barman:read']"><mat-icon>arrow_back</mat-icon></a>
+        <a mat-button routerLink="/barmen" *ngxPermissionsOnly="['barman:read']">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
         <section class="mat-typography">
           <h1>Modifier un Barman</h1>
         </section>
@@ -18,8 +20,10 @@
           <input matInput placeholder="Prénom" formControlName="firstName">
         </mat-form-field>
         <mat-form-field>
-          <input matInput placeholder="Date de naissance" formControlName="dateOfBirth" [owlDateTimeTrigger]="dateOfBirthDT" [owlDateTime]="dateOfBirthDT">
-          <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" [startAt]="startDate" #dateOfBirthDT></owl-date-time>
+          <input matInput placeholder="Date de naissance" formControlName="dateOfBirth"
+                 [owlDateTimeTrigger]="dateOfBirthDT" [owlDateTime]="dateOfBirthDT">
+          <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" [startAt]="startDate"
+                         #dateOfBirthDT></owl-date-time>
         </mat-form-field>
         <mat-form-field>
           <input matInput placeholder="Facebook (un lien URL)" formControlName="facebook">
@@ -37,17 +41,21 @@
             <textarea matInput placeholder="Cheminement" formControlName="flow"></textarea>
           </mat-form-field>
           <mat-form-field>
-            <input matInput placeholder="Date de départ" formControlName="leaveAt" [owlDateTimeTrigger]="leaveAtDT" [owlDateTime]="leaveAtDT">
+            <input matInput placeholder="Date de départ" formControlName="leaveAt" [owlDateTimeTrigger]="leaveAtDT"
+                   [owlDateTime]="leaveAtDT">
             <owl-date-time [pickerType]="'calendar'" [startView]="'multi-years'" #leaveAtDT></owl-date-time>
           </mat-form-field>
           <mat-form-field>
-            <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather" name="godFather">
+            <mat-select placeholder="Parrain ou marraine" formControlName="godFather" [(ngModel)]="selectedGodFather"
+                        name="godFather">
               <mat-option *ngFor="let godFather of barmen" [value]="godFather.id">{{godFather.nickname}}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-select placeholder="Kommissions" multiple formControlName="kommissions" [(ngModel)]="selectedKommissions" name="kommission">
-              <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}</mat-option>
+            <mat-select placeholder="Kommissions" multiple formControlName="kommissions"
+                        [(ngModel)]="selectedKommissions" name="kommission">
+              <mat-option *ngFor="let kommission of kommissions" [value]="kommission.id">{{kommission.name}}
+              </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
@@ -57,7 +65,8 @@
           </mat-form-field>
         </div>
         <div fxLayoutAlign="center">
-            <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier</button>
+          <button fxFlex="50" mat-button type="submit" [disabled]="!barmanForm.dirty || !barmanForm.valid">Modifier
+          </button>
         </div>
       </form>
       <mat-divider></mat-divider>
@@ -82,7 +91,9 @@
           {{getErrorMessage()}}
         </span>
         <div fxLayoutAlign="center">
-          <button fxFlex="50" mat-button type="submit" [disabled]="!passwordForm.dirty || !passwordForm.valid">Modifier</button>
+          <button fxFlex="50" mat-button type="submit" [disabled]="!passwordForm.dirty || !passwordForm.valid">
+            Modifier
+          </button>
         </div>
       </form>
     </mat-card-content>

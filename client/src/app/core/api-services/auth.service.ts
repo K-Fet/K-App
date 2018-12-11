@@ -16,40 +16,36 @@ export class AuthService {
   // Suppose the user is already logged in
   // Prevent a redirection
   isLoggedIn: boolean = true;
-  redirectUrl: string;
 
   constructor(private http: HttpClient,
               private ngxPermissionsService: NgxPermissionsService,
               private ngxRolesService: NgxRolesService) { }
 
-  initializeAuth(): Promise<any> {
-    return new Promise((resolve) => {
-      this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
-        accountType: 'Guest',
-        createdAt: new Date(),
-      }));
-      const currentUser = {
-        ...JSON.parse(localStorage.getItem('currentUser')),
-        ...JSON.parse(sessionStorage.getItem('currentUser')),
-      };
-      if (currentUser.jwt) {
-        const jwtDecoded = jwt_decode(currentUser.jwt);
-        if (Date.now() < (jwtDecoded.exp * 1000 - 3600000)) { // Expiration minus 12 hours
-          this.me().subscribe(() => {
-            resolve();
-            // tslint:disable-next-line:align
-          }, (err) => {
-            console.error('Unexpected error occurs: ', err);
-            resolve();
-          });
-        } else {
-          this.clearUser();
-          resolve();
-        }
-      } else {
-        resolve();
-      }
-    });
+  async initializeAuth(): Promise<any> {
+    this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
+      accountType: 'Guest',
+      createdAt: new Date(),
+    }));
+
+    const currentUser = {
+      ...JSON.parse(localStorage.getItem('currentUser')),
+      ...JSON.parse(sessionStorage.getItem('currentUser')),
+    };
+
+    if (!currentUser.jwt) return;
+
+    const jwtDecoded = jwt_decode(currentUser.jwt);
+
+    // If the token expire in less than 12 hours,
+    // disconnect the user to prevent being disturbed during his navigation
+    if (Date.now() >= (jwtDecoded.exp * 1000 - 3600000)) return this.clearUser();
+
+    try {
+      await this.me().toPromise();
+    } catch (e) {
+      console.error('Error during initializeAuth: ', e);
+      this.clearUser();
+    }
   }
 
   login(email: string, password: string, rememberMe: number): Observable<any> {

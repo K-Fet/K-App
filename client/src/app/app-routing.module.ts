@@ -6,7 +6,7 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 const routes: Routes = [
   {
     path: 'acl',
-    data: { permissions: { only: ['roles:read', 'special-accounts:read'] } },
+    data: { permissions: { only: ['role:read', 'special-account:read'] } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './acl/acl.module#AclModule',
   },
@@ -16,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: 'barmen',
-    data: { permissions: { only: 'barmen:read' } },
+    data: { permissions: { only: 'barman:read' } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './barmen/barmen.module#BarmenModule',
   },
@@ -30,19 +30,19 @@ const routes: Routes = [
   },
   {
     path: 'kommissions',
-    data: { permissions: { only: 'kommissions:read' } },
+    data: { permissions: { only: 'kommission:read' } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './kommissions/kommissions.module#KommissionsModule',
   },
   {
     path: 'members',
-    data: { permissions: { only: 'members:read' } },
+    data: { permissions: { only: 'member:read' } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './members/members.module#MembersModule',
   },
   {
     path: 'services',
-    data: { permissions: { only: 'services:read' } },
+    data: { permissions: { only: 'service:read' } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './services/services.module#ServicesModule',
   },
@@ -65,6 +65,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       preloadingStrategy: PreloadAllModules,
+      enableTracing: true,
     }),
   ],
   exports: [RouterModule],
