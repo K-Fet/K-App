@@ -53,7 +53,7 @@ async function sendPasswordResetMail(email, token) {
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -79,7 +79,7 @@ async function sendVerifyEmailMail(email, token, userId) {
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/auth/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -107,7 +107,7 @@ async function sendEmailUpdateInformationMail(email, newEmail, userId) {
         case 'MAIL_NEW_EMAIL':
           return newEmail;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/cancel-email-update?userId=${userId}&email=${email}`;
+          return `${conf.get('web:publicUrl')}/auth/cancel-email-update?userId=${userId}&email=${email}`;
         default:
           return `??${replaceToken}??`;
       }

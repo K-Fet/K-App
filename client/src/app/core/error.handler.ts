@@ -27,7 +27,7 @@ export class AppErrorHandler implements ErrorHandler {
         case 400:
           return toasterService.showToaster(BAD_REQUEST_ERRORS[error.error.error]);
         case 401:
-          router.navigate(['/login']);
+          router.navigate(['/auth/login']);
           return toasterService.showToaster('Opération non autorisée, redirection ...');
         case 403:
           return toasterService.showToaster('Autorisations non suffisante pour effectuer la requête');

@@ -1,3 +1,16 @@
-<p>
-  login works!
-</p>
+<div fxLayoutAlign="center">
+  <mat-card fxFlex="450px" fxFlex.lt-sm="95">
+    <mat-card-content>
+      <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="login()" class="form-field-block">
+        <dynamic-material-form [model]="formModel" [group]="formGroup">
+          <ng-template modelId="rememberMe" align="END">
+            <div fxFlex></div>
+            <i><a mat-button (click)="openDialog()">J'ai oublié mon mot de passe...</a></i>
+          </ng-template>
+        </dynamic-material-form>
+
+        <button mat-button type="submit" [disabled]="!formGroup.valid">CONNEXION</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
