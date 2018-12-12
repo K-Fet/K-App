@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-import { Task, Kommission, TASK_STATES } from '../../_models';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { TaskService } from '../task.service';
+import { Kommission, Task, TASK_STATES } from '../../../shared/models';
 import { TaskEditNewDialogComponent } from '../edit-new/task-edit-new.component';
-import { TaskService, ToasterService } from '../../_services';
 
 @Component({
   selector: 'app-task-view',
@@ -12,12 +13,12 @@ import { TaskService, ToasterService } from '../../_services';
 export class TaskViewDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<TaskViewDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission},
+              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission },
               private dialog: MatDialog,
               private taskService: TaskService,
               private toasterService: ToasterService) { }
 
-  ngOnInit () {
+  ngOnInit() {
   }
 
   getState(state): string {

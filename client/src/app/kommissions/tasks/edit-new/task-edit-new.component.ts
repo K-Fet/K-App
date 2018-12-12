@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TaskService, ToasterService, KommissionService } from '../../_services';
-import { Barman, Task, AssociationChanges, Kommission } from '../../_models';
-import { TASK_STATES } from '../../_models/Task';
+import { Barman, Kommission, Task, TASK_STATES } from '../../../shared/models';
+import { TaskService } from '../task.service';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { KommissionService } from '../../../core/api-services/kommission.service';
+import { getDifference } from '../../../../utils';
 
 @Component({
-  selector: 'app-task-edit-new',
   templateUrl: './task-edit-new.component.html',
 })
 export class TaskEditNewDialogComponent implements OnInit {
@@ -23,7 +24,7 @@ export class TaskEditNewDialogComponent implements OnInit {
               private fb: FormBuilder,
               private taskService: TaskService,
               private toasterService: ToasterService,
-              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission},
+              @Inject(MAT_DIALOG_DATA) public data: { task?: Task, kommission: Kommission },
               private kommissionService: KommissionService) {
     if (data.task) {
       this.oldTask = data.task;
@@ -40,7 +41,7 @@ export class TaskEditNewDialogComponent implements OnInit {
     });
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.kommissionService.getById(+this.data.kommission.id).subscribe((kommission) => {
       this.barmen = kommission.barmen.filter(b => new Barman(b).isActive());
     });
@@ -58,7 +59,7 @@ export class TaskEditNewDialogComponent implements OnInit {
     if (this.oldTask) {
       task.id = this.oldTask.id;
       task._embedded = {
-        barmen: this.prepareAssociationChanges(this.oldTask.barmen, selectedBarmen),
+        barmen: getDifference(this.oldTask.barmen.map(b => b.id), selectedBarmen),
       };
       this.taskService.update(task).subscribe(() => {
         this.toasterService.showToaster('Tâche modifiée');
@@ -75,21 +76,5 @@ export class TaskEditNewDialogComponent implements OnInit {
         this.dialogRef.close(true);
       });
     }
-  }
-
-  prepareAssociationChanges(current, updated): AssociationChanges {
-    const add: number[] = [];
-    const remove: number[] = [];
-    updated.forEach((aId) => {
-      if (!current.map(a => a.id).includes(aId)) {
-        add.push(aId);
-      }
-    });
-    current.map((a) => {
-      if (!updated.includes(a.id)) {
-        remove.push(a.id);
-      }
-    });
-    return { add, remove };
   }
 }

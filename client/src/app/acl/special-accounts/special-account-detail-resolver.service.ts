@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap, take } from 'rxjs/operators';
 import { SpecialAccount } from '../../shared/models';
-import { SpecialAccountService } from '../../core/api-services/special-account.service';
+import { SpecialAccountService } from './special-account.service';
 
 @Injectable({
   providedIn: 'root',

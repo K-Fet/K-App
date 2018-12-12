@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Task, ConnectedUser, Kommission } from '../../_models';
-import { AuthService, BarmanService } from '../../_services';
 import { MatDialog } from '@angular/material';
 import { TaskViewDialogComponent } from '../view/task-view.component';
 import { getPanelClass } from '../tasks.helpers';
+import { ConnectedUser, Kommission, Task } from '../../../shared/models';
+import { AuthService } from '../../../core/api-services/auth.service';
+import { BarmanService } from '../../../core/api-services/barman.service';
 
 @Component({
   selector: 'app-my-tasks',

@@ -1,13 +1,32 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
-import { TasksRoutingModule } from './tasks-routing.module';
+import { SharedModule } from '../../shared/shared.module';
+import { TaskEditNewDialogComponent } from './edit-new/task-edit-new.component';
+import { TasksListComponent } from './list/tasks-list.component';
+import { TaskViewDialogComponent } from './view/task-view.component';
+import { MyTasksComponent } from './my-tasks/my-tasks.component';
+import { TaskService } from './task.service';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    TaskEditNewDialogComponent,
+    TasksListComponent,
+    TaskViewDialogComponent,
+    MyTasksComponent,
+  ],
+  providers: [
+    TaskService,
+  ],
   imports: [
-    CommonModule,
-    TasksRoutingModule,
+    SharedModule,
+  ],
+  entryComponents: [
+    TaskViewDialogComponent,
+    TaskEditNewDialogComponent,
+  ],
+  exports: [
+    MyTasksComponent,
+    TasksListComponent,
   ],
 })
-export class TasksModule { }
+export class TasksModule {}

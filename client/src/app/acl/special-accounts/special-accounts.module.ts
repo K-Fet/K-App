@@ -7,12 +7,16 @@ import { ListComponent } from './list/list.component';
 import { SharedModule } from '../../shared/shared.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { PermissionsSelectorModule } from '../permissions-selector/permissions-selector.module';
+import { SpecialAccountService } from './special-account.service';
 
 @NgModule({
   declarations: [
     NewComponent,
     EditComponent,
     ListComponent,
+  ],
+  providers: [
+    SpecialAccountService,
   ],
   imports: [
     PermissionsSelectorModule,

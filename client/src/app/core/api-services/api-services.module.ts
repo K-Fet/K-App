@@ -8,8 +8,6 @@ import { MeService } from './me.service';
 import { PermissionService } from './permission.service';
 import { RoleService } from './role.service';
 import { ServiceService } from './service.service';
-import { SpecialAccountService } from './special-account.service';
-import { TaskService } from './task.service';
 import { TemplateService } from './template.service';
 
 @NgModule({
@@ -25,8 +23,6 @@ import { TemplateService } from './template.service';
     PermissionService,
     RoleService,
     ServiceService,
-    SpecialAccountService,
-    TaskService,
     TemplateService,
   ],
 })

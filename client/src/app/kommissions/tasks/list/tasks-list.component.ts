@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator, MatDialog } from '@angular/material';
 
-import { Task, Kommission, TASK_STATES } from '../../_models';
-import { TaskService, ToasterService, KommissionService } from '../../_services';
 import { TaskViewDialogComponent } from '../view/task-view.component';
 import { TaskEditNewDialogComponent } from '../edit-new/task-edit-new.component';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { getPanelClass } from '../tasks.helpers';
+import { Kommission, TASK_STATES, Task } from '../../../shared/models';
+import { TaskService } from '../task.service';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { KommissionService } from '../../../core/api-services/kommission.service';
 
 @Component({
   selector: 'app-tasks-list',
@@ -24,16 +26,16 @@ export class TasksListComponent implements OnInit {
   states = TASK_STATES;
   stateSelected: FormControl;
 
-  constructor (private taskService: TaskService,
-               private toasterService: ToasterService,
-               private kommissionService: KommissionService,
-               private route: ActivatedRoute,
-               private dialog: MatDialog) {}
+  constructor(private taskService: TaskService,
+              private toasterService: ToasterService,
+              private kommissionService: KommissionService,
+              private route: ActivatedRoute,
+              private dialog: MatDialog) {}
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngOnInit () {
+  ngOnInit() {
     this.route.params.subscribe((params) => {
       this.kommissionService.getById(params['id']).subscribe((kommission) => {
         this.kommission = kommission;
@@ -53,7 +55,7 @@ export class TasksListComponent implements OnInit {
     this.tasksData.sort = this.sort;
   }
 
-  refresh () {
+  refresh() {
     this.taskService.getTasks(this.kommission.id).subscribe((tasks) => {
       this.tasks = tasks;
       this.tasksData = new MatTableDataSource(this.sortByState(tasks));
@@ -62,7 +64,7 @@ export class TasksListComponent implements OnInit {
     });
   }
 
-  sortByState (tasks: Task[]) {
+  sortByState(tasks: Task[]) {
     return tasks.sort((t1, t2) => {
       const indice1 = this.getIndice(t1.state);
       const indice2 = this.getIndice(t2.state);
@@ -89,7 +91,7 @@ export class TasksListComponent implements OnInit {
     }
   }
 
-  markAsDone (task) {
+  markAsDone(task) {
     task.state = task.state === 'Done' ? 'Not started' : 'Done';
     this.taskService.update(task).subscribe(() => {
       this.toasterService.showToaster('Tâche mise à jour');

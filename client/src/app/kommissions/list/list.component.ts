@@ -1,16 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Kommission } from '../../_models';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { KommissionService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { Kommission } from '../../shared/models';
+import { KommissionService } from '../../core/api-services/kommission.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  templateUrl: './kommissions-list.component.html',
-  styleUrls: ['./kommissions-list.component.scss'],
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
-export class KommissionsListComponent implements OnInit {
+export class ListComponent implements OnInit {
 
   displayedColumns = ['name', 'action'];
   kommissionsData: MatTableDataSource<Kommission>;
@@ -51,6 +52,7 @@ export class KommissionsListComponent implements OnInit {
         this.update();
       });
   }
+
   view(kommission: Kommission): void {
     this.router.navigate(['/kommissions', kommission.id]);
   }

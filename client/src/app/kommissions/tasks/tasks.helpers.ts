@@ -1,6 +1,6 @@
-import { Task } from '../_models/Task';
+import { Task } from '../../shared/models';
 
-function getPanelClass(task: Task) {
+export function getPanelClass(task: Task) {
   switch (task.state) {
     case 'Not started':
       return 'notStarted';
@@ -14,7 +14,3 @@ function getPanelClass(task: Task) {
       return '';
   }
 }
-
-export {
-  getPanelClass,
-};

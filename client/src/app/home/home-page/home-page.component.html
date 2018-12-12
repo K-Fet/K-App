@@ -30,8 +30,8 @@
     </mat-card>
     <div *ngIf="currentUser.isBarman()" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center stretch"
          fxLayoutGap="20px">
-      <!-- TODO Import MyTasksComponent and MyServicesComponent -->
-      <!--<app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>-->
+      <app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
+      <!-- TODO Import MyServicesComponent -->
       <!--<app-my-services fxFlex *ngIf="isActive()"></app-my-services>-->
     </div>
     <app-feed fxFlex></app-feed>

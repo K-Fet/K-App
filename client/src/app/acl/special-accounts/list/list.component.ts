@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { SpecialAccount } from '../../../shared/models';
-import { SpecialAccountService } from '../../../core/api-services/special-account.service';
+import { SpecialAccountService } from '../special-account.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
 
