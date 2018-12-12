@@ -6,7 +6,7 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 const routes: Routes = [
   {
     path: 'acl',
-    data: { permissions: { only: ['role:read', 'special-account:read'] } },
+    data: { permissions: { only: ['role:read', 'specialaccount:read'] } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: './acl/acl.module#AclModule',
   },

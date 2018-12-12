@@ -5,11 +5,14 @@ import { ListComponent } from './list/list.component';
 import { ViewComponent } from './view/view.component';
 import { EditComponent } from './edit/edit.component';
 import { BarmanDetailResolverService } from './barman-detail-resolver.service';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const routes: Routes = [
   {
     path: 'new',
     component: NewComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: { permissions: { only: ['barman:write'] } },
   },
   {
     path: ':id',
@@ -21,6 +24,8 @@ const routes: Routes = [
   {
     path: ':id/edit',
     component: EditComponent,
+    canActivate: [NgxPermissionsGuard],
+    data: { permissions: { only: ['barman:write'] } },
     resolve: {
       barman: BarmanDetailResolverService,
     },

@@ -12,4 +12,4 @@ import { NgxPermissionsModule } from 'ngx-permissions';
     AclRoutingModule,
   ],
 })
-export class AclModule { }
+export class AclModule {}

@@ -116,7 +116,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       {
         name: 'Comptes spéciaux',
-        route: '/acl/specialaccounts',
+        route: '/acl/special-accounts',
         permissions: ['specialaccount:read'],
       },
     ],

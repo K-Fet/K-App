@@ -1,16 +1,17 @@
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SpecialAccount } from '../../_models';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { SpecialAccountService, ToasterService } from '../../_services';
 import { Router } from '@angular/router';
-import { CodeDialogComponent } from '../../dialogs/code-dialog/code-dialog.component';
+import { SpecialAccount } from '../../../shared/models';
+import { SpecialAccountService } from '../../../core/api-services/special-account.service';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
 
 @Component({
-  templateUrl: './special-accounts-list.component.html',
-  styleUrls: ['./special-accounts-list.component.scss'],
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
-export class SpecialAccountListComponent implements OnInit {
+export class ListComponent implements OnInit {
 
   displayedColumns = ['email', 'description', 'action'];
   specialAccountData: MatTableDataSource<SpecialAccount>;
@@ -41,7 +42,7 @@ export class SpecialAccountListComponent implements OnInit {
   }
 
   edit(specialAccount: SpecialAccount): void {
-    this.router.navigate(['/specialaccounts', specialAccount.id]);
+    this.router.navigate(['/acl/special-accounts', specialAccount.id, 'edit']);
   }
 
   delete(specialAccount: SpecialAccount, code: number): void {

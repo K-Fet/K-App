@@ -65,12 +65,12 @@ export class EditComponent implements OnInit {
         barman: updatedBarman,
       })).subscribe(() => {
         this.toasterService.showToaster('Modification(s) enregistrée(s)');
-        this.router.navigate(['/barmen']);
+        this.router.navigate(['/home']);
         this.authService.me();
       });
     } else {
       this.barmanService.update(updatedBarman).subscribe(() => {
-        this.toasterService.showToaster('Barman créé');
+        this.toasterService.showToaster('Barman mis à jour');
         this.router.navigate(['/barmen']);
       });
     }
