@@ -49,7 +49,7 @@ export class PermissionsSelectorComponent implements OnInit, OnChanges {
     this.selected = new Set(this.permissions.filter(p => !this.isDisabled(p)).map(p => p.id));
   }
 
-  deselectAll() {
+  deselectAll(event: MouseEvent) {
     event.preventDefault();
     this.selected = new Set();
   }

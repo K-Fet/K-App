@@ -24,11 +24,11 @@
             </p>
           </ng-template>
         </dynamic-material-form>
-        <app-permissions-selector [initiallySelected]="originalSpecialAccount.permissions"
+        <app-permissions-selector [initiallySelected]="originalSpecialAccount?.permissions"
                                   [permissions]="permissions"></app-permissions-selector>
         <div fxLayout="row">
           <div fxFlex></div>
-          <button mat-raised-button type="submit" color="primary" [disabled]="formGroup.valid && !formGroup.dirty">
+          <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid">
             Modifier
           </button>
         </div>

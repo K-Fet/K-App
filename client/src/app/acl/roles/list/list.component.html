@@ -1,0 +1,46 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title>
+        <section class="mat-typography">
+          <h1>Liste des rôles</h1>
+        </section>
+      </mat-card-title>
+      <div fxFlex></div>
+      <a mat-mini-fab color="accent" routerLink="/acl/roles/new" *ngxPermissionsOnly="['role:write']">
+        <mat-icon>add</mat-icon>
+      </a>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="header">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Rechercher des rôles">
+        </mat-form-field>
+      </div>
+      <div class="mat-elevation-z3">
+        <mat-table #table [dataSource]="rolesData" matSort>
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+            <mat-cell *matCellDef="let role"> {{role.name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+            <mat-cell *matCellDef="let role">
+              <div fxLayout="row">
+                <button mat-icon-button (click)="edit(role)"><mat-icon>edit</mat-icon></button>
+                <button color="warn" mat-icon-button (click)="openConfirmationDialog(role)"><mat-icon>delete</mat-icon></button>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator
+                       [pageIndex]="0"
+                       [pageSize]="10"
+                       [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -54,28 +54,6 @@ const generateData = (permissions: string[] | string) => {
 };
 
 const routes: Routes = [
-  { path: '', component: HomePageComponent },
-  { path: 'presentation', component: PresentationComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'define-password', component: DefinePasswordComponent },
-  { path: 'email-verification', component: EmailVerificationComponent },
-  { path: 'cancel-email-update', component: CancelEmailUpdateComponent },
-  { path: 'contact/concert', component: ConcertContactComponent },
-  { path: 'contact/event', component: EventContactComponent },
-  { path: 'contact/lost', component: LostContactComponent },
-  { path: 'contact/website', component: WebsiteContactComponent },
-  {
-    path: 'members', component: MembersListComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('member:read'),
-  },
-  {
-    path: 'members/new', component: MemberNewEditComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('member:write'),
-  },
-  {
-    path: 'members/:id', component: MemberNewEditComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('member:write'),
-  },
   {
     path: 'kommissions', component: KommissionsListComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('kommission:read'),
@@ -91,18 +69,6 @@ const routes: Routes = [
   {
     path: 'kommissions/:id', component: KommissionViewComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('kommission:read'),
-  },
-  {
-    path: 'roles', component: RolesListComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('role:read'),
-  },
-  {
-    path: 'roles/new', component: RoleNewComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('role:write'),
-  },
-  {
-    path: 'roles/:id', component: RoleEditComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('role:write'),
   },
   {
     path: 'services/plan-my-services',
@@ -133,19 +99,6 @@ const routes: Routes = [
     data: generateData('service:write'),
   },
   {
-    path: 'barmen', component: BarmenListComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('barman:read'),
-  },
-  {
-    path: 'barmen/new', component: BarmanNewComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('barman:write'),
-  },
-  { path: 'barmen/:id/edit', component: BarmanEditComponent, canActivate: [EditGuard] },
-  {
-    path: 'barmen/:id', component: BarmanViewComponent, canActivate: [NgxPermissionsGuard],
-    data: generateData('barman:read'),
-  },
-  {
     path: 'open-services', component: OpenServicesComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('SERVICE_MANAGER'),
   },
@@ -155,13 +108,6 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: generateData('specialaccount:read'),
   },
-  {
-    path: 'specialaccounts/new',
-    component: SpecialAccountNewComponent,
-    canActivate: [NgxPermissionsGuard],
-    data: generateData('specialaccount:write'),
-  },
-  { path: 'specialaccounts/:id', component: SpecialAccountEditComponent, canActivate: [EditGuard] },
   {
     path: 'templates', component: TemplatesListComponent, canActivate: [NgxPermissionsGuard],
     data: generateData('template:read'),

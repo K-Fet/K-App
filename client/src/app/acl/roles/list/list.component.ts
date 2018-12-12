@@ -1,17 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Role } from '../../_models';
-import { RoleService, ToasterService } from '../../_services';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ObservableMedia } from '@angular/flex-layout';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { RoleService } from '../../../core/api-services/role.service';
+import { Role } from '../../../shared/models';
+import { ConfirmationDialogComponent } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  templateUrl: './roles-list.component.html',
-  styleUrls: ['./roles-list.component.scss'],
+  templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
 })
-export class RolesListComponent implements OnInit {
+export class ListComponent implements OnInit {
 
   displayedColumns = ['name', 'action'];
   rolesData: MatTableDataSource<Role>;
@@ -43,7 +44,7 @@ export class RolesListComponent implements OnInit {
   }
 
   edit(role: Role): void {
-    this.router.navigate(['/roles', role.id]);
+    this.router.navigate(['/acl/roles', role.id, 'edit']);
   }
 
   delete(role: Role): void {

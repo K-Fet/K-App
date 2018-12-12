@@ -8,7 +8,43 @@ import { SpecialAccount } from '../../shared/models';
 import { validateEqual } from '../../shared/validators/equal.validator';
 import { getDifference } from '../../../utils';
 
-const BASE_SPECIAL_ACCOUNT = new SpecialAccount({});
+const BASE_SPECIAL_ACCOUNT = new SpecialAccount({ permissions: [], connection: {} });
+
+function getCodeForm(isEdit = false) {
+  const codeValidators: any = {
+    pattern: /^[0-9]{4,}$/,
+  };
+  const codeConfirmationValidators: any = {
+    validateEqual: {
+      name: validateEqual.name,
+      args: 'code',
+    },
+  };
+
+  if (!isEdit) {
+    codeValidators.required = null;
+    codeConfirmationValidators.required = null;
+  }
+
+  return [
+    new DynamicInputModel({
+      id: 'code',
+      label: 'Code',
+      validators: codeValidators,
+      errorMessages: {
+        pattern: 'Le code doit comporter seulement des chiffres, 4 au minimum.',
+      },
+    }),
+    new DynamicInputModel({
+      id: 'codeConfirmation',
+      label: 'Confirmation du code',
+      validators: codeConfirmationValidators,
+      errorMessages: {
+        validateEqual: 'Les codes doivent être identiques.',
+      },
+    }),
+  ];
+}
 
 export function getSpecialAccountModel(originalSpecialAccount?: SpecialAccount): DynamicFormModel {
   const values = originalSpecialAccount || BASE_SPECIAL_ACCOUNT;
@@ -33,31 +69,7 @@ export function getSpecialAccountModel(originalSpecialAccount?: SpecialAccount):
       id: 'info1',
       legend: 'Informations personnelles',
       group: [
-        new DynamicInputModel({
-          id: 'code',
-          label: 'Code',
-          validators: {
-            required: null,
-            pattern: /^[0-9]{4,}$/,
-          },
-          errorMessages: {
-            pattern: 'Le code doit comporter seulement des chiffres, 4 au minimum.',
-          },
-        }),
-        new DynamicInputModel({
-          id: 'codeConfirmation',
-          label: 'Confirmation du code',
-          validators: {
-            required: null,
-            validateEqual: {
-              name: validateEqual.name,
-              args: 'code',
-            },
-          },
-          errorMessages: {
-            validateEqual: 'Les codes doivent être identiques.',
-          },
-        }),
+        ...getCodeForm(!!originalSpecialAccount),
         new DynamicInputModel({
           id: 'description',
           label: 'Description',
@@ -77,6 +89,8 @@ export function getSpecialAccountFromForm(form: FormGroup,
   const res = new SpecialAccount({
     id: original.id,
     ...value.info1,
+    // Remove null field
+    code: value.info1.code || undefined,
     // Remove useless field
     codeConfirmation: undefined,
     connection: value.connection,
