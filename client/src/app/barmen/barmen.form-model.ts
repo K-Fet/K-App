@@ -71,7 +71,7 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
         new DynamicInputModel({
           id: 'email',
           label: 'Adresse email',
-          value: values.connection.email,
+          value: values.connection && values.connection.email,
           validators: {
             required: null,
             email: null,
@@ -93,6 +93,16 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
           label: 'Cheminement',
           value: values.flow,
           validators: { required: null },
+        }),
+        new DynamicDatePickerModel({
+          id: 'leaveAt',
+          label: 'Date de départ',
+          // Disable input when creating
+          disabled: !originalBarman,
+          additional: {
+            pickerType: 'calendar',
+            startView: 'multi-years',
+          },
         }),
         new DynamicSelectModel<number>({
           id: 'godFather',
@@ -127,6 +137,7 @@ export function getBarmanFromForm(form: FormGroup, originalBarman?: Barman): Bar
   const original = originalBarman || BASE_BARMAN;
 
   const res = new Barman({
+    id: original.id,
     ...value.info1,
     connection: value.connection,
     flow: value.info2.flow,

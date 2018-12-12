@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/api-services/auth.service';
 import { ToasterService } from '../../core/services/toaster.service';
+import { validateEqual } from '../../shared/validators/equal.validator';
 
 @Component({
   selector: 'app-define-password',
@@ -22,7 +23,7 @@ export class DefinePasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.passwordForm = this.fb.group({
-      password: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required, validateEqual('passwordConfirmation', true)]),
       passwordConfirmation: new FormControl('', [Validators.required]),
     });
 

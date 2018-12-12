@@ -1,4 +1,4 @@
-import { Barman, SpecialAccount, Permission } from '.';
+import { Barman, SpecialAccount, Permission, ConnectionInformation } from '.';
 
 export class ConnectedUser {
 
@@ -19,5 +19,11 @@ export class ConnectedUser {
 
   public isBarman(): boolean {
     return this.accountType === 'Barman';
+  }
+
+  public getConnection(): ConnectionInformation {
+    if (this.specialAccount) return this.specialAccount.connection;
+    if (this.barman) return this.barman.connection;
+    return null;
   }
 }

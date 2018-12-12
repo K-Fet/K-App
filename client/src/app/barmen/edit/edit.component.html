@@ -11,7 +11,7 @@
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+      <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block barman-form">
         <dynamic-material-form [group]="formGroup" [model]="model">
           <ng-template modelType="GROUP" let-legend="legend" align="START">
             <h4 *ngIf="legend">{{ legend }}</h4>
@@ -19,11 +19,15 @@
         </dynamic-material-form>
         <div fxLayout="row">
           <div fxFlex></div>
-          <button mat-raised-button type="submit" color="primary" [disabled]="!this.formGroup.valid">
-            Ajouter
+          <button mat-raised-button type="submit" color="primary" [disabled]="formGroup.valid && !formGroup.dirty">
+            Modifier
           </button>
         </div>
       </form>
+      <div *ngIf="isMe()">
+        <mat-divider></mat-divider>
+        <app-edit-password></app-edit-password>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>
