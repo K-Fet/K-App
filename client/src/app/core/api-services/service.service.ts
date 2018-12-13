@@ -3,11 +3,9 @@ import { HttpClient } from '@angular/common/http';
 
 import { Barman, Day, Service } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { addWeeks, getISODay } from 'date-fns';
+import { addWeeks, format } from 'date-fns';
 import { getCurrentWeek } from '../../shared/utils';
-
-// The K-Fêt week change every thusday ( = 4 )
-const WEEK_DAY_SHORT: string[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+import { fr } from 'date-fns/locale';
 
 @Injectable()
 export class ServiceService {
@@ -61,27 +59,20 @@ export class ServiceService {
     return Observable.create((observer) => {
       this.get(start, end).subscribe(
         (services) => {
-          // TODO Clean up this mess
           services.forEach((service) => {
-            const name = WEEK_DAY_SHORT[getISODay(service.startAt)];
-            const index = days.map(currentDay => currentDay.name).indexOf(name);
-            if (index === -1) {
-              const day = {
-                name: WEEK_DAY_SHORT[getISODay(service.startAt)],
-                date: service.startAt,
-                active: false,
-                services: [],
-              };
-              day.services.push(service);
-              days.push(day);
-            } else {
-              days[index].services.push(service);
-            }
+            const name = format(service.startAt, 'EEE', { locale: fr });
+            const day = days.find(currentDay => currentDay.name === name);
+
+            if (day) return day.services.push(service);
+
+            days.push({
+              name,
+              date: service.startAt,
+              active: false,
+              services: [service],
+            });
           });
           observer.next(days);
-        },
-        (error) => {
-          observer.error(error);
         },
       );
     });

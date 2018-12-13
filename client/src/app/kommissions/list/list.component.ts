@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { NgxPermissionsService } from 'ngx-permissions';
 import { Kommission } from '../../shared/models';
 import { KommissionService } from '../../core/api-services/kommission.service';
 import { ToasterService } from '../../core/services/toaster.service';

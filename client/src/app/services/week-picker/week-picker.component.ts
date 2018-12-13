@@ -23,10 +23,10 @@ export class WeekPickerComponent implements OnInit {
   constructor(private serviceService: ServiceService) {}
 
   next(): void {
-    this.serviceService.$weekInterval.next(+this.weekInterval + 1);
+    this.serviceService.$weekInterval.next(this.weekInterval + 1);
   }
 
   previous(): void {
-    this.serviceService.$weekInterval.next(+this.weekInterval - 1);
+    this.serviceService.$weekInterval.next(this.weekInterval - 1);
   }
 }
