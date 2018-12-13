@@ -58,10 +58,12 @@ module.exports = {
 
         // List all routes
         aliases: {
-          'GET stock-events': 'inventory-management.stock-events.list',
-          'GET stock-events/:id': 'inventory-management.stock-events.get',
-          'POST stock-events': 'inventory-management.stock-events.create',
+          'REST stock-events': 'inventory-management.stock-events',
           'REST providers': 'inventory-management.providers',
+          'REST products': 'inventory-management.products',
+          'REST shelves': 'inventory-management.shelves',
+          'REST orders': 'inventory-management.orders',
+          'REST ordered-products': 'inventory-management.ordered-products',
         },
       },
     ],
