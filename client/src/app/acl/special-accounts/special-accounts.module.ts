@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { PermissionsSelectorModule } from '../permissions-selector/permissions-selector.module';
 import { SpecialAccountService } from './special-account.service';
+import { SpecialAccountDetailResolverService } from './special-account-detail-resolver.service';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { SpecialAccountService } from './special-account.service';
   ],
   providers: [
     SpecialAccountService,
+    SpecialAccountDetailResolverService,
   ],
   imports: [
     PermissionsSelectorModule,

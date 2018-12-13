@@ -74,6 +74,7 @@ export function getSpecialAccountModel(originalSpecialAccount?: SpecialAccount):
           id: 'description',
           label: 'Description',
           value: values.description,
+          validators: { required: null },
         }),
       ],
     }),

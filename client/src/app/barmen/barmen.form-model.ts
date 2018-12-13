@@ -99,6 +99,7 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
           label: 'Date de départ',
           // Disable input when creating
           disabled: !originalBarman,
+          value: values.leaveAt,
           additional: {
             pickerType: 'calendar',
             startView: 'multi-years',
@@ -142,6 +143,7 @@ export function getBarmanFromForm(form: FormGroup, originalBarman?: Barman): Bar
     connection: value.connection,
     flow: value.info2.flow,
     nickname: value.info2.nickName,
+    leaveAt: value.info2.leaveAt,
   });
 
   res._embedded = {

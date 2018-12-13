@@ -5,9 +5,7 @@ import { mergeMap, take } from 'rxjs/operators';
 import { SpecialAccount } from '../../shared/models';
 import { SpecialAccountService } from './special-account.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SpecialAccountDetailResolverService implements Resolve<SpecialAccount> {
 
   constructor(private specialAccountService: SpecialAccountService,

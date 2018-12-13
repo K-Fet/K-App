@@ -57,7 +57,7 @@ async function createKommission(newKommission, _embedded) {
 async function getKommissionById(kommissionId) {
   logger.verbose('Kommission service: get kommission by id %d', kommissionId);
 
-  const kommission = await Kommission.findById(kommissionId, {
+  const kommission = await Kommission.findByPk(kommissionId, {
     include: [
       {
         model: Barman,
@@ -86,7 +86,7 @@ async function getKommissionById(kommissionId) {
  * @return {Promise<Kommission>} The updated kommission
  */
 async function updateKommission(kommissionId, updatedKommission, _embedded) {
-  const currentKommission = await Kommission.findById(kommissionId, {
+  const currentKommission = await Kommission.findByPk(kommissionId, {
     include: [
       {
         model: Barman,
@@ -128,7 +128,7 @@ async function updateKommission(kommissionId, updatedKommission, _embedded) {
 async function deleteKommission(kommissionId) {
   logger.verbose('Kommission service: deleting kommission with id %d', kommissionId);
 
-  const kommission = await Kommission.findById(kommissionId);
+  const kommission = await Kommission.findByPk(kommissionId);
 
   if (!kommission) throw createUserError('UnknownKommission', 'This kommission does not exist');
 

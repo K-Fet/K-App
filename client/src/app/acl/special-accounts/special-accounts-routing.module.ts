@@ -17,6 +17,7 @@ const routes: Routes = [
   {
     path: ':id/edit',
     component: EditComponent,
+    // FIXME A special can only update itslef if it has specialaccount:read perm
     canActivate: [EditGuard],
     resolve: {
       specialAccount: SpecialAccountDetailResolverService,

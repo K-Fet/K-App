@@ -22,15 +22,11 @@ export class ListComponent implements OnInit {
   constructor(private kommissionService: KommissionService,
               private toasterService: ToasterService,
               private router: Router,
-              private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.update();
-    if (!this.ngxPermissionsService.getPermissions()['kommission:write']) {
-      this.displayedColumns = ['name'];
-    }
   }
 
   update(): void {

@@ -51,7 +51,7 @@ async function getAllTemplates() {
 async function getTemplateById(templateId) {
   logger.verbose('Template service: get a template by his id %d', templateId);
 
-  const template = await Template.findById(templateId, {
+  const template = await Template.findByPk(templateId, {
     include: [
       {
         model: TemplateUnit,
@@ -95,7 +95,7 @@ async function createTemplate(newTemplate) {
  * @return {Promise<Template>} the updated template
  */
 async function updateTemplateById(templateId, updatedTemplate) {
-  const currentTemplate = await Template.findById(templateId, {
+  const currentTemplate = await Template.findByPk(templateId, {
     include: [
       {
         model: TemplateUnit,
@@ -142,7 +142,7 @@ async function updateTemplateById(templateId, updatedTemplate) {
 async function deleteTemplateById(templateId) {
   logger.verbose('Template service: deleting Template with id %d', templateId);
 
-  const template = await Template.findById(templateId, {
+  const template = await Template.findByPk(templateId, {
     include: [
       {
         model: TemplateUnit,

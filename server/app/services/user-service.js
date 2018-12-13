@@ -9,7 +9,7 @@ const { createUserError, verify } = require('../../utils');
  * @returns {Promise<boolean>} Return true if the code is correct
  */
 async function checkCode(userId, code) {
-  const user = await ConnectionInformation.findById(userId);
+  const user = await ConnectionInformation.findByPk(userId);
 
   const account = await user.getSpecialAccount();
 

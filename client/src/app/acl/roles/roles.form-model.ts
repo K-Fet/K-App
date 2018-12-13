@@ -19,6 +19,7 @@ export function getRoleModel(role?: Role): DynamicFormModel {
       id: 'description',
       label: 'Description',
       value: values.description,
+      validators: { required: null },
     }),
   ];
 }

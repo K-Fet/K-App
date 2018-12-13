@@ -207,7 +207,7 @@ async function sendWelcomeMail(email) {
  * Send contact form mail
  *
  * @param formName {String} Form name in lower case (because of email subject implementation)
- * @param emails {String} emails receiver
+ * @param emails {String[]} emails receiver
  * @param values {Object} Key/value pairs representing form values
  * @returns {Promise<void>} Nothing
  */
@@ -218,13 +218,14 @@ async function sendContactForm(formName, emails, values) {
         case 'FORM_NAME':
           return formName;
         case 'FORM_VALUES': {
-          let html = '<p><ul>';
-          Object.keys(flatten(values)).forEach((value) => {
-            html += `<li><b>${TRANSLATION[value] ? TRANSLATION[value].french : value}</b>: ${values[value]}</li>`;
-          });
-          html += '</ul></p>';
-          return html;
+          const content = Object
+            .entries(flatten(values))
+            .map(([key, value]) => `<li><b>${TRANSLATION[key] ? TRANSLATION[key].french : key}</b>: ${value}</li>`)
+            .join('');
+          return `<p><ul>${content}</ul></p>`;
         }
+        case 'MAIL_EMAIL':
+          return emails.join(', ');
         default:
           return `??${replaceToken}??`;
       }
