@@ -6,6 +6,7 @@ import { ViewComponent } from './view/view.component';
 import { EditComponent } from './edit/edit.component';
 import { BarmanDetailResolverService } from './barman-detail-resolver.service';
 import { NgxPermissionsGuard } from 'ngx-permissions';
+import { EditGuard } from '../core/guards/edit.guard';
 
 const routes: Routes = [
   {
@@ -24,8 +25,7 @@ const routes: Routes = [
   {
     path: ':id/edit',
     component: EditComponent,
-    canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['barman:write'] } },
+    canActivate: [EditGuard],
     resolve: {
       barman: BarmanDetailResolverService,
     },

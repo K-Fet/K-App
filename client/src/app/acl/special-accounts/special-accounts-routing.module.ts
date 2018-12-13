@@ -5,6 +5,7 @@ import { SpecialAccountDetailResolverService } from './special-account-detail-re
 import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { NgxPermissionsGuard } from 'ngx-permissions';
+import { EditGuard } from '../../core/guards/edit.guard';
 
 const routes: Routes = [
   {
@@ -16,8 +17,7 @@ const routes: Routes = [
   {
     path: ':id/edit',
     component: EditComponent,
-    canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['specialaccount:write'] } },
+    canActivate: [EditGuard],
     resolve: {
       specialAccount: SpecialAccountDetailResolverService,
     },

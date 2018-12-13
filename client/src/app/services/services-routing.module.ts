@@ -7,6 +7,7 @@ import { ServiceListComponent } from './list/services-list.component';
 import { ServiceNewComponent } from './new/service-new.component';
 import { ServiceEditComponent } from './edit/service-edit.component';
 import { OpenServicesComponent } from './open-services/open-services.component';
+import { ActiveBarmanGuard } from '../core/guards/active-barman.guard';
 
 const routes: Routes = [
   {
@@ -18,7 +19,7 @@ const routes: Routes = [
   {
     path: 'plan-my-services',
     component: PlanMyServicesComponent,
-    canActivate: [NgxPermissionsGuard],
+    canActivate: [NgxPermissionsGuard, ActiveBarmanGuard],
     data: { permissions: { only: ['SERVICE_PLAN'] } },
   },
   {
