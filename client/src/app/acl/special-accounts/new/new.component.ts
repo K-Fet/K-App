@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SpecialAccountService } from '../special-account.service';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-account.form-model';
+import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-accounts.form-model';
 import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
 import { MatDialog } from '@angular/material';
 import { PermissionService } from '../../../core/api-services/permission.service';

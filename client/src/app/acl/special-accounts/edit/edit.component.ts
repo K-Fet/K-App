@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 
 import { SpecialAccountService } from '../special-account.service';
 import { ConnectedUser, Permission, SpecialAccount } from '../../../shared/models';
-import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-account.form-model';
+import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-accounts.form-model';
 import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
 import { AuthService } from '../../../core/api-services/auth.service';
 import { MeService } from '../../../core/api-services/me.service';

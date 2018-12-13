@@ -5,6 +5,7 @@ import { FeedComponent } from './feed/feed.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { PresentationComponent } from './presentation/presentation.component';
 import { TasksModule } from '../kommissions/tasks/tasks.module';
+import { MyServicesModule } from '../services/my-services/my-services.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TasksModule } from '../kommissions/tasks/tasks.module';
   imports: [
     SharedModule,
     TasksModule,
+    MyServicesModule,
     HomeRoutingModule,
   ],
 })

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Barman, Service, Task } from '../../shared/models';
-import { Moment } from 'moment';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -17,11 +16,11 @@ export class BarmanService {
     return this.http.get<Barman>(`/api/v1/barmen/${id}`);
   }
 
-  getServices(id: number, start: Moment, end: Moment): Observable<Service[]> {
+  getServices(id: number, start: Date, end: Date): Observable<Service[]> {
     return this.http.get<Service[]>(`/api/v1/barmen/${id}/services`, {
       params: {
-        startAt: (+start).toString(),
-        endAt: (+end).toString(),
+        startAt: start.toISOString(),
+        endAt: end.toISOString(),
       },
     });
   }
@@ -34,11 +33,11 @@ export class BarmanService {
     return this.http.post<Barman>('/api/v1/barmen', barman);
   }
 
-  getAllActiveBarmenWithServices(start: Moment, end: Moment): Observable<Barman[]> {
+  getAllActiveBarmenWithServices(start: Date, end: Date): Observable<Barman[]> {
     return this.http.get<Barman[]>('/api/v1/barmen/services', {
       params: {
-        startAt: (+start).toString(),
-        endAt: (+end).toString(),
+        startAt: start.toISOString(),
+        endAt: end.toISOString(),
       },
     });
   }

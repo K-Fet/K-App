@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { Barman, Day, Service } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { endOfWeek, getISODay, startOfWeek } from 'date-fns';
+import { addWeeks, getISODay } from 'date-fns';
+import { getCurrentWeek } from '../../shared/utils';
 
 // The K-Fêt week change every thusday ( = 4 )
 export const DEFAULT_WEEK_SWITCH = 4;
@@ -46,12 +47,12 @@ export class ServiceService {
 
   getWeek(): Observable<{ start: Date, end: Date }> {
     return new Observable((week) => {
-      this.$weekInterval.subscribe(() => {
-        const start: Date = startOfWeek(new Date(), { weekStartsOn: DEFAULT_WEEK_SWITCH });
-        const end: Date = endOfWeek(new Date(), { weekStartsOn: DEFAULT_WEEK_SWITCH });
-
-        // TODO Add one week if needed
-        week.next({ start, end });
+      this.$weekInterval.subscribe((weekInterval) => {
+        const current = getCurrentWeek();
+        week.next({
+          start: addWeeks(current.start, weekInterval),
+          end: addWeeks(current.end, weekInterval),
+        });
       });
     });
   }

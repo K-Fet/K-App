@@ -6,7 +6,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
 import { PermissionService } from '../../../core/api-services/permission.service';
 import { Permission } from '../../../shared/models';
 import { RoleService } from '../../../core/api-services/role.service';
-import { getRoleFromForm, getRoleModel } from '../role.form-model';
+import { getRoleFromForm, getRoleModel } from '../roles.form-model';
 import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
 
 @Component({

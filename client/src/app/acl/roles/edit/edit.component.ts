@@ -7,7 +7,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
 import { PermissionService } from '../../../core/api-services/permission.service';
 import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
 import { RoleService } from '../../../core/api-services/role.service';
-import { getRoleFromForm, getRoleModel } from '../role.form-model';
+import { getRoleFromForm, getRoleModel } from '../roles.form-model';
 
 @Component({
   templateUrl: './edit.component.html',
