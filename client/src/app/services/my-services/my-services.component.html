@@ -1,23 +1,23 @@
 <mat-card>
-    <mat-card-header>
-        <mat-card-title>
-            <section class="mat-typography">
-                <h1>Mes services</h1>
-            </section>
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <mat-list *ngIf="myServices">
-            <mat-list-item *ngFor="let service of myServices">
+  <mat-card-header>
+    <mat-card-title>
+      <section class="mat-typography">
+        <h1>Mes services</h1>
+      </section>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list *ngIf="myServices">
+      <mat-list-item *ngFor="let service of myServices">
                 <span class="first-letter-uppercase">
-                    {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de 
-                    {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
+                    {{service.startAt | date:'EEEE d LLLL':'':'fr'}} de
+                  {{service.startAt | date:'H'}}h à {{service.endAt | date:'H'}}h
                 </span>
-            </mat-list-item>
-        </mat-list>
-        <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
-        <div fxLayoutAlign="center">
-            <button mat-raised-button color="primary" routerLink="/services/plan-my-services">Fixer mes services</button>
-        </div>
-    </mat-card-content>
+      </mat-list-item>
+    </mat-list>
+    <p *ngIf="!myServices">Aucun service fixé pour la semaine ...</p>
+    <div fxLayoutAlign="center">
+      <button mat-raised-button color="primary" routerLink="/services/plan-my-services">Fixer mes services</button>
+    </div>
+  </mat-card-content>
 </mat-card>
