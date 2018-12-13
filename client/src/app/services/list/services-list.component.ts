@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Service } from '../../_models';
-import { ServiceService, ToasterService } from '../../_services';
+
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { DatePipe } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { Service } from '../../shared/models';
 
 @Component({
   templateUrl: './services-list.component.html',

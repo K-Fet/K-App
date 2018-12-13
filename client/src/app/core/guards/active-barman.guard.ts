@@ -21,7 +21,7 @@ export class ActiveBarmanGuard implements CanActivate {
             return true;
           }
 
-          this.router.navigate(['/services-explorer']);
+          this.router.navigate(['/services/services-explorer']);
 
           return false;
         }),

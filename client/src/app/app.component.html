@@ -22,7 +22,7 @@
         <h4>Compte spécial {{user.specialAccount.connection.email}}</h4>
         <p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
         <div fxLayoutAlign="end">
-          <a mat-raised-button routerLink="/specialaccounts/{{user.specialAccount.id}}">Modifier mes informations</a>
+          <a mat-raised-button routerLink="/acl/special-accounts/{{user.specialAccount.id}}">Modifier mes informations</a>
         </div>
       </div>
     </mat-menu>

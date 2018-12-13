@@ -100,7 +100,7 @@ export class NewComponent {
     });
     this.templateService.create(template).subscribe(() => {
       this.toasterService.showToaster('Template créé');
-      this.router.navigate(['/templates']);
+      this.router.navigate(['/services/templates']);
     });
   }
 

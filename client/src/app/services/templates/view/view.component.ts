@@ -56,7 +56,7 @@ export class ViewComponent implements OnInit {
   delete(): void {
     this.templateService.delete(this.template.id).subscribe(() => {
       this.toasterService.showToaster('Template supprimé');
-      this.router.navigate(['templates']);
+      this.router.navigate(['/services/templates']);
     });
   }
 }

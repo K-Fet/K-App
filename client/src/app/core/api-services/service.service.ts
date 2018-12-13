@@ -7,7 +7,6 @@ import { addWeeks, getISODay } from 'date-fns';
 import { getCurrentWeek } from '../../shared/utils';
 
 // The K-Fêt week change every thusday ( = 4 )
-export const DEFAULT_WEEK_SWITCH = 4;
 const WEEK_DAY_SHORT: string[] = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
 @Injectable()

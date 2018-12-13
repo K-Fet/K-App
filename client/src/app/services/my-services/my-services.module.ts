@@ -9,5 +9,8 @@ import { MyServicesComponent } from './my-services.component';
   imports: [
     SharedModule,
   ],
+  exports: [
+    MyServicesComponent,
+  ],
 })
 export class MyServicesModule {}
