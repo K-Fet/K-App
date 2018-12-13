@@ -100,7 +100,7 @@ async function run() {
   const sequelize = await getSequelizeInstance();
   initModel(sequelize);
   await sequelize.sync();
-  await syncPermissions();
+  await syncPermissions({ skipAdminUpgrade: true });
   console.log('[create-admin-account] Sequelize is now fully loaded');
 
   console.log('[create-admin-account] Checking already existing admin accounts');

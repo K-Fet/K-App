@@ -51,15 +51,18 @@ async function upgradeAdminPermissions() {
 /**
  * This function update permissions of the database with existing ones.
  *
+ * @param options {Object} Options
+ * @param options.skipAdminUpgrade {boolean} Will skip admin upgrade
+ *
  * @return {Promise<void>} Nothing
  */
-async function start() {
+async function start(options = {}) {
   logger.info('Syncing permissions: starting...');
   await updatePermissions();
   logger.info('Syncing permissions: done.');
 
-  if (process.env.NODE_ENV === 'test') {
-    logger.warn('[TESTING]: Skipping admin permission upgrade');
+  if (options.skipAdminUpgrade) {
+    logger.warn('Skipping admin permission upgrade');
     return;
   }
 
