@@ -8,7 +8,7 @@ const model = {
     name: { type: String, required: true, min: 3 },
     provider : {type: Number, require: true },
     shelf : {type : Number, require: true},
-    shipping_mode : {type : String, require : true, enum: ['Litrage', 'Unité']},
+    shipping_mode : {type : String, require : true, enum: ['Volume', 'Individually']},
     shipping_size : {type : String, require: true},
     image: {type: String},
   })),
@@ -16,7 +16,7 @@ const model = {
     name: Joi.string().min(3).required(),
     provider: Joi.number().required(),
     shelf : Joi.number().required(),
-    shipping_mode: Joi.string().allow('Litrage', 'Unité').required(),
+    shipping_mode: Joi.string().allow('Volume', 'Individually').required(),
     shipping_size : Joi.string().required(),
     image: Joi.string().uri(),
   }),
@@ -29,7 +29,7 @@ module.exports = {
   settings: {
     populates: {
       provider: 'inventory-management.providers.get',
-      shelf : 'inventory-management.shelfs.get',
+      shelf : 'inventory-management.shelves.get',
     },
   },
 };

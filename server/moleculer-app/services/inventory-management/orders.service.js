@@ -8,14 +8,14 @@ const model = {
     reference: { type: String, required: true, min: 3 },
     provider : {type: Number, require: true },
     date : {type: Date, default: Date.now()},
-    state :{type: String, enum:['EN COURS', 'RECUE']},
+    state :{type: String, enum:['InProgress', 'Received']},
     listProducts : {type : Array, require: true},
   })),
   joi: Joi.object({
     reference: Joi.string().required().min(3),
     provider : Joi.number().required(),
     date : Joi.date(),
-    state : Joi.string().valid('EN COURS', 'RECUE'),
+    state : Joi.string().valid('InProgress', 'Received'),
     listProducts : Joi.array().required(),
  }),
 };
