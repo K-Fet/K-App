@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ConnectedUser } from '../../shared/models';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { AuthService } from '../../core/api-services/auth.service';
+import { Router } from '@angular/router';
 
 interface Link {
   name: string;
@@ -151,16 +152,24 @@ export class NavMenuComponent implements OnInit {
   menu: SubMenu[] = NAV_MENUS;
   user: ConnectedUser;
 
+  @Output() onNavigate = new EventEmitter<Link>();
+
   constructor(
     private ngxPermissionsService: NgxPermissionsService,
     private ngxRolesService: NgxRolesService,
     private authService: AuthService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
     this.authService.$currentUser.subscribe((user) => {
       this.user = user;
     });
+  }
+
+  async onClick(link: Link) {
+    await this.router.navigate([link.route]);
+    this.onNavigate.emit(link);
   }
 
   isVisible(subMenu: SubMenu): boolean {

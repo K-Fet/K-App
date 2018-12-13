@@ -22,7 +22,8 @@
         <h4>Compte spécial {{user.specialAccount.connection.email}}</h4>
         <p>Membre depuis le {{user.specialAccount.createdAt | date:'d LLLL yyyy':'':'fr'}}</p>
         <div fxLayoutAlign="end">
-          <a mat-raised-button routerLink="/acl/special-accounts/{{user.specialAccount.id}}/edit">Modifier mes informations</a>
+          <a mat-raised-button routerLink="/acl/special-accounts/{{user.specialAccount.id}}/edit">Modifier mes
+            informations</a>
         </div>
       </div>
     </mat-menu>
@@ -46,7 +47,7 @@
 
   <mat-sidenav-container class="content-container">
     <mat-sidenav #sn>
-      <app-nav-menu></app-nav-menu>
+      <app-nav-menu (onNavigate)="sn.close()"></app-nav-menu>
     </mat-sidenav>
 
     <mat-sidenav-content class="content">

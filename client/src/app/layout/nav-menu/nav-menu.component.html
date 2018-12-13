@@ -4,7 +4,7 @@
       <ng-container *ngIf="isVisible(subMenu)">
         <h3 mat-subheader *ngIf="subMenu.name">{{subMenu.name}}</h3>
         <div *ngFor="let link of subMenu.links">
-          <a mat-list-item routerLink="{{link.route}}" *ngxPermissionsOnly="link.permissions">{{link.name}}</a>
+          <a mat-list-item (click)="onClick(link)" *ngxPermissionsOnly="link.permissions">{{link.name}}</a>
         </div>
         <mat-divider></mat-divider>
       </ng-container>
