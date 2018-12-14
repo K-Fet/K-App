@@ -225,8 +225,7 @@ async function sendContactForm(formName, emails, values) {
           return `<p><ul>${content}</ul></p>`;
         }
         case 'MAIL_EMAIL':
-          // Will be dealt with later
-          return '{{MAIL_EMAIL}}';
+          return emails.join(', ');
         default:
           return `??${replaceToken}??`;
       }
