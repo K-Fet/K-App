@@ -33,37 +33,31 @@ export class ListComponent implements OnInit {
     }
   }
 
-  update(): void {
-    this.specialAccountService.getAll().subscribe((specialAccounts) => {
-      this.specialAccountData = new MatTableDataSource(specialAccounts);
-      this.specialAccountData.paginator = this.paginator;
-      this.specialAccountData.sort = this.sort;
-    });
+  async update() {
+    const specialAccounts = await this.specialAccountService.getAll();
+
+    this.specialAccountData = new MatTableDataSource(specialAccounts);
+    this.specialAccountData.paginator = this.paginator;
+    this.specialAccountData.sort = this.sort;
   }
 
   edit(specialAccount: SpecialAccount): void {
     this.router.navigate(['/acl/special-accounts', specialAccount.id, 'edit']);
   }
 
-  delete(specialAccount: SpecialAccount, code: number): void {
-
-    this.specialAccountService.delete(specialAccount.id, code)
-      .subscribe(() => {
-        this.toasterService.showToaster('Compte spécial supprimé');
-        this.update();
-      });
+  async delete(specialAccount: SpecialAccount, code: number) {
+    await this.specialAccountService.delete(specialAccount.id, code);
+    this.toasterService.showToaster('Compte spécial supprimé');
+    this.update();
   }
 
-  openDialog(specialAccount: SpecialAccount): void {
+  async openDialog(specialAccount: SpecialAccount) {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
       data: { message: `Suppression du compte special: ${specialAccount.connection.email}` },
     });
 
-    dialogRef.afterClosed().subscribe((code) => {
-      if (code) {
-        this.delete(specialAccount, code);
-      }
-    });
+    const code = await dialogRef.afterClosed().toPromise();
+    if (code) this.delete(specialAccount, code);
   }
 }

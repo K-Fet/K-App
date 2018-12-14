@@ -35,40 +35,34 @@ export class ListComponent implements OnInit {
     }
   }
 
-  update(): void {
-    this.roleService.getAll().subscribe((roles) => {
-      this.rolesData = new MatTableDataSource(roles);
-      this.rolesData.paginator = this.paginator;
-      this.rolesData.sort = this.sort;
-    });
+  async update() {
+    const roles = await this.roleService.getAll();
+    this.rolesData = new MatTableDataSource(roles);
+    this.rolesData.paginator = this.paginator;
+    this.rolesData.sort = this.sort;
   }
 
   edit(role: Role): void {
     this.router.navigate(['/acl/roles', role.id, 'edit']);
   }
 
-  delete(role: Role): void {
-    this.roleService.delete(role.id)
-      .subscribe(() => {
-        this.toasterService.showToaster('Role supprimé');
-        this.update();
-      });
+  async delete(role: Role) {
+    await this.roleService.delete(role.id);
+    this.toasterService.showToaster('Role supprimé');
+    this.update();
   }
 
   applyFilter(filterValue: string): void {
     this.rolesData.filter = filterValue.trim().toLowerCase();
   }
 
-  openConfirmationDialog(role: Role): void {
+  async openConfirmationDialog(role: Role) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: { title: 'Confirmation', message: `Confirmez-vous la suppression de ${role.name} ?` },
     });
 
-    dialogRef.afterClosed().subscribe((choice) => {
-      if (choice) {
-        this.delete(role);
-      }
-    });
+    const choice = await dialogRef.afterClosed().toPromise();
+    if (choice) this.delete(role);
   }
 }
