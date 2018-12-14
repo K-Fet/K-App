@@ -1,44 +1,53 @@
 module.exports = {
-  lastName: {
+  'info.lastName': {
     french: 'Nom de famille',
   },
-  firstName: {
+  'info.firstName': {
     french: 'Prénom',
   },
-  description: {
-    french: 'Description',
-  },
-  email: {
+  'info.email': {
     french: 'Adresse email',
   },
-  phone: {
+  'info.phone': {
     french: 'Téléphone portable',
   },
-  stageName: {
+  'concert.description': {
+    french: 'Description',
+  },
+  'concert.stageName': {
     french: 'Nom de scène',
   },
-  musicStyle: {
+  'concert.musicStyle': {
     french: 'Style de musique',
   },
-  whereListen: {
+  'concert.whereListen': {
     french: 'Où écouter ?',
   },
-  association: {
+  'event.description': {
+    french: 'Description',
+  },
+  'event.association': {
     french: 'Association',
   },
-  startDate: {
+  'event.startDate': {
     french: 'Date de début',
   },
-  endDate: {
+  'event.endDate': {
     french: 'Date de fin',
   },
-  objectName: {
+  'object.description': {
+    french: 'Description',
+  },
+  'object.objectName': {
     french: 'Nom de l\'objet',
   },
-  lostDate: {
+  'object.lostDate': {
     french: 'Date de perte',
   },
-  pageName: {
+  'website.description': {
+    french: 'Description',
+  },
+  'website.pageName': {
     french: 'Nom de la page web',
   },
 };

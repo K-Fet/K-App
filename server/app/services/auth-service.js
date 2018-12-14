@@ -20,7 +20,7 @@ const mailService = require('./mail-service');
 async function isTokenRevoked(tokenId) {
   logger.info('Auth service: is token revoked');
 
-  const token = await JWT.findById(tokenId);
+  const token = await JWT.findByPk(tokenId);
 
   return !token || token.revoked;
 }
@@ -144,7 +144,7 @@ async function login(emailDirty, password, rememberMe) {
  * @throws An error if the token could not be find.
  */
 async function logout(tokenId) {
-  const token = await JWT.findById(tokenId);
+  const token = await JWT.findByPk(tokenId);
 
   if (!token) throw createUserError('LogoutError', 'This token does not exist');
 
@@ -162,7 +162,7 @@ async function logout(tokenId) {
  * @throws An error if the token could not be find.
  */
 async function me(tokenId) {
-  const token = await JWT.findById(tokenId);
+  const token = await JWT.findByPk(tokenId);
   if (!token) throw createUserError('UnknownUser', 'This token does not exist');
 
   const user = await token.getConnection({
@@ -339,6 +339,8 @@ async function definePassword(emailDirty, passwordToken, newPassword, oldPasswor
  * @returns {Promise<void>} Nothing
  */
 async function updateEmail(currentEmail, newEmail) {
+  if (currentEmail === newEmail) return;
+
   const co = await ConnectionInformation.findOne({
     where: {
       email: currentEmail.toLowerCase(),
@@ -387,7 +389,7 @@ async function updateEmail(currentEmail, newEmail) {
  * @returns {Promise<void>} Nothing
  */
 async function emailVerify(userId, email, password, emailToken) {
-  const co = await ConnectionInformation.findById(userId);
+  const co = await ConnectionInformation.findByPk(userId);
 
   if (!co
     || !await verify(co.password, password)
@@ -443,7 +445,7 @@ async function emailVerify(userId, email, password, emailToken) {
  * @returns {Promise<void>} Nothing
  */
 async function cancelEmailUpdate(userId, email) {
-  const co = await ConnectionInformation.findById(userId);
+  const co = await ConnectionInformation.findByPk(userId);
 
   if (!co) {
     throw createUserError('VerificationError', 'No user found for this user id.');

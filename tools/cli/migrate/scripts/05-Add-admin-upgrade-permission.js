@@ -19,7 +19,7 @@ module.exports = {
     const perms = await query(`SELECT id FROM permissions WHERE name!='${ADMIN_UPGRADE_PERMISSION}'`, params);
 
     // Get the special account who has already every permissions
-    const [{ SpecialAccountId: adminId }] = await query(
+    const [adminAccount] = await query(
       `SELECT SpecialAccountId 
         FROM specialaccountpermissions 
         WHERE PermissionId IN (${perms.map(p => p.id).join(',')})
@@ -28,13 +28,13 @@ module.exports = {
       params,
     );
 
-    if (!adminId) {
+    if (!adminAccount) {
       console.error('Unable to find an admin during migration or he already have the upgrade permission.');
       console.error('If it\'s not the case, you should do it manually');
       return;
     }
 
-    await query(`INSERT INTO specialaccountpermissions VALUE (now(), now(), ${adminId}, ${permId})`);
+    await query(`INSERT INTO specialaccountpermissions VALUE (now(), now(), ${adminAccount.SpecialAccountId}, ${permId})`);
   },
 
   async down(queryInterface, Sequelize) {

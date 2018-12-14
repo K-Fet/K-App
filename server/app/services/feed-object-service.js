@@ -99,7 +99,7 @@ async function createFeedObject(newFeedObject, _embedded) {
 async function getFeedObjectById(feedObjectId) {
   logger.verbose('FeedObject service: get feed object by id %d', feedObjectId);
 
-  const feedObject = await FeedObject.findById(feedObjectId, {
+  const feedObject = await FeedObject.findByPk(feedObjectId, {
     include: [
       {
         model: Category,
@@ -133,7 +133,7 @@ async function getFeedObjectById(feedObjectId) {
  * @return {Promise<FeedObject>} The updated feed object
  */
 async function updateFeedObject(feedObjectId, updatedFeedObject, medias, _embedded) {
-  const currentFeedObject = await FeedObject.findById(feedObjectId, {
+  const currentFeedObject = await FeedObject.findByPk(feedObjectId, {
     include: [
       {
         model: Media,
@@ -188,7 +188,7 @@ async function updateFeedObject(feedObjectId, updatedFeedObject, medias, _embedd
 async function deleteFeedObject(feedObjectId) {
   logger.verbose('FeedObject service: deleting feed object with id %d', feedObjectId);
 
-  const feedObject = await FeedObject.findById(feedObjectId);
+  const feedObject = await FeedObject.findByPk(feedObjectId);
 
   if (!feedObject) throw createUserError('UnknownFeedObject', 'This feed object does not exist');
 

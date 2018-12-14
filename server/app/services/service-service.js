@@ -54,7 +54,7 @@ async function createService(serviceArray) {
 async function getServiceById(serviceId) {
   logger.verbose('Service service: get service by id %d', serviceId);
 
-  const service = await Service.findById(serviceId, {
+  const service = await Service.findByPk(serviceId, {
     include: [
       {
         model: Barman,
@@ -80,7 +80,7 @@ async function getServiceById(serviceId) {
  * @return {Promise<Service>} The updated service
  */
 async function updateService(serviceId, updatedService) {
-  let currentService = await Service.findById(serviceId);
+  let currentService = await Service.findByPk(serviceId);
 
   if (!currentService) throw createUserError('UnknownService', 'This Service does not exist');
 
@@ -99,7 +99,7 @@ async function updateService(serviceId, updatedService) {
   }
   await transaction.commit();
 
-  currentService = await Service.findById(serviceId);
+  currentService = await Service.findByPk(serviceId);
 
   return currentService;
 }
@@ -113,7 +113,7 @@ async function updateService(serviceId, updatedService) {
 async function deleteService(serviceId) {
   logger.verbose('Service service: deleting service with id %d', serviceId);
 
-  const service = await Service.findById(serviceId);
+  const service = await Service.findByPk(serviceId);
 
   if (!service) throw createUserError('UnknownService', 'This service does not exist');
 

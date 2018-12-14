@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, ToasterService } from '../../_services';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToasterService } from '../../core/services/toaster.service';
+import { AuthService } from '../../core/api-services/auth.service';
 
 @Component({
   selector: 'app-cancel-email-update',
   templateUrl: './cancel-email-update.component.html',
 })
-
 export class CancelEmailUpdateComponent implements OnInit {
-
   userId: number;
   email: string;
 
@@ -24,7 +23,7 @@ export class CancelEmailUpdateComponent implements OnInit {
         this.email = params['email'];
       } else {
         this.toasterService.showToaster('Problème dans la récupération de l\'adresse email ou du token');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       }
     });
   }
@@ -32,7 +31,8 @@ export class CancelEmailUpdateComponent implements OnInit {
   cancelEmail(): void {
     this.authService.cancelEmailUpdate(this.userId, this.email).subscribe(() => {
       this.toasterService.showToaster('Annulation enregistré, veuillez vous connecter');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
     });
   }
+
 }

@@ -1,0 +1,54 @@
+<mat-form-field [appearance]="model.getAdditional('appearance', 'legacy')"
+                [color]="model.getAdditional('color', 'primary')"
+                [ngClass]="getClass('grid', 'control')"
+                [floatLabel]="model.getAdditional('floatLabel', LABEL_OPTIONS && LABEL_OPTIONS['float'] || 'auto')"
+                [formGroup]="group">
+  <ng-container *ngIf="model.label" ngProjectAs="mat-label">
+    <mat-label>{{ model.label }}</mat-label>
+  </ng-container>
+  <span *ngIf="model.prefix" matPrefix [innerHTML]="model.prefix"></span>
+
+  <input matInput
+         [max]="model.max"
+         [min]="model.min"
+         [autofocus]="model.autoFocus"
+         [formControlName]="model.id"
+         [id]="elementId"
+         [name]="model.name"
+         [ngClass]="getClass('element', 'control')"
+         [placeholder]="model.placeholder"
+         [readonly]="model.readOnly"
+         [required]="model.required"
+         [tabindex]="model.tabIndex"
+         [owlDateTime]="dt"
+         [owlDateTimeTrigger]="dt"
+         [owlDateTimeFilter]="model.getAdditional('owlDateTimeFilter')"
+         [selectMode]="model.getAdditional('selectMode', 'single')"
+         [rangeSeparator]="model.getAdditional('rangeSeparator')"
+         (blur)="onBlur($event)"
+         (change)="onChange($event)"
+         (focus)="onFocus($event)"/>
+
+  <owl-date-time #dt
+                 [pickerType]="model.getAdditional('pickerType', 'both')"
+                 [pickerMode]="model.getAdditional('pickerMode', 'popup')"
+                 [startView]="model.getAdditional('startView', 'month')"
+                 [startAt]="model.getAdditional('startAt', null)"
+                 [firstDayOfWeek]="model.getAdditional('firstDayOfWeek', 0)"
+                 [showSecondsTimer]="model.getAdditional('showSecondsTimer', false)"
+                 [hideOtherMonths]="model.getAdditional('hideOtherMonths', false)"
+                 [hour12Timer]="model.getAdditional('hour12Timer', false)"
+                 [stepHour]="model.getAdditional('stepHour', 1)"
+                 [stepMinute]="model.getAdditional('stepMinute', 1)"
+                 [stepSecond]="model.getAdditional('stepSecond', 1)"
+                 [scrollStrategy]="model.getAdditional('scrollStrategy')"
+                 [disabled]="model.getAdditional('disabled', false)"
+                 [backdropClass]="model.getAdditional('backdropClass', null)"
+                 [panelClass]="model.getAdditional('panelClass', null)"
+  ></owl-date-time>
+
+  <span *ngIf="model.suffix" matSuffix [innerHTML]="model.suffix"></span>
+  <mat-hint *ngIf="model.hint !== null" align="start" [innerHTML]="model.hint"></mat-hint>
+  <mat-error *ngFor="let message of errorMessages">{{ message }}</mat-error>
+</mat-form-field>
+

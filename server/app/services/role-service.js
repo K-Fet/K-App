@@ -55,7 +55,7 @@ async function createRole(newRole, _embedded) {
 async function getRoleById(roleId) {
   logger.verbose('Role service: get role by id %d', roleId);
 
-  const role = await Role.findById(roleId, {
+  const role = await Role.findByPk(roleId, {
     include: [
       {
         model: Barman,
@@ -86,7 +86,7 @@ async function getRoleById(roleId) {
  * @return {Promise<Role>} The updated role
  */
 async function updateRole(roleId, updatedRole, _embedded) {
-  const currentRole = await Role.findById(roleId);
+  const currentRole = await Role.findByPk(roleId);
 
   if (!currentRole) throw createUserError('UnknownRole', 'This role does not exist');
 
@@ -121,7 +121,7 @@ async function updateRole(roleId, updatedRole, _embedded) {
 async function deleteRole(roleId) {
   logger.verbose('Role service: deleting role with id %d', roleId);
 
-  const role = await Role.findById(roleId);
+  const role = await Role.findByPk(roleId);
 
   if (!role) throw createUserError('UnknownRole', 'This role does not exist');
 

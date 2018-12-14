@@ -1,19 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  DEFAULT_WEEK_SWITCH,
-  ServiceService,
-  TemplateService,
-  ToasterService,
-} from '../../_services';
-import { Service, Template } from '../../_models';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import * as moment from 'moment';
-// tslint:disable-next-line:no-duplicate-imports
-import { Moment } from 'moment';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { TemplateService } from '../../core/api-services/template.service';
+import { Service, Template } from '../../shared/models';
+import { templateDateToDate } from '../templates/templates.helper';
+import { addWeeks, isBefore } from 'date-fns';
+import { getFirstDayOfNextWeek } from '../../shared/utils';
 
 @Component({
   selector: 'app-open-services',
@@ -54,11 +50,11 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  addServiceForm(nbMax: number, startAt: Moment, endAt: Moment): void {
+  addServiceForm(nbMax: number, startAt: Date, endAt: Date): void {
     const serviceFormGroup = this.formBuilder.group({
       nbMaxFormControl: [nbMax, Validators.required],
-      startAtFormControl: [startAt ? startAt.toDate() : '', Validators.required],
-      endAtFormControl: [endAt ? endAt.toDate() : '', Validators.required],
+      startAtFormControl: [startAt, Validators.required],
+      endAtFormControl: [endAt, Validators.required],
     });
     serviceFormGroup.valueChanges.subscribe(() => {
       this.sortServiceForm();
@@ -113,25 +109,16 @@ export class OpenServicesComponent implements OnInit {
   }
 
   onFormChanges(): void {
-    const firstDayOfNextWeek = this.getFirstDayOfNextWeek();
+    const firstDayOfNextWeek = getFirstDayOfNextWeek();
     this.templateSelectorFormGroup.valueChanges.subscribe((val) => {
       if (val.templateSelectorFormControl) {
         (val.templateSelectorFormControl as Template).services.forEach((service) => {
-          const startAt: Moment = moment().isoWeekday(service.startAt.day).set({
-            hour: service.startAt.hours,
-            minute: service.startAt.minutes,
-            second: 0,
-            millisecond: 0,
-          });
-          const endAt: Moment = moment().isoWeekday(service.endAt.day).set({
-            hour: service.endAt.hours,
-            minute: service.endAt.minutes,
-            second: 0,
-            millisecond: 0,
-          });
-          while (startAt.isBefore(firstDayOfNextWeek)) {
-            startAt.add(1, 'week');
-            endAt.add(1, 'week');
+          let startAt = templateDateToDate(service.startAt);
+          let endAt = templateDateToDate(service.endAt);
+
+          while (isBefore(startAt, firstDayOfNextWeek)) {
+            startAt = addWeeks(startAt, 1);
+            endAt = addWeeks(startAt, 1);
           }
           this.addServiceForm(service.nbMax, startAt, endAt);
         });
@@ -140,27 +127,12 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  getFirstDayOfNextWeek(): Moment {
-    const firstDay = moment().set({
-      hour: 0,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-    });
-    if (moment().isoWeekday() <= DEFAULT_WEEK_SWITCH) {
-      firstDay.isoWeekday(DEFAULT_WEEK_SWITCH + 1);
-    } else {
-      firstDay.isoWeekday(DEFAULT_WEEK_SWITCH + 1).add(1, 'week');
-    }
-    return firstDay;
-  }
-
   createServices(): void {
     const services: Service[] = this.servicesFormArray.controls.map((formGroup) => {
       return this.prepareService((formGroup as FormGroup).controls);
     });
 
-    this.serviceService.get(moment(services[0].startAt), moment(services[services.length - 1].endAt))
+    this.serviceService.get(services[0].startAt, services[services.length - 1].endAt)
       .subscribe((actualServices) => {
         if (actualServices.length !== 0) {
           const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

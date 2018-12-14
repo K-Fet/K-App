@@ -95,7 +95,7 @@ async function createSpecialAccount(newSpecialAccount, _embedded) {
 async function getSpecialAccountById(specialAccountId) {
   logger.verbose('specialAccount service: get a specialAccount by his id %d', specialAccountId);
 
-  const specialAccount = await SpecialAccount.findById(specialAccountId, {
+  const specialAccount = await SpecialAccount.findByPk(specialAccountId, {
     include: [
       {
         model: ConnectionInformation,
@@ -123,7 +123,7 @@ async function getSpecialAccountById(specialAccountId) {
  * @return {Promise<SpecialAccount>} the updated special account
  */
 async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount, _embedded) {
-  const currentSpecialAccount = await SpecialAccount.findById(specialAccountId, {
+  const currentSpecialAccount = await SpecialAccount.findByPk(specialAccountId, {
     include: [
       {
         model: ConnectionInformation,
@@ -174,7 +174,7 @@ async function updateSpecialAccountById(specialAccountId, updatedSpecialAccount,
 async function deleteSpecialAccountById(specialAccountId) {
   logger.verbose('SpecialAccount service: deleting SpecialAccount with id %d', specialAccountId);
 
-  const specialAccount = await SpecialAccount.findById(specialAccountId, {
+  const specialAccount = await SpecialAccount.findByPk(specialAccountId, {
     include: [
       {
         model: ConnectionInformation,

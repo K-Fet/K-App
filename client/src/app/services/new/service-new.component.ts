@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Service } from '../../_models';
-import { ServiceService, ToasterService } from '../../_services';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { Service } from '../../shared/models';
 
 @Component({
   templateUrl: './service-new.component.html',
 })
-
 export class ServiceNewComponent {
 
   serviceForm: FormGroup;
@@ -36,7 +36,7 @@ export class ServiceNewComponent {
     service.nbMax = this.serviceForm.value.nbMax;
     this.serviceService.create([service]).subscribe(() => {
       this.toasterService.showToaster('Service créé');
-      this.router.navigate(['/services-manager']);
+      this.router.navigate(['/services/services-manager']);
     });
   }
 }

@@ -96,7 +96,7 @@ async function createBarman(newBarman, _embedded) {
 async function getBarmanById(barmanId) {
   logger.verbose('Barman service: get a barman by his id %d', barmanId);
 
-  const barman = await Barman.findById(barmanId, {
+  const barman = await Barman.findByPk(barmanId, {
     include: [
       {
         model: ConnectionInformation,
@@ -136,7 +136,7 @@ async function getBarmanById(barmanId) {
  * @return {Promise<Barman>} The updated barman
  */
 async function updateBarmanById(barmanId, updatedBarman, _embedded) {
-  const currentBarman = await Barman.findById(barmanId, {
+  const currentBarman = await Barman.findByPk(barmanId, {
     include: [
       {
         model: Kommission,
@@ -208,7 +208,7 @@ async function updateBarmanById(barmanId, updatedBarman, _embedded) {
 async function deleteBarmanById(barmanId) {
   logger.verbose('Barman service: deleting member with id %d', barmanId);
 
-  const barman = await Barman.findById(barmanId, {
+  const barman = await Barman.findByPk(barmanId, {
     include: [
       {
         model: ConnectionInformation,
@@ -286,7 +286,7 @@ async function getServicesBarmen(startDate, endDate) {
 async function getServicesBarman(barmanId, startDate, endDate) {
   logger.verbose('Barman service: retreive services of the barman ', barmanId);
 
-  const barman = await Barman.findById(barmanId);
+  const barman = await Barman.findByPk(barmanId);
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
@@ -319,7 +319,7 @@ async function getServicesBarman(barmanId, startDate, endDate) {
 async function createServiceBarman(barmanId, servicesId) {
   logger.verbose('Barman service: create a Service for the barman ', barmanId, servicesId);
 
-  const barman = await Barman.findById(barmanId);
+  const barman = await Barman.findByPk(barmanId);
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 
@@ -359,7 +359,7 @@ async function createServiceBarman(barmanId, servicesId) {
 async function deleteServiceBarman(barmanId, servicesId) {
   logger.verbose('Barman service: delete a Service for the barman ', barmanId, servicesId);
 
-  const barman = await Barman.findById(barmanId);
+  const barman = await Barman.findByPk(barmanId);
 
   if (!barman) throw createUserError('UnknownBarman', 'This Barman does not exist');
 

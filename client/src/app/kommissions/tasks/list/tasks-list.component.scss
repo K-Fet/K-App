@@ -1,0 +1,21 @@
+@import "../../../../theme";
+
+.taskRow {
+  cursor: pointer;
+}
+
+.notStarted {
+  background: $notStarted;
+}
+
+.inProgress {
+  background: $inProgress;
+}
+
+.abandoned {
+  background: $abandoned;
+}
+
+.done {
+  background: $done;
+}

@@ -15,7 +15,7 @@ const { sequelize } = require('../../bootstrap/sequelize');
 async function createTask(newTask, _embedded) {
   logger.verbose('Task service: creating a new task named %s', newTask.name);
 
-  if (!await Kommission.findById(_embedded.kommissionId)) throw createUserError('UnknownKommission', 'This kommission does not exist');
+  if (!await Kommission.findByPk(_embedded.kommissionId)) throw createUserError('UnknownKommission', 'This kommission does not exist');
 
   const transaction = await sequelize().transaction();
   try {
@@ -58,7 +58,7 @@ async function createTask(newTask, _embedded) {
 async function getTaskById(taskId) {
   logger.verbose('Task service: get task by id %d', taskId);
 
-  const task = await Task.findById(taskId, {
+  const task = await Task.findByPk(taskId, {
     include: [
       {
         model: Barman,
@@ -91,7 +91,7 @@ async function getTaskById(taskId) {
  * @return {Promise<Task>} The updated task
  */
 async function updateTask(taskId, updatedTask, _embedded) {
-  const currentTask = await Task.findById(taskId);
+  const currentTask = await Task.findByPk(taskId);
 
   if (!currentTask) throw createUserError('UnknownTask', 'This task does not exist');
 
@@ -140,7 +140,7 @@ async function updateTask(taskId, updatedTask, _embedded) {
 async function deleteTask(taskId) {
   logger.verbose('Task service: deleting task with id %d', taskId);
 
-  const task = await Task.findById(taskId);
+  const task = await Task.findByPk(taskId);
 
   if (!task) throw createUserError('UnknownTask', 'This task does not exist');
 

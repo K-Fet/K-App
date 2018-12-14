@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceService } from '../../_services';
-import { Day, Service } from '../../_models';
-import * as moment from 'moment';
+import { Day, Service } from '../../shared/models';
+import { ServiceService } from '../../core/api-services/service.service';
+import { isSameDay } from 'date-fns';
 
 @Component({
   selector: 'app-planning',
@@ -39,7 +39,7 @@ export class PlanningComponent implements OnInit {
         if (days.length > 0) {
           this.days = days;
           const today = this.days.filter((day: Day) => {
-            return moment().isSame(day.date, 'day');
+            return isSameDay(day.date, new Date());
           });
           this.updateDayDetails(today[0] || this.days[0]);
         } else {

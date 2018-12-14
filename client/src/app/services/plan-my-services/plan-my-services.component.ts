@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ConnectedUser, Day, Service } from '../../_models';
-import { AuthService, BarmanService, ServiceService, ToasterService } from '../../_services';
+import { BarmanService } from '../../core/api-services/barman.service';
+import { AuthService } from '../../core/api-services/auth.service';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ConnectedUser, Day, Service } from '../../shared/models';
+import { ToasterService } from '../../core/services/toaster.service';
 
 @Component({
   selector: 'app-plan-my-services',

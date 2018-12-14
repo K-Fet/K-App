@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const conf = require('nconf');
 const TRANSLATION = require('../../resources/contact-form-field-translations');
 const EMAIL_TEMPLATES = require('../../resources/email-templates');
+const { flatten } = require('../../utils');
 
 const REGEX_TOKEN = /{{\s*([a-zA-Z_]+)\s*}}/g;
 
@@ -52,7 +53,7 @@ async function sendPasswordResetMail(email, token) {
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -78,7 +79,7 @@ async function sendVerifyEmailMail(email, token, userId) {
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:publicUrl')}/auth/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -106,7 +107,7 @@ async function sendEmailUpdateInformationMail(email, newEmail, userId) {
         case 'MAIL_NEW_EMAIL':
           return newEmail;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/cancel-email-update?userId=${userId}&email=${email}`;
+          return `${conf.get('web:publicUrl')}/auth/cancel-email-update?userId=${userId}&email=${email}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -206,7 +207,7 @@ async function sendWelcomeMail(email) {
  * Send contact form mail
  *
  * @param formName {String} Form name in lower case (because of email subject implementation)
- * @param emails {String} emails receiver
+ * @param emails {String[]} emails receiver
  * @param values {Object} Key/value pairs representing form values
  * @returns {Promise<void>} Nothing
  */
@@ -217,15 +218,14 @@ async function sendContactForm(formName, emails, values) {
         case 'FORM_NAME':
           return formName;
         case 'FORM_VALUES': {
-          let html = '<p><ul>';
-          Object.keys(values).forEach((value) => {
-            html += `<li><b>${TRANSLATION[value] ? TRANSLATION[value].french : value}</b>: ${values[value]}</li>`;
-          });
-          html += '</ul></p>';
-          return html;
+          const content = Object
+            .entries(flatten(values))
+            .map(([key, value]) => `<li><b>${TRANSLATION[key] ? TRANSLATION[key].french : key}</b>: ${value}</li>`)
+            .join('');
+          return `<p><ul>${content}</ul></p>`;
         }
         case 'MAIL_EMAIL':
-          return '{{ MAIL_EMAIL }}';
+          return emails.join(', ');
         default:
           return `??${replaceToken}??`;
       }

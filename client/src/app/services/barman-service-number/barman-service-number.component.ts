@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { BarmanService, ServiceService } from '../../_services';
+import { BarmanService } from '../../core/api-services/barman.service';
+import { ServiceService } from '../../core/api-services/service.service';
 
 interface BarmanServiceData {
   name: string;

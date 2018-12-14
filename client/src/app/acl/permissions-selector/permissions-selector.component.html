@@ -1,0 +1,11 @@
+<div>
+  <h4>Permissions</h4>
+  <button mat-stroked-button color="primary" (click)="selectAll($event)">Tout sélectionner</button>
+  <button mat-stroked-button (click)="deselectAll($event)">Tout désélectionner</button>
+  <div *ngFor="let perm of permissions">
+    <mat-checkbox
+      (change)="onCheck(perm, $event)"
+      [disabled]="isDisabled(perm)"
+      [checked]="selected.has(perm.id)">{{perm.name}}</mat-checkbox>
+  </div>
+</div>

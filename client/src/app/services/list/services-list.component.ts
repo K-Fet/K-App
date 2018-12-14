@@ -1,12 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Service } from '../../_models';
-import { ServiceService, ToasterService } from '../../_services';
+
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { ConfirmationDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { DatePipe } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { Service } from '../../shared/models';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+
+function transformServiceToDate(date: Service): string {
+  return `${format(date.startAt, 'EEEE d LLLL', { locale: fr })} de
+            ${format(date.startAt, 'HH')}h à
+            ${format(date.endAt, 'HH')}h`;
+}
 
 @Component({
   templateUrl: './services-list.component.html',
@@ -24,8 +33,7 @@ export class ServiceListComponent implements OnInit {
               private toasterService: ToasterService,
               private router: Router,
               private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService,
-              private datePipe: DatePipe) {
+              private ngxPermissionsService: NgxPermissionsService) {
   }
 
   ngOnInit(): void {
@@ -62,7 +70,7 @@ export class ServiceListComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirmation', message:
-          `Confirmez-vous la suppression du service du ${ this.transformServiceToDate(service) } ?`,
+          `Confirmez-vous la suppression du service du ${transformServiceToDate(service)} ?`,
       },
     });
 
@@ -71,11 +79,5 @@ export class ServiceListComponent implements OnInit {
         this.delete(service);
       }
     });
-  }
-
-  transformServiceToDate(date: Service): string {
-    return `${this.datePipe.transform(date.startAt, 'EEEE d LLLL')} de
-            ${this.datePipe.transform(date.startAt, 'H')}h à
-            ${this.datePipe.transform(date.endAt, 'H')}h`;
   }
 }

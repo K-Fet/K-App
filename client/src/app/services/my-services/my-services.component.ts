@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, BarmanService, ServiceService } from '../../_services';
-import { ConnectedUser, Service } from '../../_models';
+import { BarmanService } from '../../core/api-services/barman.service';
+import { AuthService } from '../../core/api-services/auth.service';
+import { ServiceService } from '../../core/api-services/service.service';
+import { ConnectedUser, Service } from '../../shared/models';
 
 @Component({
   selector: 'app-my-services',
   templateUrl: './my-services.component.html',
 })
-
 export class MyServicesComponent implements OnInit {
 
   myServices: Service[];

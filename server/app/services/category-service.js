@@ -49,7 +49,7 @@ async function createCategory(newCategory) {
 async function getCategoryById(categoryId) {
   logger.verbose('Category service: get category by id %d', categoryId);
 
-  const category = await Category.findById(categoryId);
+  const category = await Category.findByPk(categoryId);
 
 
   if (!category) throw createUserError('UnknownCategory', 'This category does not exist');
@@ -70,7 +70,7 @@ async function getCategoryById(categoryId) {
  * @return {Promise<Category>} The updated category
  */
 async function updateCategory(categoryId, updatedCategory) {
-  const currentCategory = await Category.findById(categoryId);
+  const currentCategory = await Category.findByPk(categoryId);
 
   if (!currentCategory) throw createUserError('UnknownCategory', 'This category does not exist');
 
@@ -102,7 +102,7 @@ async function updateCategory(categoryId, updatedCategory) {
 async function deleteCategory(categoryId) {
   logger.verbose('Category service: deleting category with id %d', categoryId);
 
-  const category = await Category.findById(categoryId);
+  const category = await Category.findByPk(categoryId);
 
   if (!category) throw createUserError('UnknownCategory', 'This category does not exist');
 

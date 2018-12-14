@@ -77,7 +77,7 @@ async function setAssociations(embedded, instance, associationObj, transaction, 
       // One-to-One relation
       const classObj = associationObj[key];
 
-      const wantedRelation = await classObj.findById(value);
+      const wantedRelation = await classObj.findByPk(value);
 
       if (!wantedRelation) {
         await transaction.rollback();

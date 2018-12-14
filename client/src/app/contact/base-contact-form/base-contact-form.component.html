@@ -1,0 +1,31 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <section class="mat-typography">
+          <h1>{{title}}</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content fxLayoutAlign="center" fxLayout="column">
+      <form [formGroup]="formGroup" (ngSubmit)="onNgSubmit()" class="form-field-block">
+        <dynamic-material-form [group]="formGroup" [model]="model" [layout]="layout">
+          <ng-template modelType="GROUP" let-legend="legend" align="START">
+          <h4 *ngIf="legend">{{ legend }}</h4>
+        </ng-template>
+        </dynamic-material-form>
+        <re-captcha (captchaResponse)="onCaptchaComplete($event)" site_key="{{siteKey}}"></re-captcha>
+        <div fxLayout="row">
+          <div fxFlex></div>
+          <button mat-raised-button type="submit" color="primary"
+                  [disabled]="!this.formGroup.valid || this.token === undefined">
+            Envoyer
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

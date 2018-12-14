@@ -16,7 +16,7 @@ const { sequelize } = require('../../bootstrap/sequelize');
  * @return {Promise<*>}
  */
 async function registerMember(memberId, transaction) {
-  const member = await Member.findById(memberId, { transaction });
+  const member = await Member.findByPk(memberId, { transaction });
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
@@ -40,7 +40,7 @@ async function registerMember(memberId, transaction) {
  * @return {Promise<void>}
  */
 async function unregisterMember(memberId, year) {
-  const member = await Member.findById(memberId);
+  const member = await Member.findByPk(memberId);
 
   if (!member) throw createUserError('UnknownMember', 'This member does not exist');
 
@@ -128,7 +128,7 @@ async function createMember(newMember) {
 async function getMemberById(memberId) {
   logger.verbose('Member service: get member by id %d', memberId);
 
-  const member = await Member.findById(memberId, {
+  const member = await Member.findByPk(memberId, {
     order: [
       [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
     ],
@@ -157,7 +157,7 @@ async function getMemberById(memberId) {
  * @return {Promise<Member>} The updated member
  */
 async function updateMember(memberId, updatedMember) {
-  const currentMember = await Member.findById(memberId);
+  const currentMember = await Member.findByPk(memberId);
 
   if (!currentMember) throw createUserError('UnknownMember', 'This member does not exist');
 
@@ -190,7 +190,7 @@ async function updateMember(memberId, updatedMember) {
 async function deleteMember(memberId) {
   logger.verbose('Member service: deleting member with id %d', memberId);
 
-  const member = await Member.findById(memberId, {
+  const member = await Member.findByPk(memberId, {
     order: [
       [{ model: Registration, as: 'registrations' }, 'year', 'DESC'],
     ],
