@@ -43,6 +43,18 @@ module.exports = {
         },
       },
       {
+        path: '/contact',
+        // Allow only declared routes
+        mappingPolicy: 'restrict',
+
+        bodyParsers: { json: true },
+
+        // List all routes
+        aliases: {
+          'POST /': 'contact.send',
+        },
+      },
+      {
         path: '/inventory-management',
 
         authorization: true,
