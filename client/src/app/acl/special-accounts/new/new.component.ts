@@ -36,26 +36,24 @@ export class NewComponent implements OnInit {
     this.formGroup = this.formService.createFormGroup(this.model);
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
       data: { message: 'Création d\'un compte spécial' },
     });
 
-    dialogRef.afterClosed().subscribe((code) => {
-      if (code) this.doCreate(code);
-    });
+    const code = await dialogRef.afterClosed().toPromise();
+    if (code) this.doCreate(code);
   }
 
-  doCreate(code: number) {
+  async doCreate(code: number) {
     const newSpecialAccount = getSpecialAccountFromForm(
       this.formGroup,
       this.permSelector.selectedPermissions.map(p => p.id),
     );
 
-    this.specialAccountService.create(newSpecialAccount, code).subscribe(() => {
-      this.toasterService.showToaster('Compte spécial créé');
-      this.router.navigate(['/acl/special-accounts']);
-    });
+    await this.specialAccountService.create(newSpecialAccount, code);
+    this.toasterService.showToaster('Compte spécial créé');
+    this.router.navigate(['/acl/special-accounts']);
   }
 }

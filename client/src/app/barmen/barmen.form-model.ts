@@ -8,7 +8,7 @@ import {
 } from '@ng-dynamic-forms/core';
 import { subYears } from 'date-fns';
 import { Barman, Kommission, Role } from '../shared/models';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
 import { getDifference } from '../../utils';
@@ -22,7 +22,7 @@ const BASE_BARMAN = new Barman({
 
 export function getBarmanModel(barmen: Observable<Barman[]>,
                                kommissions: Observable<Kommission[]>,
-                               roles: Observable<Role[]>,
+                               roles: Promise<Role[]>,
                                originalBarman?: Barman): DynamicFormModel {
   const values = originalBarman || BASE_BARMAN;
 
@@ -117,8 +117,7 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
           label: 'Roles',
           multiple: true,
           value: values.roles.map(r => r.id),
-          options: roles.pipe(map(arr => arr.map(r => ({ value: r.id, label: r.name }))),
-          ),
+          options: from(roles.then(roles => roles.map(r => ({ value: r.id, label: r.name })))),
         }),
         new DynamicSelectModel<number>({
           id: 'kommissions',

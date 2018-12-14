@@ -60,20 +60,17 @@ export class EditComponent implements OnInit {
     return connectedId === specialAccountId;
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const dialogRef = this.dialog.open(CodeDialogComponent, {
       width: '350px',
       data: { message: `Edition du compte special ${this.originalSpecialAccount.connection.email}` },
     });
 
-    dialogRef.afterClosed().subscribe((code) => {
-      if (code) {
-        this.doUpdate(code);
-      }
-    });
+    const code = await dialogRef.afterClosed().toPromise();
+    if (code) this.doUpdate(code);
   }
 
-  doUpdate(code: number) {
+  async doUpdate(code: number) {
     const updateSpecialAccount = getSpecialAccountFromForm(
       this.formGroup,
       this.permSelector.selectedPermissions.map(p => p.id),
@@ -81,22 +78,17 @@ export class EditComponent implements OnInit {
     );
 
     if (this.isMe()) {
-      this.meService.put(
-        new ConnectedUser({
-          accountType: 'SpecialAccount',
-          specialAccount: updateSpecialAccount,
-        }),
+      await this.meService.put(
+        new ConnectedUser({ accountType: 'SpecialAccount', specialAccount: updateSpecialAccount }),
         code,
-      ).subscribe(() => {
-        this.toasterService.showToaster('Modification(s) enregistrée(s)');
-        this.router.navigate(['/home']);
-        this.authService.me();
-      });
+      );
+      this.toasterService.showToaster('Modification(s) enregistrée(s)');
+      this.router.navigate(['/home']);
+      this.authService.me();
     } else {
-      this.specialAccountService.update(updateSpecialAccount, code).subscribe(() => {
-        this.toasterService.showToaster('Compte spécial modifié');
-        this.router.navigate(['/acl/special-accounts']);
-      });
+      await this.specialAccountService.update(updateSpecialAccount, code);
+      this.toasterService.showToaster('Compte spécial modifié');
+      this.router.navigate(['/acl/special-accounts']);
     }
   }
 }

@@ -57,17 +57,13 @@ export class EditComponent implements OnInit {
     return connectedId === barmanId;
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const updatedBarman = getBarmanFromForm(this.formGroup, this.originalBarman);
     if (this.isMe()) {
-      this.meService.put(new ConnectedUser({
-        accountType: 'Barman',
-        barman: updatedBarman,
-      })).subscribe(() => {
-        this.toasterService.showToaster('Modification(s) enregistrée(s)');
-        this.router.navigate(['/home']);
-        this.authService.me();
-      });
+      await this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: updatedBarman }));
+      this.toasterService.showToaster('Modification(s) enregistrée(s)');
+      this.router.navigate(['/home']);
+      this.authService.me();
     } else {
       this.barmanService.update(updatedBarman).subscribe(() => {
         this.toasterService.showToaster('Barman mis à jour');
