@@ -1,0 +1,24 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <h1>Stock</h1>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Bières
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="container" fxLayoutGap="10px" fxLayout.xs="column" fxLayoutAlign="center">
+          <mat-card class="card-picture" *ngFor="let picture of pictures">
+            <mat-card-title fxLayout.gt-xs="row" fxLayout.xs="column">
+              <span fxFlex="80%">{{picture.title}}</span>
+              <mat-icon aria-label="Example icon-button with a heart icon" fxFlex="10%">mode_edit</mat-icon>
+              <mat-icon fxFlex="10%">delete</mat-icon>
+            </mat-card-title>
+            <img mat-card-image [src]="picture.img">
+          </mat-card>
+        </div>
+
+      </mat-expansion-panel>
+
+  </mat-card>
+</div>
