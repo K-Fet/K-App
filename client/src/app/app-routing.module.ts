@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NgxPermissionsGuard } from 'ngx-permissions';
+import {StockMenuComponent} from "./stock/stock-menu/stock-menu.component";
 
 const routes: Routes = [
   {
@@ -10,6 +11,7 @@ const routes: Routes = [
     canLoad: [NgxPermissionsGuard],
     loadChildren: './acl/acl.module#AclModule',
   },
+  { path: 'stock', component: StockMenuComponent},
   {
     path: 'auth',
     loadChildren: './auth/auth.module#AuthModule',
