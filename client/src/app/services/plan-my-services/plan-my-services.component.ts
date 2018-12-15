@@ -68,22 +68,20 @@ export class PlanMyServicesComponent implements OnInit {
 
   updateMyServices(): void {
     if (this.user.barman) {
-      this.serviceService.getWeek().subscribe((week) => {
-        this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe((services) => {
-          this.myServices = services.length > 0 ? services : undefined;
-        });
+      this.serviceService.getWeek().subscribe(async (week) => {
+        const services = await this.barmanService.getServices(this.user.barman.id, week.start, week.end);
+        this.myServices = services.length > 0 ? services : undefined;
       });
     }
   }
 
-  addService(service: Service): void {
+  async addService(service: Service) {
     if (this.user.barman) {
-      this.barmanService.addService(this.user.barman.id, [service.id]).subscribe(() => {
-        this.toasterService.showToaster('Service enregistré');
-        this.updateMyServices();
-        const dayNumber = this.getCurrentDayIndex();
-        this.updatePlanning(dayNumber);
-      });
+      await this.barmanService.addService(this.user.barman.id, [service.id]);
+      this.toasterService.showToaster('Service enregistré');
+      this.updateMyServices();
+      const dayNumber = this.getCurrentDayIndex();
+      this.updatePlanning(dayNumber);
     }
   }
 
@@ -91,13 +89,12 @@ export class PlanMyServicesComponent implements OnInit {
     return this.days.indexOf(this.days.filter(day => day.active)[0]);
   }
 
-  removeService(service: Service): void {
-    this.barmanService.removeService(this.user.barman.id, [service.id]).subscribe(() => {
-      this.toasterService.showToaster('Service supprimé');
-      this.updateMyServices();
-      const dayNumber = this.getCurrentDayIndex();
-      this.updatePlanning(dayNumber);
-    });
+  async removeService(service: Service) {
+    await this.barmanService.removeService(this.user.barman.id, [service.id]);
+    this.toasterService.showToaster('Service supprimé');
+    this.updateMyServices();
+    const dayNumber = this.getCurrentDayIndex();
+    this.updatePlanning(dayNumber);
   }
 
   available(service: Service): boolean {

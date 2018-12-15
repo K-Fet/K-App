@@ -52,24 +52,21 @@ export class LoginComponent implements OnInit {
     this.formGroup = this.formService.createFormGroup(this.formModel);
   }
 
-  login(): void {
+  async login() {
     const { email, password, rememberMe } = this.formGroup.value;
     const rememberMeDay = rememberMe ? environment.JWT_DAY_EXP_LONG : environment.JWT_DAY_EXP;
 
-    this.authService.login(email, password, rememberMeDay).subscribe(() => {
-      this.router.navigate(['/']);
-    });
+    await this.authService.login(email, password, rememberMeDay);
+    this.router.navigate(['/']);
   }
 
-  openDialog(): void {
+  async openDialog() {
     const dialogRef = this.matDialog.open(ResetPasswordDialogComponent);
 
-    dialogRef.afterClosed().subscribe((email) => {
-      if (email) {
-        this.authService.resetPassword(email).subscribe(() => {
-          this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
-        });
-      }
-    });
+    const email = await dialogRef.afterClosed().toPromise();
+    if (email) {
+      await this.authService.resetPassword(email);
+      this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
+    }
   }
 }
