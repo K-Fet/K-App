@@ -34,7 +34,7 @@ export class ViewComponent implements OnInit {
       },
     });
 
-    const choice = await dialogRef.afterClosed();
+    const choice = await dialogRef.afterClosed().toPromise();
     if (choice) this.delete();
   }
 
