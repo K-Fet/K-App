@@ -34,19 +34,18 @@ export class PlanningComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.serviceService.getWeek().subscribe((week) => {
-      this.serviceService.getPlanning(week.start, week.end).subscribe((days) => {
-        if (days.length > 0) {
-          this.days = days;
-          const today = this.days.filter((day: Day) => {
-            return isSameDay(day.date, new Date());
-          });
-          this.updateDayDetails(today[0] || this.days[0]);
-        } else {
-          this.days = undefined;
-          this.dayServices = undefined;
-        }
-      });
+    this.serviceService.getWeek().subscribe(async (week) => {
+      const days = await this.serviceService.getPlanning(week.start, week.end);
+      if (days.length > 0) {
+        this.days = days;
+        const today = this.days.filter((day: Day) => {
+          return isSameDay(day.date, new Date());
+        });
+        this.updateDayDetails(today[0] || this.days[0]);
+      } else {
+        this.days = undefined;
+        this.dayServices = undefined;
+      }
     });
   }
 

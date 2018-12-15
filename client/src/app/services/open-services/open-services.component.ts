@@ -100,12 +100,10 @@ export class OpenServicesComponent implements OnInit {
     return null;
   }
 
-  ngOnInit(): void {
-    // Get templates
-    this.templateService.getAll().subscribe((templates) => {
-      this.templates = templates;
-    });
+  async ngOnInit() {
     this.onFormChanges();
+    // Get templates
+    this.templates = await this.templateService.getAll();
   }
 
   onFormChanges(): void {
@@ -127,38 +125,30 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  createServices(): void {
+  async createServices() {
     const services: Service[] = this.servicesFormArray.controls.map((formGroup) => {
       return this.prepareService((formGroup as FormGroup).controls);
     });
 
-    this.serviceService.get(services[0].startAt, services[services.length - 1].endAt)
-      .subscribe((actualServices) => {
-        if (actualServices.length !== 0) {
-          const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '350px',
-            data: {
-              title: 'Des services existent déjà ...',
-              message: `Il existe actuellement ${actualServices.length} service(s)` +
-                ' sur le lapse de temps envisagé. Êtes-vous sur de vouloir créer les services?',
-            },
-          });
-          dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-              this.callServer(services);
-            }
-          });
-        } else {
-          this.callServer(services);
-        }
-      });
+    const actualServices = await this.serviceService.get(services[0].startAt, services[services.length - 1].endAt);
+    if (actualServices.length === 0) return this.callServer(services);
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Des services existent déjà ...',
+        message: `Il existe actuellement ${actualServices.length} service(s)` +
+          ' sur le lapse de temps envisagé. Êtes-vous sur de vouloir créer les services?',
+      },
+    });
+    const result = await dialogRef.afterClosed().toPromise();
+    if (result) this.callServer(services);
   }
 
-  callServer(services: any): void {
-    this.serviceService.create(services).subscribe(() => {
-      this.toasterService.showToaster('Nouveaux services enregistrés');
-      this.router.navigate(['/']);
-    });
+  async callServer(services: any) {
+    await this.serviceService.create(services);
+    this.toasterService.showToaster('Nouveaux services enregistrés');
+    this.router.navigate(['/']);
   }
 
   prepareService(controls): Service {

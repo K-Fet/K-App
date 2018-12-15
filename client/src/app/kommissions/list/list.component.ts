@@ -28,31 +28,28 @@ export class ListComponent implements OnInit {
     this.update();
   }
 
-  update(): void {
-    this.kommissionService.getAll().subscribe((kommissions) => {
-      this.kommissionsData = new MatTableDataSource(kommissions);
-      this.kommissionsData.paginator = this.paginator;
-      this.kommissionsData.sort = this.sort;
-    });
+  async update() {
+    const kommissions = await this.kommissionService.getAll();
+    this.kommissionsData = new MatTableDataSource(kommissions);
+    this.kommissionsData.paginator = this.paginator;
+    this.kommissionsData.sort = this.sort;
   }
 
   edit(kommission: Kommission): void {
     this.router.navigate(['/kommissions', kommission.id, 'edit']);
   }
 
-  delete(kommission: Kommission): void {
-    this.kommissionService.delete(kommission.id)
-      .subscribe(() => {
-        this.toasterService.showToaster('Kommission supprimée');
-        this.update();
-      });
+  async delete(kommission: Kommission) {
+    await this.kommissionService.delete(kommission.id);
+    this.toasterService.showToaster('Kommission supprimée');
+    this.update();
   }
 
   view(kommission: Kommission): void {
     this.router.navigate(['/kommissions', kommission.id]);
   }
 
-  openConfirmationDialog(kommission: Kommission): void {
+  async openConfirmationDialog(kommission: Kommission) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
@@ -61,11 +58,8 @@ export class ListComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((choice) => {
-      if (choice) {
-        this.delete(kommission);
-      }
-    });
+    const choice = await dialogRef.afterClosed().toPromise();
+    if (choice) this.delete(kommission);
   }
 
   applyFilter(filterValue: string): void {
