@@ -48,12 +48,12 @@ export class AuthService {
   }
 
   async login(email: string, password: string, rememberMe: number): Promise<any> {
-    const { jwt } = await this.http.post<{ jwt: string }>('/api/v1/auth/login', { email, password, rememberMe })
+    const currentUser = await this.http.post<{ jwt: string }>('/api/v1/auth/login', { email, password, rememberMe })
       .toPromise();
 
-    this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
+    this.saveUser(currentUser, (rememberMe >= environment.JWT_DAY_EXP_LONG));
 
-    this.me();
+    await this.me();
   }
 
   async logout(): Promise<any> {
@@ -108,11 +108,11 @@ export class AuthService {
     this.isLoggedIn = false;
   }
 
-  private saveUser(jwt, rememberMe): void {
+  private saveUser(currentUser, rememberMe): void {
     if (rememberMe) {
-      localStorage.setItem('currentUser', JSON.stringify(jwt));
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
     } else {
-      sessionStorage.setItem('currentUser', JSON.stringify(jwt));
+      sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
     }
   }
 
