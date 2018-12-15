@@ -44,7 +44,7 @@ export class EditComponent implements OnInit {
     this.authService.$currentUser.subscribe(user => this.connectedUser = user);
     this.formGroup = this.formService.createFormGroup([]);
 
-    this.permissionService.getAll().subscribe(permissions => this.permissions = permissions);
+    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.route.data.subscribe((data: { specialAccount: SpecialAccount }) => {
       this.originalSpecialAccount = data.specialAccount;

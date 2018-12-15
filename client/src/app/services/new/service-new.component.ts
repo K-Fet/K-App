@@ -29,14 +29,13 @@ export class ServiceNewComponent {
     });
   }
 
-  add(): void {
+  async add() {
     const service = new Service();
     service.startAt = this.serviceForm.value.startAt;
     service.endAt = this.serviceForm.value.endAt;
     service.nbMax = this.serviceForm.value.nbMax;
-    this.serviceService.create([service]).subscribe(() => {
-      this.toasterService.showToaster('Service créé');
-      this.router.navigate(['/services/services-manager']);
-    });
+    await this.serviceService.create([service]);
+    this.toasterService.showToaster('Service créé');
+    this.router.navigate(['/services/services-manager']);
   }
 }

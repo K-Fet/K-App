@@ -25,7 +25,7 @@ export class ViewComponent implements OnInit {
     });
   }
 
-  openConfirmationDialog(): void {
+  async openConfirmationDialog() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
@@ -34,18 +34,14 @@ export class ViewComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((choice) => {
-      if (choice) {
-        this.delete();
-      }
-    });
+    const choice = await dialogRef.afterClosed().toPromise();
+    if (choice) this.delete();
   }
 
-  delete(): void {
-    this.kommissionService.delete(this.kommission.id).subscribe(() => {
-      this.toasterService.showToaster('Kommission supprimée');
-      this.router.navigate(['/kommissions']);
-    });
+  async delete() {
+    await this.kommissionService.delete(this.kommission.id);
+    this.toasterService.showToaster('Kommission supprimée');
+    this.router.navigate(['/kommissions']);
   }
 
   getBarmen(active: boolean): Barman[] {

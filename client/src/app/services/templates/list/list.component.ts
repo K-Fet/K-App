@@ -20,12 +20,11 @@ export class ListComponent implements OnInit {
               private router: Router) {
   }
 
-  ngOnInit(): void {
-    this.templateService.getAll().subscribe((templates) => {
-      this.templatesData = new MatTableDataSource(templates);
-      this.templatesData.paginator = this.paginator;
-      this.templatesData.sort = this.sort;
-    });
+  async ngOnInit() {
+    const templates = await this.templateService.getAll();
+    this.templatesData = new MatTableDataSource(templates);
+    this.templatesData.paginator = this.paginator;
+    this.templatesData.sort = this.sort;
   }
 
   applyFilter(filterValue: string): void {

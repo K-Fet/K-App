@@ -35,16 +35,15 @@ export class PlanMyServicesComponent implements OnInit {
 
   updatePlanning(dayNumber: number): void {
     // Get the planning of the current week
-    this.serviceService.getWeek().subscribe((week) => {
-      this.serviceService.getPlanning(week.start, week.end).subscribe((days) => {
-        if (days.length > 0) {
-          this.days = days;
-          this.updateDayDetails(this.days[+dayNumber]);
-        } else {
-          this.days = undefined;
-          this.dayServices = undefined;
-        }
-      });
+    this.serviceService.getWeek().subscribe(async (week) => {
+      const days = await this.serviceService.getPlanning(week.start, week.end);
+      if (days.length > 0) {
+        this.days = days;
+        this.updateDayDetails(this.days[+dayNumber]);
+      } else {
+        this.days = undefined;
+        this.dayServices = undefined;
+      }
     });
   }
 

@@ -92,16 +92,15 @@ export class NewComponent {
     };
   }
 
-  addTemplate(): void {
+  async addTemplate() {
     const template = new Template();
     template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
     template.services = this.servicesFormArray.controls.map((formGroup) => {
       return this.prepareService((formGroup as FormGroup).controls);
     });
-    this.templateService.create(template).subscribe(() => {
-      this.toasterService.showToaster('Template créé');
-      this.router.navigate(['/services/templates']);
-    });
+    await this.templateService.create(template);
+    this.toasterService.showToaster('Template créé');
+    this.router.navigate(['/services/templates']);
   }
 
   prepareService(controls): TemplateServiceUnit {

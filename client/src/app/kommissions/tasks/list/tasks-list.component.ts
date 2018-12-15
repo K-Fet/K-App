@@ -36,11 +36,9 @@ export class TasksListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
-    this.route.params.subscribe((params) => {
-      this.kommissionService.getById(params['id']).subscribe((kommission) => {
-        this.kommission = kommission;
-        this.refresh();
-      });
+    this.route.params.subscribe(async (params) => {
+      this.kommission = await this.kommissionService.getById(params['id']);
+      this.refresh();
     });
     this.stateSelected = new FormControl('');
     this.stateSelected.valueChanges.subscribe((value) => {
@@ -99,16 +97,16 @@ export class TasksListComponent implements OnInit {
     });
   }
 
-  openViewDialog(task: Task): void {
+  async openViewDialog(task: Task) {
     const panelClass = getPanelClass(task);
     const viewDialogRef = this.dialog.open(TaskViewDialogComponent, {
       panelClass,
       data: { task, kommission: this.kommission },
       width: '500px',
     });
-    viewDialogRef.afterClosed().subscribe(() => {
-      this.refresh();
-    });
+
+    await viewDialogRef.afterClosed().toPromise();
+    this.refresh();
   }
 
   // For template usage
@@ -121,15 +119,12 @@ export class TasksListComponent implements OnInit {
     return this.states.find(s => s.value === task.state).name || 'Unknown state';
   }
 
-  openNewDialog() {
+  async openNewDialog() {
     const editNewDialogRef = this.dialog.open(TaskEditNewDialogComponent, {
       data: { kommission: this.kommission },
       width: '500px',
     });
-    editNewDialogRef.afterClosed().subscribe((created) => {
-      if (created) {
-        this.refresh();
-      }
-    });
+    const created = await editNewDialogRef.afterClosed().toPromise();
+    if (created) this.refresh();
   }
 }

@@ -44,12 +44,11 @@ export class ServiceListComponent implements OnInit {
   }
 
   update(): void {
-    this.serviceService.getWeek().subscribe((week) => {
-      this.serviceService.get(week.start, week.end).subscribe((services) => {
-        this.servicesData = new MatTableDataSource(services);
-        this.servicesData.paginator = this.paginator;
-        this.servicesData.sort = this.sort;
-      });
+    this.serviceService.getWeek().subscribe(async (week) => {
+      const services = await this.serviceService.get(week.start, week.end);
+      this.servicesData = new MatTableDataSource(services);
+      this.servicesData.paginator = this.paginator;
+      this.servicesData.sort = this.sort;
     });
   }
 
@@ -57,15 +56,13 @@ export class ServiceListComponent implements OnInit {
     this.router.navigate(['/services-manager/', service.id]);
   }
 
-  delete(service: Service): void {
-    this.serviceService.delete(service.id)
-      .subscribe(() => {
-        this.toasterService.showToaster('Service supprimé');
-        this.update();
-      });
+  async delete(service: Service) {
+    await this.serviceService.delete(service.id);
+    this.toasterService.showToaster('Service supprimé');
+    this.update();
   }
 
-  openConfirmationDialog(service: Service): void {
+  async openConfirmationDialog(service: Service) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
@@ -74,10 +71,7 @@ export class ServiceListComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((choice) => {
-      if (choice) {
-        this.delete(service);
-      }
-    });
+    const choice = await dialogRef.afterClosed().toPromise();
+    if (choice) this.delete(service);
   }
 }

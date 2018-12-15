@@ -33,7 +33,7 @@ export class EditComponent implements OnInit {
   ngOnInit() {
     this.formGroup = this.formService.createFormGroup([]);
 
-    this.permissionService.getAll().subscribe(permissions => this.permissions = permissions);
+    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.route.data.subscribe((data: { role: Role }) => {
       this.originalRole = data.role;

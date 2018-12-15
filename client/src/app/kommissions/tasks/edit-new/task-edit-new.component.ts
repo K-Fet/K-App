@@ -41,11 +41,11 @@ export class TaskEditNewDialogComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.kommissionService.getById(+this.data.kommission.id).subscribe((kommission) => {
-      this.barmen = kommission.barmen.filter(b => new Barman(b).isActive());
-    });
+  async ngOnInit() {
     this.createForm();
+
+    const kommission = await this.kommissionService.getById(+this.data.kommission.id);
+    this.barmen = kommission.barmen.filter(b => new Barman(b).isActive());
   }
 
   onNoClick(): void {

@@ -27,7 +27,7 @@ export class NewComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.permissionService.getAll().subscribe(permissions => this.permissions = permissions);
+    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.model = getRoleModel();
     this.formGroup = this.formService.createFormGroup(this.model);
