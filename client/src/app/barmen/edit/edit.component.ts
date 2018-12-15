@@ -9,7 +9,6 @@ import { KommissionService } from '../../core/api-services/kommission.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { Barman, ConnectedUser } from '../../shared/models';
 import { AuthService } from '../../core/api-services/auth.service';
-import { map } from 'rxjs/operators';
 import { MeService } from '../../core/api-services/me.service';
 
 @Component({
@@ -41,7 +40,8 @@ export class EditComponent implements OnInit {
     this.route.data.subscribe((data: { barman: Barman }) => {
       this.originalBarman = data.barman;
       this.model = getBarmanModel(
-        this.barmanService.getAll().pipe(map(barmen => barmen.filter(b => b.id !== this.originalBarman.id))),
+        this.barmanService.getAll()
+          .then(barmen => barmen.filter(b => b.id !== this.originalBarman.id)),
         this.kommissionService.getAll(),
         this.roleService.getAll(),
         this.originalBarman,
@@ -65,10 +65,9 @@ export class EditComponent implements OnInit {
       this.router.navigate(['/home']);
       this.authService.me();
     } else {
-      this.barmanService.update(updatedBarman).subscribe(() => {
-        this.toasterService.showToaster('Barman mis à jour');
-        this.router.navigate(['/barmen']);
-      });
+      await this.barmanService.update(updatedBarman);
+      this.toasterService.showToaster('Barman mis à jour');
+      this.router.navigate(['/barmen']);
     }
   }
 }

@@ -38,11 +38,10 @@ export class DefinePasswordComponent implements OnInit {
     });
   }
 
-  definePassword(): void {
+  async definePassword() {
     const password = this.passwordForm.get('password').value;
-    this.authService.definePassword(this.email, password, this.token, null).subscribe(() => {
-      this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
-      this.router.navigate(['/auth/login']);
-    });
+    await this.authService.definePassword(this.email, password, this.token, null);
+    this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
+    this.router.navigate(['/auth/login']);
   }
 }

@@ -38,11 +38,10 @@ export class EmailVerificationComponent implements OnInit {
     });
   }
 
-  verifyEmail(): void {
+  async verifyEmail() {
     const password = this.passwordForm.get('password').value;
-    this.authService.verifyEmail(this.userId, this.email, password, this.token).subscribe(() => {
-      this.toasterService.showToaster('Enregistré, veuillez vous connecter');
-      this.router.navigate(['/auth/login']);
-    });
+    await this.authService.verifyEmail(this.userId, this.email, password, this.token);
+    this.toasterService.showToaster('Enregistré, veuillez vous connecter');
+    this.router.navigate(['/auth/login']);
   }
 }

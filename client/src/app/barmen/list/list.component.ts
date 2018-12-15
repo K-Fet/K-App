@@ -25,13 +25,7 @@ export class ListComponent implements OnInit {
               public media: ObservableMedia) {
   }
 
-  ngOnInit(): void {
-    this.barmanService.getAll().subscribe((barmen: Barman[]) => {
-      this.barmen = barmen;
-      this.barmenData = new MatTableDataSource(barmen);
-      this.barmenData.paginator = this.paginator;
-      this.barmenData.sort = this.sort;
-    });
+  async ngOnInit() {
     this.media.subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs' && this.displayedColumns.includes('lastName')) {
         this.displayedColumns.splice(this.displayedColumns.indexOf('lastName'), 1);
@@ -39,6 +33,11 @@ export class ListComponent implements OnInit {
         this.displayedColumns.splice(this.displayedColumns.indexOf('nickname') + 1, 0, 'lastName');
       }
     });
+    const barmen = await this.barmanService.getAll();
+    this.barmen = barmen;
+    this.barmenData = new MatTableDataSource(barmen);
+    this.barmenData.paginator = this.paginator;
+    this.barmenData.sort = this.sort;
   }
 
   applyFilter(filterValue: string): void {

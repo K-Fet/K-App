@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser, Permission } from '../../shared/models';
+import { ConnectedUser } from '../../shared/models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable()
@@ -41,56 +40,59 @@ export class AuthService {
     if (Date.now() >= (jwtDecoded.exp * 1000 - 3600000)) return this.clearUser();
 
     try {
-      await this.me().toPromise();
+      await this.me();
     } catch (e) {
       console.error('Error during initializeAuth: ', e);
       this.clearUser();
     }
   }
 
-  login(email: string, password: string, rememberMe: number): Observable<any> {
-    return this.http.post('/api/v1/auth/login', { email, password, rememberMe })
-      .pipe(tap((jwt: { jwt: string, permissions: Permission }) => {
-        this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
-        this.me().subscribe();
-      }));
+  async login(email: string, password: string, rememberMe: number): Promise<any> {
+    const { jwt } = await this.http.post<{ jwt: string }>('/api/v1/auth/login', { email, password, rememberMe })
+      .toPromise();
+
+    this.saveUser(jwt, (rememberMe >= environment.JWT_DAY_EXP_LONG));
+
+    this.me();
   }
 
-  logout(): Observable<any> {
-    return this.http.get('/api/v1/auth/logout')
-      .pipe(tap(this.clearUser.bind(this)));
+  async logout(): Promise<any> {
+    try {
+      await this.http.get('/api/v1/auth/logout').toPromise();
+    } catch (e) {}
+
+    this.clearUser();
   }
 
-  definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Observable<any> {
-    if (oldPassword) {
-      return this.http.put('api/v1/auth/reset-password', {
-        email,
-        password,
-        passwordToken,
-        oldPassword,
-      });
-    }
-    return this.http.put('api/v1/auth/reset-password', {
+  definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Promise<any> {
+    const body = {
       email,
       password,
-      passwordToken,
-    });
+      // Change null into undefined
+      passwordToken: passwordToken || undefined,
+      oldPassword: oldPassword || undefined,
+    };
+    return this.http.put('api/v1/auth/reset-password', body).toPromise();
   }
 
-  verifyEmail(userId: number, email: string, password: string, emailToken: string): Observable<any> {
+  verifyEmail(userId: number, email: string, password: string, emailToken: string): Promise<any> {
     return this.http.post('api/v1/auth/email-verification', {
       userId,
       email,
       password,
       emailToken,
-    });
+    }).toPromise();
   }
 
-  cancelEmailUpdate(userId: number, email: string) {
+  cancelEmailUpdate(userId: number, email: string): Promise<any> {
     return this.http.post('api/v1/auth/cancel-email-verification', {
       userId,
       email,
-    });
+    }).toPromise();
+  }
+
+  resetPassword(email: string): Promise<any> {
+    return this.http.post('/api/v1/auth/reset-password', { email }).toPromise();
   }
 
   private clearUser(): void {
@@ -107,49 +109,44 @@ export class AuthService {
   }
 
   private saveUser(jwt, rememberMe): void {
-    if (rememberMe) localStorage.setItem('currentUser', JSON.stringify(jwt));
-    else sessionStorage.setItem('currentUser', JSON.stringify(jwt));
+    if (rememberMe) {
+      localStorage.setItem('currentUser', JSON.stringify(jwt));
+    } else {
+      sessionStorage.setItem('currentUser', JSON.stringify(jwt));
+    }
   }
 
   private managePermissionAndRole(permissions: string[]): void {
     this.ngxPermissionsService.addPermission(permissions);
-    ROLES.forEach((ROLE) => {
-      if (permissions.filter(perm => ROLE.permissions.includes(perm)).length
-        === ROLE.permissions.length) {
-        this.ngxRolesService.addRole(ROLE.name, ROLE.permissions);
-      }
-    });
+
+    ROLES
+      .filter(ROLE => ROLE.permissions.every(p => permissions.includes(p)))
+      .forEach(ROLE => this.ngxRolesService.addRole(ROLE.name, ROLE.permissions));
   }
 
-  me(): Observable<any> {
-    return this.http.get<{ user: ConnectedUser, permissions: Permission[] }>('/api/v1/me')
-      .pipe(
-        tap(({ user: { barman, specialAccount }, permissions }) => {
-          this.isLoggedIn = true;
+  async me(): Promise<any> {
+    const { user: { barman, specialAccount }, permissions } =
+      await this.http.get<{ user: ConnectedUser, permissions: string[] }>('/api/v1/me').toPromise();
 
-          if (barman) {
-            this.$currentUser.next(new ConnectedUser({
-              barman,
-              accountType: 'Barman',
-              email: barman.connection.email,
-              createdAt: barman.createdAt,
-            }));
-            this.ngxRolesService.addRole('BARMAN', ['']);
-          } else if (specialAccount) {
-            this.$currentUser.next(new ConnectedUser({
-              specialAccount,
-              accountType: 'SpecialAccount',
-              email: specialAccount.connection.email,
-              createdAt: specialAccount.createdAt,
-            }));
-            this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
-          }
-          this.managePermissionAndRole(permissions);
-        }),
-      );
-  }
+    this.isLoggedIn = true;
 
-  resetPassword(email: string): Observable<any> {
-    return this.http.post('/api/v1/auth/reset-password', { email });
+    if (barman) {
+      this.$currentUser.next(new ConnectedUser({
+        barman,
+        accountType: 'Barman',
+        email: barman.connection.email,
+        createdAt: barman.createdAt,
+      }));
+      this.ngxRolesService.addRole('BARMAN', ['']);
+    } else if (specialAccount) {
+      this.$currentUser.next(new ConnectedUser({
+        specialAccount,
+        accountType: 'SpecialAccount',
+        email: specialAccount.connection.email,
+        createdAt: specialAccount.createdAt,
+      }));
+      this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
+    }
+    this.managePermissionAndRole(permissions);
   }
 }
