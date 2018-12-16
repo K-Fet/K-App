@@ -20,6 +20,26 @@ class JoiValidator extends BaseValidator {
 
     return true;
   }
+
+  /**
+   * Register validator as a middleware
+   *
+   * @memberof ParamValidator
+   */
+  middleware() {
+    return function validatorMiddleware(handler, action) {
+      // Wrap a param validator
+      if (action.params) {
+        const check = this.compile(action.params);
+        return function validateContextParams(ctx) {
+          const res = check(ctx.params);
+          if (res === true) return handler(ctx);
+          return Promise.reject(new ValidationError('Parameters validation error!', null, res));
+        };
+      }
+      return handler;
+    }.bind(this);
+  }
 }
 
 module.exports = JoiValidator;
