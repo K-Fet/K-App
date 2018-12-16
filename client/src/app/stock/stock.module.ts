@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { StockMenuComponent } from './stock-menu/stock-menu.component';
 
-import { MaterialModule } from '../shared/material.module';
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   declarations: [StockMenuComponent],
   imports: [
-    CommonModule,
-    MaterialModule,
+    SharedModule,
   ]
 })
 export class StockModule { }
