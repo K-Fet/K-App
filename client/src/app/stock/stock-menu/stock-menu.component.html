@@ -1,12 +1,15 @@
 <div fxLayoutAlign="center">
   <div fxFlex class="max-width container">
-    <a href="/stock/view" class="link-menu">Voir le Stock</a>
-    <a href="" class="link-menu">Voir les commandes</a>
-    <a href="" class="link-menu">Ajouter une commande</a>
-    <a href="" class="link-menu">Voir les produits</a>
-    <a href="" class="link-menu">Ajouter un produit</a>
-    <a href="" class="link-menu">Statistiques</a>
-    <a href="" class="link-menu">Faire l'inventaire</a>
+    <mat-card class="card-picture" (click)="onClick(item.link)" *ngFor="let item of menu">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon>{{item.icon}}</mat-icon>
+        </div>
+        <mat-card-title>
+          {{item.link.name}}
+        </mat-card-title>
+      </mat-card-header>
+    </mat-card>
   </div>
 </div>
                                           
