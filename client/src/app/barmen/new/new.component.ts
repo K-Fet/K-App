@@ -32,10 +32,9 @@ export class NewComponent implements OnInit {
     this.formGroup = this.formService.createFormGroup(this.model);
   }
 
-  onNgSubmit() {
-    this.barmanService.create(getBarmanFromForm(this.formGroup)).subscribe(() => {
-      this.toasterService.showToaster('Barman créé');
-      this.router.navigate(['/barmen']);
-    });
+  async onNgSubmit() {
+    await this.barmanService.create(getBarmanFromForm(this.formGroup));
+    this.toasterService.showToaster('Barman créé');
+    this.router.navigate(['/barmen']);
   }
 }

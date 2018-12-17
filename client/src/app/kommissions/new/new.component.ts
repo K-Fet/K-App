@@ -24,10 +24,9 @@ export class NewComponent implements OnInit {
     this.formGroup = this.formService.createFormGroup(this.model);
   }
 
-  onNgSubmit() {
-    this.kommissionService.create(getKommissionFromForm(this.formGroup)).subscribe(() => {
-      this.toasterService.showToaster('Kommission créée');
-      this.router.navigate(['/kommissions']);
-    });
+  async onNgSubmit() {
+    await this.kommissionService.create(getKommissionFromForm(this.formGroup));
+    this.toasterService.showToaster('Kommission créée');
+    this.router.navigate(['/kommissions']);
   }
 }

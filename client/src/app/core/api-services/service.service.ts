@@ -13,33 +13,33 @@ export class ServiceService {
 
   constructor(private http: HttpClient) { }
 
-  get(start: Date, end: Date): Observable<Service[]> {
+  get(start: Date, end: Date): Promise<Service[]> {
     return this.http.get<Service[]>('/api/v1/services', {
       params: {
         startAt: start.toISOString(),
         endAt: end.toISOString(),
       },
-    });
+    }).toPromise();
   }
 
-  getById(id: number): Observable<Service> {
-    return this.http.get<Service>(`/api/v1/services/${id}`);
+  getById(id: number): Promise<Service> {
+    return this.http.get<Service>(`/api/v1/services/${id}`).toPromise();
   }
 
-  getBarmen(id: number): Observable<Barman[]> {
-    return this.http.get<Barman[]>(`/api/v1/services/${id}/barmen`);
+  getBarmen(id: number): Promise<Barman[]> {
+    return this.http.get<Barman[]>(`/api/v1/services/${id}/barmen`).toPromise();
   }
 
-  create(services: Service[]): Observable<Service[]> {
-    return this.http.post<Service[]>('/api/v1/services', services);
+  create(services: Service[]): Promise<Service[]> {
+    return this.http.post<Service[]>('/api/v1/services', services).toPromise();
   }
 
-  update(service: Service): Observable<Service> {
-    return this.http.put<Service>(`/api/v1/services/${service.id}`, service);
+  update(service: Service): Promise<Service> {
+    return this.http.put<Service>(`/api/v1/services/${service.id}`, service).toPromise();
   }
 
-  delete(id: number): Observable<Service> {
-    return this.http.post<Service>(`/api/v1/services/${id}/delete`, null);
+  delete(id: number): Promise<Service> {
+    return this.http.post<Service>(`/api/v1/services/${id}/delete`, null).toPromise();
   }
 
   getWeek(): Observable<{ start: Date, end: Date }> {
@@ -54,27 +54,24 @@ export class ServiceService {
     });
   }
 
-  getPlanning(start: Date, end: Date): Observable<Day[]> {
+  async getPlanning(start: Date, end: Date): Promise<Day[]> {
     const days: Day[] = [];
-    return Observable.create((observer) => {
-      this.get(start, end).subscribe(
-        (services) => {
-          services.forEach((service) => {
-            const name = format(service.startAt, 'EEE', { locale: fr });
-            const day = days.find(currentDay => currentDay.name === name);
 
-            if (day) return day.services.push(service);
+    const services = await this.get(start, end);
 
-            days.push({
-              name,
-              date: service.startAt,
-              active: false,
-              services: [service],
-            });
-          });
-          observer.next(days);
-        },
-      );
+    services.forEach((service) => {
+      const name = format(service.startAt, 'EEE', { locale: fr });
+      const day = days.find(currentDay => currentDay.name === name);
+
+      if (day) return day.services.push(service);
+
+      days.push({
+        name,
+        date: service.startAt,
+        active: false,
+        services: [service],
+      });
     });
+    return days;
   }
 }

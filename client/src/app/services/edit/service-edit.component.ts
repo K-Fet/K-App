@@ -20,13 +20,12 @@ export class ServiceEditComponent {
 
   ngOnInit(): void {
     this.createForm();
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(async (params) => {
       this.id = params['id'];
-      this.serviceService.getById(+this.id).subscribe((service) => {
-        this.serviceForm.get('startAt').setValue(service.startAt);
-        this.serviceForm.get('endAt').setValue(service.endAt);
-        this.serviceForm.get('nbMax').setValue(service.nbMax);
-      });
+      const service = await this.serviceService.getById(+this.id);
+      this.serviceForm.get('startAt').setValue(service.startAt);
+      this.serviceForm.get('endAt').setValue(service.endAt);
+      this.serviceForm.get('nbMax').setValue(service.nbMax);
     });
   }
 
@@ -38,15 +37,15 @@ export class ServiceEditComponent {
     });
   }
 
-  edit(): void {
+  async edit() {
     const service = new Service();
     service.id = this.id;
     service.startAt = this.serviceForm.value.startAt;
     service.endAt = this.serviceForm.value.endAt;
     service.nbMax = this.serviceForm.value.nbMax;
-    this.serviceService.update(service).subscribe(() => {
-      this.toasterService.showToaster('Service modifié');
-      this.router.navigate(['/services/services-manager']);
-    });
+
+    await this.serviceService.update(service);
+    this.toasterService.showToaster('Service modifié');
+    this.router.navigate(['/services/services-manager']);
   }
 }

@@ -27,17 +27,11 @@ export class EditPasswordComponent implements OnInit {
     this.authService.$currentUser.subscribe(user => this.currentUser = user);
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const { oldPassword, newPassword } = getPasswordFromForm(this.formGroup);
 
-    this.authService
-      .definePassword(this.currentUser.getConnection().email, newPassword, undefined, oldPassword)
-      .subscribe(
-        () => {
-          this.toasterService.showToaster('Modification du mot de passe enregistré');
-          this.router.navigate(['/auth/login']);
-        },
-      );
+    await this.authService.definePassword(this.currentUser.getConnection().email, newPassword, undefined, oldPassword);
+    this.toasterService.showToaster('Modification du mot de passe enregistré');
+    this.router.navigate(['/auth/login']);
   }
-
 }

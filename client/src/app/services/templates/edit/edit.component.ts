@@ -56,13 +56,12 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(async (params) => {
       this.templateId = params['id'];
-      this.templateService.getById(params['id']).subscribe((template: Template) => {
-        this.templateNameFormGroup.controls.templateNameFormControl.setValue(template.name);
-        this.addServiceFormFromTemplate(template);
-        this.sortServiceForm();
-      });
+      const template = await this.templateService.getById(params['id']);
+      this.templateNameFormGroup.controls.templateNameFormControl.setValue(template.name);
+      this.addServiceFormFromTemplate(template);
+      this.sortServiceForm();
     });
 
   }
@@ -100,17 +99,16 @@ export class EditComponent implements OnInit {
     this.servicesFormArray.push(serviceFormGroup);
   }
 
-  updateTemplate(): void {
+  async updateTemplate() {
     const template = new Template();
     template.id = this.templateId;
     template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
     template.services = this.servicesFormArray.controls.map((formGroup) => {
       return this.prepareService((formGroup as FormGroup).controls);
     });
-    this.templateService.update(template).subscribe(() => {
-      this.toasterService.showToaster('Template modifié');
-      this.router.navigate(['/services/templates']);
-    });
+    await this.templateService.update(template);
+    this.toasterService.showToaster('Template modifié');
+    this.router.navigate(['/services/templates']);
   }
 
   prepareService(controls): TemplateServiceUnit {

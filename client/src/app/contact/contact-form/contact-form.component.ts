@@ -204,10 +204,9 @@ export class ContactFormComponent implements OnInit {
     });
   }
 
-  submit(event) {
-    this.contactService.send(this.formName, event.value, event.token).subscribe(() => {
-      this.toasterService.showToaster('Votre demande a bien été enregistrée. Nous y donnerons suite dès que possible!');
-      this.router.navigate(['/']);
-    });
+  async submit(event) {
+    await this.contactService.send(this.formName, event.value, event.token);
+    this.toasterService.showToaster('Votre demande a bien été enregistrée. Nous y donnerons suite dès que possible!');
+    this.router.navigate(['/']);
   }
 }

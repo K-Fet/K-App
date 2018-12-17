@@ -27,21 +27,20 @@ export class NewComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
-    this.permissionService.getAll().subscribe(permissions => this.permissions = permissions);
+    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.model = getRoleModel();
     this.formGroup = this.formService.createFormGroup(this.model);
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const newRole = getRoleFromForm(
       this.formGroup,
       this.permSelector.selectedPermissions.map(p => p.id),
     );
 
-    this.roleService.create(newRole).subscribe(() => {
-      this.toasterService.showToaster('Rôle créé');
-      this.router.navigate(['/acl/roles']);
-    });
+    await this.roleService.create(newRole);
+    this.toasterService.showToaster('Rôle créé');
+    this.router.navigate(['/acl/roles']);
   }
 }

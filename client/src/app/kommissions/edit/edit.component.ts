@@ -33,11 +33,10 @@ export class EditComponent implements OnInit {
     });
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const updatedBarman = getKommissionFromForm(this.formGroup, this.originalKommission);
-    this.kommissionService.update(updatedBarman).subscribe(() => {
-      this.toasterService.showToaster('Kommission mise à jour');
-      this.router.navigate(['/kommissions']);
-    });
+    await this.kommissionService.update(updatedBarman);
+    this.toasterService.showToaster('Kommission mise à jour');
+    this.router.navigate(['/kommissions']);
   }
 }

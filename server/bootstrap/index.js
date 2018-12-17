@@ -9,18 +9,24 @@ const sequelize = require('./sequelize');
 async function boot(options = {}) {
   environment.start(options);
 
-  // Launch first to be ready when feed start
-  await ngrok.start(options);
-
-  // We can now load config (public URL is known)
+  // Load config first
   config.start();
 
-  await sequelize.start(options);
+  // First batch
+  // - ngrok
+  // - sequelize
+  // - express
+  await Promise.all([
+    ngrok.start(options),
+    sequelize.start(options),
+    // Start express (and so moleculer) before synchronising permissions
+    // in order to have loaded all auto-generated permissions
+    express.start(options),
+  ]);
 
-  // Start express (and so moleculer) before synchronising permissions
-  // in order to have loaded all auto-generated permissions
-  await express.start(options);
-
+  // Second batch
+  // - feed: Need ngrok
+  // - permissions: Need sequelize
   await Promise.all([
     feed.start(options),
     permissions.start(options),

@@ -1,34 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Role } from '../../shared/models';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class RoleService {
 
-  dataChange: BehaviorSubject<Role[]> = new BehaviorSubject<Role[]>([]);
-
-  get data(): Role[] { return this.dataChange.value; }
-
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Role[]> {
-    return this.http.get<Role[]>('/api/v1/roles');
+  getAll(): Promise<Role[]> {
+    return this.http.get<Role[]>('/api/v1/roles').toPromise();
   }
 
-  getById(id: number): Observable<Role> {
-    return this.http.get<Role>(`/api/v1/roles/${id}`);
+  getById(id: number): Promise<Role> {
+    return this.http.get<Role>(`/api/v1/roles/${id}`).toPromise();
   }
 
-  create(role: Role): Observable<Role> {
-    return this.http.post<Role>('/api/v1/roles', role);
+  create(role: Role): Promise<Role> {
+    return this.http.post<Role>('/api/v1/roles', role).toPromise();
   }
 
-  update(role: Role): Observable<Role> {
-    return this.http.put<Role>(`/api/v1/roles/${role.id}`, role);
+  update(role: Role): Promise<Role> {
+    return this.http.put<Role>(`/api/v1/roles/${role.id}`, role).toPromise();
   }
 
-  delete(id: number): Observable<Role> {
-    return this.http.post<Role>(`/api/v1/roles/${id}/delete`, null);
+  delete(id: number): Promise<Role> {
+    return this.http.post<Role>(`/api/v1/roles/${id}/delete`, null).toPromise();
   }
 }

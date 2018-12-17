@@ -31,10 +31,9 @@ export class MyTasksComponent implements OnInit {
     });
   }
 
-  refresh(): void {
-    this.barmanService.getTasks().subscribe((tasks: Task[]) => {
-      this.tasksGroupByKommissions = tasks.length > 0 ? this.prepareTasks(tasks) : undefined;
-    });
+  async refresh() {
+    const tasks = await this.barmanService.getTasks();
+    this.tasksGroupByKommissions = tasks.length > 0 ? this.prepareTasks(tasks) : undefined;
   }
 
   prepareTasks(tasks: Task[]) {
@@ -54,15 +53,14 @@ export class MyTasksComponent implements OnInit {
     return tasksGroupByKommissions;
   }
 
-  openViewDialog(kommission: Kommission, task: Task): void {
+  async openViewDialog(kommission: Kommission, task: Task) {
     const panelClass = getPanelClass(task);
     const viewDialogRef = this.dialog.open(TaskViewDialogComponent, {
       panelClass,
       data: { task, kommission },
       width: '500px',
     });
-    viewDialogRef.afterClosed().subscribe(() => {
-      this.refresh();
-    });
+    await viewDialogRef.afterClosed().toPromise();
+    this.refresh();
   }
 }

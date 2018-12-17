@@ -28,10 +28,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-  logout(): void {
-    this.authService.logout().subscribe(() => {
-      this.toasterService.showToaster('Déconnexion réussie');
-      this.router.navigate(['/']);
-    });
+  async logout() {
+    await this.authService.logout();
+    this.toasterService.showToaster('Déconnexion réussie');
+    this.router.navigate(['/']);
   }
 }

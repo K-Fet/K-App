@@ -16,7 +16,7 @@ async function setup() {
   await sequelize.start();
 
   await Promise.all([
-    permissions.start(),
+    permissions.start({ skipAdminUpgrade: true }),
     express.start({ skipHttpServer: true }),
   ]);
 }

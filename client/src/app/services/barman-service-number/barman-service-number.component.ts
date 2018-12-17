@@ -28,14 +28,12 @@ export class BarmanServiceNumberComponent implements OnInit {
   constructor(private barmanService: BarmanService, private serviceService: ServiceService) { }
 
   ngOnInit(): void {
-    this.serviceService.getWeek().subscribe((week) => {
-      this.barmanService.getAllActiveBarmenWithServices(week.start, week.end)
-      .subscribe((barmen) => {
-        this.barmenData.data = barmen.map(barman => ({
-          name: barman.nickname,
-          services: barman.services.length,
-        }));
-      });
+    this.serviceService.getWeek().subscribe(async (week) => {
+      const barmen = await this.barmanService.getAllActiveBarmenWithServices(week.start, week.end);
+      this.barmenData.data = barmen.map(barman => ({
+        name: barman.nickname,
+        services: barman.services.length,
+      }));
     });
   }
 }

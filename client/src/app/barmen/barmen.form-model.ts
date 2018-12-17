@@ -8,8 +8,7 @@ import {
 } from '@ng-dynamic-forms/core';
 import { subYears } from 'date-fns';
 import { Barman, Kommission, Role } from '../shared/models';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { getDifference } from '../../utils';
 
@@ -20,11 +19,13 @@ const BASE_BARMAN = new Barman({
   connection: {}, roles: [], kommissions: [], godFather: {}, services: [],
 });
 
-export function getBarmanModel(barmen: Observable<Barman[]>,
-                               kommissions: Observable<Kommission[]>,
-                               roles: Observable<Role[]>,
+export function getBarmanModel(barmen: Promise<Barman[]>,
+                               kommissions: Promise<Kommission[]>,
+                               roles: Promise<Role[]>,
                                originalBarman?: Barman): DynamicFormModel {
   const values = originalBarman || BASE_BARMAN;
+
+  const optionMap = (valueField, labelField) => arr => arr.map(b => ({ value: b[valueField], label: b[labelField] }));
 
   return [
     new DynamicFormGroupModel({
@@ -109,7 +110,7 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
           id: 'godFather',
           label: 'Parrain ou marraine',
           value: values.godFather && values.godFather.id,
-          options: barmen.pipe(map(arr => arr.map(b => ({ value: b.id, label: b.nickname }))),
+          options: from(barmen.then(optionMap('id', 'nickname')),
           ),
         }),
         new DynamicSelectModel<number>({
@@ -117,16 +118,14 @@ export function getBarmanModel(barmen: Observable<Barman[]>,
           label: 'Roles',
           multiple: true,
           value: values.roles.map(r => r.id),
-          options: roles.pipe(map(arr => arr.map(r => ({ value: r.id, label: r.name }))),
-          ),
+          options: from(roles.then(optionMap('id', 'name'))),
         }),
         new DynamicSelectModel<number>({
           id: 'kommissions',
           label: 'Kommissions',
           multiple: true,
           value: values.kommissions.map(k => k.id),
-          options: kommissions.pipe(map(arr => arr.map(k => ({ value: k.id, label: k.name }))),
-          ),
+          options: from(kommissions.then(optionMap('id', 'name'))),
         }),
       ],
     }),

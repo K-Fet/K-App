@@ -33,7 +33,7 @@ export class EditComponent implements OnInit {
   ngOnInit() {
     this.formGroup = this.formService.createFormGroup([]);
 
-    this.permissionService.getAll().subscribe(permissions => this.permissions = permissions);
+    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.route.data.subscribe((data: { role: Role }) => {
       this.originalRole = data.role;
@@ -42,16 +42,15 @@ export class EditComponent implements OnInit {
     });
   }
 
-  onNgSubmit() {
+  async onNgSubmit() {
     const updatedRole = getRoleFromForm(
       this.formGroup,
       this.permSelector.selectedPermissions.map(p => p.id),
       this.originalRole,
     );
 
-    this.roleService.update(updatedRole).subscribe(() => {
-      this.toasterService.showToaster('Rôle modifié');
-      this.router.navigate(['/acl/roles']);
-    });
+    await this.roleService.update(updatedRole);
+    this.toasterService.showToaster('Rôle modifié');
+    this.router.navigate(['/acl/roles']);
   }
 }

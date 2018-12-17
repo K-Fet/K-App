@@ -22,10 +22,9 @@ export class MyServicesComponent implements OnInit {
     this.authService.$currentUser.subscribe((user: ConnectedUser) => {
       this.user = user;
       if (this.user.isBarman()) {
-        this.serviceService.getWeek().subscribe((week) => {
-          this.barmanService.getServices(this.user.barman.id, week.start, week.end).subscribe((services) => {
-            this.myServices = services.length > 0 ? services : undefined;
-          });
+        this.serviceService.getWeek().subscribe(async (week) => {
+          const services = await this.barmanService.getServices(this.user.barman.id, week.start, week.end);
+          this.myServices = services.length > 0 ? services : undefined;
         });
       }
     });
