@@ -1,29 +1,19 @@
-.img {
-  margin-bottom: 18%;
-  width:50%;
-  height:50%;
-}
-.container {
-  min-height: 100%;
-  width: 100%;
-  flex-flow: row wrap;
-}
-.card-picture {
-  width: 20%;
-  margin-bottom: 2%;
-  height: 200px;
-  border: solid black;
+.link-menu {
+  background-color: white;
+  color: black;
+  border: 5px solid #4CAF50;
   border-radius: 10px;
+  width: 20%;
+  min-height: 100px;
+  padding: 10px 80px;
+  text-align: center;
+  font-size: 40px;
+  text-decoration: none;
+  display: inline-table;
+  margin: 20px;
+  vertical-align: middle
 }
 
-.search-form {
-  width: 90%;
-}
-
-.mat-card-image {
-  width:50%;
-}
-
-.mat-expansion-panel {
-  margin-bottom: 5px;
+.container {
+  text-align: center;
 }
