@@ -4,22 +4,22 @@
   background-color: white;
   color: black;
   border-radius: 10px;
-  padding: 10px 80px;
   text-align: center;
   font-size: 40px;
   text-decoration: none;
-  display: inline-table;
+  display: inline-table !important;
   margin: 20px;
   cursor: pointer;
   width: 25%;
 
-  @media (max-width: 877px) {
+  @media (max-width: 1000px) {
     width: 50%;
   }
 }
 
 .mat-card-title{
   line-height: 50px;
+  margin-bottom: 0 !important;
 }
 
 .container {

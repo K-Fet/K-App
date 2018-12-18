@@ -1,7 +1,7 @@
 <div fxLayoutAlign="center">
   <div fxFlex class="max-width container">
-    <mat-card class="card-picture" (click)="onClick(item.link)" *ngFor="let item of menu">
-      <mat-card-header>
+    <mat-card fxLayoutAlign="center" class="card-picture" (click)="onClick(item.link)" *ngFor="let item of menu">
+      <mat-card-header fxLayoutAlign="center">
         <div mat-card-avatar>
           <mat-icon>{{item.icon}}</mat-icon>
         </div>
