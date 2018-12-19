@@ -132,6 +132,13 @@ const NAV_MENUS: SubMenu[] = [
     ],
   },
   {
+    name: 'Gestion des stocks',
+    accountType: 'connectedUser',
+    links: [
+      { name: 'Fournisseurs', route: '/inventory-management/providers' },
+    ],
+  },
+  {
     name: 'Contacts',
     accountType: 'connectedUser',
     links: [

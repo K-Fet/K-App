@@ -61,6 +61,9 @@ module.exports = {
           'GET stock-events': 'inventory-management.stock-events.list',
           'GET stock-events/:id': 'inventory-management.stock-events.get',
           'POST stock-events': 'inventory-management.stock-events.create',
+
+          'GET providers/find': 'inventory-management.providers.find',
+          'GET providers/count': 'inventory-management.providers.count',
           'REST providers': 'inventory-management.providers',
         },
       },
