@@ -1,0 +1,19 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title fxLayout="row">
+        <a mat-button routerLink="/inventory-management/providers">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <section class="mat-typography">
+          <h1>{{ provider?.name }}</h1>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Lien vers le fournisseur : {{ provider?.link}}
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>
