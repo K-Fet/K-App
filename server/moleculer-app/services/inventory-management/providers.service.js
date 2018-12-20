@@ -5,12 +5,14 @@ const DbMixin = require('../../mixins/db-service.mixin');
 
 const model = {
   mongoose: mongoose.model('Providers', mongoose.Schema({
-    name: { type: String, required: true, min: 3 },
-    link: { type: String },
+    name: {
+      type: String, required: true, min: 3, text: true,
+    },
+    link: { type: String, text: true },
   })),
   joi: Joi.object({
     name: Joi.string().min(3).required(),
-    link: Joi.string().uri(),
+    link: Joi.string().uri().allow(null),
   }),
 };
 

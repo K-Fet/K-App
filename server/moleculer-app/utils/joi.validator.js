@@ -8,17 +8,20 @@ class JoiValidator extends BaseValidator {
     // The workaround might be dirty but should works
     if (typeof schema === 'function') {
       const compiledSchema = Joi.compile(schema());
-      return params => this.validate(params, compiledSchema);
+      const checkFn = params => this.validate(params, compiledSchema);
+      // Add this identifier to convert parameters
+      checkFn.isJoi = true;
+      return checkFn;
     }
     return this.validator.compile(schema);
   }
 
   // eslint-disable-next-line class-methods-use-this
   validate(params, schema) {
-    const { error } = Joi.validate(params, schema);
+    const { error, value } = Joi.validate(params, schema);
     if (error) throw new ValidationError(error.message, null, error.details);
 
-    return true;
+    return value;
   }
 
   /**
@@ -34,6 +37,14 @@ class JoiValidator extends BaseValidator {
         return function validateContextParams(ctx) {
           const res = check(ctx.params);
           if (res === true) return handler(ctx);
+
+          // Save new params auto converted by joi
+          // If there was an error, it would already have failed
+          if (check.isJoi) {
+            ctx.params = res;
+            return handler(ctx);
+          }
+          // Error may be thrown by fastest-validator
           return Promise.reject(new ValidationError('Parameters validation error!', null, res));
         };
       }
