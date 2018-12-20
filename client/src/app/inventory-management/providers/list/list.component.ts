@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
 import { ProvidersService } from '../providers.service';
 import { Provider } from '../provider.model';
 import { ProvidersDataSource } from '../providers.data-source';
-import { tap } from 'rxjs/operators';
-import { merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { fromEvent, merge } from 'rxjs';
 
 @Component({
   templateUrl: './list.component.html',
@@ -18,6 +18,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('input') input: ElementRef;
 
   constructor(private providerService: ProvidersService,
               private router: Router) {
@@ -29,6 +30,17 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // Server-side search
+    fromEvent(this.input.nativeElement, 'keyup').pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => {
+        this.paginator.pageIndex = 0;
+        this.loadProvidersPage();
+      }),
+    ).subscribe();
+
+    // Paginator and Sort
     // reset the paginator after sorting
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadProvidersPage())).subscribe();
@@ -38,7 +50,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.dataSource.loadProviders({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
-      sort: `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
+      search: this.input.nativeElement.value,
+      sort: this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
     });
   }
 

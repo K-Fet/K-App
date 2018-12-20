@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Provider } from 'nconf';
 
@@ -14,10 +14,14 @@ export function getProviderModel(originalProvider?: Provider): DynamicFormModel 
       value: values.name,
       validators: { required: null },
     }),
-    new DynamicTextAreaModel({
+    new DynamicInputModel({
       id: 'link',
       label: 'Lien vers le fournisseur',
       value: values.description,
+      validators: { pattern: '(https?://)([\\\\da-z.-]+)\\\\.([a-z.]{2,6})[/\\\\w .-]*/?' },
+      errorMessages: {
+        pattern: 'Cela ne ressemble pas à une URL valide',
+      },
     }),
   ];
 }
