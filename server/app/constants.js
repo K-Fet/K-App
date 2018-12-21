@@ -55,4 +55,14 @@ module.exports = {
    * Facebook base api URL.
    */
   FB_BASE_API: 'https://graph.facebook.com/v3.0',
+
+  /**
+   * List all the units that an be used in the app
+   */
+  AVAILABLE_UNITS: [
+    // Unit
+    'u',
+    // Liters
+    'l',
+  ],
 };
