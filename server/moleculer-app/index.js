@@ -20,6 +20,8 @@ async function populatePermissions(sb) {
   const actions = await sb.call('$node.actions', { skipInternal: true, onlyLocal: true });
 
   const set = new Set(actions
+  // Only keep permissions published through the ApiGw
+    .filter(a => ['published', null].includes(a.action.visibility))
     .map(a => a.action.rawPermissions)
     .filter(perms => Array.isArray(perms) && perms.length > 0)
     .reduce((a, b) => a.concat(b), []));

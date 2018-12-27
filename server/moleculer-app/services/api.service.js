@@ -60,7 +60,7 @@ module.exports = {
         aliases: {
           'GET stock-events': 'inventory-management.stock-events.list',
           'GET stock-events/:id': 'inventory-management.stock-events.get',
-          'POST stock-events': 'inventory-management.stock-events.create',
+          'POST stock-events': 'inventory-management.stock-events.add',
 
           'GET providers/find': 'inventory-management.providers.find',
           'GET providers/count': 'inventory-management.providers.count',
