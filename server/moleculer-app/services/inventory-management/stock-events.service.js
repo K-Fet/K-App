@@ -13,14 +13,15 @@ const model = {
     diff: { type: Number, required: true },
     type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
     date: { type: Date, default: Date.now },
-    refOrder: { type: String },
+    meta: { type: String },
   })),
   joi: Joi.object({
     product: Joi.number().integer().required(),
     diff: Joi.number().required(),
+    date: Joi.date().max('now'),
     unit: Joi.string().length(1).default('u').valid(AVAILABLE_UNITS),
-    type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery'),
-    refOrder: Joi.string(),
+    type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
+    meta: Joi.string(),
   }),
 };
 
@@ -35,7 +36,6 @@ module.exports = {
   },
 
   actions: {
-
     add: {
       permissions: true,
       params: () => Joi.object({
@@ -43,8 +43,6 @@ module.exports = {
         entity: model.joi,
       }).without('entities', 'entity'),
       async handler(ctx) {
-        // TODO Get product
-
         const events = ctx.params.entities || [ctx.params.entity];
 
         const promises = events
