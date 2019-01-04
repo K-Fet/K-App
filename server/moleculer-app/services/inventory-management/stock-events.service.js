@@ -16,7 +16,7 @@ const model = {
     meta: { type: String },
   })),
   joi: Joi.object({
-    product: Joi.number().integer().required(),
+    product: Joi.string().required(),
     diff: Joi.number().required(),
     date: Joi.date().max('now'),
     unit: Joi.string().length(1).default('u').valid(AVAILABLE_UNITS),
