@@ -55,8 +55,13 @@ module.exports = {
           .map(async ({ productP, event }) => {
             const product = await productP;
 
-            // TODO May change
-            const conv = product.conversions.find(c => c.unit === event.unit);
+            let conv;
+
+            if (event.unit === 'u') {
+              conv = { coef: 1 };
+            } else if (Array.isArray(product.conversions)) {
+              conv = product.conversions.find(c => c.unit === event.unit);
+            }
 
             if (!conv) {
               throw new MoleculerClientError(`Could not find valid conversion info for product '${product.name}' (tried to convert '${event.unit}')`);
