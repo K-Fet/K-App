@@ -8,6 +8,7 @@ import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { ViewComponent } from './view/view.component';
 import { ProvidersService } from './providers.service';
+import { ProviderDetailResolverService } from './provider-detail-resolver.service';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ProvidersService } from './providers.service';
   ],
   providers: [
     ProvidersService,
+    ProviderDetailResolverService,
   ],
   imports: [
     SharedModule,

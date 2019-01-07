@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { Provider } from './provider.model';
 import { ProvidersService } from './providers.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ProviderDetailResolverService implements Resolve<Provider> {
 
   constructor(private providersService: ProvidersService,
