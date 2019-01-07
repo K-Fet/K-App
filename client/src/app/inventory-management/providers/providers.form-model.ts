@@ -1,8 +1,8 @@
 import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
-import { Provider } from 'nconf';
+import { Provider } from './provider.model';
 
-const BASE_PROVIDER: Provider = {};
+const BASE_PROVIDER = {} as Provider;
 
 export function getProviderModel(originalProvider?: Provider): DynamicFormModel {
   const values = originalProvider || BASE_PROVIDER;
@@ -17,7 +17,7 @@ export function getProviderModel(originalProvider?: Provider): DynamicFormModel 
     new DynamicInputModel({
       id: 'link',
       label: 'Lien vers le fournisseur',
-      value: values.description,
+      value: values.link,
       validators: { pattern: '(https?://)([\\\\da-z.-]+)\\\\.([a-z.]{2,6})[/\\\\w .-]*/?' },
       errorMessages: {
         pattern: 'Cela ne ressemble pas à une URL valide',
