@@ -130,6 +130,12 @@ const SEARCH_SCHEMA = Joi.object({
 });
 
 /**
+ * This constant is used by Joi to validate a MongoDB id
+ * @type {StringSchema} Joi schema
+ */
+const MONGO_ID = Joi.string();
+
+/**
  * Helper to handle the common pattern where there is a code and an object
  * inside the body.
  *
@@ -151,6 +157,7 @@ module.exports = {
   joiThrough,
   ID_SCHEMA,
   RANGE_SCHEMA,
+  MONGO_ID,
   YEAR_SCHEMA,
   SEARCH_SCHEMA,
 };

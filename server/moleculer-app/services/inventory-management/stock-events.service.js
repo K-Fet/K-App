@@ -4,23 +4,27 @@ const { Errors } = require('moleculer');
 const JoiDbActions = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { AVAILABLE_UNITS } = require('../../constants');
+const { MONGO_ID } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 
 const model = {
   mongoose: mongoose.model('StockEvent', mongoose.Schema({
-    product: { type: String, required: true },
+    product: { type: mongoose.Schema.Types.ObjectId, required: true },
     diff: { type: Number, required: true },
-    type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
     date: { type: Date, default: Date.now },
+    unit: { type: String, required: true, enum: AVAILABLE_UNITS },
+    type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
+    order: { type: mongoose.Schema.Types.ObjectId },
     meta: { type: String },
   })),
   joi: Joi.object({
-    product: Joi.string().required(),
+    product: MONGO_ID.required(),
     diff: Joi.number().required(),
     date: Joi.date().max('now'),
     unit: Joi.string().length(1).default('u').valid(AVAILABLE_UNITS),
     type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
+    order: MONGO_ID,
     meta: Joi.string(),
   }),
 };
@@ -32,6 +36,7 @@ module.exports = {
   settings: {
     populates: {
       product: 'inventory-management.products.get',
+      order: 'inventory-management.orders.get',
     },
   },
 
@@ -57,11 +62,16 @@ module.exports = {
 
             let conv;
 
-            if (event.unit === 'u') {
-              conv = { coef: 1 };
-            } else if (Array.isArray(product.conversions)) {
+            if (Array.isArray(product.conversions)) {
               conv = product.conversions.find(c => c.unit === event.unit);
             }
+            // If we could not find in the conversion array
+            // and the event doesn't need custom unit
+            // set default unit and coef
+            if (!conv && event.unit === 'u') {
+              conv = { coef: 1 };
+            }
+
 
             if (!conv) {
               throw new MoleculerClientError(`Could not find valid conversion info for product '${product.name}' (tried to convert '${event.unit}')`);
@@ -75,7 +85,8 @@ module.exports = {
 
         const insertedEvents = await Promise.all(promises);
 
-        // TODO Add an event to notify products that something is using it
+        // Notify products because products are considered used now
+        ctx.emit('inventory-management.stock-events.added', insertedEvents, ['inventory-management.products']);
         return this.actions.insert(insertedEvents);
       },
     },

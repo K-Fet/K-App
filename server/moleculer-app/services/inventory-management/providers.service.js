@@ -19,4 +19,9 @@ const model = {
 module.exports = {
   name: 'inventory-management.providers',
   mixins: [DbMixin(model.mongoose), JoiDbActionsMixin(model.joi)],
+
+  actions: {
+    // TODO Safe delete
+    remove: false,
+  },
 };
