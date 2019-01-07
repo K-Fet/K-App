@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProductDetailResolverService } from './product-detail-resolver.service';
+import { ProductDetailResolverService } from '../api-services/product-detail-resolver.service';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
-import { ProvidersService } from '../providers.service';
+import { ProvidersService } from '../../api-services/providers.service';
 import { Provider } from '../provider.model';
 import { ProvidersDataSource } from '../providers.data-source';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';

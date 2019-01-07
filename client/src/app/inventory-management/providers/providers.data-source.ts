@@ -1,6 +1,6 @@
 import { Provider } from './provider.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ProvidersService } from './providers.service';
+import { ProvidersService } from '../api-services/providers.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 

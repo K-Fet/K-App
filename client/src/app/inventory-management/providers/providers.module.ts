@@ -7,8 +7,7 @@ import { NewComponent } from './new/new.component';
 import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { ViewComponent } from './view/view.component';
-import { ProvidersService } from './providers.service';
-import { ProviderDetailResolverService } from './provider-detail-resolver.service';
+import { InventoryManagementApiServicesModule } from '../api-services/inventory-management-api-services.module';
 
 @NgModule({
   declarations: [
@@ -17,12 +16,9 @@ import { ProviderDetailResolverService } from './provider-detail-resolver.servic
     ListComponent,
     ViewComponent,
   ],
-  providers: [
-    ProvidersService,
-    ProviderDetailResolverService,
-  ],
   imports: [
     SharedModule,
+    InventoryManagementApiServicesModule,
     NgxPermissionsModule.forChild(),
     ProvidersRoutingModule,
   ],

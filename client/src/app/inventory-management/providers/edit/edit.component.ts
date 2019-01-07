@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Provider } from '../provider.model';
 import { getProviderFromForm, getProviderModel } from '../providers.form-model';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { ProvidersService } from '../providers.service';
+import { ProvidersService } from '../../api-services/providers.service';
 
 @Component({
   templateUrl: './edit.component.html',
@@ -36,7 +36,7 @@ export class EditComponent implements OnInit {
   async onNgSubmit() {
     const updatedProvider = getProviderFromForm(this.formGroup, this.originalProvider);
     await this.providersService.update(updatedProvider);
-    this.toasterService.showToaster('Fournisseur mise à jour');
+    this.toasterService.showToaster('Fournisseur mis à jour');
     this.router.navigate(['/inventory-management/providers']);
   }
 }

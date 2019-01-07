@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
 import { ProductsDataSource } from '../products.data-source';
-import { ProductsService } from '../products.service';
+import { ProductsService } from '../../api-services/products.service';
 import { Product } from '../product.model';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Product } from './product.model';
+import { Product } from '../products/product.model';
 import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../../shared/utils';
 

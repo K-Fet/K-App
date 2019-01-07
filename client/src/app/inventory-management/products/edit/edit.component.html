@@ -12,7 +12,14 @@
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
-        <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
+        <dynamic-material-form [group]="formGroup" [model]="model">
+          <ng-template modelId="conversions" let-group let-index="index" let-context="context">
+            <button mat-icon-button type="button" (click)="removeItem(context, index)">
+              <mat-icon aria-label="Supprimer la ligne">delete</mat-icon>
+            </button>
+          </ng-template>
+        </dynamic-material-form>
+        <button mat-button (click)="addConversionLine()">Ajouter une conversion</button>
         <div fxLayout="row">
           <div fxFlex></div>
           <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid && !formGroup.dirty">
