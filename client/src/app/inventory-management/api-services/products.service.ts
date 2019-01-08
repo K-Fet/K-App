@@ -25,7 +25,10 @@ export class ProductsService {
   }
 
   get(id: string): Promise<Product> {
-    return this.http.get<Product>(`${BASE_URL}/${id}`).toPromise();
+    return this.http.get<Product>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ populate: 'provider' }) },
+    ).toPromise();
   }
 
   create(product: Product): Promise<Product> {

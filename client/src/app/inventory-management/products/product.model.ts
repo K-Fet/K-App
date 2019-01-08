@@ -1,3 +1,5 @@
+import { Provider } from '../providers/provider.model';
+
 export interface ProductConversion {
   displayName?: string;
   preferred?: boolean;
@@ -11,6 +13,6 @@ export interface Product {
   image?: string;
   used: boolean;
   conversions: ProductConversion[];
-  provider: string;
+  provider: string | Provider;
   shelf?: string;
 }

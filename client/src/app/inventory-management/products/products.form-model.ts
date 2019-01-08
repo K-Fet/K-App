@@ -36,7 +36,7 @@ export function getProductModel(providers: Promise<Provider[]>, originalProduct?
     new DynamicSelectModel<string>({
       id: 'provider',
       label: 'Fournisseur',
-      value: values.provider,
+      value: values.provider && (values.provider as Provider)._id,
       disabled: values.used,
       options: from(providers.then(optionMap('_id', 'name')),
       ),
