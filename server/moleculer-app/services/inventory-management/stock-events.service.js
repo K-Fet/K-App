@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const { Errors } = require('moleculer');
-const JoiDbActions = require('../../mixins/joi-db-actions.mixin');
+const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { BASE_UNIT } = require('../../constants');
-const { MONGO_ID } = require('../../../utils');
+const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 
@@ -18,10 +18,11 @@ const model = {
     meta: { type: String },
   })),
   joi: Joi.object({
+    _id: MONGO_ID.strip(), // Remove _id from the object
     product: MONGO_ID.required(),
     diff: Joi.number().required(),
     date: Joi.date().max('now'),
-    unit: Joi.string().length(1).default(BASE_UNIT),
+    unit: UNIT_SCHEMA.default(BASE_UNIT),
     type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
     order: MONGO_ID,
     meta: Joi.string(),
@@ -30,7 +31,10 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.stock-events',
-  mixins: [DbMixin(model.mongoose), JoiDbActions(model.joi)],
+  mixins: [
+    JoiDbActionsMixin(model.joi),
+    DbMixin(model.mongoose),
+  ],
 
   settings: {
     populates: {

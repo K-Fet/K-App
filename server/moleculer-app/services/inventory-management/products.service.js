@@ -4,7 +4,7 @@ const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { BASE_UNIT } = require('../../constants');
-const { MONGO_ID } = require('../../../utils');
+const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 const { ObjectId } = mongoose.Schema.Types;
@@ -18,7 +18,7 @@ const model = {
       displayName: { type: String },
       preferred: { type: Boolean, default: false },
       unit: {
-        type: String, minlength: 1, maxlength: 1, required: true,
+        type: String, minlength: 1, maxlength: 3, required: true,
       },
       coef: { type: Number, required: true },
     })],
@@ -26,12 +26,13 @@ const model = {
     shelf: { type: ObjectId },
   })),
   joi: Joi.object({
+    _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
     image: Joi.string().uri(),
     conversions: Joi.array().unique('unit').items(Joi.object({
       displayName: Joi.string(),
       preferred: Joi.bool(),
-      unit: Joi.string().length(1).invalid(BASE_UNIT),
+      unit: UNIT_SCHEMA.invalid(BASE_UNIT),
       coef: Joi.number().required(),
     })),
     provider: MONGO_ID.required(),
@@ -41,7 +42,10 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.products',
-  mixins: [DbMixin(model.mongoose), JoiDbActionsMixin(model.joi)],
+  mixins: [
+    JoiDbActionsMixin(model.joi),
+    DbMixin(model.mongoose),
+  ],
 
   settings: {
     populates: {
@@ -65,7 +69,7 @@ module.exports = {
 
         const product = await this.getById(id, true);
         if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
-        if (this.isProductAllowedToUpdate(product, ctx.params)) {
+        if (!this.isProductAllowedToUpdate(product, ctx.params)) {
           return Promise.reject(new MoleculerClientError('Entity cannot be updated', 400, null, {
             id, details: 'Some updated fields cannot be changed as it will cause inconsistency',
           }));

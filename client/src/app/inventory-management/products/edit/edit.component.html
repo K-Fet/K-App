@@ -19,7 +19,7 @@
             </button>
           </ng-template>
         </dynamic-material-form>
-        <button mat-button (click)="addConversionLine()">Ajouter une conversion</button>
+        <button mat-button type="button" (click)="addConversionLine()">Ajouter une conversion</button>
         <div fxLayout="row">
           <div fxFlex></div>
           <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid && !formGroup.dirty">

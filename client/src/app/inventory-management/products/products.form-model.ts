@@ -1,16 +1,47 @@
 import {
+  DynamicFormArrayGroupModel,
   DynamicFormArrayModel,
   DynamicFormModel,
   DynamicInputModel,
   DynamicSelectModel,
 } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
-import { Product } from './product.model';
+import { Product, ProductConversion } from './product.model';
 import { Provider } from '../providers/provider.model';
 import { URL_PATTERN } from '../../constants';
 import { from } from 'rxjs';
 
 const BASE_PRODUCT = {} as Product;
+const BASE_CONVERSION = {} as ProductConversion;
+
+function getConversionGroups(originalProduct?: Product): DynamicFormArrayGroupModel[] | null {
+  if (!originalProduct || !Array.isArray(originalProduct.conversions)) return null;
+  // @ts-ignore Ask for unneeded $implicit variable
+  return originalProduct.conversions.map(c => ({ group: conversionGroupFactory(c) }));
+}
+
+function conversionGroupFactory(conversion?: ProductConversion) {
+  const value = conversion || BASE_CONVERSION;
+  return [
+    new DynamicInputModel({
+      id: 'displayName',
+      label: 'Label',
+      value: value.displayName,
+    }),
+    // TODO Preferred
+    new DynamicInputModel({
+      id: 'unit',
+      label: 'Unité',
+      value: value.unit,
+      validators: { min: 1, max: 3 },
+    }),
+    new DynamicInputModel({
+      id: 'coef',
+      label: 'Facteur multiplicateur',
+      value: value.coef,
+    }),
+  ];
+}
 
 export function getProductModel(providers: Promise<Provider[]>, originalProduct?: Product): DynamicFormModel {
   const values = originalProduct || BASE_PRODUCT;
@@ -45,23 +76,8 @@ export function getProductModel(providers: Promise<Provider[]>, originalProduct?
       id: 'conversions',
       label: 'Liste des conversions',
       initialCount: 1,
-      groupFactory: () => {
-        return [
-          new DynamicInputModel({
-            id: 'displayName',
-            label: 'Label',
-          }),
-          // TODO Preferred
-          new DynamicInputModel({
-            id: 'unit',
-            label: 'Unité',
-          }),
-          new DynamicInputModel({
-            id: 'coef',
-            label: 'Facteur multiplicateur',
-          }),
-        ];
-      },
+      groupFactory: conversionGroupFactory,
+      groups: getConversionGroups(originalProduct),
     }),
     // TODO Shelve
   ];

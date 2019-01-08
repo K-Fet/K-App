@@ -136,6 +136,12 @@ const SEARCH_SCHEMA = Joi.object({
 const MONGO_ID = Joi.string();
 
 /**
+ * This constant is used by Joi to validate a unit (inventory-management)
+ * @type {StringSchema} Joi schema
+ */
+const UNIT_SCHEMA = Joi.string().min(1).max(3);
+
+/**
  * Helper to handle the common pattern where there is a code and an object
  * inside the body.
  *
@@ -159,5 +165,6 @@ module.exports = {
   RANGE_SCHEMA,
   MONGO_ID,
   YEAR_SCHEMA,
+  UNIT_SCHEMA,
   SEARCH_SCHEMA,
 };
