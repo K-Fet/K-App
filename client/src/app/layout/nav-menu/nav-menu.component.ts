@@ -116,6 +116,14 @@ const NAV_MENUS: SubMenu[] = [
   {
     links: [
       {
+        name: 'Gestion des stocks',
+        route: '/stock',
+      },
+    ],
+  },
+  {
+    links: [
+      {
         name: 'Comptes spéciaux',
         route: '/acl/special-accounts',
         permissions: ['specialaccount:read'],

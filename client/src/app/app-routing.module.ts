@@ -10,6 +10,9 @@ const routes: Routes = [
     canLoad: [NgxPermissionsGuard],
     loadChildren: './acl/acl.module#AclModule',
   },
+  { path: 'stock',
+    loadChildren: './stock/stock.module#StockModule',
+  },
   {
     path: 'auth',
     loadChildren: './auth/auth.module#AuthModule',
