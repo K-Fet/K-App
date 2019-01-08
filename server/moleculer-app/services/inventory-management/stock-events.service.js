@@ -3,7 +3,7 @@ const Joi = require('joi');
 const { Errors } = require('moleculer');
 const JoiDbActions = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
-const { AVAILABLE_UNITS } = require('../../constants');
+const { BASE_UNIT } = require('../../constants');
 const { MONGO_ID } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
@@ -13,7 +13,6 @@ const model = {
     product: { type: mongoose.Schema.Types.ObjectId, required: true },
     diff: { type: Number, required: true },
     date: { type: Date, default: Date.now },
-    unit: { type: String, required: true, enum: AVAILABLE_UNITS },
     type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
     order: { type: mongoose.Schema.Types.ObjectId },
     meta: { type: String },
@@ -22,7 +21,7 @@ const model = {
     product: MONGO_ID.required(),
     diff: Joi.number().required(),
     date: Joi.date().max('now'),
-    unit: Joi.string().length(1).default('u').valid(AVAILABLE_UNITS),
+    unit: Joi.string().length(1).default(BASE_UNIT),
     type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
     order: MONGO_ID,
     meta: Joi.string(),
@@ -68,7 +67,7 @@ module.exports = {
             // If we could not find in the conversion array
             // and the event doesn't need custom unit
             // set default unit and coef
-            if (!conv && event.unit === 'u') {
+            if (!conv && event.unit === BASE_UNIT) {
               conv = { coef: 1 };
             }
 
@@ -79,6 +78,8 @@ module.exports = {
 
             return {
               ...event,
+              // Remove custom unit and convert to a single unit
+              unit: undefined,
               diff: event.diff / conv.coef,
             };
           });

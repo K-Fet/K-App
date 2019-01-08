@@ -65,6 +65,10 @@ module.exports = {
           'GET providers/find': 'inventory-management.providers.find',
           'GET providers/count': 'inventory-management.providers.count',
           'REST providers': 'inventory-management.providers',
+
+          'GET products/find': 'inventory-management.products.find',
+          'GET products/count': 'inventory-management.products.count',
+          'REST products': 'inventory-management.products',
         },
       },
     ],

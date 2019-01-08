@@ -3,7 +3,7 @@ const Joi = require('joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
-const { AVAILABLE_UNITS } = require('../../constants');
+const { BASE_UNIT } = require('../../constants');
 const { MONGO_ID } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
@@ -17,7 +17,9 @@ const model = {
     conversions: [new mongoose.Schema({
       displayName: { type: String },
       preferred: { type: Boolean, default: false },
-      unit: { type: String, enum: AVAILABLE_UNITS, required: true },
+      unit: {
+        type: String, minlength: 1, maxlength: 1, required: true,
+      },
       coef: { type: Number, required: true },
     })],
     provider: { type: ObjectId, require: true },
@@ -29,7 +31,7 @@ const model = {
     conversions: Joi.array().unique('unit').items(Joi.object({
       displayName: Joi.string(),
       preferred: Joi.bool(),
-      unit: Joi.string().valid(AVAILABLE_UNITS),
+      unit: Joi.string().length(1).invalid(BASE_UNIT),
       coef: Joi.number().required(),
     })),
     provider: MONGO_ID.required(),
