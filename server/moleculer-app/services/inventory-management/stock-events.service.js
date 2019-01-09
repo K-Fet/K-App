@@ -53,15 +53,13 @@ module.exports = {
       async handler(ctx) {
         const events = ctx.params.entities || [ctx.params.entity];
 
+        const ids = [...new Set(events.map(e => e.product)).keys()];
+        const products = await ctx.call('inventory-management.products.get', { id: ids, mapping: true });
+
         const promises = events
         // Get product
-          .map(e => ({
-            productP: ctx.call('inventory-management.products.get', { id: e.product }),
-            event: e,
-          }))
-          // Convert sent unit
-          .map(async ({ productP, event }) => {
-            const product = await productP;
+          .map(async (event) => {
+            const product = products[event.product];
 
             let conv;
 
