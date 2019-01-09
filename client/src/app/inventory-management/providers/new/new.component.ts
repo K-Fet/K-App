@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ProvidersService } from '../providers.service';
+import { ProvidersService } from '../../api-services/providers.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { getProviderFromForm, getProviderModel } from '../providers.form-model';
 

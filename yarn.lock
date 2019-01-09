@@ -3467,10 +3467,10 @@ moleculer-db-adapter-mongoose@^0.7.2:
     bluebird "3.5.2"
     lodash "4.17.11"
 
-moleculer-db@^0.7.6:
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/moleculer-db/-/moleculer-db-0.7.6.tgz#3edd5ca87a07851a0b68876303efda753feb7f62"
-  integrity sha512-kNNUZ2A9uDUaFSHybM+2OaYDnRAFlywgzjvjUpv/XHIVPNu/dFCEvO5uBe885EUO5hH729EypQ7iXQDUJVrrSA==
+moleculer-db@0.7.7:
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/moleculer-db/-/moleculer-db-0.7.7.tgz#41edbe44bf6e167b7f440a0c54804ac00406fc85"
+  integrity sha512-db9Y1BACc7Jy1JFaoizGpt/bcMdFgEQherJWhJxyZMO6E11dxWOuDL08M9TPLLC7b3yNWDwnxkYYonoLoau8Mw==
   dependencies:
     bluebird "3.5.2"
     lodash "4.17.11"

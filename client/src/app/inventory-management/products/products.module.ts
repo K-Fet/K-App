@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
-import { ProvidersRoutingModule } from './providers-routing.module';
+import { ProductsRoutingModule } from './products-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { NewComponent } from './new/new.component';
 import { EditComponent } from './edit/edit.component';
@@ -20,7 +20,7 @@ import { InventoryManagementApiServicesModule } from '../api-services/inventory-
     SharedModule,
     InventoryManagementApiServicesModule,
     NgxPermissionsModule.forChild(),
-    ProvidersRoutingModule,
+    ProductsRoutingModule,
   ],
 })
-export class ProvidersModule {}
+export class ProductsModule {}

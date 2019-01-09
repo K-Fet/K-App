@@ -28,8 +28,8 @@ router.post(
   validator.body(Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    rememberMe: Joi.number().integer().min(1).max(30)
-      .default(1),
+    // In minutes, default to one day
+    rememberMe: Joi.number().min(1).max(60 * 24 * 30).default(60 * 24),
   })),
   am(authController.login),
 );

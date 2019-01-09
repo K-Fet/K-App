@@ -30,7 +30,7 @@ async function isTokenRevoked(tokenId) {
  * Create a new JWT including permissions.
  *
  * @param user {ConnectionInformation} User
- * @param rememberMe {Number} Number of day for jwt expiration
+ * @param rememberMe {Number} Number of minutes for jwt expiration
  * @returns {Promise<String>} Return a JWT.
  */
 async function createJWT(user, rememberMe) {
@@ -43,10 +43,10 @@ async function createJWT(user, rememberMe) {
 
   logger.info(`Creating a new JWT ${user.id}`);
 
-  const exp = Math.floor(Date.now() / 1000) + (86400 * rememberMe); // Check JS doc for rememberMe unit
+  const expiresIn = Math.floor(Date.now() / 1000) + (60 * rememberMe); // Check JS doc for rememberMe unit
   return jwt.sign({
     jit: id,
-    exp,
+    expiresIn,
     userId: user.id,
   }, conf.get('web:jwtSecret'));
 }

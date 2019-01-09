@@ -1,3 +1,5 @@
+export const URL_PATTERN = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,8}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+
 export const BAD_REQUEST_ERRORS = {
   LoginError: 'Erreur d\'authentification: combinaison email / mot de passe invalide.',
   LogoutError: 'Erreur de deconnexion: la déconnexion a échouée du côté serveur.',

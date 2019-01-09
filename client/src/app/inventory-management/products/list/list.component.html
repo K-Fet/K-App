@@ -1,0 +1,52 @@
+<div fxLayoutAlign="center">
+  <mat-card fxFlex class="max-width">
+    <mat-card-header>
+      <mat-card-title>
+        <section class="mat-typography">
+          <h1>Liste des produits</h1>
+        </section>
+      </mat-card-title>
+      <div fxFlex></div>
+      <a mat-mini-fab color="accent" routerLink="/inventory-management/products/new"
+         *ngxPermissionsOnly="['inventory-management:products:create']">
+        <mat-icon>add</mat-icon>
+      </a>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="header">
+        <mat-form-field>
+          <input matInput placeholder="Rechercher des produits" #input>
+        </mat-form-field>
+      </div>
+      <div class="mat-elevation-z3">
+        <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+          <mat-spinner></mat-spinner>
+        </div>
+        <mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+            <mat-cell *matCellDef="let product">
+              <div fxLayout="row">
+                <button mat-icon-button (click)="view(product)"
+                        *ngxPermissionsOnly="['inventory-management:products:get']">
+                  <mat-icon>zoom_in</mat-icon>
+                </button>
+                <button mat-icon-button (click)="edit(product)"
+                        *ngxPermissionsOnly="['inventory-management:products:update']">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

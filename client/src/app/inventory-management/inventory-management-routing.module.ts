@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
-import { HelloWorldComponent } from './hello-world/hello-world.component';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const routes: Routes = [
@@ -20,8 +18,18 @@ const routes: Routes = [
     canLoad: [NgxPermissionsGuard],
   },
   {
-    path: '',
-    component: HelloWorldComponent,
+    path: 'products',
+    loadChildren: './products/products.module#ProductsModule',
+    data: {
+      permissions: {
+        only: [
+          'inventory-management:products:find',
+          'inventory-management:products:list',
+          'inventory-management:products:get',
+        ],
+      },
+    },
+    canLoad: [NgxPermissionsGuard],
   },
 ];
 

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProviderDetailResolverService } from '../api-services/provider-detail-resolver.service';
+import { ProductDetailResolverService } from '../api-services/product-detail-resolver.service';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';
@@ -12,24 +12,24 @@ const routes: Routes = [
     path: 'new',
     component: NewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:providers:create'] } },
+    data: { permissions: { only: ['inventory-management:products:create'] } },
   },
   {
     path: ':id',
     component: ViewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:providers:get'] } },
+    data: { permissions: { only: ['inventory-management:products:get'] } },
     resolve: {
-      provider: ProviderDetailResolverService,
+      product: ProductDetailResolverService,
     },
   },
   {
     path: ':id/edit',
     component: EditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:providers:update'] } },
+    data: { permissions: { only: ['inventory-management:products:update'] } },
     resolve: {
-      provider: ProviderDetailResolverService,
+      product: ProductDetailResolverService,
     },
   },
   {
@@ -38,8 +38,8 @@ const routes: Routes = [
     data: {
       permissions: {
         only: [
-          'inventory-management:providers:find',
-          'inventory-management:providers:list',
+          'inventory-management:products:find',
+          'inventory-management:products:list',
         ],
       },
     },
@@ -51,4 +51,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ProvidersRoutingModule {}
+export class ProductsRoutingModule {}

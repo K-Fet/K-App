@@ -55,4 +55,9 @@ module.exports = {
    * Facebook base api URL.
    */
   FB_BASE_API: 'https://graph.facebook.com/v3.0',
+
+  /**
+   * Default unit used.
+   */
+  BASE_UNIT: 'u',
 };

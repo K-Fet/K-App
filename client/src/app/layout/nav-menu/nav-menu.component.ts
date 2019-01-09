@@ -18,53 +18,15 @@ interface SubMenu {
 }
 
 const NAV_MENUS: SubMenu[] = [
-  {
-    links: [
-      {
-        name: 'Accueil',
-        route: '/home',
-      },
-    ],
-  },
+  { links: [{ name: 'Accueil', route: '/home' }] },
   {
     accountType: 'guest',
-    links: [
-      {
-        name: 'Présentation',
-        route: '/home/presentation',
-      },
-    ],
-  },
-  {
-    name: 'Contacts',
-    accountType: 'guest',
-    links: [
-      {
-        name: 'Pour un concert',
-        route: '/contact/concert',
-      },
-      {
-        name: 'Pour un évenement | soirée',
-        route: '/contact/event',
-      },
-      {
-        name: 'Pour un objet perdu',
-        route: '/contact/lost',
-      },
-      {
-        name: 'Pour un problème avec le site',
-        route: '/contact/website',
-      },
-    ],
+    links: [{ name: 'Présentation', route: '/home/presentation' }],
   },
   {
     name: 'Services',
     links: [
-      {
-        name: 'Planning',
-        route: '/services/services-explorer',
-        permissions: ['service:read'],
-      },
+      { name: 'Planning', route: '/services/services-explorer', permissions: ['service:read'] },
       {
         name: 'Ouvrir les services',
         route: '/services/open-services',
@@ -77,76 +39,46 @@ const NAV_MENUS: SubMenu[] = [
       },
     ],
   },
+  { links: [{ name: 'Adhérents', route: '/members', permissions: ['member:read'] }] },
+  { links: [{ name: 'Barmen', route: '/barmen', permissions: ['barman:read'] }] },
+  { links: [{ name: 'Kommissions', route: '/kommissions', permissions: ['kommission:read'] }] },
+  { links: [{ name: 'Roles', route: '/acl/roles', permissions: ['role:read'] }] },
   {
-    links: [
-      {
-        name: 'Adhérents',
-        route: '/members',
-        permissions: ['member:read'],
-      },
-    ],
+    links: [{
+      name: 'Comptes spéciaux',
+      route: '/acl/special-accounts',
+      permissions: ['specialaccount:read'],
+    }],
   },
   {
-    links: [
-      {
-        name: 'Barmen',
-        route: '/barmen',
-        permissions: ['barman:read'],
-      },
-    ],
-  },
-  {
-    links: [
-      {
-        name: 'Kommissions',
-        route: '/kommissions',
-        permissions: ['kommission:read'],
-      },
-    ],
-  },
-  {
-    links: [
-      {
-        name: 'Roles',
-        route: '/acl/roles',
-        permissions: ['role:read'],
-      },
-    ],
-  },
-  {
-    links: [
-      {
-        name: 'Comptes spéciaux',
-        route: '/acl/special-accounts',
-        permissions: ['specialaccount:read'],
-      },
-    ],
-  },
-  {
-    links: [
-      {
-        name: 'Templates',
-        route: '/services/templates',
-        permissions: ['template:write'],
-      },
-    ],
+    links: [{
+      name: 'Templates',
+      route: '/services/templates',
+      permissions: ['template:write'],
+    }],
   },
   {
     name: 'Gestion des stocks',
     accountType: 'connectedUser',
     links: [
       { name: 'Fournisseurs', route: '/inventory-management/providers' },
+      { name: 'Produits', route: '/inventory-management/products' },
+    ],
+  },
+  {
+    name: 'Contacts',
+    accountType: 'guest',
+    links: [
+      { name: 'Pour un concert', route: '/contact/concert' },
+      { name: 'Pour un évenement | soirée', route: '/contact/event' },
+      { name: 'Pour un objet perdu', route: '/contact/lost' },
+      { name: 'Pour un problème avec le site', route: '/contact/website' },
     ],
   },
   {
     name: 'Contacts',
     accountType: 'connectedUser',
-    links: [
-      {
-        name: 'Pour un problème avec le site',
-        route: '/contact/website',
-      },
-    ],
+    links: [{ name: 'Pour un problème avec le site', route: '/contact/website' }],
   },
 ];
 

@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
-import { ProvidersService } from '../../api-services/providers.service';
-import { Provider } from '../provider.model';
-import { ProvidersDataSource } from '../providers.data-source';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
+import { ProductsDataSource } from '../products.data-source';
+import { ProductsService } from '../../api-services/products.service';
+import { Product } from '../product.model';
 
 @Component({
   templateUrl: './list.component.html',
@@ -14,19 +14,19 @@ import { fromEvent, merge } from 'rxjs';
 export class ListComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['name', 'action'];
-  dataSource: ProvidersDataSource;
+  dataSource: ProductsDataSource;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('input') input: ElementRef;
 
-  constructor(private providerService: ProvidersService,
+  constructor(private productsService: ProductsService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    this.dataSource = new ProvidersDataSource(this.providerService);
-    this.dataSource.loadProviders();
+    this.dataSource = new ProductsDataSource(this.productsService);
+    this.dataSource.loadProducts();
   }
 
   ngAfterViewInit(): void {
@@ -36,18 +36,18 @@ export class ListComponent implements OnInit, AfterViewInit {
       distinctUntilChanged(),
       tap(() => {
         this.paginator.pageIndex = 0;
-        this.loadProvidersPage();
+        this.loadProductsPage();
       }),
     ).subscribe();
 
     // Paginator and Sort
     // reset the paginator after sorting
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadProvidersPage())).subscribe();
+    merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadProductsPage())).subscribe();
   }
 
-  loadProvidersPage() {
-    this.dataSource.loadProviders({
+  loadProductsPage() {
+    this.dataSource.loadProducts({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
       search: this.input.nativeElement.value,
@@ -55,11 +55,11 @@ export class ListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  edit(provider: Provider): void {
-    this.router.navigate(['/inventory-management/providers', provider._id, 'edit']);
+  edit(product: Product): void {
+    this.router.navigate(['/inventory-management/products', product._id, 'edit']);
   }
 
-  view(provider: Provider): void {
-    this.router.navigate(['/inventory-management/providers', provider._id]);
+  view(product: Product): void {
+    this.router.navigate(['/inventory-management/products', product._id]);
   }
 }
