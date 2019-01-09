@@ -7,7 +7,7 @@ const { BASE_UNIT } = require('../../constants');
 const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Types;
 
 const model = {
   mongoose: mongoose.model('Products', mongoose.Schema({
