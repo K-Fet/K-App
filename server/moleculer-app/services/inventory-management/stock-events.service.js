@@ -56,7 +56,7 @@ module.exports = {
         const promises = events
         // Get product
           .map(e => ({
-            productP: ctx.call('inventory-management.product.get', { id: e.product }),
+            productP: ctx.call('inventory-management.products.get', { id: e.product }),
             event: e,
           }))
           // Convert sent unit
