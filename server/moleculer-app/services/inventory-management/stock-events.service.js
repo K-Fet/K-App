@@ -88,6 +88,8 @@ module.exports = {
 
         const insertedEvents = await Promise.all(promises);
 
+        this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
+
         // Notify products because products are considered used now
         ctx.emit('inventory-management.stock-events.added', insertedEvents, ['inventory-management.products']);
         return this.actions.insert(insertedEvents);

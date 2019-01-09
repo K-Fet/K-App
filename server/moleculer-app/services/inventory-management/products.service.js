@@ -58,6 +58,7 @@ module.exports = {
     // eslint-disable-next-line object-shorthand
     'inventory-management.stock-events.added'(insertedEvents) {
       const idsToSetUsed = insertedEvents.map(e => ObjectId(e.product));
+      this.logger.debug(`Updating ${insertedEvents.length} products to be set as used`);
       return this.adapter.updateMany({ _id: { $in: idsToSetUsed } }, { $set: { used: true } });
     },
   },
