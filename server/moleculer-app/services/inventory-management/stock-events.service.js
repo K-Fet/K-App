@@ -90,7 +90,7 @@ module.exports = {
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
-        const res = await this.actions.insert(insertedEvents);
+        const res = await this.actions.insert({ entities: insertedEvents });
 
         // Notify products because products are considered used now
         ctx.emit('inventory-management.stock-events.added', res, ['inventory-management.products']);
@@ -99,7 +99,7 @@ module.exports = {
     },
 
     // Must be called only via 'add' action
-    insert: { visibility: 'private' },
+    insert: { visibility: 'private', permissions: false },
 
     // Disabled actions
     create: false,
