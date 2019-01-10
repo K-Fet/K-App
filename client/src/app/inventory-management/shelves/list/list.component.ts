@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
-import { ShelvesService } from '../shelves.service';
-import { Shelf } from '../shelves.model';
+import { ShelvesService } from '../../api-services/shelves.service';
+import { Shelf } from '../shelf.model';
 import { ShelvesDataSource } from '../shelves.data-source';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
@@ -57,9 +57,5 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   edit(shelf: Shelf): void {
     this.router.navigate(['/inventory-management/shelves', shelf._id, 'edit']);
-  }
-
-  view(shelf: Shelf): void {
-    this.router.navigate(['/inventory-management/shelves', shelf._id]);
   }
 }

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Shelf } from '../shelves.model';
+import { Shelf } from '../shelf.model';
 import { getShelfFromForm, getShelfModel } from '../shelves.form-model';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { ShelvesService } from '../shelves.service';
+import { ShelvesService } from '../../api-services/shelves.service';
 
 @Component({
   templateUrl: './edit.component.html',

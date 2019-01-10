@@ -6,7 +6,7 @@ import { ShelvesService } from './shelves.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ShelvesDetailResolverService implements Resolve<Shelf> {
+export class ShelfDetailResolverService implements Resolve<Shelf> {
 
   constructor(private shelvesService: ShelvesService,
               private router: Router) {}

@@ -18,6 +18,20 @@ const routes: Routes = [
     canLoad: [NgxPermissionsGuard],
   },
   {
+    path: 'shelves',
+    loadChildren: './shelves/shelves.module#ShelvesModule',
+    data: {
+      permissions: {
+        only: [
+          'inventory-management:shelves:find',
+          'inventory-management:shelves:list',
+          'inventory-management:shelves:get',
+        ],
+      },
+    },
+    canLoad: [NgxPermissionsGuard],
+  },
+  {
     path: 'products',
     loadChildren: './products/products.module#ProductsModule',
     data: {

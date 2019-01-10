@@ -10,6 +10,7 @@ import { Product, ProductConversion } from './product.model';
 import { Provider } from '../providers/provider.model';
 import { URL_PATTERN } from '../../constants';
 import { from } from 'rxjs';
+import { Shelf } from '../shelves/shelf.model';
 
 const BASE_PRODUCT = {} as Product;
 const BASE_CONVERSION = {} as ProductConversion;
@@ -43,7 +44,7 @@ function conversionGroupFactory(conversion?: ProductConversion) {
   ];
 }
 
-export function getProductModel(providers: Promise<Provider[]>, originalProduct?: Product): DynamicFormModel {
+export function getProductModel(shelves: Promise<Shelf[]>, providers: Promise<Provider[]>, originalProduct?: Product): DynamicFormModel {
   const values = originalProduct || BASE_PRODUCT;
 
   const optionMap = (valueField, labelField) => arr => arr.map(b => ({
@@ -63,6 +64,14 @@ export function getProductModel(providers: Promise<Provider[]>, originalProduct?
       label: 'Lien vers une image',
       value: values.image,
       validators: { pattern: URL_PATTERN },
+    }),
+    new DynamicSelectModel<string>({
+      id: 'shelf',
+      label: 'Rayon',
+      value: values.shelf && (values.shelf as Shelf)._id,
+      disabled: values.used,
+      options: from(shelves.then(optionMap('_id', 'name')),
+      ),
     }),
     new DynamicSelectModel<string>({
       id: 'provider',

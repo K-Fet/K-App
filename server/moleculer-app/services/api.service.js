@@ -66,6 +66,10 @@ module.exports = {
           'GET providers/count': 'inventory-management.providers.count',
           'REST providers': 'inventory-management.providers',
 
+          'GET shelves/find': 'inventory-management.shelves.find',
+          'GET shelves/count': 'inventory-management.shelves.count',
+          'REST shelves': 'inventory-management.shelves',
+
           'GET products/find': 'inventory-management.products.find',
           'GET products/count': 'inventory-management.products.count',
           'REST products': 'inventory-management.products',

@@ -1,4 +1,5 @@
 import { Provider } from '../providers/provider.model';
+import { Shelf } from '../shelves/shelf.model';
 
 export interface ProductConversion {
   displayName?: string;
@@ -14,5 +15,5 @@ export interface Product {
   used: boolean;
   conversions: ProductConversion[];
   provider: string | Provider;
-  shelf?: string;
+  shelf: string | Shelf;
 }

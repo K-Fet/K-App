@@ -1,6 +1,6 @@
-import { Shelf } from './shelves.model';
+import { Shelf } from './shelf.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ShelvesService } from './shelves.service';
+import { ShelvesService } from '../api-services/shelves.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 

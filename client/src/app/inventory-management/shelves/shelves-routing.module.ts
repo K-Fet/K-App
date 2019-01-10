@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ShelvesDetailResolverService } from './shelves-detail-resolver.service';
+import { ShelfDetailResolverService } from '../api-services/shelf-detail-resolver.service';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';
@@ -20,7 +20,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: { permissions: { only: ['inventory-management:shelves:get'] } },
     resolve: {
-      shelf: ShelvesDetailResolverService,
+      shelf: ShelfDetailResolverService,
     },
   },
   {
@@ -29,7 +29,7 @@ const routes: Routes = [
     canActivate: [NgxPermissionsGuard],
     data: { permissions: { only: ['inventory-management:shelves:update'] } },
     resolve: {
-      shelf: ShelvesDetailResolverService,
+      shelf: ShelfDetailResolverService,
     },
   },
   {

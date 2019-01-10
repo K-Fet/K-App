@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ShelvesService } from '../shelves.service';
+import { ShelvesService } from '../../api-services/shelves.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { getShelfFromForm, getShelfModel } from '../shelves.form-model';
 

@@ -31,10 +31,6 @@
             <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
             <mat-cell *matCellDef="let shelf">
               <div fxLayout="row">
-                <button mat-icon-button (click)="view(shelf)"
-                        *ngxPermissionsOnly="['inventory-management:shelves:get']">
-                  <mat-icon>zoom_in</mat-icon>
-                </button>
                 <button mat-icon-button (click)="edit(shelf)"
                         *ngxPermissionsOnly="['inventory-management:shelves:update']">
                   <mat-icon>edit</mat-icon>

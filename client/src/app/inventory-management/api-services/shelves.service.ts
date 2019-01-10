@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Shelf } from './shelf.model';
+import { Shelf } from '../shelves/shelf.model';
 import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../../shared/utils';
 
