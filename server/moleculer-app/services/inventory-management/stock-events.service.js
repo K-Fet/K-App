@@ -90,9 +90,11 @@ module.exports = {
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
+        const res = await this.actions.insert(insertedEvents);
+
         // Notify products because products are considered used now
-        ctx.emit('inventory-management.stock-events.added', insertedEvents, ['inventory-management.products']);
-        return this.actions.insert(insertedEvents);
+        ctx.emit('inventory-management.stock-events.added', res, ['inventory-management.products']);
+        return res;
       },
     },
 
