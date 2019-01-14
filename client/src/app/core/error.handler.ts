@@ -16,16 +16,21 @@ export class AppErrorHandler implements ErrorHandler {
   handleError(error: Error | HttpErrorResponse): void {
     const toasterService = this.injector.get(ToasterService);
     const router = this.injector.get(Router);
+    let realError = error;
 
-    if (error instanceof HttpErrorResponse) {
+    // Handle case where HttpErrorResponse is wrapped inside promise error
+    // @ts-ignore
+    if (error.promise && error.rejection) realError = error.rejection;
+
+    if (realError instanceof HttpErrorResponse) {
       // Server or connection error happened
       if (!navigator.onLine) {
         // Handle offline error
         return toasterService.showToaster('Pas de connexion internet');
       }
-      switch (error.status) {
+      switch (realError.status) {
         case 400:
-          return toasterService.showToaster(BAD_REQUEST_ERRORS[error.error.error]);
+          return toasterService.showToaster(BAD_REQUEST_ERRORS[realError.error.error]);
         case 401:
           router.navigate(['/auth/login']);
           return toasterService.showToaster('Opération non autorisée, redirection ...');

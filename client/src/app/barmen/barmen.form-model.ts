@@ -139,6 +139,7 @@ export function getBarmanFromForm(form: FormGroup, originalBarman?: Barman): Bar
   const res = new Barman({
     id: original.id,
     ...value.info1,
+    facebook: value.info1.facebook || undefined,
     connection: value.connection,
     flow: value.info2.flow,
     nickname: value.info2.nickName,
