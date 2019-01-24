@@ -18,6 +18,6 @@ export function getCurrentWeek(): { start: Date, end: Date } {
 export function createHttpParams(params: { [key: string]: string }): HttpParams {
   return Object
     .entries(params)
-    .filter(([, value]) => value !== undefined)
+    .filter(([, value]) => !!value)
     .reduce((params, [key, value]) => params.set(key, value), new HttpParams());
 }

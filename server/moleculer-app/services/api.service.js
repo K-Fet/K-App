@@ -98,7 +98,13 @@ module.exports = {
       // Return with the error as JSON object
       res.setHeader('Content-type', 'application/json; charset=utf-8');
 
-      const code = +err.code || 500;
+      let code = +err.code || 500;
+
+      if (code < 100 || code > 599) {
+        this.logger.error(`Unknown HTTP STATUS CODE ${code}! Sending 500 instead`);
+        code = 500;
+      }
+
       res.writeHead(code);
 
       const errObj = ['name', 'message', 'code', 'type', 'data'].reduce((acc, key) => {
