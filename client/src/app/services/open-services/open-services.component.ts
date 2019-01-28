@@ -116,7 +116,7 @@ export class OpenServicesComponent implements OnInit {
 
           while (isBefore(startAt, firstDayOfNextWeek)) {
             startAt = addWeeks(startAt, 1);
-            endAt = addWeeks(startAt, 1);
+            endAt = addWeeks(endAt, 1);
           }
           this.addServiceForm(service.nbMax, startAt, endAt);
         });
