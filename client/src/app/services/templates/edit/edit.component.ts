@@ -16,11 +16,7 @@ export class EditComponent implements OnInit {
   servicesFormArray: FormArray;
   generalFormArray: FormArray;
   generalFormGroup: FormGroup;
-  servicesFormGroup: FormGroup;
   templateId: number;
-
-  selectedStartDay: string[];
-  selectedEndDay: string[];
 
   WEEK_DAY = [
     { id: '1', value: 'Lundi' },

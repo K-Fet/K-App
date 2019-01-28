@@ -27,17 +27,17 @@
                       <button mat-icon-button (click)="removeServiceForm(i)" >
                         <mat-icon fxFlex="10px">remove</mat-icon>
                       </button>
-                      <span class="first-letter-uppercase" *ngIf="getControls()[i].controls.startFormControl.value
-                                                        && getControls()[i].controls.startDayFormControl.value
-                                                        && getControls()[i].controls.endFormControl.value; else elseBlock">
-                                                    {{findWeekDay(getControls()[i].controls.startDayFormControl.value)}}
-                        de {{getControls()[i].controls.startFormControl.value}}
-                        à {{getControls()[i].controls.endFormControl.value}}
-                                                </span>
+                      <span class="first-letter-uppercase" *ngIf="serviceForm.controls.startFormControl.value
+                                                        && serviceForm.controls.startDayFormControl.value
+                                                        && serviceForm.controls.endFormControl.value; else elseBlock">
+                        {{findWeekDay(serviceForm.controls.startDayFormControl.value)}}
+                        de {{serviceForm.controls.startFormControl.value}}
+                        à {{serviceForm.controls.endFormControl.value}}
+                      </span>
                       <ng-template #elseBlock>
-                                                    <span class="mat-error">
-                                                        Service à définir !
-                                                    </span>
+                        <span class="mat-error">
+                            Service à définir !
+                        </span>
                       </ng-template>
                     </mat-panel-title>
                   </mat-expansion-panel-header>

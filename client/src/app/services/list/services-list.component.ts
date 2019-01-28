@@ -53,7 +53,7 @@ export class ServiceListComponent implements OnInit {
   }
 
   edit(service: Service): void {
-    this.router.navigate(['/services-manager/', service.id]);
+    this.router.navigate(['/services/services-manager/', service.id]);
   }
 
   async delete(service: Service) {

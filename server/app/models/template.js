@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize');
 const Joi = require('joi');
+const { getISODay, setISODay } = require('date-fns');
 
 /**
  * This class represents a template for a list of services for a week.
@@ -65,18 +66,15 @@ class TemplateUnit extends Model {
         // eslint-disable-next-line
         get() {
           const startAt = this.getDataValue('startAt');
-          const day = startAt.getDay() || 7;
           return {
-            day,
+            day: getISODay(startAt),
             hours: startAt.getHours(),
             minutes: startAt.getMinutes(),
           };
         },
         // eslint-disable-next-line
         set(val) {
-          const date = new Date();
-
-          date.setDate(date.getDate() + ((7 + val.day - 1 + date.getDay()) % 7));
+          const date = setISODay(new Date(), val.day);
           date.setHours(val.hours);
           date.setMinutes(val.minutes);
 
@@ -90,18 +88,15 @@ class TemplateUnit extends Model {
         // eslint-disable-next-line
         get() {
           const endAt = this.getDataValue('endAt');
-          const day = endAt.getDay() || 7;
           return {
-            day,
+            day: getISODay(endAt),
             hours: endAt.getHours(),
             minutes: endAt.getMinutes(),
           };
         },
         // eslint-disable-next-line
         set(val) {
-          const date = new Date();
-
-          date.setDate(date.getDate() + ((7 + val.day - 1 + date.getDay()) % 7));
+          const date = setISODay(new Date(), val.day);
           date.setHours(val.hours);
           date.setMinutes(val.minutes);
 
