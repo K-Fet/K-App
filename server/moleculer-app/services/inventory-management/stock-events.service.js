@@ -10,11 +10,13 @@ const { MoleculerClientError } = Errors;
 
 const model = {
   mongoose: mongoose.model('StockEvent', mongoose.Schema({
-    product: { type: mongoose.Schema.Types.ObjectId, required: true },
+    product: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
     diff: { type: Number, required: true },
-    date: { type: Date, default: Date.now },
-    type: { type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'] },
-    order: { type: mongoose.Schema.Types.ObjectId },
+    date: { type: Date, default: Date.now, index: true },
+    type: {
+      type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'], index: true,
+    },
+    order: { type: mongoose.Schema.Types.ObjectId, index: true },
     meta: { type: String },
   })),
   joi: Joi.object({

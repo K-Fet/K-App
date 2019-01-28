@@ -11,7 +11,9 @@ const { ObjectId } = mongoose.Types;
 
 const model = {
   mongoose: mongoose.model('Products', mongoose.Schema({
-    name: { type: String, required: true, min: 3 },
+    name: {
+      type: String, required: true, min: 3, text: true,
+    },
     image: { type: String },
     used: { type: Boolean, default: false },
     conversions: [new mongoose.Schema({
@@ -22,8 +24,8 @@ const model = {
       },
       coef: { type: Number, required: true },
     })],
-    provider: { type: ObjectId, require: true },
-    shelf: { type: ObjectId },
+    provider: { type: ObjectId, require: true, index: true },
+    shelf: { type: ObjectId, index: true },
   })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
