@@ -4,6 +4,7 @@ const { verify, hash } = require('./password-manager');
 const { setAssociations } = require('./associations');
 const {
   getCurrentSchoolYear, cleanObject, generateToken,
+  groupBy,
   ID_SCHEMA, RANGE_SCHEMA, YEAR_SCHEMA, UNIT_SCHEMA, SEARCH_SCHEMA, MONGO_ID, joiThrough, flatten,
 } = require('./helpers');
 const { getDefaultTemplate } = require('./template-service');
@@ -21,6 +22,7 @@ module.exports = {
   getDefaultTemplate,
   setAssociations,
   joiThrough,
+  groupBy,
   generateToken,
   ID_SCHEMA,
   MONGO_ID,

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
-const { MONGO_ID } = require('../../../utils');
+const { MONGO_ID, groupBy } = require('../../../utils');
 
 const model = {
   mongoose: mongoose.model('Shelves', mongoose.Schema({
@@ -18,10 +18,27 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.shelves',
-  mixins: [JoiDbActionsMixin(model.joi), DbMixin(model.mongoose)],
+  mixins: [
+    JoiDbActionsMixin(model.joi),
+    DbMixin(model.mongoose),
+  ],
 
-  actions: {
-    // TODO Safe delete
-    remove: false,
+  settings: {
+    populates: {
+      async products(ids, docs, rule, ctx) {
+        // Get all corresponding products
+        const { rows: products } = await ctx.call('inventory-management.products.list', {
+          pageSize: 1000, query: { shelf: { $in: docs.map(d => d._id) } },
+        });
+
+        const productMap = groupBy(products, p => p.shelf.toString());
+
+        // Assign product to each shelf accordingly
+        // eslint-disable-next-line no-param-reassign,no-return-assign
+        docs.forEach(doc => doc.products = productMap.get(doc._id));
+      },
+    },
   },
+
+  actions: {},
 };
