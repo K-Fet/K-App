@@ -123,8 +123,7 @@ module.exports = {
       const bConv = this.mapConversions(before.conversions);
       const aConv = this.mapConversions(after.conversions);
 
-      return before.shelf === after.shelf
-        && before.provider === after.provider
+      return before.provider === after.provider
         // Check if every conversions from before still exists and did not change coef
         && Object.entries(bConv).every(([key, value]) => aConv[key] && aConv[key].coef === value.coef);
     },
