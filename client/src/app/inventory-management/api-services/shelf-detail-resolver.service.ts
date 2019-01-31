@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { Shelf } from '../shelves/shelf.model';
 import { ShelvesService } from './shelves.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ShelfDetailResolverService implements Resolve<Shelf> {
 
   constructor(private shelvesService: ShelvesService,

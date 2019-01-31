@@ -25,7 +25,8 @@ export class ShelvesService {
   }
 
   get(id: string): Promise<Shelf> {
-    return this.http.get<Shelf>(`${BASE_URL}/${id}`).toPromise();
+    // Always populate shelf with products
+    return this.http.get<Shelf>(`${BASE_URL}/${id}?populate=products`).toPromise();
   }
 
   create(shelf: Shelf): Promise<Shelf> {

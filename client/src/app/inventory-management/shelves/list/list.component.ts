@@ -3,9 +3,9 @@ import { MatPaginator, MatSort } from '@angular/material';
 import { Router } from '@angular/router';
 import { ShelvesService } from '../../api-services/shelves.service';
 import { Shelf } from '../shelf.model';
-import { ShelvesDataSource } from '../shelves.data-source';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
+import { MoleculerDataSource } from '../../../shared/utils/moleculer-data-source';
 
 @Component({
   templateUrl: './list.component.html',
@@ -14,7 +14,7 @@ import { fromEvent, merge } from 'rxjs';
 export class ListComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['name', 'action'];
-  dataSource: ShelvesDataSource;
+  dataSource: MoleculerDataSource<Shelf>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -25,8 +25,8 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataSource = new ShelvesDataSource(this.shelfService);
-    this.dataSource.loadShelves();
+    this.dataSource = new MoleculerDataSource<Shelf>(this.shelfService);
+    this.dataSource.load();
   }
 
   ngAfterViewInit(): void {
@@ -47,12 +47,16 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   loadShelvesPage() {
-    this.dataSource.loadShelves({
+    this.dataSource.load({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
       search: this.input.nativeElement.value,
       sort: this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
     });
+  }
+
+  view(shelf: Shelf): void {
+    this.router.navigate(['/inventory-management/shelves', shelf._id]);
   }
 
   edit(shelf: Shelf): void {

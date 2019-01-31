@@ -25,10 +25,8 @@ export class ProductsService {
   }
 
   get(id: string): Promise<Product> {
-    return this.http.get<Product>(
-      `${BASE_URL}/${id}`,
-      { params: createHttpParams({ populate: 'provider' }) },
-    ).toPromise();
+    // Always populate provider and shelf
+    return this.http.get<Product>(`${BASE_URL}/${id}?populate=provider,shelf`).toPromise();
   }
 
   create(product: Product): Promise<Product> {

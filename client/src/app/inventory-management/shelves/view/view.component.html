@@ -6,9 +6,15 @@
           <mat-icon>arrow_back</mat-icon>
         </a>
         <section class="mat-typography">
-          <h1>{{ shelves?.name }}</h1>
+          <h1>{{ shelf?.name }}</h1>
         </section>
       </mat-card-title>
     </mat-card-header>
+    <mat-card-content>
+      <h2>Produits dans le rayon:</h2>
+      <ul>
+        <li *ngFor="let product of shelf?.products">{{product.name}}</li>
+      </ul>
+    </mat-card-content>
   </mat-card>
 </div>

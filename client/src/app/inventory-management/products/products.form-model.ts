@@ -44,7 +44,11 @@ function conversionGroupFactory(conversion?: ProductConversion) {
   ];
 }
 
-export function getProductModel(shelves: Promise<Shelf[]>, providers: Promise<Provider[]>, originalProduct?: Product): DynamicFormModel {
+export function getProductModel(
+  shelves: Promise<Shelf[]>,
+  providers: Promise<Provider[]>,
+  originalProduct?: Product,
+): DynamicFormModel {
   const values = originalProduct || BASE_PRODUCT;
 
   const optionMap = (valueField, labelField) => arr => arr.map(b => ({
