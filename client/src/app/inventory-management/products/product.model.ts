@@ -15,5 +15,5 @@ export interface Product {
   used: boolean;
   conversions: ProductConversion[];
   provider: string | Provider;
-  shelf: string | Shelf;
+  shelf?: string | Shelf;
 }

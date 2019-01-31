@@ -73,7 +73,6 @@ export function getProductModel(
       id: 'shelf',
       label: 'Rayon',
       value: values.shelf && (values.shelf as Shelf)._id,
-      disabled: values.used,
       options: from(shelves.then(optionMap('_id', 'name')),
       ),
     }),
