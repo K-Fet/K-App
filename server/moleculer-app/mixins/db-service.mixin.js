@@ -5,7 +5,7 @@ const conf = require('nconf');
 module.exports = function dbService(mongooseModel) {
   return {
     mixins: [DbService],
-    adapter: new MongooseAdapter(conf.get('mongodb:url'), { useNewUrlParser: true }),
+    adapter: new MongooseAdapter(conf.get('mongodb:url'), { useNewUrlParser: true, useCreateIndex: true }),
     model: mongooseModel,
   };
 };

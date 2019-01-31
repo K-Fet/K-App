@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { Shelf} from '../shelf.model';
+import { Shelf } from '../shelf.model';
 
 @Component({
   templateUrl: './view.component.html',
