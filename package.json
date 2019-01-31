@@ -36,7 +36,7 @@
     "postversion": "git push --follow-tags && opn https://github.com/K-Fet/K-App/releases/new"
   },
   "dependencies": {
-    "argon2": "0.20.1",
+    "argon2": "0.19.3",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "date-fns": "^2.0.0-alpha.27",
