@@ -155,12 +155,36 @@ function joiThrough(prop, schema) {
   return Joi.object({ [prop]: schema.required() }).unknown(true);
 }
 
+/**
+ * Group an array into a Map by a selected field.
+ *
+ * @see https://stackoverflow.com/a/38327540/5285167
+ * @param list {any[]} List to group by
+ * @param keyGetter {function} function called to select key
+ * @return {Map<any, any[]>} A Map
+ */
+function groupBy(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+
+  return map;
+}
+
 module.exports = {
   getCurrentSchoolYear,
   cleanObject,
   flatten,
   generateToken,
   joiThrough,
+  groupBy,
   ID_SCHEMA,
   RANGE_SCHEMA,
   MONGO_ID,

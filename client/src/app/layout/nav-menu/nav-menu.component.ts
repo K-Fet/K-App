@@ -63,6 +63,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [
       { name: 'Fournisseurs', route: '/inventory-management/providers' },
       { name: 'Produits', route: '/inventory-management/products' },
+      { name: 'Rayons', route: '/inventory-management/shelves' },
     ],
   },
   {

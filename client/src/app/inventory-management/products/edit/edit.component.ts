@@ -11,6 +11,7 @@ import { Product } from '../product.model';
 import { ProductsService } from '../../api-services/products.service';
 import { getProductFromForm, getProductModel } from '../products.form-model';
 import { ProvidersService } from '../../api-services/providers.service';
+import { ShelvesService } from '../../api-services/shelves.service';
 
 @Component({
   templateUrl: './edit.component.html',
@@ -28,6 +29,7 @@ export class EditComponent implements OnInit {
               private toasterService: ToasterService,
               private productsService: ProductsService,
               private providersService: ProvidersService,
+              private shelvesService: ShelvesService,
               private route: ActivatedRoute,
               private router: Router) { }
 
@@ -37,6 +39,7 @@ export class EditComponent implements OnInit {
     this.route.data.subscribe((data: { product: Product }) => {
       this.originalProduct = data.product;
       this.model = getProductModel(
+        this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
         this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
         this.originalProduct,
       );

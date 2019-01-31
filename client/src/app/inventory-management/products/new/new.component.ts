@@ -10,6 +10,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
 import { getProductFromForm, getProductModel } from '../products.form-model';
 import { ProductsService } from '../../api-services/products.service';
 import { ProvidersService } from '../../api-services/providers.service';
+import { ShelvesService } from '../../api-services/shelves.service';
 
 @Component({
   templateUrl: './new.component.html',
@@ -24,12 +25,14 @@ export class NewComponent implements OnInit {
   constructor(private formService: DynamicFormService,
               private productsService: ProductsService,
               private providersService: ProvidersService,
+              private shelvesService: ShelvesService,
               private toasterService: ToasterService,
               private router: Router) { }
 
   ngOnInit() {
     this.model = getProductModel(
       // TODO Improve page size
+      this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
       this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
     );
     this.formGroup = this.formService.createFormGroup(this.model);

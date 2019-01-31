@@ -13,6 +13,7 @@
     <img mat-card-image *ngIf="product && product.image" src="{{product.image}}" alt="Image {{product.name}}">
     <mat-card-content>
       <p>Fournisseur : {{getProvider(product)?.name}}</p>
+      <p>Rayon : {{getShelf(product)?.name}}</p>
       <h4>Conversions :</h4>
       <div *ngFor="let c of product.conversions;let i = index">
         {{i}}: 1 unité vaut {{c.coef}}{{c.unit}} <span *ngIf="c.displayName">({{c.displayName}})</span>.
