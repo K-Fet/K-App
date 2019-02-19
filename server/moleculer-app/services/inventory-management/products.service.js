@@ -26,7 +26,7 @@ const model = {
     })],
     provider: { type: ObjectId, require: true, index: true },
     shelf: { type: ObjectId, index: true },
-  })),
+  }, { timestamps: true })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
@@ -50,6 +50,7 @@ module.exports = {
   ],
 
   settings: {
+    rest: true,
     populates: {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',

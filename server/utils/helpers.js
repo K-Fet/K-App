@@ -142,6 +142,27 @@ const MONGO_ID = Joi.string();
 const UNIT_SCHEMA = Joi.string().min(1).max(3);
 
 /**
+ * This constant is used by Joi to validate and remove fields created by mongoose.
+ * @type {Object} Partial Joi schema
+ */
+const PARTIAL_MONGO_TIMESTAMP = {
+  createdAt: Joi.date().strip(),
+  updatedAt: Joi.date().strip(),
+};
+
+
+const JOI_ID = Joi.alt(
+  Joi.string(),
+  Joi.number(),
+  Joi.array(),
+);
+const JOI_STRING_OR_STRING_ARRAY = Joi.alt(
+  Joi.string(),
+  Joi.array().items(Joi.string()),
+);
+
+
+/**
  * Helper to handle the common pattern where there is a code and an object
  * inside the body.
  *
@@ -191,4 +212,7 @@ module.exports = {
   YEAR_SCHEMA,
   UNIT_SCHEMA,
   SEARCH_SCHEMA,
+  PARTIAL_MONGO_TIMESTAMP,
+  JOI_ID,
+  JOI_STRING_OR_STRING_ARRAY,
 };

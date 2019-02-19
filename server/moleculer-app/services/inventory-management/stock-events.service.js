@@ -39,6 +39,7 @@ module.exports = {
   ],
 
   settings: {
+    rest: true,
     populates: {
       product: 'inventory-management.products.get',
       order: 'inventory-management.orders.get',
