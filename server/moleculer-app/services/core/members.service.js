@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const {
-  MONGO_ID, PARTIAL_MONGO_TIMESTAMP, JOI_STRING_OR_STRING_ARRAY, getCurrentSchoolYear,
+  MONGO_ID, PARTIAL_MONGO_TIMESTAMP, JOI_STRING_OR_STRING_ARRAY, JOI_ID, getCurrentSchoolYear,
 } = require('../../../utils');
+
+const { MoleculerClientError } = Errors;
 
 const model = {
   mongoose: mongoose.model('Members', mongoose.Schema({
@@ -86,6 +89,28 @@ module.exports = {
           pageSize: params.pageSize,
           totalPages: Math.floor((count + params.pageSize - 1) / params.pageSize),
         };
+      },
+    },
+
+    register: {
+      rest: 'POST /register',
+      permissions: true,
+      params: () => Joi.object({
+        id: JOI_ID.required(),
+      }),
+      async handler(ctx) {
+        const { id } = ctx.params;
+        const member = await this.actions.get({ id });
+
+        const currentRegistration = member.registrations.find(r => r.year === getCurrentSchoolYear());
+
+        if (currentRegistration) {
+          throw new MoleculerClientError('Member is already registered for current year', null, null, { id });
+        }
+
+        member.registrations.push({ year: getCurrentSchoolYear() });
+
+        return this.actions.update({ id, ...member });
       },
     },
   },
