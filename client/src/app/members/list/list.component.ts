@@ -6,6 +6,8 @@ import { fromEvent, merge } from 'rxjs';
 import { Member } from '../member.model';
 import { MoleculerDataSource } from '../../shared/utils/moleculer-data-source';
 import { MembersService } from '../members.service';
+import { ToasterService } from '../../core/services/toaster.service';
+import { CURRENT_SCHOOL_YEAR } from '../../constants';
 
 @Component({
   templateUrl: './list.component.html',
@@ -13,7 +15,7 @@ import { MembersService } from '../members.service';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['name', 'action'];
+  displayedColumns = ['name', 'school', 'actions'];
   dataSource: MoleculerDataSource<Member>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -21,6 +23,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   @ViewChild('input') input: ElementRef;
 
   constructor(private membersService: MembersService,
+              private toasterService: ToasterService,
               private router: Router) {
   }
 
@@ -61,5 +64,16 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   edit(member: Member): void {
     this.router.navigate(['/core/members', member._id, 'edit']);
+  }
+
+  isRegistered(member: Member): boolean {
+    return !!member.registrations.find(r => r.year === CURRENT_SCHOOL_YEAR);
+  }
+
+  async register(member: Member) {
+    const registeredMember = await this.membersService.register(member._id);
+    // Update fields
+    Object.assign(member, registeredMember);
+    this.toasterService.showToaster(`Adhérent inscrit pour l'année ${CURRENT_SCHOOL_YEAR}`);
   }
 }

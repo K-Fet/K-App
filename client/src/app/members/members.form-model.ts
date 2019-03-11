@@ -5,7 +5,7 @@ import { Member } from './member.model';
 const BASE_MEMBER: Member = {} as Member;
 
 export function getMemberModel(originalMember?: Member): DynamicFormModel {
-  const values = originalMember || BASE_MEMBER;
+  // const values = originalMember || BASE_MEMBER;
 
   return [];
 }

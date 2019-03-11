@@ -40,4 +40,8 @@ export class MembersService {
   remove(id: string): Promise<Member> {
     return this.http.delete<Member>(`${BASE_URL}/${id}`).toPromise();
   }
+
+  register(id: string): Promise<Member> {
+    return this.http.post<Member>(`${BASE_URL}/${id}`, {}).toPromise();
+  }
 }
