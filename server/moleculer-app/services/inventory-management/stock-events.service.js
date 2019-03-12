@@ -39,7 +39,7 @@ module.exports = {
   ],
 
   settings: {
-    rest: true,
+    rest: '/stock-events',
     populates: {
       product: 'inventory-management.products.get',
       order: 'inventory-management.orders.get',

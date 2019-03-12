@@ -26,7 +26,7 @@ module.exports = {
   ],
 
   settings: {
-    rest: true,
+    rest: '/providers',
   },
 
   actions: {

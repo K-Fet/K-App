@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
 import { Member } from '../member.model';
 import { MoleculerDataSource } from '../../shared/utils/moleculer-data-source';
-import { MembersService } from '../members.service';
+import { MembersOptions, MembersService } from '../members.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
 
@@ -15,8 +15,13 @@ import { CURRENT_SCHOOL_YEAR } from '../../constants';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['name', 'school', 'actions'];
-  dataSource: MoleculerDataSource<Member>;
+  displayedColumns = ['firstName', 'lastName', 'school', 'actions'];
+  dataSource: MoleculerDataSource<Member, MembersOptions>;
+
+  // Filters
+  selectedStatus = 'active';
+
+  totalRegistered = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -27,9 +32,12 @@ export class ListComponent implements OnInit, AfterViewInit {
               private router: Router) {
   }
 
-  ngOnInit(): void {
-    this.dataSource = new MoleculerDataSource<Member>(this.membersService);
-    this.dataSource.load();
+  async ngOnInit() {
+    this.dataSource = new MoleculerDataSource<Member, MembersOptions>(this.membersService);
+
+    // Load and save initial count as number of registered members
+    await this.dataSource.load();
+    this.totalRegistered = this.dataSource.total;
   }
 
   ngAfterViewInit(): void {
@@ -49,21 +57,27 @@ export class ListComponent implements OnInit, AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadMembersPage())).subscribe();
   }
 
-  loadMembersPage() {
-    this.dataSource.load({
+  async loadMembersPage() {
+    const options = {
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
       search: this.input.nativeElement.value,
       sort: this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
-    });
+      active: this.selectedStatus === 'active',
+      inactive: this.selectedStatus === 'inactive',
+    };
+
+    await this.dataSource.load(options);
+    // If initial settings, update totalRegistered
+    if (!options.search && options.active) this.totalRegistered = this.dataSource.total;
   }
 
   view(member: Member): void {
-    this.router.navigate(['/core/members', member._id]);
+    this.router.navigate(['/members', member._id]);
   }
 
   edit(member: Member): void {
-    this.router.navigate(['/core/members', member._id, 'edit']);
+    this.router.navigate(['/members', member._id, 'edit']);
   }
 
   isRegistered(member: Member): boolean {

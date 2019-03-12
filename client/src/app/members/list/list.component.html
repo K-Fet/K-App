@@ -1,43 +1,72 @@
 <div>
-  <section class="mat-typography">
-    <h1>Liste des adhérents</h1>
-  </section>
-  <mat-form-field>
-    <input matInput placeholder="Rechercher dans les membres" #input>
-  </mat-form-field>
-  <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newmember' } } ]">Nouveau</button>
-  <div class="spinner-container" *ngIf="dataSource.loading$ | async">
-    <mat-spinner></mat-spinner>
+  <div>
+    <section class="mat-typography">
+      <h1>Liste des adhérents</h1>
+    </section>
+    <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newmember' } } ]">Nouveau</button>
   </div>
-  <table mat-table [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom - Nom</mat-header-cell>
-      <mat-cell *matCellDef="let member">{{member.firstName}} {{member.lastName}}</mat-cell>
-    </ng-container>
 
-    <ng-container matColumnDef="school">
-      <mat-header-cell *matHeaderCellDef>École</mat-header-cell>
-      <mat-cell *matCellDef="let member">{{member.school}}</mat-cell>
-    </ng-container>
+  <div>
+    <mat-form-field>
+      <input matInput placeholder="Rechercher dans les membres" #input>
+    </mat-form-field>
 
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-      <mat-cell *matCellDef="let member;">
-        <div fxLayout="row">
-          <button mat-icon-button (click)="register(member)"
-                  [disabled]="isRegistered(member)"
-                  *ngxPermissionsOnly="['v1:core:members:register']">
-            <mat-icon>person_add</mat-icon>
-          </button>
-          <button mat-icon-button (click)="edit(member)" *ngxPermissionsOnly="['v1:core:members:update']">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </div>
-      </mat-cell>
-    </ng-container>
+    <div>
+      <mat-form-field>
+        <mat-select placeholder="Statut" [(value)]="selectedStatus">
+          <mat-option value="active">Actif</mat-option>
+          <mat-option value="inactive">Inactif</mat-option>
+          <mat-option>--</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </table>
-  <mat-paginator></mat-paginator>
+      <button mat-button (click)="loadMembersPage()">Appliquer les filtres</button>
+    </div>
+  </div>
+  <div *ngxPermissionsOnly="['v1:core:members:count']">
+    Nombre actuel de membres inscrit cette année : {{totalRegistered}}
+  </div>
+  <div>
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="firstName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
+        <mat-cell *matCellDef="let member">{{member.firstName}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="lastName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+        <mat-cell *matCellDef="let member">{{member.lastName}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="school">
+        <mat-header-cell *matHeaderCellDef>École</mat-header-cell>
+        <mat-cell *matCellDef="let member">{{member.school}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let member;">
+          <div fxLayout="row">
+            <button mat-icon-button (click)="register(member)"
+                    [disabled]="isRegistered(member)"
+                    *ngxPermissionsOnly="['v1:core:members:register']">
+              <mat-icon>person_add</mat-icon>
+            </button>
+            <button mat-icon-button (click)="edit(member)" *ngxPermissionsOnly="['v1:core:members:update']">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </table>
+    <mat-paginator [length]="dataSource.total"
+                   [pageSize]="dataSource.pageSize"
+                   [pageSizeOptions]="[10, 25, 100]">
+    </mat-paginator>
+  </div>
 </div>

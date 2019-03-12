@@ -24,7 +24,7 @@ module.exports = {
   ],
 
   settings: {
-    rest: true,
+    rest: '/shelves',
     populates: {
       async products(ids, docs, rule, ctx) {
         // Get all corresponding products

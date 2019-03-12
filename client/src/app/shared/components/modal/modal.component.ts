@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -9,22 +10,32 @@ import { Router } from '@angular/router';
       <ng-content></ng-content>
     </ng-template>`,
 })
-export class ModalComponent {
+export class ModalComponent<R = any> {
 
   @Input() config: MatDialogConfig;
   @ViewChild('content') content: TemplateRef<any>;
 
-  @Output() modalClose: EventEmitter<any> = new EventEmitter<any>();
+  private _dialogRef: MatDialogRef<any, R>;
+  private _afterClosed = new Subject<R | undefined>();
 
   constructor(private dialog: MatDialog, private router: Router) {}
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(this.content, this.config || { width: '250px' });
+    this._dialogRef = this.dialog.open(this.content, this.config || { width: '250px' });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    this._dialogRef.afterClosed().subscribe((result) => {
       this.router.navigate([{ outlets: { modal: null } }]);
-      this.modalClose.next(result);
+      this._dialogRef = null;
+      this._afterClosed.next(result);
     });
+  }
+
+  close(result?: R | undefined): void {
+    if (this._dialogRef) this._dialogRef.close(result);
+  }
+
+  afterClosed(): Observable<R | undefined> {
+    return this._afterClosed.asObservable();
   }
 
   ngOnInit(): void {

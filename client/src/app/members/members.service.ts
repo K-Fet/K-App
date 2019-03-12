@@ -6,17 +6,24 @@ import { createHttpParams } from '../shared/utils';
 
 const BASE_URL = '/api/v2/core/v1/members';
 
+export interface MembersOptions extends MoleculerListOptions {
+  active?: boolean;
+  inactive?: boolean;
+}
+
 @Injectable()
 export class MembersService {
 
   constructor(private http: HttpClient) { }
 
-  list(options: MoleculerListOptions = {}): Promise<MoleculerList<Member>> {
+  list(options: MembersOptions = {}): Promise<MoleculerList<Member>> {
     return this.http.get<MoleculerList<Member>>(
       BASE_URL,
       {
         params: createHttpParams({
           ...options,
+          active: options.active && options.active.toString(),
+          inactive: options.inactive && options.inactive.toString(),
           page: options.page && options.page.toString(),
           pageSize: options.pageSize && options.pageSize.toString(),
         }),

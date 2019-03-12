@@ -50,7 +50,7 @@ module.exports = {
   ],
 
   settings: {
-    rest: true,
+    rest: '/products',
     populates: {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',
