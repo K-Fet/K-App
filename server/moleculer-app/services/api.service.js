@@ -43,12 +43,14 @@ module.exports = {
         whitelist: ['v1.core.**'],
         authorization: true,
         autoAliases: true,
+        bodyParsers: { json: true },
       },
       {
         path: '/inventory-management',
         whitelist: ['inventory-management.**'],
         authorization: true,
         autoAliases: true,
+        bodyParsers: { json: true },
       },
     ],
 

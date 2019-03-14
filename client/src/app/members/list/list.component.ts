@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
+import { MediaObserver } from '@angular/flex-layout';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
@@ -29,10 +30,15 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   constructor(private membersService: MembersService,
               private toasterService: ToasterService,
+              private mediaObserver: MediaObserver,
               private router: Router) {
   }
 
   async ngOnInit() {
+    if (this.mediaObserver.isActive('sm') || this.mediaObserver.isActive('xs')) {
+      this.displayedColumns = ['firstName', 'lastName', 'actions'];
+    }
+
     this.dataSource = new MoleculerDataSource<Member, MembersOptions>(this.membersService);
 
     // Load and save initial count as number of registered members

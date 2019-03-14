@@ -33,7 +33,7 @@ const model = {
     school: Joi.string().min(3),
     registrations: Joi.array().items(Joi.object({
       year: Joi.number().integer().greater(2017).required(),
-      createdAt: Joi.date().strip(),
+      createdAt: Joi.date(),
     })),
   }),
 };

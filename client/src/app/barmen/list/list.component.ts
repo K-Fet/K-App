@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { MediaChange, ObservableMedia } from '@angular/flex-layout';
+import { MediaChange, MediaObserver } from '@angular/flex-layout';
 import { Barman } from '../../shared/models';
 import { BarmanService } from '../../core/api-services/barman.service';
 
@@ -22,11 +22,11 @@ export class ListComponent implements OnInit {
 
   constructor(private barmanService: BarmanService,
               private router: Router,
-              public media: ObservableMedia) {
+              public mediaObserver: MediaObserver) {
   }
 
   async ngOnInit() {
-    this.media.subscribe((change: MediaChange) => {
+    this.mediaObserver.media$.subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs' && this.displayedColumns.includes('lastName')) {
         this.displayedColumns.splice(this.displayedColumns.indexOf('lastName'), 1);
       } else if (!this.displayedColumns.includes('lastName')) {
