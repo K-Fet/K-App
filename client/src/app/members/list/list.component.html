@@ -1,4 +1,4 @@
-<div>
+<div class="list">
   <div class="list-header"
        fxLayout="row"
        fxLayout.xs="column"
@@ -8,11 +8,14 @@
       <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newmember' } } ]">Nouveau</button>
     </div>
   </div>
+  <div *ngxPermissionsOnly="['v1:core:members:count']" class="mat-small">
+    {{totalRegistered}} membres inscrits cette année
+  </div>
 
   <div fxLayout="row"
        fxLayout.xs="column"
   >
-    <mat-form-field appearance="outline" class="filter-field">
+    <mat-form-field appearance="outline" class="filter-field" fxFlex.gt-xs="30">
       <mat-label>Rechercher dans les membres</mat-label>
       <input matInput #input>
       <mat-icon matPrefix>search</mat-icon>
@@ -26,10 +29,7 @@
         <mat-option>--</mat-option>
       </mat-select>
     </mat-form-field>
-    <span fxFlex></span>
-  </div>
-  <div *ngxPermissionsOnly="['v1:core:members:count']">
-    Nombre actuel de membres inscrit cette année : {{totalRegistered}}
+    <span fxFlex.gt-xs></span>
   </div>
   <div fxLayout="column">
     <div class="spinner-container" *ngIf="dataSource.loading$ | async">
