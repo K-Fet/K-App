@@ -1,31 +1,32 @@
 <div>
   <div class="list-header"
        fxLayout="row"
-       fxLayout.sm="column"
        fxLayout.xs="column"
   >
     <h1 class="mat-headline title">Liste des adhérents</h1>
-    <div fxFlex>
+    <div fxFlex class="new-button">
       <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newmember' } } ]">Nouveau</button>
     </div>
   </div>
 
-  <div fxLayout="row">
-    <mat-form-field>
-      <input matInput placeholder="Rechercher dans les membres" #input>
+  <div fxLayout="row"
+       fxLayout.xs="column"
+  >
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Rechercher dans les membres</mat-label>
+      <input matInput #input>
+      <mat-icon matPrefix>search</mat-icon>
     </mat-form-field>
 
-    <div>
-      <mat-form-field>
-        <mat-select placeholder="Statut" [(value)]="selectedStatus">
-          <mat-option value="active">Actif</mat-option>
-          <mat-option value="inactive">Inactif</mat-option>
-          <mat-option>--</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-button (click)="loadMembersPage()">Appliquer les filtres</button>
-    </div>
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Statut</mat-label>
+      <mat-select [(value)]="selectedStatus" (selectionChange)="loadMembersPage()">
+        <mat-option value="active">Actif</mat-option>
+        <mat-option value="inactive">Inactif</mat-option>
+        <mat-option>--</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span fxFlex></span>
   </div>
   <div *ngxPermissionsOnly="['v1:core:members:count']">
     Nombre actuel de membres inscrit cette année : {{totalRegistered}}
@@ -34,7 +35,14 @@
     <div class="spinner-container" *ngIf="dataSource.loading$ | async">
       <mat-spinner></mat-spinner>
     </div>
-    <table mat-table [dataSource]="dataSource" matSort fxFlex>
+    <table mat-table
+           [dataSource]="dataSource"
+           matSort
+           matSortActive="updatedAt"
+           matSortDirection="desc"
+           matSortDisableClear
+           fxFlex
+    >
       <ng-container matColumnDef="firstName">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
         <mat-cell *matCellDef="let member">{{member.firstName}}</mat-cell>
@@ -43,10 +51,13 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
         <mat-cell *matCellDef="let member">{{member.lastName}}</mat-cell>
       </ng-container>
-
       <ng-container matColumnDef="school">
         <mat-header-cell *matHeaderCellDef>École</mat-header-cell>
         <mat-cell *matCellDef="let member">{{member.school}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="updatedAt">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Dernière activité</mat-header-cell>
+        <mat-cell *matCellDef="let member">{{member.updatedAt | date:'d LLLL yyyy' }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">

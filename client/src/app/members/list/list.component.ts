@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { MoleculerDataSource } from '../../shared/utils/moleculer-data-source';
 import { MembersOptions, MembersService } from '../members.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
+import { RegisterMemberDialogComponent } from '../../shared/dialogs/register-member/register-member-dialog.component';
 
 @Component({
   templateUrl: './list.component.html',
@@ -16,11 +17,11 @@ import { CURRENT_SCHOOL_YEAR } from '../../constants';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['firstName', 'lastName', 'school', 'actions'];
+  displayedColumns = ['firstName', 'lastName', 'school', 'updatedAt', 'actions'];
   dataSource: MoleculerDataSource<Member, MembersOptions>;
 
   // Filters
-  selectedStatus = 'active';
+  selectedStatus = '';
 
   totalRegistered = 0;
 
@@ -31,6 +32,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   constructor(private membersService: MembersService,
               private toasterService: ToasterService,
               private mediaObserver: MediaObserver,
+              private dialog: MatDialog,
               private router: Router) {
   }
 
@@ -42,7 +44,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     this.dataSource = new MoleculerDataSource<Member, MembersOptions>(this.membersService);
 
     // Load and save initial count as number of registered members
-    await this.dataSource.load();
+    await this.dataSource.load({ sort: '-updatedAt' });
     this.totalRegistered = this.dataSource.total;
   }
 
@@ -78,10 +80,6 @@ export class ListComponent implements OnInit, AfterViewInit {
     if (!options.search && options.active) this.totalRegistered = this.dataSource.total;
   }
 
-  view(member: Member): void {
-    this.router.navigate(['/members', member._id]);
-  }
-
   edit(member: Member): void {
     this.router.navigate(['/members', member._id, 'edit']);
   }
@@ -91,9 +89,18 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   async register(member: Member) {
-    const registeredMember = await this.membersService.register(member._id);
+    const dialogRef = this.dialog.open(RegisterMemberDialogComponent, {
+      width: '350px',
+      data: member,
+    });
+
+    const newSchool = await dialogRef.afterClosed().toPromise();
+    if (!newSchool) return;
+
+    const registeredMember = await this.membersService.register(member._id, newSchool);
     // Update fields
     Object.assign(member, registeredMember);
     this.toasterService.showToaster(`Adhérent inscrit pour l'année ${CURRENT_SCHOOL_YEAR}`);
+    this.loadMembersPage();
   }
 }

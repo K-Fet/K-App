@@ -31,8 +31,10 @@ const model = {
     firstName: Joi.string().min(3).required(),
     lastName: Joi.string().min(3).required(),
     school: Joi.string().min(3),
+    deletedAt: Joi.strip(), // Deprecated field
     registrations: Joi.array().items(Joi.object({
-      year: Joi.number().integer().greater(2017).required(),
+      _id: MONGO_ID, // Remove _id from the object
+      year: Joi.number().integer().greater(2016).required(),
       createdAt: Joi.date(),
     })),
   }),
@@ -93,14 +95,15 @@ module.exports = {
     },
 
     register: {
-      rest: 'POST /register',
+      rest: 'POST /:id/register',
       permissions: true,
       params: () => Joi.object({
         id: JOI_ID.required(),
+        newSchool: Joi.string().min(3),
       }),
       async handler(ctx) {
-        const { id } = ctx.params;
-        const member = await this.actions.get({ id });
+        const { id, newSchool } = ctx.params;
+        const member = await ctx.call('v1.core.members.get', { id });
 
         const currentRegistration = member.registrations.find(r => r.year === getCurrentSchoolYear());
 
@@ -108,9 +111,16 @@ module.exports = {
           throw new MoleculerClientError('Member is already registered for current year', null, null, { id });
         }
 
+        if (newSchool && member.school !== newSchool) member.school = newSchool;
+
         member.registrations.push({ year: getCurrentSchoolYear() });
 
-        return this.actions.update({ id, ...member });
+        return ctx.call('v1.core.members.update', {
+          id,
+          ...member,
+          // Transform object ids to string for Joi validation
+          registrations: member.registrations.map(r => ({ ...r, _id: r._id && r._id.toString() })),
+        });
       },
     },
   },

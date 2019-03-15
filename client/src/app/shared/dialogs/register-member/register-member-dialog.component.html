@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Inscription année {{ currentSchoolYear }} - {{ currentSchoolYear + 1}}</h2>
+<mat-dialog-content>
+  <p>Inscrire {{ member.firstName }} {{ member.lastName }} pour cette année ?</p>
+  <mat-form-field appearance="outline">
+    <mat-label>Mise à jour de l'école</mat-label>
+    <input type="text" matInput [formControl]="schoolControl" [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let school of filteredSchools | async" [value]="school">
+        {{school}}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-icon matPrefix>school</mat-icon>
+    <mat-error *ngIf="schoolControl.hasError('required')">
+      École <strong>requise</strong>
+    </mat-error>
+    <mat-error *ngIf="schoolControl.hasError('invalidSchool')">
+      L'école doit être dans la liste proposée
+    </mat-error>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuler</button>
+  <button mat-button [mat-dialog-close]="schoolControl.value" cdkFocusInitial>Inscrire</button>
+</mat-dialog-actions>
