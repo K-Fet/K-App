@@ -1,0 +1,18 @@
+.button-container {
+
+  .animated-button {
+    overflow-x: hidden;
+    animation: cubic-bezier(1, .21, .62, .97) bounceRight 2s;
+  }
+}
+
+@keyframes bounceRight {
+
+  0% {
+    opacity: .1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

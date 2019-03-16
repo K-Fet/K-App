@@ -1,38 +1,41 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-
-type MatButtonType = '' | 'flat' | 'stroked' | 'raised';
+import { throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-confirm-button',
   templateUrl: './confirm-button.component.html',
+  styleUrls: ['./confirm-button.component.scss'],
 })
 export class ConfirmButtonComponent implements OnInit {
 
   @Output() click = new EventEmitter<Event>();
-  @Input() debounceTime = 300;
+  @Input() throttleTime = 500;
   @Input() color = 'warn';
   @Input() matIconName = 'delete';
-  @Input() matButtonType: MatButtonType = '';
 
-  timesClicked = 0;
-  clickSubject = new Subject<Event>();
+  wasClicked = false;
+  clickSubject = new Subject<void>();
 
   ngOnInit(): void {
     this.clickSubject.asObservable()
-      .pipe(debounceTime(this.debounceTime))
-      .subscribe(event => this.onClick(event));
+      .pipe(throttleTime(this.throttleTime))
+      .subscribe(() => this.onValidatedClick());
+  }
+
+  onValidatedClick() {
+    if (!this.wasClicked) {
+      this.wasClicked = true;
+      return;
+    }
+    // Reset
+    this.wasClicked = false;
+    return this.click.emit(event);
   }
 
   onClick(event: Event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    this.timesClicked += 1;
-
-    if (this.timesClicked > 1) {
-      this.timesClicked = 0;
-      return this.click.emit(event);
-    }
+    this.clickSubject.next();
   }
 }

@@ -1,4 +1,4 @@
-<app-modal #dialog>
+<app-modal #dialog [config]="{width: '400px'}">
   <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
     <h2 mat-dialog-title>Editer un adhérent</h2>
     <mat-dialog-content fxLayout="column">
@@ -6,9 +6,6 @@
     </mat-dialog-content>
     <mat-dialog-actions>
       <app-confirm-button (click)="dialog.close('delete')">Supprimer</app-confirm-button>
-      <button mat-button color="warn" (click)="dialog.close('delete')">
-        <mat-icon>delete</mat-icon>
-      </button>
       <span fxFlex></span>
       <button mat-button (click)="dialog.close()">Annuler</button>
       <button mat-button (click)="dialog.close('save')" [disabled]="!formGroup.valid && !formGroup.dirty">

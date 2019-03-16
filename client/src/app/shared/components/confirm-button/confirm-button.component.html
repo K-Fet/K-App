@@ -1,4 +1,14 @@
-<button mat-raised-button [color]="color" (click)="onClick($event)">
+<button (click)="onClick($event)" mat-button [color]="color" *ngIf="!wasClicked">
   <mat-icon>{{matIconName}}</mat-icon>
-  <ng-content></ng-content>
 </button>
+<div class="button-container" *ngIf="wasClicked">
+  <button (click)="onClick($event)"
+          mat-raised-button
+          [color]="color"
+          [style.animation-duration]="throttleTime + 'ms'"
+          class="animated-button"
+  >
+    <mat-icon>{{matIconName}}</mat-icon>
+    <ng-content></ng-content>
+  </button>
+</div>
