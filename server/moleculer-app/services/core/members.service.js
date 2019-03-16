@@ -4,7 +4,7 @@ const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const {
-  MONGO_ID, PARTIAL_MONGO_TIMESTAMP, JOI_STRING_OR_STRING_ARRAY, JOI_ID, getCurrentSchoolYear,
+  MONGO_ID, MONGOOSE_INTERNALS, JOI_STRING_OR_STRING_ARRAY, JOI_ID, getCurrentSchoolYear,
 } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
@@ -27,7 +27,7 @@ const model = {
   }, { timestamps: true })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
-    ...PARTIAL_MONGO_TIMESTAMP,
+    ...MONGOOSE_INTERNALS,
     firstName: Joi.string().min(3).required(),
     lastName: Joi.string().min(3).required(),
     school: Joi.string().min(3),

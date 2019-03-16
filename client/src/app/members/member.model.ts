@@ -1,5 +1,5 @@
 export interface Registration {
-  createdAt: Date;
+  createdAt?: Date;
   year: number;
 }
 

@@ -148,9 +148,10 @@ const UNIT_SCHEMA = Joi.string().min(1).max(3);
  * This constant is used by Joi to validate and remove fields created by mongoose.
  * @type {Object} Partial Joi schema
  */
-const PARTIAL_MONGO_TIMESTAMP = {
+const MONGOOSE_INTERNALS = {
   createdAt: Joi.date().strip(),
   updatedAt: Joi.date().strip(),
+  __v: Joi.number().integer(),
 };
 
 
@@ -215,7 +216,7 @@ module.exports = {
   YEAR_SCHEMA,
   UNIT_SCHEMA,
   SEARCH_SCHEMA,
-  PARTIAL_MONGO_TIMESTAMP,
+  MONGOOSE_INTERNALS,
   JOI_ID,
   JOI_STRING_OR_STRING_ARRAY,
 };

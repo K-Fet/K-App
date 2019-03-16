@@ -52,4 +52,11 @@ export class EditComponent implements OnInit {
     await this.membersService.remove(this.originalMember._id);
     this.toasterService.showToaster('Adhérent supprimé');
   }
+
+  getAllYears() {
+    if (!this.originalMember) return '...';
+    return this.originalMember.registrations
+      .map(r => `${r.year}-${r.year + 1}`)
+      .join(', ');
+  }
 }
