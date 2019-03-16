@@ -13,13 +13,13 @@ export function getMemberModel(originalMember?: Member): DynamicFormModel {
       id: 'firstName',
       label: 'Prénom',
       value: values.firstName,
-      validators: { required: null },
+      validators: { required: null, min: 3 },
     }),
     new DynamicInputModel({
       id: 'lastName',
       label: 'Nom',
       value: values.lastName,
-      validators: { required: null },
+      validators: { required: null, min: 3 },
     }),
     new DynamicInputModel({
       id: 'school',
