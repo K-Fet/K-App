@@ -13,6 +13,7 @@ import { DynamicControlsModule } from './dynamic-controls/dynamic-controls.modul
 import { EditPasswordComponent } from './components/edit-password/edit-password.component';
 import { ValidatorsModule } from './validators/validators.module';
 import { ModalComponent } from './components/modal/modal.component';
+import { ConfirmButtonComponent } from './components/confirm-button/confirm-button.component';
 
 const SHARED_MODULES = [
   CommonModule,
@@ -38,6 +39,7 @@ const SHARED_MODULES = [
   declarations: [
     EditPasswordComponent,
     ModalComponent,
+    ConfirmButtonComponent,
   ],
   entryComponents: [ModalComponent],
   imports: SHARED_MODULES,
@@ -45,6 +47,7 @@ const SHARED_MODULES = [
     ...SHARED_MODULES,
     EditPasswordComponent,
     ModalComponent,
+    ConfirmButtonComponent,
   ],
 })
 export class SharedModule {}

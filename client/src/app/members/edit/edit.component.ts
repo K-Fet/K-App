@@ -14,7 +14,7 @@ import { getMemberFromForm, getMemberModel } from '../members.form-model';
 })
 export class EditComponent implements OnInit {
 
-  @ViewChild('dialog') dialog: ModalComponent<Member>;
+  @ViewChild('dialog') dialog: ModalComponent<string>;
 
   formGroup: FormGroup;
   model: DynamicFormModel;
@@ -36,8 +36,9 @@ export class EditComponent implements OnInit {
     });
 
     this.dialog.afterClosed().subscribe((result) => {
+      console.log('DEBUG:', result);
       if (!result) return;
-      return this.onEdit();
+      if (result === 'save') return this.onEdit();
     });
   }
 
