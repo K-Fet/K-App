@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MediaObserver } from '@angular/flex-layout';
-import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
 import { Member } from '../member.model';
@@ -32,8 +31,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   constructor(private membersService: MembersService,
               private toasterService: ToasterService,
               private mediaObserver: MediaObserver,
-              private dialog: MatDialog,
-              private router: Router) {
+              private dialog: MatDialog) {
   }
 
   async ngOnInit() {
@@ -46,6 +44,9 @@ export class ListComponent implements OnInit, AfterViewInit {
     // Load and save initial count as number of registered members
     await this.dataSource.load({ sort: '-updatedAt' });
     this.totalRegistered = this.dataSource.total;
+
+    // Refresh list on change
+    this.membersService.refresh$.subscribe(() => this.loadMembersPage());
   }
 
   ngAfterViewInit(): void {
@@ -78,10 +79,6 @@ export class ListComponent implements OnInit, AfterViewInit {
     await this.dataSource.load(options);
     // If initial settings, update totalRegistered
     if (!options.search && options.active) this.totalRegistered = this.dataSource.total;
-  }
-
-  edit(member: Member): void {
-    this.router.navigate(['/members', member._id, 'edit']);
   }
 
   isRegistered(member: Member): boolean {

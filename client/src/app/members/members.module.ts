@@ -6,11 +6,14 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { MembersService } from './members.service';
 import { ListComponent } from './list/list.component';
 import { NewComponent } from './new/new.component';
+import { EditComponent } from './edit/edit.component';
+import { MemberDetailResolverService } from './member-detail-resolver.service';
 
 @NgModule({
   declarations: [
     ListComponent,
     NewComponent,
+    EditComponent,
   ],
   imports: [
     SharedModule,
@@ -18,6 +21,7 @@ import { NewComponent } from './new/new.component';
     MembersRoutingModule,
   ],
   providers: [
+    MemberDetailResolverService,
     MembersService,
   ],
 })

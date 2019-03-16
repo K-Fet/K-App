@@ -1,4 +1,4 @@
-import { DynamicFormModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Member } from './member.model';
 
@@ -8,7 +8,20 @@ export function getMemberModel(originalMember?: Member): DynamicFormModel {
   // @ts-ignore
   const values = originalMember || BASE_MEMBER;
 
-  return [];
+  return [
+    new DynamicInputModel({
+      id: 'firstName',
+      label: 'Prénom',
+      value: values.firstName,
+      validators: { required: null },
+    }),
+    new DynamicInputModel({
+      id: 'lastName',
+      label: 'Nom',
+      value: values.lastName,
+      validators: { required: null },
+    }),
+  ];
 }
 
 export function getMemberFromForm(form: FormGroup, originalMember?: Member): Member {

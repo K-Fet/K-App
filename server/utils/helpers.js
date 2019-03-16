@@ -131,9 +131,12 @@ const SEARCH_SCHEMA = Joi.object({
 
 /**
  * This constant is used by Joi to validate a MongoDB id
- * @type {StringSchema} Joi schema
+ * @type {AlternativesSchema} Joi schema
  */
-const MONGO_ID = Joi.string();
+const MONGO_ID = Joi.alt(
+  Joi.string().length(12),
+  Joi.string().length(24).regex(new RegExp('^[0-9a-fA-F]{24}$')),
+);
 
 /**
  * This constant is used by Joi to validate a unit (inventory-management)

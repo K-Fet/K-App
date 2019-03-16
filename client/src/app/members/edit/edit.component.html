@@ -1,0 +1,14 @@
+<app-modal #dialog>
+  <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="dialog.close('save')" class="form-field-block">
+    <h2 mat-dialog-title>Editer un adhérent</h2>
+    <mat-dialog-content fxLayout="column">
+      <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button color="warn" (click)="dialog.close('delete')">Supprimer</button>
+      <span fxFlex></span>
+      <button mat-button (click)="dialog.close()">Annuler</button>
+      <button mat-button type="submit" [disabled]="!formGroup.valid && !formGroup.dirty">Enregistrer</button>
+    </mat-dialog-actions>
+  </form>
+</app-modal>

@@ -1,6 +1,6 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -18,15 +18,16 @@ export class ModalComponent<R = any> {
   private _dialogRef: MatDialogRef<any, R>;
   private _afterClosed = new Subject<R | undefined>();
 
-  constructor(private dialog: MatDialog, private router: Router) {}
+  constructor(private dialog: MatDialog,
+              private location: Location) {}
 
   openDialog(): void {
-    this._dialogRef = this.dialog.open(this.content, this.config || { width: '250px' });
+    this._dialogRef = this.dialog.open(this.content, this.config);
 
-    this._dialogRef.afterClosed().subscribe((result) => {
-      this.router.navigate([{ outlets: { modal: null } }]);
+    this._dialogRef.afterClosed().subscribe(async (result) => {
       this._dialogRef = null;
       this._afterClosed.next(result);
+      this.location.back();
     });
   }
 
