@@ -36,9 +36,9 @@ export class EditComponent implements OnInit {
     });
 
     this.dialog.afterClosed().subscribe((result) => {
-      console.log('DEBUG:', result);
       if (!result) return;
       if (result === 'save') return this.onEdit();
+      if (result === 'delete') return this.onDelete();
     });
   }
 
@@ -46,5 +46,10 @@ export class EditComponent implements OnInit {
     const updatedMember = getMemberFromForm(this.formGroup, this.originalMember);
     await this.membersService.update(updatedMember);
     this.toasterService.showToaster('Adhérent mis à jour');
+  }
+
+  async onDelete() {
+    await this.membersService.remove(this.originalMember._id);
+    this.toasterService.showToaster('Adhérent supprimé');
   }
 }

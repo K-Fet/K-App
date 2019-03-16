@@ -19,7 +19,7 @@ export class RegisterMemberDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<RegisterMemberDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public member: Member) {
-    this.schoolControl = new FormControl(member.school, [Validators.required, ValidateSchool]);
+    this.schoolControl = new FormControl(member.school, [ValidateSchool]);
 
     this.filteredSchools = this.schoolControl.valueChanges.pipe(
       startWith(''),

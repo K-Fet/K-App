@@ -1,11 +1,11 @@
 import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Member } from './member.model';
+import { AVAILABLE_SCHOOLS, SCHOOLS_REGEXP } from '../constants';
 
 const BASE_MEMBER: Member = {} as Member;
 
 export function getMemberModel(originalMember?: Member): DynamicFormModel {
-  // @ts-ignore
   const values = originalMember || BASE_MEMBER;
 
   return [
@@ -20,6 +20,18 @@ export function getMemberModel(originalMember?: Member): DynamicFormModel {
       label: 'Nom',
       value: values.lastName,
       validators: { required: null },
+    }),
+    new DynamicInputModel({
+      id: 'school',
+      label: 'École',
+      value: values.school,
+      list: AVAILABLE_SCHOOLS,
+      validators: {
+        pattern: SCHOOLS_REGEXP,
+      },
+      errorMessages: {
+        pattern: 'L\'école doit être dans la liste proposée',
+      },
     }),
   ];
 }

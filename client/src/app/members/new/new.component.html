@@ -1,9 +1,14 @@
-<app-modal #dialog>
-  <h2 mat-dialog-title>Ajouter un adhérent</h2>
-  <mat-dialog-content fxLayout="column">
-  </mat-dialog-content>
-  <mat-dialog-actions fxLayoutAlign="center">
-    <button mat-button (click)="dialog.close(true)">Oui</button>
-    <button mat-button (click)="dialog.close()">Non</button>
-  </mat-dialog-actions>
+<app-modal #dialog [config]="{width: '400px'}">
+  <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
+    <h2 mat-dialog-title>Ajouter un adhérent</h2>
+    <mat-dialog-content fxLayout="column">
+      <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="dialog.close()">Annuler</button>
+      <button mat-button (click)="dialog.close('create')" [disabled]="!formGroup.valid && !formGroup.dirty">
+        Créer
+      </button>
+    </mat-dialog-actions>
+  </form>
 </app-modal>

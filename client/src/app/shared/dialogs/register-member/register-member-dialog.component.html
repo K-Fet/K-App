@@ -10,9 +10,6 @@
       </mat-option>
     </mat-autocomplete>
     <mat-icon matPrefix>school</mat-icon>
-    <mat-error *ngIf="schoolControl.hasError('required')">
-      École <strong>requise</strong>
-    </mat-error>
     <mat-error *ngIf="schoolControl.hasError('invalidSchool')">
       L'école doit être dans la liste proposée
     </mat-error>
