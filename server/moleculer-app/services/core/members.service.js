@@ -70,17 +70,17 @@ module.exports = {
         const params = this.sanitizeParams(ctx, ctx.params);
 
         // Add scoped query
-        if (params && params.active) {
+        if (params.active) {
           params.query = { 'registrations.year': getCurrentSchoolYear() };
         }
-        if (params && params.inactive) {
+        if (params.inactive) {
           params.query = { 'registrations.year': { $ne: getCurrentSchoolYear() } };
         }
 
         const countParams = Object.assign({}, params);
         // Remove pagination params
-        if (countParams && countParams.limit) countParams.limit = null;
-        if (countParams && countParams.offset) countParams.offset = null;
+        if (countParams.limit) countParams.limit = null;
+        if (countParams.offset) countParams.offset = null;
 
         this.logger.debug('Calling members.list with %o', params);
         const [rows, count] = await Promise.all([this.adapter.find(params), this.adapter.count(countParams)]);

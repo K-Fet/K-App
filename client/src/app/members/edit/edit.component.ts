@@ -10,7 +10,6 @@ import { getMemberFromForm, getMemberModel } from '../members.form-model';
 
 @Component({
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss'],
 })
 export class EditComponent implements OnInit {
 

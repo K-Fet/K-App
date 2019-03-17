@@ -1,7 +1,10 @@
 #!/usr/bin/env node
+const { start } = require('../../server/bootstrap/config');
 
 // Load environment variables
 require('dotenv').config();
+// Init nconf
+start();
 
 const actions = [
   {

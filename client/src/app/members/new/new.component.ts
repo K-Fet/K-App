@@ -9,7 +9,6 @@ import { CURRENT_SCHOOL_YEAR } from '../../constants';
 
 @Component({
   templateUrl: './new.component.html',
-  styleUrls: ['./new.component.scss'],
 })
 export class NewComponent implements OnInit {
 
