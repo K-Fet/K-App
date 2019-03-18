@@ -2,11 +2,11 @@
 
   .animated-button {
     overflow-x: hidden;
-    animation: cubic-bezier(1, .21, .62, .97) bounceRight 2s;
+    animation: cubic-bezier(1, .21, .62, .97) smoothEntry 2s;
   }
 }
 
-@keyframes bounceRight {
+@keyframes smoothEntry {
 
   0% {
     opacity: .1;
