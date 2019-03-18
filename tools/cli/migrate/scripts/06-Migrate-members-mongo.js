@@ -2,7 +2,7 @@
 const { Member, Registration } = require('../../../../server/app/models');
 
 module.exports = {
-  async up(queryInterface, Sequelize, broker) {
+  async up(queryInterface, Sequelize, mongoose) {
     const { sequelize } = queryInterface;
 
     Member.init(sequelize);
@@ -13,7 +13,7 @@ module.exports = {
     await sequelize.sync();
 
     // Get all members
-    const members = await Member.findAll({
+    const members = await Member.unscoped().findAll({
       attributes: { exclude: ['deletedAt'] },
       include: [
         {
@@ -26,7 +26,7 @@ module.exports = {
 
     console.log(`Migrating ${members.length} members from MySQL to MongoDB`);
 
-    await broker.call('v1.core.members.insert', { entities: members });
+    await mongoose.connection.collection('members').insertMany(members.map(m => m.toJSON()));
   },
 
   async down(queryInterface, Sequelize, broker) {

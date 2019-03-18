@@ -1,7 +1,7 @@
 const path = require('path');
 const Umzug = require('umzug');
 const Sequelize = require('sequelize');
-const { ServiceBroker } = require('moleculer');
+const mongoose = require('mongoose');
 const { checkEnv, getSequelizeInstance } = require('../utils');
 
 
@@ -9,17 +9,17 @@ const { checkEnv, getSequelizeInstance } = require('../utils');
  * Return an instance of umzug ready to be used.
  *
  * @param sequelize {Sequelize} ready to use sequelize instance.
- * @param broker moleculer broker instance (with all services launched).
+ * @param mongooseInstance {Mongoose} Mongoose instance
  * @return {Promise<Umzug|*>} Umzug instance
  */
-async function getUmzugInstance(sequelize, broker) {
+async function getUmzugInstance(sequelize, mongooseInstance) {
   return new Umzug({
     storage: 'sequelize',
     storageOptions: {
       sequelize,
     },
     migrations: {
-      params: [sequelize.getQueryInterface(), Sequelize, broker],
+      params: [sequelize.getQueryInterface(), Sequelize, mongooseInstance],
       path: path.join(__dirname, 'scripts'),
       pattern: /^\d+-[\w-]+\.js$/,
     },
@@ -38,11 +38,9 @@ async function run() {
 
   const sequelize = await getSequelizeInstance();
 
-  const broker = new ServiceBroker();
-  broker.loadServices(path.join(__dirname, '../../../server/moleculer-app/services'));
-  await broker.start();
+  const mongooseInstance = await mongoose.connect(process.env.MONGODB__URL);
 
-  const umzug = await getUmzugInstance(sequelize, broker);
+  const umzug = await getUmzugInstance(sequelize, mongooseInstance);
 
   const migrations = (process.argv[3] && process.argv[3] === 'down')
     ? await umzug.down() // Revert the last executed migration
