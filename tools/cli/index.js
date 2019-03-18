@@ -5,11 +5,6 @@ require('dotenv').config();
 
 const actions = [
   {
-    key: 'backup',
-    description: 'Save all the database into the `backup` folder',
-    noGui: true,
-  },
-  {
     key: 'create-admin-account',
     description: 'Create an admin account if needed',
     noGui: false,
@@ -46,11 +41,6 @@ const actions = [
     description: 'Run a custom script in tools/cli/script/',
     noGui: false,
   },
-  {
-    key: 'update',
-    description: 'Handle new update changes',
-    noGui: true,
-  },
 ];
 
 if (require.main !== module) {
@@ -61,7 +51,7 @@ if (require.main !== module) {
 /**
  * Main entry for the cli.
  *
- * @param action {'backup','create-admin-account','install','migrate','populate','release','update', 'help'} Action
+ * @param action {'create-admin-account','install','migrate','populate','release', 'help'} Action
  * @returns {Promise<void>}
  */
 async function main(action) {
