@@ -1,27 +1,25 @@
-<div class="list">
-  <div class="list-header"
-       fxLayout="row"
-       fxLayout.xs="column"
-  >
-    <h1 class="mat-headline title">Liste des adhérents</h1>
-    <div fxFlex class="new-button">
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <!-- HEADER -->
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <h1 class="title">Liste des adhérents</h1>
+    <div fxFlexAlign="center">
       <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newmember' } } ]">Nouveau</button>
     </div>
   </div>
-  <div *ngxPermissionsOnly="['v1:core:members:count']" class="mat-small">
-    {{totalRegistered}} membres inscrits cette année
-  </div>
 
-  <div fxLayout="row"
-       fxLayout.xs="column"
+  <!-- SEARCH & FILTER -->
+  <div
+    fxLayout="row"
+    fxLayout.lt-sm="column"
+    fxFlexAlign="center"
+    fxLayoutGap.gt-xs="10px"
   >
-    <mat-form-field appearance="outline" class="filter-field" fxFlex.gt-xs="30">
-      <mat-label>Rechercher dans les membres</mat-label>
+    <mat-form-field appearance="outline" fxFlex.gt-xs="300px">
+      <mat-label>Rechercher ...</mat-label>
       <input matInput autofocus #input>
       <mat-icon matPrefix>search</mat-icon>
     </mat-form-field>
-
-    <mat-form-field appearance="outline" class="filter-field">
+    <mat-form-field appearance="outline">
       <mat-label>Statut</mat-label>
       <mat-select [(value)]="selectedStatus" (selectionChange)="loadMembersPage()">
         <mat-option value="active">Actif</mat-option>
@@ -29,10 +27,17 @@
         <mat-option>--</mat-option>
       </mat-select>
     </mat-form-field>
-    <span fxFlex.gt-xs></span>
   </div>
-  <div fxLayout="row">
-    <div fxLayout="column" fxFlex.gt-md="60" class="table-spinner-container with-paginator">
+
+  <!-- TABLE -->
+  <div
+    fxLayoutAlign="center"
+  >
+    <div
+      style="width: 100%; max-width: 1000px !important"
+      fxLayout="column"
+      class="table-spinner-container with-paginator"
+    >
       <div class="table-spinner" *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
       </div>
@@ -57,7 +62,7 @@
           <mat-cell *matCellDef="let member">{{member.school}}</mat-cell>
         </ng-container>
         <ng-container matColumnDef="updatedAt">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>Dernière activité</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Dernière inscription</mat-header-cell>
           <mat-cell *matCellDef="let member">{{member.updatedAt | date:'d LLLL yyyy' }}</mat-cell>
         </ng-container>
 
