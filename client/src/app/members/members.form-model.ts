@@ -40,8 +40,20 @@ export function getMemberFromForm(form: FormGroup, originalMember?: Member): Mem
   const value = form.value;
   const original = originalMember || BASE_MEMBER;
 
+  const capitalize = s => s.charAt(0).toUpperCase() + s.substring(1);
+  const capitalizeName = str => str
+    .toLowerCase()
+    .split(' ')
+    .map(capitalize)
+    .join(' ')
+    .split('-')
+    .map(capitalize)
+    .join('-');
+
   return {
     _id: original._id,
     ...value,
+    firstName: capitalizeName(value.firstName),
+    lastName: capitalizeName(value.lastName),
   };
 }
