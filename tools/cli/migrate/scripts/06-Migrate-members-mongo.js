@@ -14,7 +14,7 @@ module.exports = {
 
     // Get all members
     const members = await Member.unscoped().findAll({
-      attributes: { exclude: ['deletedAt'] },
+      attributes: { exclude: ['deletedAt', 'id'] },
       include: [
         {
           model: Registration,
