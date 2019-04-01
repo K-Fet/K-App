@@ -3,15 +3,27 @@ import { Router } from '@angular/router';
 import { ToasterService } from './services/toaster.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandler, Injectable, Injector, isDevMode } from '@angular/core';
+import { BugsnagErrorHandler } from '@bugsnag/plugin-angular';
+// tslint:disable-next-line:import-name
+import bugsnag from '@bugsnag/js';
+import { environment } from '../../environments/environment';
+
+const BUGSNAG_KEY = environment['BUGSNAG_KEY'];
+const bugsnagClient = bugsnag(BUGSNAG_KEY);
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
+  private readonly bugsnag: BugsnagErrorHandler = null;
 
   constructor(
     // Because the ErrorHandler is created before the providers,
     // we’ll have to use the Injector to get them.
     private injector: Injector,
-  ) { }
+  ) {
+    if (BUGSNAG_KEY) {
+      this.bugsnag = new BugsnagErrorHandler(bugsnagClient);
+    }
+  }
 
   handleError(error: Error | HttpErrorResponse): void {
     const toasterService = this.injector.get(ToasterService);
@@ -48,8 +60,14 @@ export class AppErrorHandler implements ErrorHandler {
       }
     }
 
-    // TODO: Handle Client Error (Angular Error, ReferenceError...). Maybe send it to DB in order to manage it.
-    // Log the error in the console if dev mode
-    if (isDevMode()) console.error('Client error happens: ', error);
+    this.forward(error);
+  }
+
+  private forward(error: Error | HttpErrorResponse): void {
+    if (isDevMode()) {
+      console.error('Client error happens: ', error);
+    } else if (this.bugsnag) {
+      this.bugsnag.handleError(error);
+    }
   }
 }
