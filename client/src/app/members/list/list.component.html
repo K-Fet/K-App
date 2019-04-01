@@ -88,7 +88,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </table>
       <mat-paginator
-        class="hide-paginator-total"
+        [class.hide-paginator-total]="hideTotal()"
         [length]="dataSource.total"
         [pageSize]="dataSource.pageSize"
         [pageSizeOptions]="[10, 25, 100]">

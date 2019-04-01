@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const Joi = require('joi');
+const mongoose = require('mongoose');
+const { isBefore, parse } = require('date-fns');
 
 /**
  * Current school year.
@@ -7,9 +9,10 @@ const Joi = require('joi');
  * For school year 2017-2018, current year will be 2017
  */
 function getCurrentSchoolYear() {
-  const date = new Date();
+  // Switch Year on July 15th
+  const date = parse('15-07', 'dd-MM', new Date());
 
-  if (date.getMonth() < 7) {
+  if (isBefore(new Date(), date)) {
     return date.getFullYear() - 1;
   }
   return date.getFullYear();
@@ -203,6 +206,16 @@ function groupBy(list, keyGetter) {
   return map;
 }
 
+function createSchema(schemaObj, options, { textIndex } = {}) {
+  const schema = mongoose.Schema(schemaObj, options);
+
+  if (Array.isArray(textIndex)) {
+    schema.index(textIndex.reduce((o, field) => ({ ...o, [field]: 'text' }), {}));
+  }
+
+  return schema;
+}
+
 module.exports = {
   getCurrentSchoolYear,
   cleanObject,
@@ -210,6 +223,7 @@ module.exports = {
   generateToken,
   joiThrough,
   groupBy,
+  createSchema,
   ID_SCHEMA,
   RANGE_SCHEMA,
   MONGO_ID,

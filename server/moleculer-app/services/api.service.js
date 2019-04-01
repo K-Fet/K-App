@@ -82,7 +82,7 @@ module.exports = {
       let code = +err.code || 500;
 
       if (code < 100 || code > 599) {
-        this.logger.error(`Unknown HTTP STATUS CODE ${code}! Sending 500 instead`);
+        this.logger.error(`Unknown HTTP STATUS CODE ${code}! Sending 500 instead: %o`, err);
         code = 500;
       }
 

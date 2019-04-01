@@ -1,3 +1,5 @@
+import { isBefore, parse } from 'date-fns';
+
 export const URL_PATTERN = /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,8}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
 
 export const BAD_REQUEST_ERRORS = {
@@ -51,9 +53,10 @@ export const ROLES = [
 ];
 
 function getCurrentSchoolYear() {
-  const date = new Date();
+  // Switch Year on July 15th
+  const date = parse('15-07', 'dd-MM', new Date());
 
-  if (date.getMonth() < 7) {
+  if (isBefore(new Date(), date)) {
     return date.getFullYear() - 1;
   }
   return date.getFullYear();

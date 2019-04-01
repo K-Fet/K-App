@@ -9,10 +9,10 @@ import { MembersOptions, MembersService } from '../members.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
 import { RegisterMemberDialogComponent } from '../../shared/dialogs/register-member/register-member-dialog.component';
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
@@ -31,6 +31,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   constructor(private membersService: MembersService,
               private toasterService: ToasterService,
               private mediaObserver: MediaObserver,
+              private ngxPermissionsService: NgxPermissionsService,
               private dialog: MatDialog) {
   }
 
@@ -99,5 +100,9 @@ export class ListComponent implements OnInit, AfterViewInit {
     Object.assign(member, registeredMember);
     this.toasterService.showToaster(`Adhérent inscrit pour l'année ${CURRENT_SCHOOL_YEAR}`);
     this.loadMembersPage();
+  }
+
+  hideTotal(): boolean {
+    return !this.ngxPermissionsService.getPermission('v1:core:members:count');
   }
 }

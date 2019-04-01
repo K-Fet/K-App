@@ -4,27 +4,21 @@ const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const {
-  MONGO_ID, MONGOOSE_INTERNALS, JOI_STRING_OR_STRING_ARRAY, JOI_ID, getCurrentSchoolYear,
+  MONGO_ID, MONGOOSE_INTERNALS, JOI_STRING_OR_STRING_ARRAY, JOI_ID, getCurrentSchoolYear, createSchema,
 } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 
 const model = {
-  mongoose: mongoose.model('Members', mongoose.Schema({
-    firstName: {
-      type: String, required: true, min: 3, text: true,
-    },
-    lastName: {
-      type: String, required: true, min: 3, text: true,
-    },
-    school: {
-      type: String, min: 3, text: true,
-    },
+  mongoose: mongoose.model('Members', createSchema({
+    firstName: { type: String, required: true, min: 3 },
+    lastName: { type: String, required: true, min: 3 },
+    school: { type: String, min: 3 },
     registrations: [new mongoose.Schema({
       year: { type: Number, min: 2017, required: true },
       createdAt: { type: Date, default: Date.now, required: true },
     })],
-  }, { timestamps: true })),
+  }, { timestamps: true }, { textIndex: ['firstName', 'lastName', 'school'] })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     ...MONGOOSE_INTERNALS,
