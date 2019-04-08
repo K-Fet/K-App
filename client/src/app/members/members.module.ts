@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 
 import { MembersRoutingModule } from './members-routing.module';
-import { MemberService } from './services/member.service';
 import { SharedModule } from '../shared/shared.module';
-import { MembersListComponent } from './list/members-list.component';
-import { MemberNewEditComponent } from './new-edit/member-new-edit.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { MembersService } from './members.service';
+import { ListComponent } from './list/list.component';
+import { NewComponent } from './new/new.component';
+import { EditComponent } from './edit/edit.component';
+import { MemberDetailResolverService } from './member-detail-resolver.service';
 
 @NgModule({
   declarations: [
-    MembersListComponent,
-    MemberNewEditComponent,
+    ListComponent,
+    NewComponent,
+    EditComponent,
   ],
   imports: [
     SharedModule,
@@ -18,7 +21,8 @@ import { NgxPermissionsModule } from 'ngx-permissions';
     MembersRoutingModule,
   ],
   providers: [
-    MemberService,
+    MemberDetailResolverService,
+    MembersService,
   ],
 })
 export class MembersModule {}

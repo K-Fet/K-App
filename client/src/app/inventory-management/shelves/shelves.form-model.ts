@@ -1,8 +1,8 @@
 import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
-import { Shelf } from 'nconf';
+import { Shelf } from './shelf.model';
 
-const BASE_SHELF: Shelf = {};
+const BASE_SHELF: Shelf = {} as Shelf;
 
 export function getShelfModel(originalShelf?: Shelf): DynamicFormModel {
   const values = originalShelf || BASE_SHELF;

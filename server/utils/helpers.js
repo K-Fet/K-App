@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const Joi = require('joi');
+const mongoose = require('mongoose');
+const { isBefore, parse } = require('date-fns');
 
 /**
  * Current school year.
@@ -7,9 +9,10 @@ const Joi = require('joi');
  * For school year 2017-2018, current year will be 2017
  */
 function getCurrentSchoolYear() {
-  const date = new Date();
+  // Switch Year on July 15th
+  const date = parse('15-07', 'dd-MM', new Date());
 
-  if (date.getMonth() < 7) {
+  if (isBefore(new Date(), date)) {
     return date.getFullYear() - 1;
   }
   return date.getFullYear();
@@ -131,15 +134,40 @@ const SEARCH_SCHEMA = Joi.object({
 
 /**
  * This constant is used by Joi to validate a MongoDB id
- * @type {StringSchema} Joi schema
+ * @type {AlternativesSchema} Joi schema
  */
-const MONGO_ID = Joi.string();
+const MONGO_ID = Joi.alt(
+  Joi.string().length(12),
+  Joi.string().length(24).regex(new RegExp('^[0-9a-fA-F]{24}$')),
+);
 
 /**
  * This constant is used by Joi to validate a unit (inventory-management)
  * @type {StringSchema} Joi schema
  */
 const UNIT_SCHEMA = Joi.string().min(1).max(3);
+
+/**
+ * This constant is used by Joi to validate and remove fields created by mongoose.
+ * @type {Object} Partial Joi schema
+ */
+const MONGOOSE_INTERNALS = {
+  createdAt: Joi.date().strip(),
+  updatedAt: Joi.date().strip(),
+  __v: Joi.number().integer(),
+};
+
+
+const JOI_ID = Joi.alt(
+  Joi.string(),
+  Joi.number(),
+  Joi.array(),
+);
+const JOI_STRING_OR_STRING_ARRAY = Joi.alt(
+  Joi.string(),
+  Joi.array().items(Joi.string()),
+);
+
 
 /**
  * Helper to handle the common pattern where there is a code and an object
@@ -178,6 +206,16 @@ function groupBy(list, keyGetter) {
   return map;
 }
 
+function createSchema(schemaObj, options, { textIndex } = {}) {
+  const schema = mongoose.Schema(schemaObj, options);
+
+  if (Array.isArray(textIndex)) {
+    schema.index(textIndex.reduce((o, field) => ({ ...o, [field]: 'text' }), {}));
+  }
+
+  return schema;
+}
+
 module.exports = {
   getCurrentSchoolYear,
   cleanObject,
@@ -185,10 +223,14 @@ module.exports = {
   generateToken,
   joiThrough,
   groupBy,
+  createSchema,
   ID_SCHEMA,
   RANGE_SCHEMA,
   MONGO_ID,
   YEAR_SCHEMA,
   UNIT_SCHEMA,
   SEARCH_SCHEMA,
+  MONGOOSE_INTERNALS,
+  JOI_ID,
+  JOI_STRING_OR_STRING_ARRAY,
 };

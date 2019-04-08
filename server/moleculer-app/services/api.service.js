@@ -14,7 +14,7 @@ module.exports = {
   mixins: [ApiGateway],
 
   settings: {
-    middleware: true,
+    server: false,
 
     use: [
       xhub({
@@ -26,13 +26,9 @@ module.exports = {
     routes: [
       {
         path: '/admin',
-
         authorization: true,
-
         // Allow only declared routes
         mappingPolicy: 'restrict',
-
-        // List all routes
         aliases: {
           'GET list': 'admin.internal.list',
           'GET services': 'admin.internal.services',
@@ -43,37 +39,18 @@ module.exports = {
         },
       },
       {
-        path: '/inventory-management',
-
+        path: '/core',
+        whitelist: ['v1.core.**'],
         authorization: true,
-
-        // Allow only declared routes
-        mappingPolicy: 'restrict',
-
-        // See moleculerjs/moleculer#419
-        // See https://moleculer.services/docs/0.13/moleculer-web.html#Disable-merging
-        // mergeParams: false,
-
+        autoAliases: true,
         bodyParsers: { json: true },
-
-        // List all routes
-        aliases: {
-          'GET stock-events': 'inventory-management.stock-events.list',
-          'GET stock-events/:id': 'inventory-management.stock-events.get',
-          'POST stock-events': 'inventory-management.stock-events.add',
-
-          'GET providers/find': 'inventory-management.providers.find',
-          'GET providers/count': 'inventory-management.providers.count',
-          'REST providers': 'inventory-management.providers',
-
-          'GET shelves/find': 'inventory-management.shelves.find',
-          'GET shelves/count': 'inventory-management.shelves.count',
-          'REST shelves': 'inventory-management.shelves',
-
-          'GET products/find': 'inventory-management.products.find',
-          'GET products/count': 'inventory-management.products.count',
-          'REST products': 'inventory-management.products',
-        },
+      },
+      {
+        path: '/inventory-management',
+        whitelist: ['inventory-management.**'],
+        authorization: true,
+        autoAliases: true,
+        bodyParsers: { json: true },
       },
     ],
 
@@ -105,7 +82,7 @@ module.exports = {
       let code = +err.code || 500;
 
       if (code < 100 || code > 599) {
-        this.logger.error(`Unknown HTTP STATUS CODE ${code}! Sending 500 instead`);
+        this.logger.error(`Unknown HTTP STATUS CODE ${code}! Sending 500 instead: %o`, err);
         code = 500;
       }
 

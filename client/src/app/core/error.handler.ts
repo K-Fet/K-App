@@ -37,7 +37,7 @@ export class AppErrorHandler implements ErrorHandler {
         case 403:
           return toasterService.showToaster('Autorisations non suffisante pour effectuer la requête');
         case 404:
-          return toasterService.showToaster('Appel serveur inconnu');
+          return toasterService.showToaster('Impossible de trouver cet objet');
         case 429:
           return toasterService.showToaster('Trop de requêtes, veuillez attendre quelques minutes.');
         case 500:

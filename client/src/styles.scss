@@ -43,6 +43,30 @@ body {
   display: block;
 }
 
+.table-spinner-container {
+  position: relative;
+
+  .table-spinner {
+    position: absolute;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.with-paginator {
+
+    .table-spinner {
+      bottom: 56px;
+    }
+  }
+}
+
 .spinner {
   width: 40px;
   height: 40px;

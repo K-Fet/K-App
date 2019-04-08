@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { ObservableMedia } from '@angular/flex-layout';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { RoleService } from '../../../core/api-services/role.service';
 import { Role } from '../../../shared/models';
@@ -24,8 +23,7 @@ export class ListComponent implements OnInit {
               private toasterService: ToasterService,
               private router: Router,
               private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService,
-              public media: ObservableMedia) {
+              private ngxPermissionsService: NgxPermissionsService) {
   }
 
   ngOnInit(): void {

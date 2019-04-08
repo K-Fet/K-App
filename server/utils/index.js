@@ -1,33 +1,9 @@
-const am = require('./async-middleware');
-const { createUserError, createServerError, createPermissionError } = require('./errors');
-const { verify, hash } = require('./password-manager');
-const { setAssociations } = require('./associations');
-const {
-  getCurrentSchoolYear, cleanObject, generateToken,
-  groupBy,
-  ID_SCHEMA, RANGE_SCHEMA, YEAR_SCHEMA, UNIT_SCHEMA, SEARCH_SCHEMA, MONGO_ID, joiThrough, flatten,
-} = require('./helpers');
-const { getDefaultTemplate } = require('./template-service');
-
+/* eslint-disable global-require */
 module.exports = {
-  am,
-  createUserError,
-  createServerError,
-  createPermissionError,
-  verify,
-  hash,
-  flatten,
-  cleanObject,
-  getCurrentSchoolYear,
-  getDefaultTemplate,
-  setAssociations,
-  joiThrough,
-  groupBy,
-  generateToken,
-  ID_SCHEMA,
-  MONGO_ID,
-  RANGE_SCHEMA,
-  YEAR_SCHEMA,
-  UNIT_SCHEMA,
-  SEARCH_SCHEMA,
+  am: require('./async-middleware'),
+  ...require('./helpers'),
+  ...require('./template-service'),
+  ...require('./associations'),
+  ...require('./password-manager'),
+  ...require('./errors'),
 };

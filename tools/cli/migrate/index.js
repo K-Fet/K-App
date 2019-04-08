@@ -1,6 +1,7 @@
 const path = require('path');
 const Umzug = require('umzug');
 const Sequelize = require('sequelize');
+const mongoose = require('mongoose');
 const { checkEnv, getSequelizeInstance } = require('../utils');
 
 
@@ -8,16 +9,17 @@ const { checkEnv, getSequelizeInstance } = require('../utils');
  * Return an instance of umzug ready to be used.
  *
  * @param sequelize {Sequelize} ready to use sequelize instance.
+ * @param mongooseInstance {Mongoose} Mongoose instance
  * @return {Promise<Umzug|*>} Umzug instance
  */
-async function getUmzugInstance(sequelize) {
+async function getUmzugInstance(sequelize, mongooseInstance) {
   return new Umzug({
     storage: 'sequelize',
     storageOptions: {
       sequelize,
     },
     migrations: {
-      params: [sequelize.getQueryInterface(), Sequelize],
+      params: [sequelize.getQueryInterface(), Sequelize, mongooseInstance],
       path: path.join(__dirname, 'scripts'),
       pattern: /^\d+-[\w-]+\.js$/,
     },
@@ -30,11 +32,15 @@ async function run() {
     'DB__USERNAME',
     'DB__PASSWORD',
     'DB__DATABASE',
+    'MONGODB__URL',
   );
   console.log('[migrate] Migration started');
 
   const sequelize = await getSequelizeInstance();
-  const umzug = await getUmzugInstance(sequelize);
+
+  const mongooseInstance = await mongoose.connect(process.env.MONGODB__URL);
+
+  const umzug = await getUmzugInstance(sequelize, mongooseInstance);
 
   const migrations = (process.argv[3] && process.argv[3] === 'down')
     ? await umzug.down() // Revert the last executed migration

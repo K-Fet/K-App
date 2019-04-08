@@ -12,6 +12,8 @@ import { DialogsModule } from './dialogs/dialogs.module';
 import { DynamicControlsModule } from './dynamic-controls/dynamic-controls.module';
 import { EditPasswordComponent } from './components/edit-password/edit-password.component';
 import { ValidatorsModule } from './validators/validators.module';
+import { ModalComponent } from './components/modal/modal.component';
+import { ConfirmButtonComponent } from './components/confirm-button/confirm-button.component';
 
 const SHARED_MODULES = [
   CommonModule,
@@ -36,11 +38,16 @@ const SHARED_MODULES = [
 @NgModule({
   declarations: [
     EditPasswordComponent,
+    ModalComponent,
+    ConfirmButtonComponent,
   ],
+  entryComponents: [ModalComponent],
   imports: SHARED_MODULES,
   exports: [
     ...SHARED_MODULES,
     EditPasswordComponent,
+    ModalComponent,
+    ConfirmButtonComponent,
   ],
 })
 export class SharedModule {}

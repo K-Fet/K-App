@@ -10,7 +10,7 @@ const model = {
       type: String, required: true, min: 3, text: true,
     },
     link: { type: String, text: true },
-  })),
+  }, { timestamps: true })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
@@ -24,6 +24,10 @@ module.exports = {
     JoiDbActionsMixin(model.joi),
     DbMixin(model.mongoose),
   ],
+
+  settings: {
+    rest: '/providers',
+  },
 
   actions: {
     // TODO Safe delete

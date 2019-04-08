@@ -13,7 +13,7 @@ const model = {
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
-  }),
+  }, { timestamps: true }),
 };
 
 module.exports = {
@@ -24,6 +24,7 @@ module.exports = {
   ],
 
   settings: {
+    rest: '/shelves',
     populates: {
       async products(ids, docs, rule, ctx) {
         // Get all corresponding products
