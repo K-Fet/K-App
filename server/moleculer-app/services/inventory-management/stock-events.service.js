@@ -48,6 +48,7 @@ module.exports = {
 
   actions: {
     add: {
+      rest: 'POST /',
       permissions: true,
       params: () => Joi.object({
         entities: Joi.array().items(model.joi),
