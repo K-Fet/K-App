@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const logger = require('../../logger');
 const { sequelize } = require('../../bootstrap/sequelize');
 const {
@@ -339,6 +339,29 @@ async function createServiceBarman(barmanId, servicesId) {
 
   if (count !== servicesId.length) {
     throw createUserError('TooOldEvent', 'You cannot edit services that are already pasted');
+  }
+
+  const availableServices = await Service.findAll({
+    include: [
+      {
+        model: Barman,
+        as: 'barmen',
+      },
+    ],
+    where: {
+      id: {
+        [Op.in]: servicesId,
+      },
+    },
+    having: {
+      nbMax: {
+        [Op.gt]: Sequelize.fn('count', Sequelize.col('barmen.id')),
+      },
+    },
+  });
+
+  if (availableServices.length < count) {
+    throw createUserError('ServiceNotAvailable', 'One or more services are not available anymore');
   }
 
   try {

@@ -15,7 +15,7 @@
         </section>
         <mat-list *ngIf="myServices">
           <mat-list-item *ngFor="let service of myServices">
-            <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+            <button [disabled]="isPassed(service)" type="button" mat-icon-button (click)="removeService(service)">
               <mat-icon>delete</mat-icon>
             </button>
             <span class="first-letter-uppercase">
@@ -40,12 +40,12 @@
           <mat-list *ngIf="dayServices">
             <mat-list-item *ngFor="let service of dayServices" fxLayoutAlign="start center" class="mat-list-item-word-wrap">
               <p mat-line>
-                <button [disabled]="isPasted(service)" *ngIf="available(service); else elseBlock" type="button"
-                  mat-icon-button (click)="addService(service)">
+                <button [disabled]="isPassed(service) || isFull(service)" *ngIf="available(service); else elseBlock" type="button"
+                        mat-icon-button (click)="addService(service)">
                   <mat-icon>add</mat-icon>
                 </button>
                 <ng-template #elseBlock>
-                  <button [disabled]="isPasted(service)" type="button" mat-icon-button (click)="removeService(service)">
+                  <button [disabled]="isPassed(service)" type="button" mat-icon-button (click)="removeService(service)">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </ng-template>

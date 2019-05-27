@@ -20,7 +20,7 @@ export class Service {
     this.endAt = castVal.endAt ? new Date(castVal.endAt) : null;
   }
 
-  isPasted(): boolean {
+  isPassed(): boolean {
     return this.endAt.getTime() < Date.now();
   }
 }
