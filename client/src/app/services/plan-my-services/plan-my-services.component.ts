@@ -100,11 +100,15 @@ export class PlanMyServicesComponent implements OnInit {
     return !service.barmen || service.barmen.filter(barman => barman.id === this.user.barman.id).length === 0;
   }
 
-  isPasted(service): boolean {
-    return new Service(service).isPasted();
+  isPassed(service): boolean {
+    return new Service(service).isPassed();
   }
 
   getColor(service: Service): Object {
     return (service.barmen && service.barmen.length >= service.nbMax) ? 'red' : 'green';
+  }
+
+  isFull(service: Service): boolean {
+    return service.barmen && service.barmen.length >= service.nbMax;
   }
 }
