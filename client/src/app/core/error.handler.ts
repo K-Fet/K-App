@@ -8,8 +8,10 @@ import { BugsnagErrorHandler } from '@bugsnag/plugin-angular';
 import bugsnag from '@bugsnag/js';
 import { environment } from '../../environments/environment';
 
+let bugsnagClient = null;
+
 const BUGSNAG_KEY = environment['BUGSNAG_KEY'];
-const bugsnagClient = bugsnag(BUGSNAG_KEY);
+if (BUGSNAG_KEY) bugsnagClient = bugsnag(BUGSNAG_KEY);
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
@@ -20,7 +22,7 @@ export class AppErrorHandler implements ErrorHandler {
     // we’ll have to use the Injector to get them.
     private injector: Injector,
   ) {
-    if (BUGSNAG_KEY) {
+    if (bugsnagClient) {
       this.bugsnag = new BugsnagErrorHandler(bugsnagClient);
     }
   }
