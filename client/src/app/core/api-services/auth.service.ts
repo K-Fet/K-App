@@ -6,6 +6,7 @@ import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { toURL } from './api-utils';
 
 @Injectable()
 export class AuthService {
@@ -48,7 +49,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string, rememberMe: number): Promise<any> {
-    const currentUser = await this.http.post<{ jwt: string }>('/api/v1/auth/login', { email, password, rememberMe })
+    const currentUser = await this.http.post<{ jwt: string }>(toURL('v1/auth/login'), { email, password, rememberMe })
       .toPromise();
 
     this.saveUser(currentUser, (rememberMe >= environment.JWT_DAY_EXP_LONG));
@@ -58,7 +59,7 @@ export class AuthService {
 
   async logout(): Promise<any> {
     try {
-      await this.http.get('/api/v1/auth/logout').toPromise();
+      await this.http.get(toURL('v1/auth/logout')).toPromise();
     } catch (e) {}
 
     this.clearUser();
@@ -72,11 +73,11 @@ export class AuthService {
       passwordToken: passwordToken || undefined,
       oldPassword: oldPassword || undefined,
     };
-    return this.http.put('api/v1/auth/reset-password', body).toPromise();
+    return this.http.put(toURL('v1/auth/reset-password'), body).toPromise();
   }
 
   verifyEmail(userId: number, email: string, password: string, emailToken: string): Promise<any> {
-    return this.http.post('api/v1/auth/email-verification', {
+    return this.http.post(toURL('v1/auth/email-verification'), {
       userId,
       email,
       password,
@@ -85,14 +86,14 @@ export class AuthService {
   }
 
   cancelEmailUpdate(userId: number, email: string): Promise<any> {
-    return this.http.post('api/v1/auth/cancel-email-verification', {
+    return this.http.post(toURL('v1/auth/cancel-email-verification'), {
       userId,
       email,
     }).toPromise();
   }
 
   resetPassword(email: string): Promise<any> {
-    return this.http.post('/api/v1/auth/reset-password', { email }).toPromise();
+    return this.http.post(toURL('v1/auth/reset-password'), { email }).toPromise();
   }
 
   private clearUser(): void {
@@ -126,7 +127,7 @@ export class AuthService {
 
   async me(): Promise<any> {
     const { user: { barman, specialAccount }, permissions } =
-      await this.http.get<{ user: ConnectedUser, permissions: string[] }>('/api/v1/me').toPromise();
+      await this.http.get<{ user: ConnectedUser, permissions: string[] }>(toURL('v1/me')).toPromise();
 
     this.isLoggedIn = true;
 

@@ -19,7 +19,7 @@ It uses these frameworks:
 - [Angular 6](https://angular.io/) for the front app.
 - [Eslint](https://eslint.org/), [TSlint](https://palantir.github.io/tslint/), [StyleLint](https://stylelint.io/) as linters.
 
-And we use *MySQL* as database.
+And we use *MySQL* and *MongoDB* as databases.
 
 ## Usage
 

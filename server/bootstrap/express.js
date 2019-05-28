@@ -86,9 +86,9 @@ async function start({ skipHttpServer = false }) {
   // Lazy load routes because config is loaded in bootstrap
   // and routes are loaded before bootstrap (with global require)
   // eslint-disable-next-line global-require
-  _app.use('/api/v1/', require('../app/routes'));
+  _app.use(`${conf.get('web:prefix')}/v1/`, require('../app/routes'));
 
-  await moleculerApp.start({ expressApp: _app, apiPath: '/api/v2' });
+  await moleculerApp.start({ expressApp: _app, apiPath: `${conf.get('web:prefix')}/v2` });
 
   // Then try to send existing files
   _app.use(express.static(conf.get('web:publicFolder')));

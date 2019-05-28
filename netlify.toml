@@ -1,0 +1,15 @@
+# Settings in the [build] context are global and are applied to all contexts
+# unless otherwise overridden by more specific contexts.
+[build]
+  base = "client/"
+  publish = "client/dist/"
+  command = "yarn build:prod"
+
+# TODO Load environnement.ts with context aware env variables
+
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

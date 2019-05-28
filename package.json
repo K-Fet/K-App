@@ -26,7 +26,6 @@
     "dev:back": "nodemon --watch server --inspect",
     "dev:front": "yarn --cwd client/ start",
     "eslint": "eslint server/",
-    "postinstall": "yarn install --production=false --cwd client/",
     "test": "concurrently \"yarn:test:*\"",
     "test:lint": "eslint server/ && yarn --cwd client/ lint",
     "test:back:it": "jest int",

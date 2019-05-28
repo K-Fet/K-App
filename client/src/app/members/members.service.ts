@@ -4,8 +4,9 @@ import { Member } from './member.model';
 import { MoleculerList, MoleculerListOptions } from '../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../shared/utils';
 import { Subject } from 'rxjs';
+import { toURL } from '../core/api-services/api-utils';
 
-const BASE_URL = '/api/v2/core/v1/members';
+const BASE_URL = toURL('v2/core/v1/members');
 
 export interface MembersOptions extends MoleculerListOptions {
   active?: boolean;

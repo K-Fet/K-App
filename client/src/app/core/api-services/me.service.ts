@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConnectedUser } from '../../shared/models';
+import { toURL } from './api-utils';
 
 @Injectable()
 export class MeService {
@@ -20,6 +21,6 @@ export class MeService {
       };
     }
 
-    return this.http.put('/api/v1/me', body).toPromise();
+    return this.http.put(toURL('v1/me'), body).toPromise();
   }
 }
