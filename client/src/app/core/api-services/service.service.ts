@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { addWeeks, format } from 'date-fns';
 import { getCurrentWeek } from '../../shared/utils';
 import { fr } from 'date-fns/locale';
+import { toURL } from './api-utils';
 
 @Injectable()
 export class ServiceService {
@@ -14,7 +15,7 @@ export class ServiceService {
   constructor(private http: HttpClient) { }
 
   get(start: Date, end: Date): Promise<Service[]> {
-    return this.http.get<Service[]>('/api/v1/services', {
+    return this.http.get<Service[]>(toURL('v1/services'), {
       params: {
         startAt: start.toISOString(),
         endAt: end.toISOString(),
@@ -23,23 +24,23 @@ export class ServiceService {
   }
 
   getById(id: number): Promise<Service> {
-    return this.http.get<Service>(`/api/v1/services/${id}`).toPromise();
+    return this.http.get<Service>(toURL(`v1/services/${id}`)).toPromise();
   }
 
   getBarmen(id: number): Promise<Barman[]> {
-    return this.http.get<Barman[]>(`/api/v1/services/${id}/barmen`).toPromise();
+    return this.http.get<Barman[]>(toURL(`v1/services/${id}/barmen`)).toPromise();
   }
 
   create(services: Service[]): Promise<Service[]> {
-    return this.http.post<Service[]>('/api/v1/services', services).toPromise();
+    return this.http.post<Service[]>(toURL('v1/services'), services).toPromise();
   }
 
   update(service: Service): Promise<Service> {
-    return this.http.put<Service>(`/api/v1/services/${service.id}`, service).toPromise();
+    return this.http.put<Service>(toURL(`v1/services/${service.id}`), service).toPromise();
   }
 
   delete(id: number): Promise<Service> {
-    return this.http.post<Service>(`/api/v1/services/${id}/delete`, null).toPromise();
+    return this.http.post<Service>(toURL(`v1/services/${id}/delete`), null).toPromise();
   }
 
   getWeek(): Observable<{ start: Date, end: Date }> {

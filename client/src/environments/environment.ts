@@ -5,6 +5,7 @@
 
 export const environment = {
   production: false,
+  API_HOSTNAME: '',
   RECAPTCHA_SITE_KEY: '6LfIS1gUAAAAAFkoY2ZaADhMNwfLAjFOFHRQTRGS', // For localhost domains
   JWT_DAY_EXP_LONG: 60 * 24 * 30,
   JWT_DAY_EXP: 60 * 24,

@@ -39,6 +39,7 @@ function start() {
       },
       web: {
         port: 3000,
+        prefix: '/api',
 
         /**
          * Absolute path to the folder containing all the static files

@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Product } from '../products/product.model';
 import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../../shared/utils';
+import { toURL } from '../../core/api-services/api-utils';
 
-const BASE_URL = '/api/v2/inventory-management/products';
+const BASE_URL = toURL('v2/inventory-management/products');
 
 @Injectable()
 export class ProductsService {
