@@ -88,7 +88,7 @@ action "Trigger staging workflow" {
 action "Trigger prod workflow" {
   uses = "swinton/httpie.action@8ab0a0e926d091e0444fcacd5eb679d2e2d4ab3d"
   args = ["--auth-type=jwt", "--auth=$PAT_TOKEN", "POST", "api.github.com/repos/$GITHUB_REPOSITORY/dispatches", "Accept:application/vnd.github.everest-preview+json", "event_type=deploy-prod"]
-  needs = ["Yarn test"]
+  needs = ["Trigger staging workflow"]
   secrets = ["PAT_TOKEN"]
 }
 
