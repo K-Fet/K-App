@@ -26,7 +26,8 @@ const routes: Routes = [
   },
   {
     path: 'inventory-management',
-    loadChildren: () => import('./inventory-management/inventory-management.module').then(m => m.InventoryManagementModule),
+    loadChildren: () => import('./inventory-management/inventory-management.module')
+      .then(m => m.InventoryManagementModule),
   },
   {
     path: 'kommissions',
