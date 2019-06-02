@@ -5,7 +5,7 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 const routes: Routes = [
   {
     path: 'providers',
-    loadChildren: './providers/providers.module#ProvidersModule',
+    loadChildren: () => import('./providers/providers.module').then(m => m.ProvidersModule),
     data: {
       permissions: {
         only: [
@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: 'shelves',
-    loadChildren: './shelves/shelves.module#ShelvesModule',
+    loadChildren: () => import('./shelves/shelves.module').then(m => m.ShelvesModule),
     data: {
       permissions: {
         only: [
@@ -33,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'products',
-    loadChildren: './products/products.module#ProductsModule',
+    loadChildren: () => import('./products/products.module').then(m => m.ProductsModule),
     data: {
       permissions: {
         only: [

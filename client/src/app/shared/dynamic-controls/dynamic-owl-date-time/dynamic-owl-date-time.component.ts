@@ -32,7 +32,7 @@ export class DynamicOwlDateTimeComponent extends DynamicFormControlComponent {
   @Output() change: EventEmitter<any> = new EventEmitter();
   @Output() focus: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild(OwlDateTimeComponent) owlDateTimeComponent: OwlDateTimeComponent<Date>;
+  @ViewChild(OwlDateTimeComponent, { static: true }) owlDateTimeComponent: OwlDateTimeComponent<Date>;
 
   constructor(protected layoutService: DynamicFormLayoutService,
               protected validationService: DynamicFormValidationService,

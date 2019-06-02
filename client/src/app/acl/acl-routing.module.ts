@@ -7,13 +7,13 @@ const routes: Routes = [
     path: 'special-accounts',
     data: { permissions: { only: ['specialaccount:read'] } },
     canLoad: [NgxPermissionsGuard],
-    loadChildren: './special-accounts/special-accounts.module#SpecialAccountsModule',
+    loadChildren: () => import('./special-accounts/special-accounts.module').then(m => m.SpecialAccountsModule),
   },
   {
     path: 'roles',
     data: { permissions: { only: ['role:read'] } },
     canLoad: [NgxPermissionsGuard],
-    loadChildren: './roles/roles.module#RolesModule',
+    loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule),
   },
 ];
 

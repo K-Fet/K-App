@@ -16,8 +16,8 @@ export class ListComponent implements OnInit {
   displayedColumns = ['name', 'action'];
   rolesData: MatTableDataSource<Role>;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private roleService: RoleService,
               private toasterService: ToasterService,

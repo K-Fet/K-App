@@ -17,8 +17,8 @@ export class ListComponent implements OnInit {
   activeFilter: boolean;
   oldFilter: boolean;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private barmanService: BarmanService,
               private router: Router,

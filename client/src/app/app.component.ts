@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
 
   user: ConnectedUser;
 
-  @ViewChild('sn') public sideNav: MatSidenav;
+  @ViewChild('sn', { static: true }) public sideNav: MatSidenav;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,

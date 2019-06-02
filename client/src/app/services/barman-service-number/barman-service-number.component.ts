@@ -17,8 +17,8 @@ export class BarmanServiceNumberComponent implements OnInit {
   displayedColumns = ['name', 'services'];
   barmenData: MatTableDataSource<BarmanServiceData> = new MatTableDataSource();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   ngAfterViewInit() {
     this.barmenData.paginator = this.paginator;

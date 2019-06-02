@@ -16,9 +16,9 @@ export class ListComponent implements OnInit, AfterViewInit {
   displayedColumns = ['name', 'action'];
   dataSource: MoleculerDataSource<Shelf>;
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('input') input: ElementRef;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild('input', { static: true }) input: ElementRef;
 
   constructor(private shelfService: ShelvesService,
               private router: Router) {

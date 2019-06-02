@@ -13,8 +13,8 @@ export class ListComponent implements OnInit {
   displayedColumns = ['name', 'action'];
   templatesData: MatTableDataSource<Template>;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private templateService: TemplateService,
               private router: Router) {

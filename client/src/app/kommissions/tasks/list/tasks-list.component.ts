@@ -32,8 +32,8 @@ export class TasksListComponent implements OnInit {
               private route: ActivatedRoute,
               private dialog: MatDialog) {}
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   ngOnInit() {
     this.route.params.subscribe(async (params) => {

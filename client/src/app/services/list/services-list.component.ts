@@ -26,8 +26,8 @@ export class ServiceListComponent implements OnInit {
   servicesData: MatTableDataSource<Service>;
   searchFormGroup: FormGroup;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private serviceService: ServiceService,
               private toasterService: ToasterService,

@@ -20,7 +20,7 @@ export class NewComponent implements OnInit {
   model: DynamicFormModel;
   permissions: Permission[];
 
-  @ViewChild(PermissionsSelectorComponent) permSelector: PermissionsSelectorComponent;
+  @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
 
   constructor(private formService: DynamicFormService,
               private specialAccountService: SpecialAccountService,
