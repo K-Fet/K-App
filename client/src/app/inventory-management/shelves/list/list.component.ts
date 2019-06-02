@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { ShelvesService } from '../../api-services/shelves.service';
 import { Shelf } from '../shelf.model';

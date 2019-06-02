@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 
 import { SpecialAccountService } from '../special-account.service';
 import { ConnectedUser, Permission, SpecialAccount } from '../../../shared/models';

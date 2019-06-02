@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ToasterService } from '../../../core/services/toaster.service';

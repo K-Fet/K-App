@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { TaskViewDialogComponent } from '../view/task-view.component';
 import { getPanelClass } from '../tasks.helpers';
 import { ConnectedUser, Kommission, Task } from '../../../shared/models';

@@ -1,5 +1,5 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 

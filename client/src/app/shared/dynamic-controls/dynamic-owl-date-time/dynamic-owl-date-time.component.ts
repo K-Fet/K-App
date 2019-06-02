@@ -15,7 +15,7 @@ import {
 } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { OwlDateTimeComponent } from 'ng-pick-datetime';
-import { LabelOptions, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material';
+import { LabelOptions, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material/core';
 
 @Component({
   selector: 'app-dynamic-owl-date-time',

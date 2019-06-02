@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, MatSort } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MediaObserver } from '@angular/flex-layout';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { fromEvent, merge } from 'rxjs';
