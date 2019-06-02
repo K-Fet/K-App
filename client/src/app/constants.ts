@@ -68,5 +68,5 @@ export const CURRENT_SCHOOL_YEAR = getCurrentSchoolYear();
 export const AVAILABLE_SCHOOLS = ['INSA', 'Polytech', 'CPE', 'Lyon 1', 'Autre'];
 export const SCHOOLS_REGEXP = new RegExp(AVAILABLE_SCHOOLS.join('|'), 'g');
 
-// The K-Fêt week change every thusday ( = 4 )
-export const DEFAULT_WEEK_SWITCH = 5;
+// The K-Fêt week change every monday ( = 4 )
+export const DEFAULT_WEEK_SWITCH = 1;
