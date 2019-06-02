@@ -6,7 +6,8 @@ import {
   DynamicFormControl,
   DynamicFormControlModel, DynamicFormsCoreModule,
 } from '@ng-dynamic-forms/core';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 

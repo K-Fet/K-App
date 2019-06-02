@@ -16,6 +16,7 @@ export const versions = {
   version: '${pkg.version}',
   revision: '${revision}',
   branch: '${branch}',
+  buildDate: ${Date.now()},
 };
 `;
 

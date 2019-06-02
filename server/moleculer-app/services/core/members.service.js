@@ -110,8 +110,8 @@ module.exports = {
         member.registrations.push({ year: getCurrentSchoolYear() });
 
         return ctx.call('v1.core.members.update', {
-          id,
           ...member,
+          id,
           // Transform object ids to string for Joi validation
           registrations: member.registrations.map(r => ({ ...r, _id: r._id && r._id.toString() })),
         });

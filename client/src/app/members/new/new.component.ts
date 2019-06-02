@@ -12,7 +12,7 @@ import { CURRENT_SCHOOL_YEAR } from '../../constants';
 })
 export class NewComponent implements OnInit {
 
-  @ViewChild('dialog') dialog: ModalComponent<string>;
+  @ViewChild('dialog', { static: true }) dialog: ModalComponent<string>;
 
   formGroup: FormGroup;
   model: DynamicFormModel;

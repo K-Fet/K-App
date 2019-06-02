@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Product } from '../product.model';
 import { Provider } from '../../providers/provider.model';
 import { Shelf } from '../../shelves/shelf.model';

@@ -13,7 +13,7 @@ import { getMemberFromForm, getMemberModel } from '../members.form-model';
 })
 export class EditComponent implements OnInit {
 
-  @ViewChild('dialog') dialog: ModalComponent<string>;
+  @ViewChild('dialog', { static: true }) dialog: ModalComponent<string>;
 
   formGroup: FormGroup;
   model: DynamicFormModel;

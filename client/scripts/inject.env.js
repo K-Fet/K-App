@@ -11,8 +11,8 @@ function computeApiHostname() {
     case 'production':
       return process.env.PROD_API;
     case 'branch-deploy':
+    case 'deploy-preview': // TODO Find now.sh url for deploy-preview instead of staging API
       return process.env.STAGING_API;
-    case 'deploy-preview': // TODO Find now.sh url...
     default:
       return '';
   }

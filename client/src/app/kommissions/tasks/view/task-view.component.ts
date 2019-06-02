@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { TaskService } from '../task.service';
 import { Kommission, Task, TASK_STATES } from '../../../shared/models';

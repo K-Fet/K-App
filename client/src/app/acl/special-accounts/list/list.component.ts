@@ -1,6 +1,9 @@
 import { NgxPermissionsService } from 'ngx-permissions';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { SpecialAccount } from '../../../shared/models';
 import { SpecialAccountService } from '../special-account.service';
@@ -16,8 +19,8 @@ export class ListComponent implements OnInit {
   displayedColumns = ['email', 'description', 'action'];
   specialAccountData: MatTableDataSource<SpecialAccount>;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private specialAccountService: SpecialAccountService,
               private toasterService: ToasterService,

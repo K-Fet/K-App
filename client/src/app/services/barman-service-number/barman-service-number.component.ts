@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { BarmanService } from '../../core/api-services/barman.service';
 import { ServiceService } from '../../core/api-services/service.service';
 
@@ -17,8 +19,8 @@ export class BarmanServiceNumberComponent implements OnInit {
   displayedColumns = ['name', 'services'];
   barmenData: MatTableDataSource<BarmanServiceData> = new MatTableDataSource();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   ngAfterViewInit() {
     this.barmenData.paginator = this.paginator;

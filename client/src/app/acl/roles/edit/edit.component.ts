@@ -21,7 +21,7 @@ export class EditComponent implements OnInit {
 
   permissions: Permission[] = [];
 
-  @ViewChild(PermissionsSelectorComponent) permSelector: PermissionsSelectorComponent;
+  @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
 
   constructor(private formService: DynamicFormService,
               private permissionService: PermissionService,

@@ -6,7 +6,7 @@ import { SpecialAccountService } from '../special-account.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-accounts.form-model';
 import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { PermissionService } from '../../../core/api-services/permission.service';
 import { Permission } from '../../../shared/models';
 import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
@@ -20,7 +20,7 @@ export class NewComponent implements OnInit {
   model: DynamicFormModel;
   permissions: Permission[];
 
-  @ViewChild(PermissionsSelectorComponent) permSelector: PermissionsSelectorComponent;
+  @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
 
   constructor(private formService: DynamicFormService,
               private specialAccountService: SpecialAccountService,

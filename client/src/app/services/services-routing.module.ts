@@ -14,7 +14,7 @@ const routes: Routes = [
     path: 'templates',
     canLoad: [NgxPermissionsGuard],
     data: { permissions: { only: ['template:read'] } },
-    loadChildren: './templates/templates.module#TemplatesModule',
+    loadChildren: () => import('./templates/templates.module').then(m => m.TemplatesModule),
   },
   {
     path: 'plan-my-services',

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { fr } from 'date-fns/locale';
+import { format } from 'date-fns';
 import { versions } from '../../../environments/versions';
 
 @Component({
@@ -11,6 +13,8 @@ export class FooterComponent implements OnInit {
   version: string;
   link: string;
   tooltip: string;
+  buildYear: number;
+  buildDate: string;
 
   constructor() {
     this.version = versions.version;
@@ -18,6 +22,9 @@ export class FooterComponent implements OnInit {
     this.tooltip = ['version', 'revision', 'branch']
       .map(k => `${k}: ${versions[k]}`)
       .join(' ');
+    const buildDate = new Date(versions.buildDate);
+    this.buildYear = buildDate.getFullYear();
+    this.buildDate = format(buildDate, 'PPpp', { locale: fr });
   }
 
   ngOnInit() {

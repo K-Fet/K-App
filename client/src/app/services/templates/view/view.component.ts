@@ -3,7 +3,7 @@ import { Service, Template } from '../../../shared/models';
 import { TemplateService } from '../../../core/api-services/template.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { templateDateToDate } from '../templates.helper';
 

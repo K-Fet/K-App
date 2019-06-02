@@ -3,7 +3,7 @@ import { ConnectedUser } from './shared/models';
 import { AuthService } from './core/api-services/auth.service';
 import { ToasterService } from './core/services/toaster.service';
 import { Router } from '@angular/router';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
 
   user: ConnectedUser;
 
-  @ViewChild('sn') public sideNav: MatSidenav;
+  @ViewChild('sn', { static: true }) public sideNav: MatSidenav;
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,
