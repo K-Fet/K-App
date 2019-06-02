@@ -31,7 +31,7 @@
     "test:back:it": "jest int",
     "test:back:unit": "jest unit --coverage",
     "test:front": "yarn --cwd client/ build",
-    "preversion": "yarn test && yarn build:prod",
+    "preversion": "yarn test",
     "postversion": "git push --follow-tags && opn https://github.com/K-Fet/K-App/releases/new"
   },
   "dependencies": {
