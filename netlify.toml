@@ -5,7 +5,8 @@
   publish = "client/dist/"
   command = "yarn build:prod"
 
-# TODO Load environnement.ts with context aware env variables
+[build.environment]
+  NODE_VERSION = "12"
 
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
