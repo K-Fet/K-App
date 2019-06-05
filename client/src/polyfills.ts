@@ -29,6 +29,17 @@
 // import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
 /**
+ * If the application will be indexed by Google Search, the following is required.
+ * Googlebot uses a renderer based on Chrome 41.
+ * https://developers.google.com/search/docs/guides/rendering
+ **/
+import 'core-js/es/array';
+
+/** Evergreen browsers require these. **/
+// Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
+import 'core-js/features/reflect';
+
+/**
  * By default, zone.js will patch all possible macroTask and DomEvents
  * user can disable parts of macroTask/DomEvents patch by setting following flags
  * because those flags need to be set before `zone.js` being loaded, and webpack

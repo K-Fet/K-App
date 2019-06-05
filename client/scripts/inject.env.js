@@ -21,7 +21,6 @@ function computeApiHostname() {
 function injectEnvVariables(rawEnv) {
   const env = Object
     .entries(rawEnv)
-    .filter(([, val]) => val)
     .reduce((acc, [key, val]) => ({ ...acc, [key]: val }), {});
 
   console.log(`injecting env in environment.prod.ts: ${Object.keys(env).join(', ')}`);
