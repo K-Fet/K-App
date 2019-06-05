@@ -4,14 +4,7 @@ import { ToasterService } from './services/toaster.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandler, Injectable, Injector, isDevMode } from '@angular/core';
 import { BugsnagErrorHandler } from '@bugsnag/plugin-angular';
-// tslint:disable-next-line:import-name
-import bugsnag from '@bugsnag/js';
-import { environment } from '../../environments/environment';
-
-let bugsnagClient = null;
-
-const BUGSNAG_KEY = environment['BUGSNAG_KEY'];
-if (BUGSNAG_KEY) bugsnagClient = bugsnag(BUGSNAG_KEY);
+import { bugsnagClient } from './bugsnag-client';
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {

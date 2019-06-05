@@ -7,6 +7,7 @@ import { ROLES } from '../../constants';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { toURL } from './api-utils';
+import { clearBugsnagUser, setBugsnagUser } from '../bugsnag-client';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,11 @@ export class AuthService {
   }
 
   async login(email: string, password: string, rememberMe: number): Promise<any> {
-    const currentUser = await this.http.post<{ jwt: string }>(toURL('v1/auth/login'), { email, password, rememberMe })
+    const currentUser = await this.http.post<{ jwt: string }>(toURL('v1/auth/login'), {
+      email,
+      password,
+      rememberMe,
+    })
       .toPromise();
 
     this.saveUser(currentUser, (rememberMe >= environment.JWT_DAY_EXP_LONG));
@@ -97,6 +102,7 @@ export class AuthService {
   }
 
   private clearUser(): void {
+    clearBugsnagUser();
     this.$currentUser.next(new ConnectedUser({
       accountType: 'Guest',
       createdAt: new Date(),
@@ -126,11 +132,13 @@ export class AuthService {
   }
 
   async me(): Promise<any> {
-    const { user: { barman, specialAccount }, permissions } =
+    const { user, permissions } =
       await this.http.get<{ user: ConnectedUser, permissions: string[] }>(toURL('v1/me')).toPromise();
 
     this.isLoggedIn = true;
+    setBugsnagUser(user);
 
+    const { barman, specialAccount } = user;
     if (barman) {
       this.$currentUser.next(new ConnectedUser({
         barman,
