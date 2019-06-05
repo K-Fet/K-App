@@ -2,6 +2,19 @@
 require('dotenv').config();
 const { writeFileSync } = require('fs');
 
+function getReleaseStage() {
+  switch (process.env.CONTEXT) {
+    case 'production':
+      return 'production';
+    case 'branch-deploy':
+      return 'staging';
+    case 'deploy-preview':
+      return 'pull-request';
+    default:
+      return '';
+  }
+}
+
 /**
  * Compute API hostname from environment.
  * Use netlify env to get hostname
@@ -39,6 +52,7 @@ injectEnvVariables({
   RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
   BUGSNAG_KEY: process.env.BUGSNAG_KEY,
   API_HOSTNAME: computeApiHostname(),
+  RELEASE_STAGE: getReleaseStage(),
   JWT_DAY_EXP_LONG: 30,
   JWT_DAY_EXP: 1,
 });
