@@ -90,11 +90,8 @@ async function start({ skipHttpServer = false }) {
 
   await moleculerApp.start({ expressApp: _app, apiPath: `${conf.get('web:prefix')}/v2` });
 
-  // Then try to send existing files
-  _app.use(express.static(conf.get('web:publicFolder')));
-
-  // Otherwise send index.html
-  _app.get('*', (req, res) => res.sendFile(`${conf.get('web:publicFolder')}/index.html`));
+  // Otherwise send 404
+  _app.get('*', (req, res) => res.sendStatus(404));
 
   if (!skipHttpServer) await launch();
 }

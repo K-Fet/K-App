@@ -15,7 +15,7 @@ async function subscribeWebhook() {
     url: `${FB_BASE_API}/${conf.get('feed:appId')}/subscriptions`,
     qs: {
       object: 'page',
-      callback_url: `${conf.get('web:publicUrl')}/api/feed/webhooks`,
+      callback_url: `${conf.get('web:apiUrl')}/v1/feed/webhooks`,
       include_values: true,
       verify_token: VERIFY_TOKEN,
       fields: [

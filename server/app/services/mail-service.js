@@ -49,11 +49,11 @@ async function sendPasswordResetMail(email, token) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:clientUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -75,11 +75,11 @@ async function sendVerifyEmailMail(email, token, userId) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/auth/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
+          return `${conf.get('web:clientUrl')}/auth/email-verification?userId=${userId}&email=${email}&emailToken=${encodeURIComponent(token)}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -101,13 +101,13 @@ async function sendEmailUpdateInformationMail(email, newEmail, userId) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         case 'MAIL_NEW_EMAIL':
           return newEmail;
         case 'MAIL_LINK':
-          return `${conf.get('web:publicUrl')}/auth/cancel-email-update?userId=${userId}&email=${email}`;
+          return `${conf.get('web:clientUrl')}/auth/cancel-email-update?userId=${userId}&email=${email}`;
         default:
           return `??${replaceToken}??`;
       }
@@ -127,7 +127,7 @@ async function sendEmailConfirmation(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -149,7 +149,7 @@ async function sendPasswordUpdate(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -171,7 +171,7 @@ async function sendCancelEmailConfirmation(email) {
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
         case 'MAIL_WEBSITE':
-          return conf.get('web:publicUrl');
+          return conf.get('web:clientUrl');
         case 'MAIL_EMAIL':
           return email;
         default:
@@ -192,7 +192,7 @@ async function sendWelcomeMail(email) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.WELCOME).replace(REGEX_TOKEN, (matches, replaceToken) => {
     switch (replaceToken) {
       case 'MAIL_WEBSITE':
-        return conf.get('web:publicUrl');
+        return conf.get('web:clientUrl');
       case 'MAIL_EMAIL':
         return email;
       default:

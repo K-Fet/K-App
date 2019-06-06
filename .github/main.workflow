@@ -28,7 +28,7 @@ action "Filter prod branch" {
 
 action "Filter master branch" {
   uses = "actions/bin/filter@master"
-  args = "action depoy-master"
+  args = "action deploy-master"
   needs = ["Filter staging"]
 }
 

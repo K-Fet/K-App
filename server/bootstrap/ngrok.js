@@ -18,7 +18,7 @@ async function start() {
     logger.warn(`Couldn't load ngrok, back is only live at ${url}`);
   }
 
-  conf.set('web:publicUrl', url);
+  conf.set('web:apiUrl', url);
 }
 
 

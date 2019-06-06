@@ -40,11 +40,6 @@ function start() {
       web: {
         port: 3000,
         prefix: '/api',
-
-        /**
-         * Absolute path to the folder containing all the static files
-         */
-        publicFolder: path.resolve(__dirname, '../../client/dist/'),
       },
       feed: {},
       misc: {},
@@ -75,7 +70,8 @@ function start() {
       'mail:contact:website',
 
       // Web
-      'web:publicUrl',
+      'web:clientUrl',
+      'web:apiUrl',
       'web:jwtSecret',
       'web:recaptchaSecret',
     ]);
