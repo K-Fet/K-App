@@ -51,20 +51,20 @@ action "Yarn test" {
 action "Send staging webhook" {
   uses = "swinton/httpie.action@master"
   needs = ["Filter master branch"]
-  args = ["POST", "$KAPP_WEBHOOK_URL", "type=staging", "token=$KAPP_WEBHOOK_TOKEN"]
+  args = ["POST", "$KAPP_WEBHOOK_URL", "action=deploy-staging", "token=$KAPP_WEBHOOK_TOKEN", "sha=$GITHUB_SHA"]
   secrets = ["KAPP_WEBHOOK_TOKEN"]
   env = {
-    KAPP_WEBHOOK_URL = "webhooks.kfet-insa.fr"
+    KAPP_WEBHOOK_URL = "https://webhooks.kfet-insa.fr"
   }
 }
 
 action "Send prod webhook" {
   uses = "swinton/httpie.action@master"
   needs = ["Filter prod branch"]
-  args = ["POST", "$KAPP_WEBHOOK_URL", "type=prod", "token=$KAPP_WEBHOOK_TOKEN"]
+  args = ["POST", "$KAPP_WEBHOOK_URL", "action=deploy-prod", "token=$KAPP_WEBHOOK_TOKEN", "sha=$GITHUB_SHA"]
   secrets = ["KAPP_WEBHOOK_TOKEN"]
   env = {
-    KAPP_WEBHOOK_URL = "webhooks.kfet-insa.fr"
+    KAPP_WEBHOOK_URL = "https://webhooks.kfet-insa.fr"
   }
 }
 
