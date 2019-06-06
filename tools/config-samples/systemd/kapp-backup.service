@@ -1,7 +1,0 @@
-[Unit]
-Description=Schedule of a backup of the k-app database
-
-[Service]
-Type=oneshot
-WorkingDirectory=/srv/kapp
-ExecStart=/usr/bin/npm run cli backup
