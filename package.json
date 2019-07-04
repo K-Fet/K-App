@@ -32,7 +32,9 @@
     "test:back:unit": "jest unit --coverage",
     "test:front": "yarn --cwd client/ build",
     "preversion": "yarn test",
-    "postversion": "git push --follow-tags && opn https://github.com/K-Fet/K-App/releases/new"
+    "postversion": "git push --follow-tags && opn https://github.com/K-Fet/K-App/releases/new",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "argon2": "0.23.0",
@@ -64,7 +66,8 @@
     "sequelize": "^4.42.0",
     "umzug": "^2.2.0",
     "uuid": "^3.3.2",
-    "winston": "^3.1.0"
+    "winston": "^3.1.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "codecov": "^3.0.4",
@@ -104,5 +107,6 @@
       "jest-extended"
     ],
     "testEnvironment": "node"
-  }
+  },
+  "snyk": true
 }

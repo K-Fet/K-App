@@ -1,0 +1,24 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.5
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-450202:
+    - inquirer > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - moleculer > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - moleculer-db > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - moleculer-db-adapter-mongoose > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - moleculer-web > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - sequelize > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - mongoose > async > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - winston > async > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
+    - request-promise-native > request-promise-core > lodash:
+        patched: '2019-07-04T03:14:18.604Z'
