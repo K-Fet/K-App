@@ -136,7 +136,7 @@ export class AuthService {
       await this.http.get<{ user: ConnectedUser, permissions: string[] }>(toURL('v1/me')).toPromise();
 
     this.isLoggedIn = true;
-    setBugsnagUser(user);
+    setBugsnagUser(new ConnectedUser(user));
 
     const { barman, specialAccount } = user;
     if (barman) {
