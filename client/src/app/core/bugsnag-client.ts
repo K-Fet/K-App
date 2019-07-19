@@ -36,6 +36,7 @@ export function setBugsnagUser(user: ConnectedUser) {
       email: user.email,
     };
 
+    bugsnagClient.metaData = {};
     bugsnagClient.metaData['user'] = {
       roles: computeRoles(user),
     };
