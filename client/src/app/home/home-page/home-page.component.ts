@@ -28,7 +28,7 @@ export class HomePageComponent implements OnInit {
   }
 
   isConnected(): boolean {
-    return this.currentUser.accountType !== 'Guest';
+    return !this.currentUser.isGuest();
   }
 
   isActive(): boolean {

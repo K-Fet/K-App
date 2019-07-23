@@ -9,7 +9,8 @@ const BUGSNAG_KEY = environment.BUGSNAG_KEY;
 function computeName(user: ConnectedUser) {
   if (user.isBarman()) return `${user.barman.firstName} ${user.barman.lastName}`;
   if (user.isGuest()) return 'Guest';
-  return user.specialAccount.description;
+  if (user.isSpecialAccount()) return user.specialAccount.description;
+  return 'Unknown';
 }
 
 function computeRoles(user: ConnectedUser) {
@@ -36,9 +37,10 @@ export function setBugsnagUser(user: ConnectedUser) {
       email: user.email,
     };
 
-    bugsnagClient.metaData = {};
-    bugsnagClient.metaData['user'] = {
-      roles: computeRoles(user),
+    bugsnagClient.metaData = {
+      user: {
+        roles: computeRoles(user),
+      },
     };
   }
 }
