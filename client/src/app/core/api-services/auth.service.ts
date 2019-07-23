@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConnectedUser } from '../../shared/models';
+import { AccountType, ConnectedUser } from '../../shared/models';
 import * as jwt_decode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
@@ -24,7 +24,7 @@ export class AuthService {
 
   async initializeAuth(): Promise<any> {
     this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
-      accountType: 'Guest',
+      accountType: AccountType.GUEST,
       createdAt: new Date(),
     }));
 
@@ -104,7 +104,7 @@ export class AuthService {
   private clearUser(): void {
     clearBugsnagUser();
     this.$currentUser.next(new ConnectedUser({
-      accountType: 'Guest',
+      accountType: AccountType.GUEST,
       createdAt: new Date(),
     }));
     this.ngxPermissionsService.flushPermissions();
@@ -136,13 +136,12 @@ export class AuthService {
       await this.http.get<{ user: ConnectedUser, permissions: string[] }>(toURL('v1/me')).toPromise();
 
     this.isLoggedIn = true;
-    setBugsnagUser(new ConnectedUser(user));
 
     const { barman, specialAccount } = user;
     if (barman) {
       this.$currentUser.next(new ConnectedUser({
         barman,
-        accountType: 'Barman',
+        accountType: AccountType.BARMAN,
         email: barman.connection.email,
         createdAt: barman.createdAt,
       }));
@@ -150,12 +149,14 @@ export class AuthService {
     } else if (specialAccount) {
       this.$currentUser.next(new ConnectedUser({
         specialAccount,
-        accountType: 'SpecialAccount',
+        accountType: AccountType.SPECIAL_ACCOUNT,
         email: specialAccount.connection.email,
         createdAt: specialAccount.createdAt,
       }));
       this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
     }
+
+    setBugsnagUser(this.$currentUser.getValue());
     this.managePermissionAndRole(permissions);
   }
 }

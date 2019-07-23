@@ -1,10 +1,16 @@
 import { Barman, SpecialAccount, Permission, ConnectionInformation } from '.';
 
+export enum AccountType {
+  GUEST,
+  BARMAN,
+  SPECIAL_ACCOUNT,
+}
+
 export class ConnectedUser {
 
   email?: string;
   createdAt?: Date;
-  accountType: string;
+  accountType: AccountType;
   barman?: Barman;
   specialAccount?: SpecialAccount;
   permissions?: Permission[];
@@ -14,11 +20,15 @@ export class ConnectedUser {
   }
 
   public isGuest(): boolean {
-    return this.accountType === 'Guest';
+    return this.accountType === AccountType.GUEST;
   }
 
   public isBarman(): boolean {
-    return this.accountType === 'Barman';
+    return this.accountType === AccountType.BARMAN;
+  }
+
+  public isSpecialAccount(): boolean {
+    return this.accountType === AccountType.SPECIAL_ACCOUNT;
   }
 
   public getConnection(): ConnectionInformation {

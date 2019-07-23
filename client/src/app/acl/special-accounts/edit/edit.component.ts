@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
 import { SpecialAccountService } from '../special-account.service';
-import { ConnectedUser, Permission, SpecialAccount } from '../../../shared/models';
+import { AccountType, ConnectedUser, Permission, SpecialAccount } from '../../../shared/models';
 import { getSpecialAccountFromForm, getSpecialAccountModel } from '../special-accounts.form-model';
 import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
 import { AuthService } from '../../../core/api-services/auth.service';
@@ -79,7 +79,7 @@ export class EditComponent implements OnInit {
 
     if (this.isMe()) {
       await this.meService.put(
-        new ConnectedUser({ accountType: 'SpecialAccount', specialAccount: updateSpecialAccount }),
+        new ConnectedUser({ accountType: AccountType.SPECIAL_ACCOUNT, specialAccount: updateSpecialAccount }),
         code,
       );
       this.toasterService.showToaster('Modification(s) enregistrée(s)');

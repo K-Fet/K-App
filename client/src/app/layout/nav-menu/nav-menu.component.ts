@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ConnectedUser } from '../../shared/models';
+import { AccountType, ConnectedUser } from '../../shared/models';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { AuthService } from '../../core/api-services/auth.service';
 import { Router } from '@angular/router';
@@ -14,13 +14,13 @@ interface Link {
 interface SubMenu {
   name?: string;
   links: Link[];
-  accountType?: string;
+  accountType?: AccountType[];
 }
 
 const NAV_MENUS: SubMenu[] = [
   { links: [{ name: 'Accueil', route: '/home' }] },
   {
-    accountType: 'guest',
+    accountType: [AccountType.GUEST],
     links: [{ name: 'Présentation', route: '/home/presentation' }],
   },
   {
@@ -59,7 +59,7 @@ const NAV_MENUS: SubMenu[] = [
   },
   {
     name: 'Gestion des stocks',
-    accountType: 'connectedUser',
+    accountType: [AccountType.BARMAN, AccountType.SPECIAL_ACCOUNT],
     links: [
       { name: 'Fournisseurs', route: '/inventory-management/providers' },
       { name: 'Produits', route: '/inventory-management/products' },
@@ -68,7 +68,7 @@ const NAV_MENUS: SubMenu[] = [
   },
   {
     name: 'Contacts',
-    accountType: 'guest',
+    accountType: [AccountType.GUEST],
     links: [
       { name: 'Pour un concert', route: '/contact/concert' },
       { name: 'Pour un évenement | soirée', route: '/contact/event' },
@@ -78,7 +78,7 @@ const NAV_MENUS: SubMenu[] = [
   },
   {
     name: 'Contacts',
-    accountType: 'connectedUser',
+    accountType: [AccountType.BARMAN, AccountType.SPECIAL_ACCOUNT],
     links: [{ name: 'Pour un problème avec le site', route: '/contact/website' }],
   },
 ];
@@ -113,8 +113,11 @@ export class NavMenuComponent implements OnInit {
   }
 
   isVisible(subMenu: SubMenu): boolean {
-    if (subMenu.accountType === 'guest' && !this.user.isGuest()) return false;
-    if (subMenu.accountType === 'connectedUser' && this.user.isGuest()) return false;
+    if (subMenu.accountType) {
+      if (this.user.isGuest() && !subMenu.accountType.includes(AccountType.GUEST)) return false;
+      if (this.user.isBarman() && !subMenu.accountType.includes(AccountType.BARMAN)) return false;
+      if (this.user.isSpecialAccount() && !subMenu.accountType.includes(AccountType.SPECIAL_ACCOUNT)) return false;
+    }
 
     const allPerms = [
       ...Object.keys(this.ngxPermissionsService.getPermissions()),

@@ -7,7 +7,7 @@ import { BarmanService } from '../../core/api-services/barman.service';
 import { RoleService } from '../../core/api-services/role.service';
 import { KommissionService } from '../../core/api-services/kommission.service';
 import { ToasterService } from '../../core/services/toaster.service';
-import { Barman, ConnectedUser } from '../../shared/models';
+import { AccountType, Barman, ConnectedUser } from '../../shared/models';
 import { AuthService } from '../../core/api-services/auth.service';
 import { MeService } from '../../core/api-services/me.service';
 
@@ -60,7 +60,7 @@ export class EditComponent implements OnInit {
   async onNgSubmit() {
     const updatedBarman = getBarmanFromForm(this.formGroup, this.originalBarman);
     if (this.isMe()) {
-      await this.meService.put(new ConnectedUser({ accountType: 'Barman', barman: updatedBarman }));
+      await this.meService.put(new ConnectedUser({ accountType: AccountType.BARMAN, barman: updatedBarman }));
       this.toasterService.showToaster('Modification(s) enregistrée(s)');
       this.router.navigate(['/home']);
       this.authService.me();
