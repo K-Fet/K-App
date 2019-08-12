@@ -1,0 +1,24 @@
+on: repository_dispatch
+name: Call staging webhook
+jobs:
+  filterStaging:
+    name: Filter staging
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Filter staging
+      uses: actions/bin/filter@3c0b4f0e63ea54ea5df2914b4fabf383368cd0da
+      with:
+        args: branch master
+    - name: Filter master branch
+      uses: actions/bin/filter@master
+      with:
+        args: action deploy-master
+    - name: Send staging webhook
+      uses: swinton/httpie.action@master
+      env:
+        KAPP_WEBHOOK_TOKEN: ${{ secrets.KAPP_WEBHOOK_TOKEN }}
+        KAPP_WEBHOOK_URL: https://webhooks.kfet-insa.fr
+      with:
+        args: POST $KAPP_WEBHOOK_URL action=deploy-staging token=$KAPP_WEBHOOK_TOKEN
+          sha=${{ github.sha }}
