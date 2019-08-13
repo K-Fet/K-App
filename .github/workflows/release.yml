@@ -1,0 +1,13 @@
+on: release
+name: Update prod branch on release
+jobs:
+  updateBranch:
+    name: Update prod brnach
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: Embraser01/update-git-branch-action@v0.1.0
+      with:
+        branch: prod
+        force: 1
+        githubToken: ${{ secrets.PAT_TOKEN }}

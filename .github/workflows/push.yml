@@ -1,0 +1,38 @@
+on: push
+name: On push
+jobs:
+  testAll:
+    name: Test All
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        version: 12
+    - name: Yarn install
+      run: |
+        yarn install
+        yarn install --cwd client --frozen-lockfile
+    - name: Run tests
+      run: yarn test
+  triggerProd:
+    name: Trigger prod server update
+    needs: [testAll]
+    if: github.ref == 'refs/heads/prod' # If on prod branch
+    steps:
+    - name: Send prod webhook
+      uses: swinton/httpie.action@master
+      with:
+        args: POST https://webhooks.kfet-insa.fr action=deploy-prod token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
+          sha=${{ github.sha }}
+  triggerStaging:
+    name: Trigger staging server update
+    needs: [testAll]
+    if: github.ref == 'refs/heads/master' # If on master branch
+    steps:
+    - name: Send staging webhook
+      uses: swinton/httpie.action@master
+      with:
+        args: POST https://webhooks.kfet-insa.fr action=deploy-staging token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
+              sha=${{ github.sha }}
