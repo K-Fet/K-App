@@ -2,13 +2,12 @@ on: release
 name: Update prod branch on release
 jobs:
   updateBranch:
-    name: Update branch
+    name: Update prod brnach
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Update branch
-      uses: Embraser01/update-git-branch-action@master
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    - uses: Embraser01/update-git-branch-action@v0.1.0
       with:
-        args: --branch prod --force
+        branch: prod
+        force: 1
+        githubToken: ${{ secrets.PAT_TOKEN }}

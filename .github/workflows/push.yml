@@ -1,34 +1,38 @@
 on: push
-name: Test All
+name: On push
 jobs:
-  yarnInstallFront:
-    name: Yarn install front
+  testAll:
+    name: Test All
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Yarn install front
-      uses: Borales/actions-yarn@master
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
       with:
-        args: install --cwd client --frozen-lockfile
-    - name: Yarn install back
-      uses: Borales/actions-yarn@master
+        version: 12
+    - name: Yarn install
+      run: |
+        yarn install
+        yarn install --cwd client --frozen-lockfile
+    - name: Run tests
+      run: yarn test
+  triggerProd:
+    name: Trigger prod server update
+    needs: [testAll]
+    if: github.ref == 'refs/heads/prod' # If on prod branch
+    steps:
+    - name: Send prod webhook
+      uses: swinton/httpie.action@master
       with:
-        args: install --frozen-lockfile
-    - name: Yarn test
-      uses: Borales/actions-yarn@master
+        args: POST https://webhooks.kfet-insa.fr action=deploy-prod token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
+          sha=${{ github.sha }}
+  triggerStaging:
+    name: Trigger staging server update
+    needs: [testAll]
+    if: github.ref == 'refs/heads/master' # If on master branch
+    steps:
+    - name: Send staging webhook
+      uses: swinton/httpie.action@master
       with:
-        args: test
-    - name: Trigger prod workflow
-      uses: swinton/httpie.action@8ab0a0e926d091e0444fcacd5eb679d2e2d4ab3d
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      with:
-        args: --auth-type=jwt --auth=$PAT_TOKEN POST api.github.com/repos/${{ github.repository
-          }}/dispatches Accept:application/vnd.github.everest-preview+json event_type=deploy-prod
-    - name: Trigger staging workflow
-      uses: swinton/httpie.action@8ab0a0e926d091e0444fcacd5eb679d2e2d4ab3d
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      with:
-        args: --auth-type=jwt --auth=$PAT_TOKEN POST api.github.com/repos/${{ github.repository
-          }}/dispatches Accept:application/vnd.github.everest-preview+json event_type=deploy-master
+        args: POST https://webhooks.kfet-insa.fr action=deploy-staging token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
+              sha=${{ github.sha }}
