@@ -1,22 +1,7 @@
 {
   "name": "k-app-front",
   "version": "0.0.0",
-  "description": "K-App provide a large panel of useful tools for associations",
-  "contributors": [
-    "Corentin Giraud <corentin.giraud@insa-lyon.fr>",
-    "Marc-Antoine Fernandes <marcantoinefernandes@gmail.com>",
-    "Baptiste Viry",
-    "Clément Guittat",
-    "Mickael Gadou"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/K-Fet/K-App"
-  },
-  "bugs": {
-    "url": "https://github.com/K-Fet/K-App/issues"
-  },
-  "license": "Apache-2.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --host 0.0.0.0 --disable-host-check",
@@ -31,7 +16,6 @@
     "lint:css": "stylelint \"src/**/*.scss\"",
     "lint": "yarn run lint:ts && yarn run lint:css"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^8.1.2",
     "@angular/cdk": "^8.1.1",
