@@ -19,6 +19,7 @@ jobs:
   triggerProd:
     name: Trigger prod server update
     needs: [testAll]
+    runs-on: ubuntu-latest
     steps:
     - name: Send prod webhook
       uses: swinton/httpie.action@master
@@ -29,6 +30,7 @@ jobs:
   triggerStaging:
     name: Trigger staging server update
     needs: [testAll]
+    runs-on: ubuntu-latest
     steps:
     - name: Send staging webhook
       uses: swinton/httpie.action@master
