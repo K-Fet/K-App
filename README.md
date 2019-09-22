@@ -29,7 +29,7 @@ which explain everything :).
 
 ---
 
-## Developing
+## Developing - No Docker
 
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 10.0.x or higher.
@@ -59,10 +59,19 @@ Some of them are used only in production, others are used only in development.
 
 ### Configuration
 
+#### `.env`
 To configure your environment, copy `/tools/config-samples/.env.example` to `/.env`.
 Then you just have to edit field as you want (`cp tools/config-samples/.env.example .env`).
 
 P.S.: The file `.env` is already ignored by git.
+
+#### `proxy.conf.json`
+
+As the project could be used in two different dev env, we need two different configurations for the proxy of the front.
+
+Here, we want to use the docker configuration. So just copy the `local.proxy.conf.json` file using: `cp local.proxy.conf.json proxy.conf.json`
+
+P.S.: The file `.proxy.conf.json` is already ignored by git.
 
 
 ### Environment variables
@@ -89,9 +98,47 @@ you can install these plugins to watch linter errors.
 * For [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 * For [Webstorm](http://plugins.jetbrains.com/plugin/7494)
 
-
 The app uses [nodemon](https://nodemon.io/) to watch for code change.
 The app will restart or reload when you edit the code.
+
+---
+
+## Developing - Docker
+
+To contribute to the project you will need:
+- [docker](https://docs.docker.com/install/): version 19.0.x or higher
+- [docker-compose](https://docs.docker.com/compose/install/): version 1.24.0 or higher
+
+Use `cd` to the root directory of the project.
+
+### Configuration
+
+#### `.env` file
+
+To configure your environment, copy `/tools/config-samples/.env.docker.example` to `/.env`.
+Then you just have to edit field as you want (`cp tools/config-samples/.env.docker.example .env`).
+
+P.S.: The file `.env` is already ignored by git.
+
+#### `proxy.conf.json`
+
+As the project could be used in two different dev env, we need two different configurations for the proxy of the front.
+
+Here, we want to use the docker configuration. So just copy the `docker.proxy.conf.json` file using: `cp docker.proxy.conf.json proxy.conf.json`
+
+P.S.: The file `.proxy.conf.json` is already ignored by git.
+
+### Lunch containers!
+
+Then: `docker-compose up`
+
+`docker-compose` will create 4 different containers:
+- `k-app-mongo`: a mongodb server
+- `k-app-mysql`: a mongodb mysql
+- `k-app-back`: which run the node process of the backend
+- `k-app-front`: which run the process of the frontend 
+
+---
 
 ## Testing (back only)
 
