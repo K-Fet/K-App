@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.7'
 services:
   api:
     image: node
@@ -15,8 +15,6 @@ services:
       - -c
       - |
         cd k-app
-        echo "Install yarn with npm"
-        npm i -g yarn
         echo "Install dependencies with yarn"
         yarn
         yarn run dev:back
@@ -34,8 +32,6 @@ services:
       - -c
       - |
         cd k-app
-        echo "Install yarn with npm"
-        npm i -g yarn
         echo "Install depencies with yarn"
         yarn
         echo "Lunching dev web server with ng cli"
