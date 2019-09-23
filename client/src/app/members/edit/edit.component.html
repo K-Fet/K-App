@@ -9,7 +9,7 @@
       <app-confirm-button (click)="dialog.close('delete')">Supprimer</app-confirm-button>
       <span fxFlex></span>
       <button mat-button (click)="dialog.close()">Annuler</button>
-      <button mat-button (click)="dialog.close('save')" [disabled]="!formGroup.valid && !formGroup.dirty">
+      <button mat-button (click)="dialog.close('save')" [disabled]="formGroup && !formGroup.valid && !formGroup.dirty">
         Enregistrer
       </button>
     </mat-dialog-actions>

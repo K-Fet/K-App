@@ -18,7 +18,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['firstName', 'lastName', 'school', 'updatedAt', 'actions'];
+  displayedColumns = ['lastName', 'firstName', 'school', 'updatedAt', 'actions'];
   dataSource: MoleculerDataSource<Member, MembersOptions>;
 
   // Filters
@@ -39,7 +39,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     if (this.mediaObserver.isActive('sm') || this.mediaObserver.isActive('xs')) {
-      this.displayedColumns = ['firstName', 'lastName', 'actions'];
+      this.displayedColumns = ['lastName', 'firstName', 'actions'];
     }
 
     this.dataSource = new MoleculerDataSource<Member, MembersOptions>(this.membersService);
@@ -92,6 +92,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(RegisterMemberDialogComponent, {
       width: '350px',
       data: member,
+      disableClose: true,
     });
 
     const newSchool = await dialogRef.afterClosed().toPromise();
