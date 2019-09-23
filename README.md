@@ -134,7 +134,7 @@ Then: `docker-compose up`
 
 `docker-compose` will create 4 different containers:
 - `k-app-mongo`: a mongodb server
-- `k-app-mysql`: a mongodb mysql
+- `k-app-mysql`: a mysql server
 - `k-app-back`: which run the node process of the backend
 - `k-app-front`: which run the process of the frontend 
 
