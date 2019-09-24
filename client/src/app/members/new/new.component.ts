@@ -5,7 +5,7 @@ import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { getMemberModel, getMemberFromForm } from '../members.form-model';
 import { Member } from '../member.model';
 import { MembersService } from '../members.service';
-import { MatListOption, MatSelectionList } from '@angular/material/list';
+import { MatSelectionList } from '@angular/material/list';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
 
