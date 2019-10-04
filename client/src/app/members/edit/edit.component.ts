@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Member } from '../member.model';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { FormGroup } from '@angular/forms';
@@ -23,11 +23,11 @@ export class EditComponent implements OnInit {
   constructor(private formService: DynamicFormService,
               private toasterService: ToasterService,
               private membersService: MembersService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private cdref: ChangeDetectorRef) {
+  }
 
   ngOnInit() {
-    this.formGroup = this.formService.createFormGroup([]);
-
     this.route.data.subscribe((data: { member: Member }) => {
       this.originalMember = data.member;
       this.model = getMemberModel(this.originalMember);
@@ -39,6 +39,12 @@ export class EditComponent implements OnInit {
       if (result === 'save') return this.onEdit();
       if (result === 'delete') return this.onDelete();
     });
+  }
+
+  // Fix ExpressionChangedAfterItHasBeenCheckedError
+  // https://github.com/angular/angular/issues/23657#issuecomment-526913914
+  ngAfterContentChecked(): void {
+    this.cdref.detectChanges();
   }
 
   async onEdit() {
