@@ -71,7 +71,7 @@ As the project could be used in two different dev env, we need two different con
 
 Here, we want to use the docker configuration. So just copy the `local.proxy.conf.json` file using: `cp local.proxy.conf.json proxy.conf.json`
 
-P.S.: The file `.proxy.conf.json` is already ignored by git.
+P.S.: The file `proxy.conf.json` is already ignored by git.
 
 
 ### Environment variables
@@ -126,7 +126,7 @@ As the project could be used in two different dev env, we need two different con
 
 Here, we want to use the docker configuration. So just copy the `docker.proxy.conf.json` file using: `cp docker.proxy.conf.json proxy.conf.json`
 
-P.S.: The file `.proxy.conf.json` is already ignored by git.
+P.S.: The file `proxy.conf.json` is already ignored by git.
 
 ### Lunch containers!
 
