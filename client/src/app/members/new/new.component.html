@@ -2,7 +2,7 @@
   <h2 mat-dialog-title>Ajouter un adhérent</h2>
   <mat-dialog-content fxLayout="column">
     <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
-      <dynamic-material-form [group]="formGroup" [model]="model" (change)="onNewMemberChange($event)">
+      <dynamic-material-form [group]="formGroup" [model]="model" (change)="onNewMemberChange()">
       </dynamic-material-form>
     </form>
     <div *ngIf="newMember.firstName && newMember.school">
