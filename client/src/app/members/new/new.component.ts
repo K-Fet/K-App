@@ -5,7 +5,6 @@ import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { getMemberModel, getMemberFromForm } from '../members.form-model';
 import { Member } from '../member.model';
 import { MembersService } from '../members.service';
-import { MatSelectionList } from '@angular/material/list';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
 
@@ -23,10 +22,9 @@ export class NewComponent implements OnInit {
   }
 
   @ViewChild('dialog', { static: true }) dialog: ModalComponent<string>;
-  @ViewChild('optionsList', null) optionsList: MatSelectionList;
 
   sameMembers: Member[] = [];
-  optionSelected: Member[] = [];
+  optionSelected: Member | null = null;
 
   formGroup: FormGroup;
   model: DynamicFormModel;
@@ -38,13 +36,6 @@ export class NewComponent implements OnInit {
 
   get newMember() {
     return getMemberFromForm(this.formGroup);
-  }
-
-  get selectedOption() {
-    if (!this.optionsList || this.optionsList.selectedOptions.selected.length === 0) {
-      return null;
-    }
-    return this.optionsList.selectedOptions.selected[0].value;
   }
 
   constructor(private formService: DynamicFormService,
@@ -68,13 +59,6 @@ export class NewComponent implements OnInit {
     this.sameMembers = (await this.membersService.list(options)).rows;
   }
 
-  async onOptionChange(event) {
-    if (event.option.selected) {
-      event.source.deselectAll();
-      event.option._setSelected(true);
-    }
-  }
-
   async onCreate() {
     const member = this.newMember;
     member.registrations = [{ year: CURRENT_SCHOOL_YEAR }];
@@ -83,8 +67,8 @@ export class NewComponent implements OnInit {
   }
 
   async onRegister() {
-    if (this.selectedOption) {
-      await this.membersService.register(this.selectedOption._id, this.selectedOption.school);
+    if (this.optionSelected) {
+      await this.membersService.register(this.optionSelected._id, this.optionSelected.school);
       this.toasterService.showToaster(`Adhérent ré-inscrit pour l'année ${CURRENT_SCHOOL_YEAR}`);
     }
   }

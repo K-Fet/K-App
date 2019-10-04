@@ -98,11 +98,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     const newSchool = await dialogRef.afterClosed().toPromise();
     if (!newSchool) return;
 
-    const registeredMember = await this.membersService.register(member._id, newSchool);
-    // Update fields
-    Object.assign(member, registeredMember);
+    await this.membersService.register(member._id, newSchool);
     this.toasterService.showToaster(`Adhérent inscrit pour l'année ${CURRENT_SCHOOL_YEAR}`);
-    this.loadMembersPage();
   }
 
   hideTotal(): boolean {
