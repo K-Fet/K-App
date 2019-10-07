@@ -60,7 +60,9 @@ export class MembersService {
     return removedMember;
   }
 
-  register(id: string, newSchool?: string): Promise<Member> {
-    return this.http.post<Member>(`${BASE_URL}/${id}/register`, { newSchool }).toPromise();
+  async register(id: string, newSchool?: string): Promise<Member> {
+    const updatedMember = await this.http.post<Member>(`${BASE_URL}/${id}/register`, { newSchool }).toPromise();
+    this.refreshSubject.next();
+    return updatedMember;
   }
 }
