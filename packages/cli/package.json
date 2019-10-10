@@ -1,0 +1,18 @@
+{
+  "name": "k-app-cli",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "cli": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "inquirer": "^7.0.0",
+    "joi": "^14.3.1",
+    "mongoose": "^5.7.4",
+    "mysql2": "^1.7.0",
+    "sequelize": "^4.42.0",
+    "umzug": "^2.2.0"
+  },
+  "devDependencies": {}
+}
