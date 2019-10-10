@@ -10,15 +10,15 @@ export function getMemberModel(originalMember?: Member): DynamicFormModel {
 
   return [
     new DynamicInputModel({
-      id: 'firstName',
-      label: 'Prénom',
-      value: values.firstName,
-      validators: { required: null, min: 3 },
-    }),
-    new DynamicInputModel({
       id: 'lastName',
       label: 'Nom',
       value: values.lastName,
+      validators: { required: null, min: 3 },
+    }),
+    new DynamicInputModel({
+      id: 'firstName',
+      label: 'Prénom',
+      value: values.firstName,
       validators: { required: null, min: 3 },
     }),
     new DynamicInputModel({
@@ -40,15 +40,18 @@ export function getMemberFromForm(form: FormGroup, originalMember?: Member): Mem
   const value = form.value;
   const original = originalMember || BASE_MEMBER;
 
-  const capitalize = s => s.charAt(0).toUpperCase() + s.substring(1);
-  const capitalizeName = str => str
-    .toLowerCase()
-    .split(' ')
-    .map(capitalize)
-    .join(' ')
-    .split('-')
-    .map(capitalize)
-    .join('-');
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.substring(1);
+  const capitalizeName = (str: string) => {
+    if (!str) return null;
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(capitalize)
+      .join(' ')
+      .split('-')
+      .map(capitalize)
+      .join('-');
+  };
 
   return {
     _id: original._id,

@@ -68,6 +68,7 @@ node_modules/
 backups/
 
 ### Client version
+packages/client/proxy.conf.json
 # Should be ignored because its auto-generated and change after git commit/merge
-client/src/environments/versions.ts
-client/src/environments/environment.prod.ts
+packages/client/src/environments/versions.ts
+packages/client/src/environments/environment.prod.ts

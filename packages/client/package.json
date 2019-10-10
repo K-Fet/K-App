@@ -1,6 +1,6 @@
 {
   "name": "k-app-front",
-  "version": "2.3.7",
+  "version": "2.3.6",
   "private": true,
   "scripts": {
     "ng": "ng",

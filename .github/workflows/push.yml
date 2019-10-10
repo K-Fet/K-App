@@ -19,20 +19,22 @@ jobs:
   triggerProd:
     name: Trigger prod server update
     needs: [testAll]
-    if: github.ref == 'refs/heads/prod' # If on prod branch
+    runs-on: ubuntu-latest
     steps:
     - name: Send prod webhook
       uses: swinton/httpie.action@master
+      if: github.ref == 'refs/heads/prod' # If on prod branch
       with:
         args: POST https://webhooks.kfet-insa.fr action=deploy-prod token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
           sha=${{ github.sha }}
   triggerStaging:
     name: Trigger staging server update
     needs: [testAll]
-    if: github.ref == 'refs/heads/master' # If on master branch
+    runs-on: ubuntu-latest
     steps:
     - name: Send staging webhook
       uses: swinton/httpie.action@master
+      if: github.ref == 'refs/heads/master' # If on master branch
       with:
         args: POST https://webhooks.kfet-insa.fr action=deploy-staging token=${{ secrets.KAPP_WEBHOOK_TOKEN }}
               sha=${{ github.sha }}

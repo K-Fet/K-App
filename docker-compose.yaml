@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  api:
+    image: node:lts
+    container_name: k-app-api
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/k-app
+    depends_on:
+      - mysql
+      - mongo
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cd k-app
+        echo "Install dependencies with yarn"
+        yarn
+        yarn run dev:back
+  front:
+    image: node:lts
+    container_name: k-app-front
+    ports:
+      - 4200:4200
+    volumes:
+      - .:/k-app
+    depends_on:
+      - api
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cd k-app
+        echo "Install depencies with yarn"
+        yarn
+        echo "Lunching dev web server with ng cli"
+        yarn run dev:front
+  mysql:
+    container_name: k-app-mysql
+    image: mysql:5.7.22
+    ports:
+      - "3306:3306"
+    command: --lower_case_table_names=1 # https://gist.github.com/feltnerm/bb6e23f531803896ca1e#gistcomment-2693967
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kapp
+  mongo:
+    container_name: k-app-mongo
+    image: bitnami/mongodb
+    ports:
+      - "27017:27017"

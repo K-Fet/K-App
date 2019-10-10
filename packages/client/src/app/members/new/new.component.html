@@ -1,16 +1,36 @@
-<app-modal #dialog [config]="{width: '400px'}">
-  <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
-    <h2 mat-dialog-title>Ajouter un adhérent</h2>
-    <p class="mat-caption">N'oublie pas de demander à la personne si elle a déjà eu une carte K-Fêt.</p>
-    <mat-dialog-content fxLayout="column">
-      <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <span fxFlex></span>
-      <button mat-button (click)="dialog.close()">Annuler</button>
-      <button mat-button (click)="dialog.close('create')" [disabled]="!formGroup.valid && !formGroup.dirty">
-        Créer
-      </button>
-    </mat-dialog-actions>
-  </form>
+<app-modal #dialog [config]="{width: '600px', disableClose: true}">
+  <h2 mat-dialog-title>Ajouter un adhérent</h2>
+  <mat-dialog-content fxLayout="column">
+    <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
+      <dynamic-material-form [group]="formGroup" [model]="model" (change)="onNewMemberChange()">
+      </dynamic-material-form>
+    </form>
+    <div *ngIf="newMember.firstName && newMember.school">
+      <h4 class="mat-title">Options</h4>
+      <mat-radio-group #optionsList [(ngModel)]="optionSelected">
+        <div *ngIf="sameMembers.length > 0">
+          <h5 class="mat-subheading-1">Ré-inscrire un adhérent parmi les anciens adhérents similaires trouvés:</h5>
+          <mat-radio-button *ngFor="let sameMember of sameMembers" [value]="sameMember">
+            {{sameMember.lastName + ' | ' + sameMember.firstName + ' | ' + sameMember.school + ' | Ancien adhérent ' + sameMember.registrations[sameMember.registrations.length - 1].year }}
+          </mat-radio-button>
+        </div>
+        <h5 class="mat-subheading-1" style="margin-top: 30px">Créer une nouvelle fiche adhérent:</h5>
+        <mat-radio-button checked [value]="null">
+          {{newMember.lastName + ' | ' + newMember.firstName + ' | ' + newMember.school + ' | Nouvel adhérent' }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <span fxFlex></span>
+    <button mat-button (click)="dialog.close()">Annuler</button>
+    <button mat-button *ngIf="!optionSelected" [disabled]="!formGroup.valid && !formGroup.dirty"
+      (click)="dialog.close('create')">
+      Créer
+    </button>
+    <button mat-button *ngIf="optionSelected" [disabled]="!formGroup.valid && !formGroup.dirty"
+      (click)="dialog.close('register')">
+      Ré-inscrire
+    </button>
+  </mat-dialog-actions>
 </app-modal>
