@@ -1254,17 +1254,17 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@ng-dynamic-forms/core@^8.1.0":
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/core/-/core-8.1.1.tgz#41af2d95f6b0e426030aa993be5d4937c81a8e10"
-  integrity sha512-x0wUAv2r929CqTbRnAutAWmrSKd0pbbk4hwqguMl3D4Xk2/Qc565LYWWFRnq+Xr9NgyCONXKBu9unxspfG4g0A==
+"@ng-dynamic-forms/core@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/core/-/core-9.0.1.tgz#7e8ceae84a4a2a9e929164d8cf7e059cabb20e69"
+  integrity sha512-CnP0ZDdcRA0AFwSMqORQafPYZf27naM820v7vaEhUUa8sUi9Y1xWABw/dK4Jm/867QgUISGWTHWe7QcLcDyKSQ==
   dependencies:
     tslib "^1.9.0"
 
-"@ng-dynamic-forms/ui-material@^8.1.0":
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/ui-material/-/ui-material-8.1.1.tgz#7230ac84979430246454dc220d70a0f477bd80a6"
-  integrity sha512-F0jrNGfC2S4TqktWQHmAAFzLjQAgnJLOBVJZX6JjfR2ShrY6png4hiruzufHG3GK5WOgvqstoqhwN2s0pbFy/g==
+"@ng-dynamic-forms/ui-material@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/ui-material/-/ui-material-9.0.1.tgz#317b0344aa4834947d1bad96011b1780909d7591"
+  integrity sha512-VjUk6NQob1RLeVm3Ms8UxSU53NiZksPkwgcXIWrXCVGBAmE4+tv7GofBzXlLfetT7JVhTRfLdlfLVfMkJ4lEZA==
   dependencies:
     tslib "^1.9.0"
 
@@ -10723,10 +10723,10 @@ seq-queue@^0.0.5:
   resolved "https://registry.yarnpkg.com/seq-queue/-/seq-queue-0.0.5.tgz#d56812e1c017a6e4e7c3e3a37a1da6d78dd3c93e"
   integrity sha1-1WgS4cAXpuTnw+Ojeh2m143TyT4=
 
-sequelize@^4.42.0:
-  version "4.44.0"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.44.0.tgz#b7371355c07ee8c2cc62d88cf0b34ac97b39908d"
-  integrity sha512-2XhS+koWZT9odyPVmq1xKiWMOIAYGgpUSlUJ6EbWjJCjXbkTKKfde0w5axJQcDjbPYCBvX5UOgID7xmPHL2xTw==
+sequelize@^4.44.3:
+  version "4.44.3"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-4.44.3.tgz#29d7af9efdfad4c796a75764e91f701fc454cee0"
+  integrity sha512-r2A4EVDKRCcABcZhY4ItvbcosvMJKpQMooxg/S8ouRFrZzqMPQ9O2thOUfgW59q8ZcEa5ccNeqwg15MCciqPMg==
   dependencies:
     bluebird "^3.5.0"
     cls-bluebird "^2.1.0"
