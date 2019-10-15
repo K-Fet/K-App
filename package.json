@@ -20,11 +20,14 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "test:lint": "true",
+    "test:integration": "true"
+  },
   "dependencies": {},
   "devDependencies": {},
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "nodemonConfig": {
     "ignore": [
