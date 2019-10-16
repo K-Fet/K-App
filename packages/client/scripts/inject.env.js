@@ -1,5 +1,6 @@
-require('dotenv').config();
+const path = require('path');
 const { writeFileSync } = require('fs');
+require('dotenv').config({ path: path.resolve(__dirname, '../../..', '.env') });
 
 function getReleaseStage() {
   switch (process.env.CONTEXT) {

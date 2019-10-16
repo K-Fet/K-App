@@ -6,7 +6,7 @@
     "dev:back": "nodemon --watch server --inspect"
   },
   "dependencies": {
-    "argon2": "0.25.0",
+    "argon2": "0.24.1",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "date-fns": "^2.4.1",

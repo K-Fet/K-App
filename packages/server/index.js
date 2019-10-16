@@ -1,9 +1,10 @@
 const dotenv = require('dotenv');
+const path = require('path');
 const logger = require('./logger');
 const { boot } = require('./bootstrap');
 
 logger.info('Loading environment variables (dotenv)');
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../..', '.env') });
 
 boot().then(() => {
   logger.info('Application has booted');

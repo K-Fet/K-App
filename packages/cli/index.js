@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-
+const path = require('path');
 // Load environment variables
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '../..', '.env') });
 
 const actions = [
   {
