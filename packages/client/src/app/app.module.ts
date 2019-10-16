@@ -18,11 +18,10 @@ import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 
 // Load date-fns french locale
-// @ts-ignore
-import * as frLocale from 'date-fns/locale/fr/index.js';
+import { fr } from 'date-fns/locale';
 
 const frenchConfig = new DateFnsConfigurationService();
-frenchConfig.setLocale(frLocale);
+frenchConfig.setLocale(fr);
 
 @NgModule({
   declarations: [

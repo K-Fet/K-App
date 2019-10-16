@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "dev:back": "yarn workspace k-app-server run dev:back",
-    "dev:front": "yarn workspace k-app-client run dev:front",
+    "dev:front": "yarn workspace k-app-client start",
     "cli": "yarn workspace k-app-cli run cli",
     "test:lint": "eslint .",
     "test:integration": "true"
