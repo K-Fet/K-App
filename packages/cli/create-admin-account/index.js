@@ -1,12 +1,12 @@
 const inquirer = require('inquirer');
 const Joi = require('joi');
 const crypto = require('crypto');
+const { hash } = require('k-app-server/utils/password-manager');
+const { initModel } = require('k-app-server/bootstrap/sequelize');
+const { start: syncPermissions } = require('k-app-server/bootstrap/permissions');
+const { ConnectionInformation, SpecialAccount, Permission } = require('k-app-server/app/models');
+const { PERMISSION_LIST } = require('k-app-server/app/constants');
 const { checkEnv, getSequelizeInstance } = require('../utils');
-const { hash } = require('../../../server/utils/password-manager');
-const { initModel } = require('../../../server/bootstrap/sequelize');
-const { start: syncPermissions } = require('../../../server/bootstrap/permissions');
-const { ConnectionInformation, SpecialAccount, Permission } = require('../../../server/app/models');
-const { PERMISSION_LIST } = require('../../../server/app/constants');
 
 async function checkExistingAdminAccount() {
   const specialAccounts = await SpecialAccount.findAll({

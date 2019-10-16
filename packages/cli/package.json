@@ -9,6 +9,7 @@
     "dotenv": "^8.1.0",
     "inquirer": "^7.0.0",
     "joi": "^14.3.1",
+    "k-app-server": "^2.3.5",
     "mongoose": "^5.7.4",
     "mysql2": "^1.7.0",
     "sequelize": "^4.44.3",

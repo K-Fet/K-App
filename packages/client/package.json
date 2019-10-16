@@ -11,10 +11,7 @@
     "prebuild": "yarn run gitversion",
     "prebuild:prod": "yarn run gitversion && yarn run injectenv",
     "gitversion": "node scripts/git.version.js",
-    "injectenv": "node scripts/inject.env.js",
-    "lint:ts": "ng lint",
-    "lint:css": "stylelint \"src/**/*.scss\"",
-    "lint": "yarn run lint:ts && yarn run lint:css"
+    "injectenv": "node scripts/inject.env.js"
   },
   "dependencies": {
     "@angular/animations": "^8.2.10",
@@ -53,13 +50,7 @@
     "@types/node": "~12.7.12",
     "codelyzer": "^5.1.0",
     "dotenv": "^8.1.0",
-    "stylelint": "^11.1.1",
-    "stylelint-config-airbnb": "^0.0.0",
-    "stylelint-order": "^3.0.1",
-    "stylelint-scss": "^3.9.2",
     "ts-node": "~8.4.1",
-    "tslint": "~5.20.0",
-    "tslint-config-airbnb": "^5.11.1",
     "typescript": "~3.4.5"
   }
 }

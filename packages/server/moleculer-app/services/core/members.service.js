@@ -71,7 +71,7 @@ module.exports = {
           params.query = { 'registrations.year': { $ne: getCurrentSchoolYear() } };
         }
 
-        const countParams = Object.assign({}, params);
+        const countParams = { ...params };
         // Remove pagination params
         if (countParams.limit) countParams.limit = null;
         if (countParams.offset) countParams.offset = null;

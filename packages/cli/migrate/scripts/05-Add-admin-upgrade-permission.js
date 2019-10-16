@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc,no-unused-vars */
-const { ADMIN_UPGRADE_PERMISSION } = require('../../../../server/moleculer-app/constants');
+const { ADMIN_UPGRADE_PERMISSION } = require('k-app-server/moleculer-app/constants');
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -20,8 +20,8 @@ module.exports = {
 
     // Get the special account who has already every permissions
     const [adminAccount] = await query(
-      `SELECT SpecialAccountId 
-        FROM specialaccountpermissions 
+      `SELECT SpecialAccountId
+        FROM specialaccountpermissions
         WHERE PermissionId IN (${perms.map(p => p.id).join(',')})
         GROUP BY SpecialAccountId
         HAVING COUNT(*) = ${perms.length}`,

@@ -55,7 +55,7 @@ class Task extends Model {
    * @returns {String}
    */
   toJSON() {
-    const values = Object.assign({}, this.get());
+    const values = { ...this.get() };
     delete values.kommissionId;
     return values;
   }

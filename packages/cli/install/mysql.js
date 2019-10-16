@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 const inquirer = require('inquirer');
+const { initModel } = require('k-app-server/bootstrap/sequelize');
 const { getSequelizeInstance, testConnection } = require('../utils');
-const { initModel } = require('../../../server/bootstrap/sequelize');
 
 async function setMysqlInfo() {
   const answers = await inquirer.prompt([

@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc,no-unused-vars */
-const { Member, Registration } = require('../../../../server/app/models');
+const { Member, Registration } = require('k-app-server/app/models');
 
 module.exports = {
   async up(queryInterface, Sequelize, mongoose) {

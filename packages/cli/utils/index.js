@@ -56,9 +56,9 @@ async function getSequelizeInstance() {
  */
 function createDirDeep(pathToCreate) {
   pathToCreate.split(path.sep).reduce((currentPath, folder) => {
-    currentPath += folder + path.sep;
-    if (!fs.existsSync(currentPath)) fs.mkdirSync(currentPath);
-    return currentPath;
+    const curr = currentPath + folder + path.sep;
+    if (!fs.existsSync(curr)) fs.mkdirSync(curr);
+    return curr;
   }, '');
 }
 

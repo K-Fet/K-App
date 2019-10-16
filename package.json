@@ -21,11 +21,18 @@
     "packages/*"
   ],
   "scripts": {
-    "test:lint": "true",
+    "test:lint": "eslint .",
     "test:integration": "true"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.19.0"
+  },
   "engines": {
     "node": ">=12.0.0"
   },

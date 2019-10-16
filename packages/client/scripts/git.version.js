@@ -2,7 +2,7 @@ const { writeFileSync } = require('fs');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
-const pkg = require('../../package');
+const pkg = require('../package');
 
 async function createVersionsFile(filename) {
   const revision = (await exec('git rev-parse --short HEAD')).stdout.toString().trim();
