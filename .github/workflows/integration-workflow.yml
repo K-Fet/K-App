@@ -1,0 +1,53 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+name: 'Integration'
+jobs:
+  tests:
+    name: 'Testing app'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: 'Use Node.js 12.x'
+        uses: actions/setup-node@master
+        with:
+          node-version: 12.x
+
+      - name: 'Yarn install'
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: 'Check for linting errors'
+        run: |
+          yarn run test:lint
+
+      - name: 'Run the integration tests'
+        run: |
+          yarn run test:integration
+
+  trigger-staging:
+    name: 'Trigger staging webhook'
+    needs: [tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: 'Send staging webhook'
+        run: |
+          curl -d '{"action":"deploy-staging", "token":"${{ secrets.KAPP_WEBHOOK_TOKEN }}", "sha":"${{ github.sha }}"}' -H "Content-Type: application/json" -X POST https://webhooks.kfet-insa.fr
+
+  trigger-prod:
+    name: 'Trigger prod webhook'
+    needs: [tests]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/prod'
+
+    steps:
+      - name: 'Send prod webhook'
+        run: |
+          curl -d '{"action":"deploy-prod", "token":"${{ secrets.KAPP_WEBHOOK_TOKEN }}", "sha":"${{ github.sha }}"}' -H "Content-Type: application/json" -X POST https://webhooks.kfet-insa.fr
