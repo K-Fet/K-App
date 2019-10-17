@@ -1,9 +1,8 @@
 # Settings in the [build] context are global and are applied to all contexts
 # unless otherwise overridden by more specific contexts.
 [build]
-  base = "packages/client/"
   publish = "packages/client/dist/"
-  command = "yarn build:prod"
+  command = "yarn workspace k-app-client run build:prod"
 
 [build.environment]
   NODE_VERSION = "12"
