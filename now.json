@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "builds": [{ "src": "server/index.js", "use": "@now/node-server" }],
+  "builds": [{ "src": "packages/server/index.js", "use": "@now/node-server" }],
   "regions": ["cdg1"],
   "github": {
     "enabled": false
