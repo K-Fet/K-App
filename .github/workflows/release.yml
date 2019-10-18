@@ -1,13 +1,31 @@
-on: release
-name: Update prod branch on release
+on:
+  release:
+    types: [published]
+
+name: 'Release'
 jobs:
-  updateBranch:
-    name: Update prod brnach
+  update-prod-branch:
+    name: 'Update prod branch'
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@master
-    - uses: Embraser01/update-git-branch-action@v0.1.0
-      with:
-        branch: prod
-        force: 1
-        githubToken: ${{ secrets.PAT_TOKEN }}
+      - uses: actions/checkout@master
+
+      - name: 'Update prod branch to latest release'
+        uses: Embraser01/update-git-branch-action@v1.0.0
+        with:
+          branch: prod
+          force: 1
+          githubToken: ${{ secrets.PAT_TOKEN }}
+
+      - name: 'Yarn install'
+        run: |
+          yarn install --frozen-lockfile
+
+      - name: 'Check for linting errors'
+        run: |
+          yarn run test:lint
+
+      - name: 'Run the integration tests'
+        run: |
+          yarn run test:integration
