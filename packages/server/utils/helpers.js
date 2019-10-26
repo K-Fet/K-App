@@ -160,8 +160,7 @@ const MONGOOSE_INTERNALS = {
 
 const JOI_ID = Joi.alt(
   Joi.string(),
-  Joi.number(),
-  Joi.array(),
+  Joi.number().integer(),
 );
 const JOI_STRING_OR_STRING_ARRAY = Joi.alt(
   Joi.string(),

@@ -39,6 +39,16 @@ module.exports = {
         },
       },
       {
+        path: '/auth',
+        authorization: false,
+        // Allow only declared routes
+        mappingPolicy: 'restrict',
+        aliases: {
+          'POST login': 'v1.acl.auth.login',
+          'GET logout': 'v1.acl.auth.logout',
+        },
+      },
+      {
         path: '/core',
         whitelist: ['v1.core.**'],
         authorization: true,
