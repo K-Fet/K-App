@@ -1,5 +1,5 @@
 const { Model, DataTypes, Op } = require('sequelize');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { getCurrentSchoolYear } = require('../../utils');
 const { Registration } = require('./registration');
 

@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 const { DataTypes, Model } = require('sequelize');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { getISODay, setISODay } = require('date-fns');
 
 /**

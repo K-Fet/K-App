@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const { isBefore, parse } = require('date-fns');
 

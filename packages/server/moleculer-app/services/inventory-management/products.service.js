@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
@@ -59,9 +59,9 @@ module.exports = {
 
   events: {
     // eslint-disable-next-line object-shorthand
-    'inventory-management.stock-events.added'(insertedEvents) {
-      const idsToSetUsed = insertedEvents.map(e => ObjectId(e.product));
-      this.logger.debug(`Updating ${insertedEvents.length} products to be set as used`);
+    'inventory-management.stock-events.added'(ctx) {
+      const idsToSetUsed = ctx.params.map(e => ObjectId(e.product));
+      this.logger.debug(`Updating ${idsToSetUsed.length} products to be set as used`);
       return this.adapter.updateMany({ _id: { $in: idsToSetUsed } }, { $set: { used: true } });
     },
   },

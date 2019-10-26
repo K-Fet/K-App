@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
 
 module.exports = function joiDbActions(joiModel) {

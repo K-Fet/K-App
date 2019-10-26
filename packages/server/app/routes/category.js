@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const validator = require('express-joi-validation')({ passError: true });
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const guard = require('express-jwt-permissions')();
 const am = require('../../utils/async-middleware');
 const categoryController = require('../controllers/category-controller');

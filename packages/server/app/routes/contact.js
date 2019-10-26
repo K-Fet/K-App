@@ -1,6 +1,6 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const router = require('express').Router();
-const validator = require('express-joi-validation')({ passError: true });
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const am = require('../../utils/async-middleware');
 const contactController = require('../controllers/contact-controller');
 

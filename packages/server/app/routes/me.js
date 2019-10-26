@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const Joi = require('joi');
-const validator = require('express-joi-validation')({ passError: true });
+const Joi = require('@hapi/joi');
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const am = require('../../utils/async-middleware');
 const { RANGE_SCHEMA } = require('../../utils');
 const { isBarman } = require('../middlewares/is-barman');

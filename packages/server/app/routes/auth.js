@@ -1,7 +1,7 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const RateLimit = require('express-rate-limit');
 const router = require('express').Router();
-const validator = require('express-joi-validation')({ passError: true });
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const authController = require('../controllers/auth-controller');
 const am = require('../../utils/async-middleware');
 const { authGuard } = require('../middlewares/auth-guard');
