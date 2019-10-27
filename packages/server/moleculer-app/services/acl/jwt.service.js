@@ -30,7 +30,6 @@ module.exports = {
     count: false,
     list: false,
     insert: false,
-    get: false,
     update: false,
     remove: false,
 
@@ -62,7 +61,7 @@ module.exports = {
       },
     },
 
-    exists: {
+    get: {
       visibility: 'protected',
       params: () => Joi.object({
         id: Joi.string().uuid().required(),
@@ -70,8 +69,7 @@ module.exports = {
       async handler(ctx) {
         const { id } = ctx.params;
 
-        const res = await this.adapter.getById(id);
-        return !!res;
+        return this._get(ctx, { id });
       },
     },
 
