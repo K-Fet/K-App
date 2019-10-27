@@ -17,12 +17,12 @@ services:
         cd k-app
         echo "Install dependencies with yarn"
         yarn
-        yarn run dev:back
+        yarn workspace k-app-server run dev:back
   front:
     image: node:lts
     container_name: k-app-front
     ports:
-      - 4200:4200
+      - "4200:4200"
     volumes:
       - .:/k-app
     depends_on:
@@ -35,7 +35,7 @@ services:
         echo "Install depencies with yarn"
         yarn
         echo "Lunching dev web server with ng cli"
-        yarn run dev:front
+        yarn workspace k-app-client run start
   mysql:
     container_name: k-app-mysql
     image: mysql:5.7.22
