@@ -19,7 +19,9 @@ const model = {
     password: { type: String },
     passwordToken: { type: String },
     emailToken: { type: String },
-    accountType: { type: String, enum: ['SERVICE', 'BARMAN'], required: true },
+    accountType: {
+      type: String, enum: ['SERVICE', 'BARMAN'], required: true, index: true,
+    },
     account: {
       // Service account
       code: { type: Number, min: 4, max: 6 },
@@ -54,7 +56,7 @@ const model = {
           code: Joi.number().integer().min(4).max(6)
             .required(),
           description: Joi.string().required(),
-          permissions: Joi.array().items(MONGO_ID),
+          permissions: Joi.array().items(Joi.string()),
         }).required(),
       })
       .when('accountType', {
@@ -143,6 +145,46 @@ module.exports = {
         }
 
         return user;
+      },
+    },
+
+    populateKommissions: {
+      visibility: 'public',
+      params: () => Joi.object({
+        kommissionsIds: Joi.array().items(MONGO_ID).min(1).required(),
+      }),
+      async handler(ctx) {
+        const { kommissionsIds } = ctx.params;
+
+        const users = await this.adapter.find({
+          accountType: 'BARMAN',
+          'account.kommissions': { $in: kommissionsIds },
+        });
+
+        return Object.fromEntries(kommissionsIds.map((kId) => {
+          const relatedUsers = users.filter(u => u.account.kommissions.includes(kId));
+          return [kId, relatedUsers];
+        }));
+      },
+    },
+
+    populateRoles: {
+      visibility: 'public',
+      params: () => Joi.object({
+        rolesIds: Joi.array().items(MONGO_ID).min(1).required(),
+      }),
+      async handler(ctx) {
+        const { rolesIds } = ctx.params;
+
+        const users = await this.adapter.find({
+          accountType: 'BARMAN',
+          'account.roles': { $in: rolesIds },
+        });
+
+        return Object.fromEntries(rolesIds.map((rId) => {
+          const relatedUsers = users.filter(u => u.account.roles.includes(rId));
+          return [rId, relatedUsers];
+        }));
       },
     },
   },
