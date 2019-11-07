@@ -24,7 +24,7 @@ const model = {
     },
     account: {
       // Service account
-      code: { type: Number, min: 4, max: 6 },
+      code: { type: String },
       description: { type: String },
       permissions: [{ type: String }],
 
@@ -87,14 +87,33 @@ module.exports = {
     DbMixin(model.mongoose),
   ],
   hooks: {
+    before: {
+      // TODO Implement before hook
+      // Need to remove any token present
+      create: false,
+      // TODO Implement before hook
+      // Need to prevent any token edition (but keep existent)
+      update: false,
+    },
     after: {
-      '*': (ctx, res) => {
-        // TODO Handle all actions
-        delete res.password;
-        delete res.passwordToken;
-        delete res.emailToken;
+      '*': ['removeSensitiveData'],
+    },
+  },
+
+  methods: {
+    removeSensitiveData(ctx, res) {
+      const clear = item => ({
+        ...item,
+        password: undefined,
+        passwordToken: undefined,
+        emailToken: undefined,
+      });
+
+      if (res.rows) {
+        res.rows = res.rows.map(clear);
         return res;
-      },
+      }
+      return clear(res);
     },
   },
 
@@ -115,6 +134,13 @@ module.exports = {
     update: true,
     remove: true,
     create: true,
+
+    // TODO Implement these
+    resetPassword: false,
+    definePassword: false,
+    updateEmail: false,
+    emailVerify: false,
+    cancelEmailUpdate: false,
 
     authenticate: {
       visibility: 'protected',

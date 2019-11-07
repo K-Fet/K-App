@@ -3,7 +3,6 @@ const uuidv4 = require('uuid/v4');
 const conf = require('nconf');
 const Joi = require('@hapi/joi');
 const jwt = require('jsonwebtoken');
-const { Errors } = require('moleculer');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { JOI_ID, createSchema } = require('../../../utils');
 
