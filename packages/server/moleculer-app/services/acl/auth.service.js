@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const uuidv4 = require('uuid/v4');
+const conf = require('nconf');
+const jwt = require('jsonwebtoken');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { createSchema } = require('../../../utils');
 
@@ -7,7 +10,7 @@ const model = {
   mongoose: mongoose.model('JWT', createSchema({
     _id: { type: String, required: true },
     userId: { type: String, required: true, index: true },
-    // Auto delete token with default to one day
+    // Auto deletes token with default to one day
     expireAt: { type: Date, expires: 0 },
   }, { timestamps: true })),
 };
@@ -16,20 +19,23 @@ module.exports = {
   name: 'acl.auth',
   version: 1,
   mixins: [
-    DbMixin(model.mongoose),
+    DbMixin(model.mongoose, true),
   ],
 
   settings: {},
 
   actions: {
-    find: false,
-    count: false,
-    list: false,
-    insert: false,
-    get: false,
-    update: false,
-    remove: false,
-    create: false,
+    check: {
+      visibility: 'protected',
+      params: () => Joi.object({
+        id: Joi.string().uuid().required(),
+      }),
+      async handler(ctx) {
+        const { id } = ctx.params;
+
+        return this._get(ctx, { id });
+      },
+    },
 
     login: {
       rest: 'POST /login',
@@ -43,7 +49,7 @@ module.exports = {
 
         const user = await ctx.call('v1.acl.users.authenticate', { email, password });
 
-        return ctx.call('v1.acl.jwt.create', { userId: user._id, duration: rememberMe });
+        return this.create({ userId: user._id, duration: rememberMe });
       },
     },
 
@@ -54,9 +60,42 @@ module.exports = {
       async handler(ctx) {
         const { jit } = ctx.meta;
 
-        await ctx.call('v1.acl.jwt.revoke', { id: jit });
+        await this.adapter.removeById(jit);
       },
     },
 
+    revokeAll: {
+      visibility: 'protected',
+      authorization: true,
+      params: () => Joi.object({}),
+      async handler(ctx) {
+        const { _id: userId } = ctx.meta.user;
+
+        this.logger.verbose(`Removing all current JWTs from user ${userId}`);
+
+        await this.adapter.removeMany({ userId });
+      },
+    },
+  },
+
+  method: {
+    async create({ userId, duration }) {
+      const id = uuidv4();
+      const expiresIn = Math.floor(Date.now() / 1000) + (60 * duration);
+
+      await this._create(this.currentContext, {
+        _id: id,
+        userId,
+        expireAt: new Date(expiresIn),
+      });
+
+      this.logger.verbose(`Creating a new JWT ${userId}`);
+
+      return jwt.sign({
+        jit: id,
+        expiresIn,
+        userId,
+      }, conf.get('web:jwtSecret'));
+    },
   },
 };

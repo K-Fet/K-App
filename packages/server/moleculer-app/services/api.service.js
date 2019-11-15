@@ -145,10 +145,10 @@ module.exports = {
 
       // Check token
       try {
-        const { userId, _id } = await ctx.call('v1.acl.jwt.get', { id: decoded.jit });
+        const { userId, _id } = await ctx.call('v1.acl.auth.check', { id: decoded.jit });
 
         ctx.meta.jit = _id;
-        return await ctx.call('v1.acl.users.get', { id: userId });
+        return await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' });
       } catch (e) {
         ctx.meta.authenticationError = ERR_INVALID_TOKEN;
         return null;

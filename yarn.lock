@@ -6888,10 +6888,10 @@ moleculer-db@0.8.2:
     lodash "^4.17.14"
     nedb "^1.8.0"
 
-moleculer-middleware-permissions@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/moleculer-middleware-permissions/-/moleculer-middleware-permissions-1.3.0.tgz#675b76c9336ac8351bfcd3efa28753e0908c71a5"
-  integrity sha512-E/VI645kxPhkTsly9LXIBpyI6Fs4Tuz4T3yxemRSymb749KPGUk8aWp1gszzTi5vcxdq5YT04xrfHEUiFHPhqA==
+moleculer-middleware-permissions@^2.0.0-rc0:
+  version "2.0.0-rc0"
+  resolved "https://registry.yarnpkg.com/moleculer-middleware-permissions/-/moleculer-middleware-permissions-2.0.0-rc0.tgz#91166a022b3af7be862a184e99daada19208adc2"
+  integrity sha512-lpyJz5ep7jcobalxzIdCTNs/1tslaNWNy3vphTTKNXfU5zs/i55SpEZtz96xufuttXglzJIJjUyefPDRerS9oA==
 
 moleculer-web@^0.9.0-beta6:
   version "0.9.0-beta6"

@@ -57,6 +57,7 @@ module.exports = function joiDbActions(joiModel) {
       get: {
         rest: 'GET /:id',
         permissions: true,
+        needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
           populate: JOI_STRING_OR_STRING_ARRAY,
@@ -67,6 +68,7 @@ module.exports = function joiDbActions(joiModel) {
       update: {
         rest: 'PUT /:id',
         permissions: true,
+        needEntity: true,
         params: () => joiModel.append({
           id: JOI_ID.required(),
         }),
@@ -74,6 +76,7 @@ module.exports = function joiDbActions(joiModel) {
       remove: {
         rest: 'DELETE /:id',
         permissions: true,
+        needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
         }),

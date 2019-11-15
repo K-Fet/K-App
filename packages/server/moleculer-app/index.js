@@ -5,7 +5,12 @@ const JoiValidator = require('./utils/joi.validator');
 const { loggerConfig } = require('../logger');
 const { PERMISSION_LIST } = require('./constants');
 
-const guard = new PermissionGuard();
+const guard = new PermissionGuard({
+  getUserPermissions: (ctx) => {
+    const { roles = [], permissions = [] } = ctx.meta.user.account;
+    return [...new Set([...roles.flatMap(r => r.permissions), ...permissions]).entries()];
+  },
+});
 
 const broker = new ServiceBroker({
   logger: {

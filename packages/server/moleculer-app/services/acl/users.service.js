@@ -101,6 +101,13 @@ module.exports = {
   },
 
   methods: {
+    isEntityOwner(ctx) {
+      const { _id } = ctx.meta.user;
+      const { id } = ctx.params;
+
+      return _id === id;
+    },
+
     removeSensitiveData(ctx, res) {
       const clear = item => ({
         ...item,
