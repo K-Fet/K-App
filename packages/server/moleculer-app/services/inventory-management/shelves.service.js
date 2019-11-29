@@ -19,7 +19,7 @@ const model = {
 module.exports = {
   name: 'inventory-management.shelves',
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-shelves'),
     DbMixin(model.mongoose),
   ],
 

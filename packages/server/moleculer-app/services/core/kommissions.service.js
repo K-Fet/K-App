@@ -21,7 +21,7 @@ module.exports = {
   name: 'core.kommissions',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'kommissions'),
     DbMixin(model.mongoose),
   ],
 

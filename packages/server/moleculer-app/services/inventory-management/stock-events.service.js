@@ -34,8 +34,8 @@ const model = {
 module.exports = {
   name: 'inventory-management.stock-events',
   mixins: [
-    JoiDbActionsMixin(model.joi),
-    DbMixin(model.mongoose),
+    JoiDbActionsMixin(model.joi, 'inventory-stock-events'),
+    DbMixin(model.mongoose, ['create', 'update', 'remove']),
   ],
 
   settings: {
@@ -49,7 +49,9 @@ module.exports = {
   actions: {
     add: {
       rest: 'POST /',
-      permissions: true,
+      permissions: [
+        'inventory-stock-events.create',
+      ],
       params: () => Joi.object({
         entities: Joi.array().items(model.joi),
         entity: model.joi,
@@ -61,7 +63,7 @@ module.exports = {
         const products = await ctx.call('inventory-management.products.get', { id: ids, mapping: true });
 
         const promises = events
-        // Get product
+          // Get product
           .map(async (event) => {
             const product = products[event.product];
 
@@ -94,20 +96,12 @@ module.exports = {
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
-        const res = await this.actions.insert({ entities: insertedEvents });
+        const res = await this._insert({ entities: insertedEvents });
 
         // Notify products because products are considered used now
         ctx.emit('inventory-management.stock-events.added', res, ['inventory-management.products']);
         return res;
       },
     },
-
-    // Must be called only via 'add' action
-    insert: { visibility: 'private', permissions: false },
-
-    // Disabled actions
-    create: false,
-    update: false,
-    remove: false,
   },
 };

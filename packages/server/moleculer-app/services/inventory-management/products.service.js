@@ -45,7 +45,7 @@ const model = {
 module.exports = {
   name: 'inventory-management.products',
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-products'),
     DbMixin(model.mongoose),
   ],
 
@@ -66,43 +66,27 @@ module.exports = {
     },
   },
 
-  actions: {
-    update: {
-      async handler(ctx) {
+  hooks: {
+    before: {
+      update: (ctx) => {
         const { id } = ctx.params;
+        const product = ctx.locals.entity;
 
-        const product = await this.getById(id, true);
-        if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
         if (!this.isProductAllowedToUpdate(product, ctx.params)) {
-          return Promise.reject(new MoleculerClientError('Entity cannot be updated', 400, null, {
+          throw new MoleculerClientError('Entity cannot be updated', 400, null, {
             id, details: 'Some updated fields cannot be changed as it will cause inconsistency',
-          }));
+          });
         }
-        const doc = await this.adapter.updateById(id, { $set: ctx.params });
-
-        const json = await this.transformDocuments(ctx, ctx.params, doc);
-        this.entityChanged('updated', json, ctx);
-
-        return json;
       },
-    },
-    remove: {
-      async handler(ctx) {
+      remove: (ctx) => {
         const { id } = ctx.params;
+        const product = ctx.locals.entity;
 
-        const product = await this.getById(id, true);
-        if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
         if (product.used) {
-          return Promise.reject(new MoleculerClientError('Entity cannot be removed', 400, null, {
+          throw new MoleculerClientError('Entity cannot be removed', 400, null, {
             id, details: 'This product has already received events/orders, it can only be archived',
-          }));
+          });
         }
-        const doc = await this.adapter.removeById(id);
-
-        const json = await this.transformDocuments(ctx, ctx.params, doc);
-        this.entityChanged('removed', json, ctx);
-
-        return json;
       },
     },
   },

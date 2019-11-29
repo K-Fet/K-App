@@ -38,7 +38,7 @@ module.exports = {
   name: 'core.members',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi), 'members',
     DbMixin(model.mongoose),
   ],
 

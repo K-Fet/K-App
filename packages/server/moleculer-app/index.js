@@ -29,9 +29,9 @@ async function populatePermissions(sb) {
   const set = new Set(actions
     // Only keep permissions published through the ApiGw
     .filter(a => !['private', 'protected', 'public'].includes(a.action.visibility))
-    .map(a => a.action.rawPermissions)
-    .filter(perms => Array.isArray(perms) && perms.length > 0)
-    .reduce((a, b) => a.concat(b), []));
+    .flatMap(a => a.action.permissions)
+    .filter(perm => typeof perm === 'string')
+    .filter(perm => !perm.startsWith('$')));
 
   sb.logger.info(`Added ${set.size} permissions from moleculer app`);
   sb.logger.debug(`Added permissions: ${[...set].join(', ')}.`);

@@ -23,7 +23,7 @@ module.exports = {
   name: 'acl.roles',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'roles'),
     DbMixin(model.mongoose),
   ],
 

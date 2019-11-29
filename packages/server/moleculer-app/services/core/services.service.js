@@ -27,7 +27,7 @@ module.exports = {
   name: 'core.services',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'services'),
     DbMixin(model.mongoose),
   ],
 

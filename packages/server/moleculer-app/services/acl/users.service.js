@@ -83,17 +83,25 @@ module.exports = {
   version: 1,
   authorization: true,
   mixins: [
-    JoiDbActionsMixin(model.joi),
-    DbMixin(model.mongoose),
+    JoiDbActionsMixin(model.joi, 'users'),
+    DbMixin(model.mongoose, ['insert']),
   ],
   hooks: {
     before: {
-      // TODO Implement before hook
-      // Need to remove any token present
-      create: false,
-      // TODO Implement before hook
-      // Need to prevent any token edition (but keep existent)
-      update: false,
+      update: (ctx) => {
+        const product = ctx.locals.entity;
+
+        // Prevent any change to fixed fields
+        [
+          'email',
+          'password',
+          'passwordToken',
+          'emailToken',
+          'accountType',
+        ].forEach((field) => {
+          ctx.params[field] = product[field];
+        });
+      },
     },
     after: {
       '*': ['removeSensitiveData'],
@@ -134,13 +142,17 @@ module.exports = {
   },
 
   actions: {
-    find: true,
-    count: true,
-    list: true,
-    insert: false,
-    update: true,
-    remove: true,
-    create: true,
+    create: {
+      // Remove some fields that should not be set now
+      params: () => model.joi.keys({
+        passwordToken: Joi.any().forbidden(),
+        emailToken: Joi.any().forbidden(),
+      }),
+      async handler(ctx) {
+        // TODO Validate email
+        return this._create(ctx);
+      },
+    },
 
     // TODO Implement these
     resetPassword: false,

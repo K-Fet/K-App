@@ -21,7 +21,7 @@ const model = {
 module.exports = {
   name: 'inventory-management.providers',
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-providers'),
     DbMixin(model.mongoose),
   ],
 

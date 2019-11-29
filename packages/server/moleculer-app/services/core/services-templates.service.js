@@ -50,7 +50,7 @@ module.exports = {
   name: 'core.services-templates',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'services-templates'),
     DbMixin(model.mongoose),
   ],
 

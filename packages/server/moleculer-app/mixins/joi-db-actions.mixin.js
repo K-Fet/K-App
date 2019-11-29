@@ -1,12 +1,14 @@
 const Joi = require('@hapi/joi');
 const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
 
-module.exports = function joiDbActions(joiModel) {
+module.exports = function joiDbActions(joiModel, name) {
   return {
     actions: {
       find: {
         rest: 'GET /find',
-        permissions: true,
+        permissions: [
+          `${name}.read`,
+        ],
         params: () => Joi.object({
           populate: JOI_STRING_OR_STRING_ARRAY,
           fields: JOI_STRING_OR_STRING_ARRAY,
@@ -20,7 +22,9 @@ module.exports = function joiDbActions(joiModel) {
       },
       count: {
         rest: 'GET /count',
-        permissions: true,
+        permissions: [
+          `${name}.read`,
+        ],
         params: () => Joi.object({
           search: Joi.string(),
           searchFields: JOI_STRING_OR_STRING_ARRAY,
@@ -29,7 +33,9 @@ module.exports = function joiDbActions(joiModel) {
       },
       list: {
         rest: 'GET /',
-        permissions: true,
+        permissions: [
+          `${name}.read`,
+        ],
         params: () => Joi.object({
           populate: JOI_STRING_OR_STRING_ARRAY,
           fields: JOI_STRING_OR_STRING_ARRAY,
@@ -43,12 +49,16 @@ module.exports = function joiDbActions(joiModel) {
       },
       create: {
         rest: 'POST /',
-        permissions: true,
+        permissions: [
+          `${name}.create`,
+        ],
         params: () => joiModel,
       },
       insert: {
         rest: 'POST /insert',
-        permissions: true,
+        permissions: [
+          `${name}.create`,
+        ],
         params: () => Joi.object({
           entities: Joi.array().items(joiModel),
           entity: joiModel,
@@ -56,7 +66,10 @@ module.exports = function joiDbActions(joiModel) {
       },
       get: {
         rest: 'GET /:id',
-        permissions: true,
+        permissions: [
+          `${name}.read`,
+          '$owner',
+        ],
         needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
@@ -67,7 +80,10 @@ module.exports = function joiDbActions(joiModel) {
       },
       update: {
         rest: 'PUT /:id',
-        permissions: true,
+        permissions: [
+          `${name}.write`,
+          '$owner',
+        ],
         needEntity: true,
         params: () => joiModel.append({
           id: JOI_ID.required(),
@@ -75,7 +91,10 @@ module.exports = function joiDbActions(joiModel) {
       },
       remove: {
         rest: 'DELETE /:id',
-        permissions: true,
+        permissions: [
+          `${name}.delete`,
+          '$owner',
+        ],
         needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
