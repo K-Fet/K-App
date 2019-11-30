@@ -4,7 +4,7 @@ const uuidv4 = require('uuid/v4');
 const conf = require('nconf');
 const jwt = require('jsonwebtoken');
 const DbMixin = require('../../mixins/db-service.mixin');
-const { createSchema } = require('../../../utils');
+const { createSchema, MONGO_ID } = require('../../../utils');
 
 const model = {
   mongoose: mongoose.model('JWT', createSchema({
@@ -39,6 +39,7 @@ module.exports = {
 
     login: {
       rest: 'POST /login',
+      authorization: false,
       params: () => Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().required(),
@@ -66,10 +67,12 @@ module.exports = {
 
     revokeAll: {
       visibility: 'protected',
-      authorization: true,
-      params: () => Joi.object({}),
+      authorization: false,
+      params: () => Joi.object({
+        userId: MONGO_ID.required(),
+      }),
       async handler(ctx) {
-        const { _id: userId } = ctx.meta.user;
+        const { userId } = ctx.params;
 
         this.logger.verbose(`Removing all current JWTs from user ${userId}`);
 
