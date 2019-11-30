@@ -24,7 +24,9 @@ module.exports = {
     DbMixin(model.mongoose),
   ],
 
-  settings: {},
+  settings: {
+    rest: '/v1/auth',
+  },
 
   actions: {
     check: {

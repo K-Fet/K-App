@@ -26,6 +26,7 @@ module.exports = {
   ],
 
   settings: {
+    rest: '/v1/kommissions',
     populates: {
       async barmen(ids, docs, rule, ctx) {
         const kommissionsIds = docs.map(d => d._id);

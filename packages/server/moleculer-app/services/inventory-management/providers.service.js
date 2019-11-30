@@ -20,13 +20,14 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.providers',
+  version: 1,
   mixins: [
     JoiDbActionsMixin(model.joi, 'inventory-providers'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/providers',
+    rest: '/v1/providers',
   },
 
   actions: {

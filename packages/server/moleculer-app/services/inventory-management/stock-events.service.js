@@ -34,6 +34,7 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.stock-events',
+  version: 1,
   mixins: [
     DisableMixin(['create', 'update', 'remove']),
     JoiDbActionsMixin(model.joi, 'inventory-stock-events'),
@@ -41,7 +42,7 @@ module.exports = {
   ],
 
   settings: {
-    rest: '/stock-events',
+    rest: '/v1/stock-events',
     populates: {
       product: 'inventory-management.products.get',
       order: 'inventory-management.orders.get',

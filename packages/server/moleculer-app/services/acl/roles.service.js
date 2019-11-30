@@ -28,6 +28,7 @@ module.exports = {
   ],
 
   settings: {
+    rest: '/v1/roles',
     populates: {
       async barmen(ids, docs, rule, ctx) {
         const rolesIds = docs.map(d => d._id);

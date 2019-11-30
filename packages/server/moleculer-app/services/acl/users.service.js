@@ -148,6 +148,7 @@ module.exports = {
   },
 
   settings: {
+    rest: '/v1/users',
     populates: {
       'account.roles': 'v1.acl.roles.get',
       'account.kommissions': 'v1.core.kommissions.get',

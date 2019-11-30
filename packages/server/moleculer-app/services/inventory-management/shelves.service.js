@@ -18,13 +18,14 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.shelves',
+  version: 1,
   mixins: [
     JoiDbActionsMixin(model.joi, 'inventory-shelves'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/shelves',
+    rest: '/v1/shelves',
     populates: {
       async products(ids, docs, rule, ctx) {
         // Get all corresponding products

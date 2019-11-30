@@ -44,13 +44,14 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.products',
+  version: 1,
   mixins: [
     JoiDbActionsMixin(model.joi, 'inventory-products'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/products',
+    rest: '/v1/products',
     populates: {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',
