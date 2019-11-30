@@ -26,7 +26,7 @@ const getJoiDayFields = (prefix = '') => ({
 });
 
 const model = {
-  mongoose: mongoose.model('Members', createSchema({
+  mongoose: mongoose.model('ServicesTemplates', createSchema({
     name: { type: Date, required: true },
     services: [{
       nbMax: { type: Number, default: 3 },

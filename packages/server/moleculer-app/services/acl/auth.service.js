@@ -4,6 +4,7 @@ const uuidv4 = require('uuid/v4');
 const conf = require('nconf');
 const jwt = require('jsonwebtoken');
 const DbMixin = require('../../mixins/db-service.mixin');
+const DisableMixin = require('../../mixins/disable-actions.mixin');
 const { createSchema, MONGO_ID } = require('../../../utils');
 
 const model = {
@@ -19,7 +20,8 @@ module.exports = {
   name: 'acl.auth',
   version: 1,
   mixins: [
-    DbMixin(model.mongoose, true),
+    DisableMixin(true),
+    DbMixin(model.mongoose),
   ],
 
   settings: {},

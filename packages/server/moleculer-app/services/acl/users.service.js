@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const { Errors: { MoleculerClientError, MoleculerServerError } } = require('moleculer');
 const DbMixin = require('../../mixins/db-service.mixin');
+const DisableMixin = require('../../mixins/disable-actions.mixin');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const mailService = require('../../../app/services/mail-service');
 const {
@@ -84,8 +85,9 @@ module.exports = {
   version: 1,
   authorization: true,
   mixins: [
+    DisableMixin(['insert']),
     JoiDbActionsMixin(model.joi, 'users'),
-    DbMixin(model.mongoose, ['insert']),
+    DbMixin(model.mongoose),
   ],
   hooks: {
     before: {

@@ -7,7 +7,7 @@ const { MONGO_ID, createSchema } = require('../../../utils');
 const { ObjectID } = mongoose.Schema.Types;
 
 const model = {
-  mongoose: mongoose.model('Members', createSchema({
+  mongoose: mongoose.model('Services', createSchema({
     startAt: { type: Date, required: true, index: true },
     endAt: { type: Date, required: true, index: true },
     nbMax: { type: Number, min: 1, default: 1 },

@@ -3,6 +3,7 @@ const Joi = require('@hapi/joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
+const DisableMixin = require('../../mixins/disable-actions.mixin');
 const { BASE_UNIT } = require('../../constants');
 const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
 
@@ -34,8 +35,9 @@ const model = {
 module.exports = {
   name: 'inventory-management.stock-events',
   mixins: [
+    DisableMixin(['create', 'update', 'remove']),
     JoiDbActionsMixin(model.joi, 'inventory-stock-events'),
-    DbMixin(model.mongoose, ['create', 'update', 'remove']),
+    DbMixin(model.mongoose),
   ],
 
   settings: {
