@@ -9,4 +9,4 @@ export * from './ConnectedUser';
 export * from './Template';
 export * from './Day';
 export * from './Permission';
-export * from './Task';
+export * from './User';

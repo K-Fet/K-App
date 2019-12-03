@@ -154,6 +154,26 @@ module.exports = {
       'account.kommissions': 'v1.core.kommissions.get',
       // TODO Load services
       'account.services': async (ids, docs) => docs,
+      async permissions(ids, docs, rule, ctx) {
+        const roleIds = [...new Set([...docs
+          .filter(d => d.accountType === 'BARMAN')
+          .flatMap(d => d.account.roles),
+        ]).entries()];
+
+        const roles = await ctx.call('v1.acl.roles.list', { query: { _id: { $in: roleIds } } });
+        const roleMap = Object.fromEntries(roles.map(r => [r._id, r]));
+
+        docs.forEach((d) => {
+          if (d.accountType === 'SERVICE') {
+            // eslint-disable-next-line no-param-reassign
+            d.permissions = d.account.permissions;
+          } else if (d.accountType === 'BARMAN') {
+            // eslint-disable-next-line no-param-reassign
+            d.permissions = d.account.roles.flatMap(r => roleMap[r].permissions);
+          }
+        });
+        return docs;
+      },
     },
   },
 
@@ -203,6 +223,15 @@ module.exports = {
         }
 
         return this._update(ctx);
+      },
+    },
+
+    me: {
+      rest: 'GET /me',
+      params: () => Joi.object({}),
+      async handler(ctx) {
+        ctx.params.id = ctx.meta.user.id;
+        return this._get(ctx);
       },
     },
 
