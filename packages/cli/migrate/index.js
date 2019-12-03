@@ -14,9 +14,9 @@ const { checkEnv, getSequelizeInstance } = require('../utils');
  */
 async function getUmzugInstance(sequelize, mongooseInstance) {
   return new Umzug({
-    storage: 'sequelize',
+    storage: 'mongodb',
     storageOptions: {
-      sequelize,
+      connection: mongooseInstance,
     },
     migrations: {
       params: [sequelize.getQueryInterface(), Sequelize, mongooseInstance],

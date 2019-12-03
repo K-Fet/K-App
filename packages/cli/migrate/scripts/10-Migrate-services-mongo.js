@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc,no-unused-vars */
-const { Types } = require('mongoose');
 const { initModel } = require('k-app-server/bootstrap/sequelize');
 const { Service, Barman } = require('k-app-server/app/models');
 
