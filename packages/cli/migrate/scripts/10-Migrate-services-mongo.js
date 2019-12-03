@@ -3,7 +3,7 @@ const { initModel } = require('k-app-server/bootstrap/sequelize');
 const { Service, Barman } = require('k-app-server/app/models');
 
 const createMap = async (co) => {
-  const barmen = await co.collection('users').find({ accountType: 'BARMAN' });
+  const barmen = await co.collection('users').find({ accountType: 'BARMAN' }).toArray();
 
   return {
     barmen: Object.fromEntries(barmen.map(b => [b.account._oldId, b._id])),

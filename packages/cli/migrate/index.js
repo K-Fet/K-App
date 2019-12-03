@@ -16,7 +16,7 @@ async function getUmzugInstance(sequelize, mongooseInstance) {
   return new Umzug({
     storage: 'mongodb',
     storageOptions: {
-      connection: mongooseInstance,
+      connection: mongooseInstance.connection,
     },
     migrations: {
       params: [sequelize.getQueryInterface(), Sequelize, mongooseInstance],

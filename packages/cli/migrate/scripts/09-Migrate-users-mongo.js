@@ -6,8 +6,8 @@ const {
 } = require('k-app-server/app/models');
 
 const createMap = async (co) => {
-  const roles = await co.collection('roles').find({});
-  const kommissions = await co.collection('kommissions').find({});
+  const roles = await co.collection('roles').find({}).toArray();
+  const kommissions = await co.collection('kommissions').find({}).toArray();
 
   return {
     roles: Object.fromEntries(roles.map(r => [r._oldId, r._id])),
@@ -72,7 +72,7 @@ module.exports = {
             leaveAt: u.barman.leaveAt,
             facebook: u.barman.facebook,
             dateOfBirth: u.barman.dateOfBirth,
-            godFather: u.barman.godFather,
+            godFatherId: u.barman.godFatherId,
             flow: u.barman.flow,
             roles: u.barman.roles.map(r => roles[r.id]),
             kommissions: u.barman.kommissions.map(k => kommissions[k.id]),
@@ -86,10 +86,10 @@ module.exports = {
 
     // Set godFather
     toInsert
-      .filter(u => u.accountType === 'BARMAN' && u.barman.godFather)
+      .filter(u => u.accountType === 'BARMAN' && u.account.godFatherId)
       .forEach((u) => {
         // eslint-disable-next-line no-param-reassign
-        u.account.godFather = toInsert.find(({ account }) => account._oldId === u.account.godFather)._id;
+        u.account.godFather = toInsert.find(({ account }) => account._oldId === u.account.godFatherId)._id;
       });
 
     console.log(`Migrating ${users.length} users from MySQL to MongoDB`);
