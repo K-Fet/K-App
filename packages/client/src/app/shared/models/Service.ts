@@ -1,23 +1,21 @@
 import { Barman } from '.';
+import { ExcludeMethods } from '../../../utils';
 
 export class Service {
 
-  id?: number;
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   startAt: Date;
   endAt: Date;
-  nbMax: number;
+  nbMax?: number;
 
-  // Association
+  barmen?: string[] | Barman[];
 
-  barmen?: Barman[];
-
-  constructor(values: Object = {}) {
+  constructor(values: ExcludeMethods<Service>) {
     Object.assign(this, values);
-
-    const castVal = values as Service;
-
-    this.startAt = castVal.startAt ? new Date(castVal.startAt) : null;
-    this.endAt = castVal.endAt ? new Date(castVal.endAt) : null;
+    this.startAt = values.startAt ? new Date(values.startAt) : null;
+    this.endAt = values.endAt ? new Date(values.endAt) : null;
   }
 
   isPassed(): boolean {

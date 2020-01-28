@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
-const { MONGO_ID, createSchema } = require('../../../utils');
+const {
+  MONGO_ID, createSchema, JOI_ID, JOI_STRING_OR_STRING_ARRAY,
+} = require('../../../utils');
 
 const { ObjectID } = mongoose.Schema.Types;
 
@@ -33,7 +35,42 @@ module.exports = {
 
   settings: {
     rest: 'v1/services/',
+    populates: {
+      async barmen(ids, docs, rule, ctx) {
+        const allBarmen = docs.flatMap(d => d.barmen);
+        const barmen = await ctx.call('v1.acl.users.get', { id: allBarmen, mapping: true });
+
+        return docs.map(d => ({ ...d, barmen: d.barmen.map(id => barmen[id]) }));
+      },
+    },
   },
 
-  actions: {},
+  actions: {
+    barman: {
+      rest: 'GET /barman/:id',
+      permissions: [
+        'services.read',
+        'barmen.read',
+        // A barman can see its own services
+        ctx => ctx.meta.user._id === ctx.params.id,
+      ],
+      params: () => Joi.object({
+        populate: JOI_STRING_OR_STRING_ARRAY,
+        fields: JOI_STRING_OR_STRING_ARRAY,
+        page: Joi.number().integer().min(1),
+        pageSize: Joi.number().integer().min(0),
+        sort: Joi.string(),
+        search: Joi.string(),
+        searchField: JOI_STRING_OR_STRING_ARRAY,
+        id: JOI_ID.required(),
+      }),
+      async handler(ctx) {
+        const params = this.sanitizeParams(ctx, ctx.params);
+        return this._list(ctx, {
+          ...params,
+          query: { barmen: { $elemMath: ctx.params.id } },
+        });
+      },
+    },
+  },
 };

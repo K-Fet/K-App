@@ -152,16 +152,13 @@ module.exports = {
     populates: {
       'account.roles': 'v1.acl.roles.get',
       'account.kommissions': 'v1.core.kommissions.get',
-      // TODO Load services
-      'account.services': async (ids, docs) => docs,
       async permissions(ids, docs, rule, ctx) {
         const roleIds = [...new Set([...docs
           .filter(d => d.accountType === 'BARMAN')
           .flatMap(d => d.account.roles),
         ]).entries()];
 
-        const roles = await ctx.call('v1.acl.roles.list', { query: { _id: { $in: roleIds } } });
-        const roleMap = Object.fromEntries(roles.map(r => [r._id, r]));
+        const roles = await ctx.call('v1.acl.roles.get', { id: roleIds, mapping: true });
 
         docs.forEach((d) => {
           if (d.accountType === 'SERVICE') {
@@ -169,7 +166,7 @@ module.exports = {
             d.permissions = d.account.permissions;
           } else if (d.accountType === 'BARMAN') {
             // eslint-disable-next-line no-param-reassign
-            d.permissions = d.account.roles.flatMap(r => roleMap[r].permissions);
+            d.permissions = d.account.roles.flatMap(r => roles[r].permissions);
           }
         });
         return docs;

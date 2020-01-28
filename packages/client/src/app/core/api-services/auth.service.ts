@@ -1,31 +1,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AccountType, ConnectedUser } from '../../shared/models';
-import * as jwt_decode from 'jwt-decode';
+import { User } from '../../shared/models';
+import * as jwtDecode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { toURL } from './api-utils';
 import { clearBugsnagUser, setBugsnagUser } from '../bugsnag-client';
+import { UsersService } from './users.service';
+
+const BASE_URL = toURL('v2/acl/v1/auth');
 
 @Injectable()
 export class AuthService {
 
-  $currentUser: BehaviorSubject<ConnectedUser>;
+  $currentUser: BehaviorSubject<User>;
 
   // Suppose the user is already logged in
   // Prevent a redirection
-  isLoggedIn: boolean = true;
+  isLoggedIn = true;
 
   constructor(private http: HttpClient,
-              private ngxPermissionsService: NgxPermissionsService,
-              private ngxRolesService: NgxRolesService) { }
+    private ngxPermissionsService: NgxPermissionsService,
+    private usersService: UsersService,
+    private ngxRolesService: NgxRolesService) { }
 
-  async initializeAuth(): Promise<any> {
-    this.$currentUser = new BehaviorSubject<ConnectedUser>(new ConnectedUser({
-      accountType: AccountType.GUEST,
-      createdAt: new Date(),
+  async initializeAuth(): Promise<void> {
+    this.$currentUser = new BehaviorSubject<User>(new User({
+      accountType: 'GUEST',
+      account: null,
     }));
 
     const currentUser = {
@@ -35,22 +39,22 @@ export class AuthService {
 
     if (!currentUser.jwt) return;
 
-    const jwtDecoded = jwt_decode(currentUser.jwt);
+    const jwtDecoded = jwtDecode(currentUser.jwt);
 
     // If the token expire in less than 12 hours,
     // disconnect the user to prevent being disturbed during his navigation
     if (Date.now() >= (jwtDecoded.exp * 1000 - 3600000)) return this.clearUser();
 
     try {
-      await this.me();
+      await this.reloadCurrentUser();
     } catch (e) {
       console.error('Error during initializeAuth: ', e);
       this.clearUser();
     }
   }
 
-  async login(email: string, password: string, rememberMe: number): Promise<any> {
-    const currentUser = await this.http.post<{ jwt: string }>(toURL('v1/auth/login'), {
+  async login(email: string, password: string, rememberMe: number): Promise<void> {
+    const currentUser = await this.http.post<{ jwt: string }>(`${BASE_URL}/login`, {
       email,
       password,
       rememberMe,
@@ -59,53 +63,24 @@ export class AuthService {
 
     this.saveUser(currentUser, (rememberMe >= environment.JWT_DAY_EXP_LONG));
 
-    await this.me();
+    await this.reloadCurrentUser();
   }
 
-  async logout(): Promise<any> {
+  async logout(): Promise<void> {
     try {
-      await this.http.get(toURL('v1/auth/logout')).toPromise();
-    } catch (e) {}
+      await this.http.get(`${BASE_URL}/logout`).toPromise();
+    } catch (e) {
+      // ignore
+    }
 
     this.clearUser();
   }
 
-  definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Promise<any> {
-    const body = {
-      email,
-      password,
-      // Change null into undefined
-      passwordToken: passwordToken || undefined,
-      oldPassword: oldPassword || undefined,
-    };
-    return this.http.put(toURL('v1/auth/reset-password'), body).toPromise();
-  }
-
-  verifyEmail(userId: number, email: string, password: string, emailToken: string): Promise<any> {
-    return this.http.post(toURL('v1/auth/email-verification'), {
-      userId,
-      email,
-      password,
-      emailToken,
-    }).toPromise();
-  }
-
-  cancelEmailUpdate(userId: number, email: string): Promise<any> {
-    return this.http.post(toURL('v1/auth/cancel-email-verification'), {
-      userId,
-      email,
-    }).toPromise();
-  }
-
-  resetPassword(email: string): Promise<any> {
-    return this.http.post(toURL('v1/auth/reset-password'), { email }).toPromise();
-  }
-
   private clearUser(): void {
     clearBugsnagUser();
-    this.$currentUser.next(new ConnectedUser({
-      accountType: AccountType.GUEST,
-      createdAt: new Date(),
+    this.$currentUser.next(new User({
+      accountType: 'GUEST',
+      account: null,
     }));
     this.ngxPermissionsService.flushPermissions();
     this.ngxRolesService.flushRoles();
@@ -131,32 +106,15 @@ export class AuthService {
       .forEach(ROLE => this.ngxRolesService.addRole(ROLE.name, ROLE.permissions));
   }
 
-  async me(): Promise<any> {
-    const { user, permissions } =
-      await this.http.get<{ user: ConnectedUser, permissions: string[] }>(toURL('v1/me')).toPromise();
+  async reloadCurrentUser(): Promise<void> {
+    const user = await this.usersService.me();
 
     this.isLoggedIn = true;
 
-    const { barman, specialAccount } = user;
-    if (barman) {
-      this.$currentUser.next(new ConnectedUser({
-        barman,
-        accountType: AccountType.BARMAN,
-        email: barman.connection.email,
-        createdAt: barman.createdAt,
-      }));
-      this.ngxRolesService.addRole('BARMAN', ['']);
-    } else if (specialAccount) {
-      this.$currentUser.next(new ConnectedUser({
-        specialAccount,
-        accountType: AccountType.SPECIAL_ACCOUNT,
-        email: specialAccount.connection.email,
-        createdAt: specialAccount.createdAt,
-      }));
-      this.ngxRolesService.addRole('SPECIAL_ACCOUNT', ['']);
-    }
+    this.$currentUser.next(new User(user));
+    this.ngxRolesService.addRole(user.accountType, ['']);
 
     setBugsnagUser(this.$currentUser.getValue());
-    this.managePermissionAndRole(permissions);
+    this.managePermissionAndRole(user.permissions);
   }
 }

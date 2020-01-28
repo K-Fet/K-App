@@ -21,6 +21,7 @@ const model = {
 
 module.exports = {
   name: 'acl.roles',
+  authorization: true,
   version: 1,
   mixins: [
     JoiDbActionsMixin(model.joi, 'roles'),

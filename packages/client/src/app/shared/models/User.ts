@@ -9,15 +9,15 @@ export class Barman {
   nickName: string;
   leaveAt?: Date;
   facebook: string;
-  godFather?: string & Barman;
+  godFather?: string | Barman;
   dateOfBirth: Date;
   flow: string;
   createdAt: Date;
   updatedAt: Date;
 
-  kommissions: string[] & Kommission[];
-  roles: string[] & Role[];
-  services: string[] & Service[];
+  kommissions: string[] | Kommission[];
+  roles: string[] | Role[];
+  services: string[] | Service[];
 }
 
 export class ServiceAccount {
@@ -31,7 +31,7 @@ export class User {
   _id?: number;
   email?: string;
   accountType: 'SERVICE' | 'BARMAN' | 'GUEST' = 'GUEST';
-  account: (Barman & ServiceAccount) | null;
+  account: Barman | ServiceAccount | null;
   permissions?: string[];
   createdAt?: Date;
   updatedAt?: Date;

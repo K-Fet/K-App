@@ -1,15 +1,17 @@
-import { Barman } from './Barman';
-import { Task } from './Task';
+import { User } from './User';
+import { ExcludeMethods } from '../../../utils';
 
 export class Kommission {
 
-  id: number;
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   name: string;
-  description: string;
-  barmen: Barman[];
-  tasks: Task[];
+  description?: string;
 
-  constructor(values: Object = {}) {
+  barmen: string[] | User[];
+
+  constructor(values: ExcludeMethods<Kommission>) {
     Object.assign(this, values);
   }
 }

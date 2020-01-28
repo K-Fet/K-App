@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Barman, Service, Task } from '../../shared/models';
+import { Barman, Service } from '../../shared/models';
 import { toURL } from './api-utils';
+import { MoleculerList } from '../../shared/models/MoleculerWrapper';
 
 @Injectable()
 export class BarmanService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Promise<Barman[]> {
+  getAll(): Promise<MoleculerList<>[]> {
     return this.http.get<Barman[]>(toURL('v1/barmen')).toPromise();
   }
 

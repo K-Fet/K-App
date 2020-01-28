@@ -5,7 +5,7 @@ const { ValidationError } = require('moleculer').Errors;
 class JoiValidator extends BaseValidator {
   compile(schema) {
     // Need to use a function because Joi is not cloneable
-    // The workaround might be dirty but should works
+    // The workaround might be dirty but should work
     if (typeof schema === 'function') {
       const compiledSchema = Joi.compile(schema());
       const checkFn = params => this.validate(params, compiledSchema);

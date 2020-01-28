@@ -17,7 +17,8 @@ module.exports = function joiDbActions(joiModel, name) {
           sort: Joi.string(),
           search: Joi.string(),
           searchField: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
+          // Remove query as it may be a security issue if published
+          query: Joi.object().forbidden(),
         }),
       },
       count: {
@@ -28,7 +29,8 @@ module.exports = function joiDbActions(joiModel, name) {
         params: () => Joi.object({
           search: Joi.string(),
           searchFields: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
+          // Remove query as it may be a security issue if published
+          query: Joi.object().forbidden(),
         }),
       },
       list: {
@@ -44,7 +46,8 @@ module.exports = function joiDbActions(joiModel, name) {
           sort: Joi.string(),
           search: Joi.string(),
           searchField: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
+          // Remove query as it may be a security issue if published
+          query: Joi.object().forbidden(),
         }),
       },
       create: {

@@ -58,7 +58,8 @@ module.exports = {
         sort: Joi.string(),
         search: Joi.string(),
         searchField: JOI_STRING_OR_STRING_ARRAY,
-        query: Joi.object(),
+        // Remove query as it may be a security issue if published
+        query: Joi.object().forbidden(),
       }).oxor('active', 'inactive'),
       async handler(ctx) {
         const params = this.sanitizeParams(ctx, ctx.params);

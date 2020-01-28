@@ -4,7 +4,9 @@ const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { BASE_UNIT } = require('../../constants');
-const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
+const {
+  MONGO_ID, UNIT_SCHEMA, JOI_ID, JOI_STRING_OR_STRING_ARRAY,
+} = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 const { ObjectId } = mongoose.Types;
@@ -88,6 +90,25 @@ module.exports = {
             id, details: 'This product has already received events/orders, it can only be archived',
           });
         }
+      },
+    },
+  },
+
+  actions: {
+    getFromShelf: {
+      rest: false,
+      permissions: ['inventory-products.read'],
+      params: () => Joi.object({
+        id: JOI_STRING_OR_STRING_ARRAY.required(),
+        populate: JOI_STRING_OR_STRING_ARRAY,
+        fields: JOI_STRING_OR_STRING_ARRAY,
+      }),
+      async handler(ctx) {
+        const { id } = ctx.params;
+
+        const shelfIds = Array.isArray(id) ? id : [id];
+
+        return this._find(ctx, { query: { shelf: { $in: shelfIds } } });
       },
     },
   },

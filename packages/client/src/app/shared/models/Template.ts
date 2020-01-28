@@ -1,25 +1,26 @@
-export interface TemplateDateUnit {
-  day: number;
-  hours: number;
-  minutes: number;
-}
+import { ExcludeMethods } from '../../../utils';
 
 export interface TemplateServiceUnit {
-  nbMax: number;
-  startAt: TemplateDateUnit;
-  endAt: TemplateDateUnit;
+  nbMax?: number;
+
+  startDay: number;
+  startHours: number;
+  startMinutes: number;
+
+  endDay: number;
+  endHours: number;
+  endMinutes: number;
 }
 
 export class Template {
 
-  id: number;
-  name: string;
+  _id?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  deletedAt?: Date;
+  name: string;
   services: TemplateServiceUnit[];
 
-  constructor(values: Object = {}) {
+  constructor(values: ExcludeMethods<Template>) {
     Object.assign(this, values);
   }
 }

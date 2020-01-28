@@ -2,6 +2,7 @@ const path = require('path');
 const { ServiceBroker } = require('moleculer');
 const PermissionGuard = require('moleculer-middleware-permissions');
 const JoiValidator = require('./utils/joi.validator');
+const FindEntityMiddleware = require('./middlewares/find-entity');
 const { loggerConfig } = require('../logger');
 const { PERMISSION_LIST } = require('./constants');
 
@@ -19,6 +20,7 @@ const broker = new ServiceBroker({
   },
   middlewares: [
     guard.middleware(),
+    FindEntityMiddleware,
   ],
   validator: new JoiValidator(),
 });

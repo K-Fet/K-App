@@ -1,19 +1,15 @@
-import { AssociationChanges, Permission } from '.';
+import { ExcludeMethods } from '../../../utils';
 
 export class Role {
 
-  id: number;
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   name: string;
-  description: string;
+  description?: string;
+  permissions?: string[];
 
-  // Association
-  permissions: Permission[];
-
-  _embedded: {
-    permissions?: AssociationChanges,
-  };
-
-  constructor(values: Object = {}) {
+  constructor(values: ExcludeMethods<Role>) {
     Object.assign(this, values);
   }
 }

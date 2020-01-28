@@ -29,9 +29,7 @@ module.exports = {
     populates: {
       async products(ids, docs, rule, ctx) {
         // Get all corresponding products
-        const { rows: products } = await ctx.call('inventory-management.products.list', {
-          pageSize: 1000, query: { shelf: { $in: docs.map(d => d._id) } },
-        });
+        const products = await ctx.call('inventory-management.products.getFromShelf', { id: docs.map(d => d._id) });
 
         const productMap = groupBy(products, p => p.shelf.toString());
 
