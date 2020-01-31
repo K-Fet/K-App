@@ -1,4 +1,4 @@
-import { Barman } from '.';
+import { User } from '.';
 
 export interface Service {
   _id?: string;
@@ -8,7 +8,7 @@ export interface Service {
   endAt: Date;
   nbMax?: number;
 
-  barmen?: string[] | Barman[];
+  barmen?: string[] | User[];
 }
 
 export function isServicePassed(service: Service): boolean {

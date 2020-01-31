@@ -9,6 +9,7 @@ const BASE_URL = toURL('v2/acl/v1/users');
 
 export interface UsersOptions extends MoleculerListOptions {
   accountType: 'SERVICE' | 'BARMAN';
+  onlyActive?: boolean;
 }
 
 @Injectable()

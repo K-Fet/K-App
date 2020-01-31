@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BarmanService } from '../../core/api-services/barman.service';
 import { AuthService } from '../../core/api-services/auth.service';
 import { ServiceService } from '../../core/api-services/service.service';
-import { ConnectedUser, Day, Service } from '../../shared/models';
+import { Day, isServicePassed, isUserBarman, Service, User } from '../../shared/models';
 import { ToasterService } from '../../core/services/toaster.service';
 
 @Component({
@@ -15,16 +14,15 @@ export class PlanMyServicesComponent implements OnInit {
   myServices: Service[];
   dayServices: Service[];
   days: Day[] = [];
-  user: ConnectedUser;
+  user: User;
 
   constructor(private serviceService: ServiceService,
-              private authService: AuthService,
-              private barmanService: BarmanService,
-              private toasterService: ToasterService) {}
+    private authService: AuthService,
+    private toasterService: ToasterService) {}
 
   ngOnInit(): void {
     // Get connected user
-    this.authService.$currentUser.subscribe((user: ConnectedUser) => {
+    this.authService.$currentUser.subscribe((user) => {
       this.user = user;
 
       // Get actual services of the connected user
@@ -66,17 +64,22 @@ export class PlanMyServicesComponent implements OnInit {
   }
 
   updateMyServices(): void {
-    if (this.user.barman) {
+    if (isUserBarman(this.user)) {
       this.serviceService.getWeek().subscribe(async (week) => {
-        const services = await this.barmanService.getServices(this.user.barman.id, week.start, week.end);
+        const { rows: services } = await this.serviceService.getFromBarman(this.user._id, {
+          startAt: week.start,
+          endAt: week.end,
+          pageSize: 1000,
+        });
+
         this.myServices = services.length > 0 ? services : undefined;
       });
     }
   }
 
   async addService(service: Service) {
-    if (this.user.barman) {
-      await this.barmanService.addService(this.user.barman.id, [service.id]);
+    if (isUserBarman(this.user)) {
+      await this.serviceService.addBarman(this.user._id, [service._id]);
       this.toasterService.showToaster('Service enregistré');
       this.updateMyServices();
       const dayNumber = this.getCurrentDayIndex();
@@ -89,7 +92,7 @@ export class PlanMyServicesComponent implements OnInit {
   }
 
   async removeService(service: Service) {
-    await this.barmanService.removeService(this.user.barman.id, [service.id]);
+    await this.serviceService.removeBarman(this.user._id, [service._id]);
     this.toasterService.showToaster('Service supprimé');
     this.updateMyServices();
     const dayNumber = this.getCurrentDayIndex();
@@ -97,14 +100,14 @@ export class PlanMyServicesComponent implements OnInit {
   }
 
   available(service: Service): boolean {
-    return !service.barmen || service.barmen.filter(barman => barman.id === this.user.barman.id).length === 0;
+    return !service.barmen || (service.barmen as User[]).filter(barman => barman._id === this.user._id).length === 0;
   }
 
   isPassed(service): boolean {
-    return new Service(service).isPassed();
+    return isServicePassed(service);
   }
 
-  getColor(service: Service): Object {
+  getColor(service: Service): string {
     return (service.barmen && service.barmen.length >= service.nbMax) ? 'red' : 'green';
   }
 

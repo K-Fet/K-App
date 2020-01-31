@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const { Errors: { MoleculerClientError } } = require('moleculer');
+const { isBefore } = require('date-fns');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const {
@@ -46,8 +48,8 @@ module.exports = {
   },
 
   actions: {
-    barman: {
-      rest: 'GET /barman/:id',
+    listBarman: {
+      rest: 'GET /barmen/:id',
       permissions: [
         'services.read',
         'barmen.read',
@@ -55,6 +57,8 @@ module.exports = {
         ctx => ctx.meta.user._id === ctx.params.id,
       ],
       params: () => Joi.object({
+        ...RANGE_SCHEMA,
+        id: JOI_ID.required(),
         populate: JOI_STRING_OR_STRING_ARRAY,
         fields: JOI_STRING_OR_STRING_ARRAY,
         page: Joi.number().integer().min(1),
@@ -62,16 +66,124 @@ module.exports = {
         sort: Joi.string(),
         search: Joi.string(),
         searchField: JOI_STRING_OR_STRING_ARRAY,
-        id: JOI_ID.required(),
+        // Remove query as it may be a security issue if published
+        query: Joi.object().forbidden(),
       }),
       async handler(ctx) {
         const params = this.sanitizeParams(ctx, ctx.params);
+
         return this._list(ctx, {
           ...params,
           query: { barmen: { $elemMath: ctx.params.id } },
         });
       },
     },
+
+    addBarman: {
+      rest: 'POST /barmen/:id',
+      permissions: [
+        'services.write',
+        // A barman can add services
+        ctx => ctx.meta.user._id === ctx.params.id,
+      ],
+      params: () => Joi.object({
+        services: Joi.array().items(JOI_ID).min(1).required(),
+        id: JOI_ID.required(),
+      }),
+      async handler(ctx) {
+        const { id, services } = ctx.params;
+        const barman = await ctx.call('v1.acl.users.get', { id });
+
+        if (barman.accountType !== 'BARMAN') {
+          throw new MoleculerClientError('Only barmen can be added to a service', 400, 'NotBarman');
+        }
+
+        if (barman.account.leaveAt && isBefore(barman.account.leaveAt, new Date())) {
+          throw new MoleculerClientError('This barman is not active at the moment', 400, 'NotActiveBarman');
+        }
+
+        const existing = await this.adapter.findByIds(services);
+
+        if (existing.length !== services.length) {
+          throw new MoleculerClientError(`Could not find ${existing.length - services.length} services.`, 400, 'UnknownService');
+        }
+
+        return this.adapter.updateMany(
+          { _id: { $in: services } },
+          { $push: { barmen: id } },
+        );
+      },
+    },
+
+    removeBarman: {
+      rest: 'POST /barmen/:id/remove',
+      permissions: [
+        'services.write',
+        // A barman can add services
+        ctx => ctx.meta.user._id === ctx.params.id,
+      ],
+      params: () => Joi.object({
+        services: Joi.array().items(JOI_ID).min(1).required(),
+        id: JOI_ID.required(),
+      }),
+      async handler(ctx) {
+        const { id, services } = ctx.params;
+        const barman = await ctx.call('v1.acl.users.get', { id });
+
+        if (barman.accountType !== 'BARMAN') {
+          throw new MoleculerClientError('Only barmen can be added to a service', 400, 'NotBarman');
+        }
+
+        if (barman.account.leaveAt && isBefore(barman.account.leaveAt, new Date())) {
+          throw new MoleculerClientError('This barman is not active at the moment', 400, 'NotActiveBarman');
+        }
+
+        const existing = await this.adapter.findByIds(services);
+
+        if (existing.length !== services.length) {
+          throw new MoleculerClientError(`Could not find ${existing.length - services.length} services.`, 400, 'UnknownService');
+        }
+
+        return this.adapter.updateMany(
+          { _id: { $in: services } },
+          { $pull: { barmen: id } },
+        );
+      },
+    },
+
+    listBarmen: {
+      rest: 'GET /barmen',
+      permissions: [
+        'services.read',
+        'barmen.read',
+      ],
+      params: () => Joi.object(RANGE_SCHEMA),
+      async handler(ctx) {
+        const { rows: activeBarmen } = await ctx.call('v1.acl.users.list', {
+          onlyActive: true,
+          accountType: 'BARMAN',
+          pageSize: 1000,
+        });
+
+        const params = this.sanitizeParams(ctx, ctx.params);
+        const { rows: services } = await this._list(ctx, {
+          ...params,
+          pageSize: 10000,
+          query: {
+            barmen: { $elemMath: { $in: activeBarmen.map(b => b._id) } },
+          },
+        });
+
+        return activeBarmen.map(b => ({
+          ...b,
+          account: {
+            ...b.account,
+            services: services.filter(s => s.barmen.includes(b._id)),
+          },
+        }));
+      },
+    },
+
     list: {
       params: () => Joi.object({
         ...RANGE_SCHEMA,

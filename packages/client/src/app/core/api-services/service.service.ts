@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Day, Service } from '../../shared/models';
+import { Day, Service, User } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addWeeks, format } from 'date-fns';
 import { createHttpParams, getCurrentWeek } from '../../shared/utils';
@@ -46,6 +46,28 @@ export class ServiceService {
 
   async remove(id: string): Promise<Service> {
     return await this.http.delete<Service>(`${BASE_URL}/${id}`).toPromise();
+  }
+
+  async addBarman(userId: string, services: string[]): Promise<Service[]> {
+    return this.http.post<Service[]>(`${BASE_URL}/barmen/${userId}`, { services }).toPromise();
+  }
+
+  async removeBarman(userId: string, services: string[]): Promise<Service[]> {
+    return this.http.post<Service[]>(`${BASE_URL}/barmen/${userId}/remove`, { services }).toPromise();
+  }
+
+  async getAllActiveBarmen(startAt: Date, endAt: Date): Promise<User[]> {
+    return this.http.get<User[]>(
+      `${BASE_URL}/barmen`,
+      { params: createHttpParams({ startAt, endAt }) },
+    ).toPromise();
+  }
+
+  async getFromBarman(userId: string, options: ServicesOptions): Promise<MoleculerList<Service>> {
+    return this.http.get<MoleculerList<Service>>(
+      `${BASE_URL}/barmen/${userId}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
   async getPlanning(start: Date, end: Date): Promise<Day[]> {

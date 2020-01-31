@@ -33,7 +33,7 @@ export enum AccountType {
 }
 
 export interface User {
-  _id?: number;
+  _id?: string;
   email?: string;
   accountType: AccountType;
   account: Barman | ServiceAccount | null;
