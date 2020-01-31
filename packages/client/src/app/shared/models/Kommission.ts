@@ -1,8 +1,6 @@
 import { User } from './User';
-import { ExcludeMethods } from '../../../utils';
 
-export class Kommission {
-
+export interface Kommission {
   _id?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -10,8 +8,4 @@ export class Kommission {
   description?: string;
 
   barmen: string[] | User[];
-
-  constructor(values: ExcludeMethods<Kommission>) {
-    Object.assign(this, values);
-  }
 }

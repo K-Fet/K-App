@@ -71,21 +71,7 @@ module.exports = {
         if (params.inactive) {
           params.query = { 'registrations.year': { $ne: getCurrentSchoolYear() } };
         }
-
-        const countParams = { ...params };
-        // Remove pagination params
-        if (countParams.limit) countParams.limit = null;
-        if (countParams.offset) countParams.offset = null;
-
-        this.logger.debug('Calling members.list with %o', params);
-        const [rows, count] = await Promise.all([this.adapter.find(params), this.adapter.count(countParams)]);
-        return {
-          rows: await this.transformDocuments(ctx, params, rows),
-          total: count,
-          page: params.page,
-          pageSize: params.pageSize,
-          totalPages: Math.floor((count + params.pageSize - 1) / params.pageSize),
-        };
+        return this._list(ctx, params);
       },
     },
 

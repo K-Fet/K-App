@@ -25,15 +25,7 @@ export class MembersService {
   list(options: MembersOptions = {}): Promise<MoleculerList<Member>> {
     return this.http.get<MoleculerList<Member>>(
       BASE_URL,
-      {
-        params: createHttpParams({
-          ...options,
-          active: options.active && options.active.toString(),
-          inactive: options.inactive && options.inactive.toString(),
-          page: options.page && options.page.toString(),
-          pageSize: options.pageSize && options.pageSize.toString(),
-        }),
-      },
+      { params: createHttpParams({ ...options }) },
     ).toPromise();
   }
 

@@ -19,14 +19,7 @@ export class UsersService {
   list(options: UsersOptions): Promise<MoleculerList<User>> {
     return this.http.get<MoleculerList<User>>(
       BASE_URL,
-      {
-        params: createHttpParams({
-          ...options,
-          accountType: options.accountType,
-          page: options.page && options.page.toString(),
-          pageSize: options.pageSize && options.pageSize.toString(),
-        }),
-      },
+      { params: createHttpParams({ ...options }) },
     ).toPromise();
   }
 

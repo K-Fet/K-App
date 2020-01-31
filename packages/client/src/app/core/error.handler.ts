@@ -26,6 +26,7 @@ export class AppErrorHandler implements ErrorHandler {
     let realError = error;
 
     // Handle case where HttpErrorResponse is wrapped inside promise error
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     if (error.promise && error.rejection) realError = error.rejection;
 

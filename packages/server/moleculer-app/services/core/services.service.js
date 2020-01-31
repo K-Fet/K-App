@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const {
-  MONGO_ID, createSchema, JOI_ID, JOI_STRING_OR_STRING_ARRAY,
+  MONGO_ID, createSchema, JOI_ID, JOI_STRING_OR_STRING_ARRAY, RANGE_SCHEMA,
 } = require('../../../utils');
 
 const { ObjectID } = mongoose.Schema.Types;
@@ -70,6 +70,29 @@ module.exports = {
           ...params,
           query: { barmen: { $elemMath: ctx.params.id } },
         });
+      },
+    },
+    list: {
+      params: () => Joi.object({
+        ...RANGE_SCHEMA,
+        populate: JOI_STRING_OR_STRING_ARRAY,
+        fields: JOI_STRING_OR_STRING_ARRAY,
+        page: Joi.number().integer().min(1),
+        pageSize: Joi.number().integer().min(0),
+        sort: Joi.string(),
+        search: Joi.string(),
+        searchField: JOI_STRING_OR_STRING_ARRAY,
+        // Remove query as it may be a security issue if published
+        query: Joi.object().forbidden(),
+      }),
+      async handler(ctx) {
+        const params = this.sanitizeParams(ctx, ctx.params);
+
+        params.query = {
+          startAt: { $gte: params.startAt },
+          endAt: { $lte: params.endAt },
+        };
+        return this._list(ctx, params);
       },
     },
   },

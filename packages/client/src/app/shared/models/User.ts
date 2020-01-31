@@ -1,9 +1,8 @@
 import { Kommission } from './Kommission';
 import { Role } from './Role';
 import { Service } from './Service';
-import { ExcludeMethods } from '../../../utils';
 
-export class Barman {
+export interface Barman {
   firstName: string;
   lastName: string;
   nickName: string;
@@ -20,35 +19,38 @@ export class Barman {
   services: string[] | Service[];
 }
 
-export class ServiceAccount {
+export interface ServiceAccount {
   code: string;
   description: string;
   permissions: string[];
 }
 
-export class User {
-
+export interface User {
   _id?: number;
   email?: string;
-  accountType: 'SERVICE' | 'BARMAN' | 'GUEST' = 'GUEST';
+  accountType: 'SERVICE' | 'BARMAN' | 'GUEST';
   account: Barman | ServiceAccount | null;
   permissions?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+}
 
-  constructor(values: ExcludeMethods<User>) {
-    Object.assign(this, values);
-  }
+export function isUserGuest(user: User): boolean {
+  return user.accountType === 'GUEST';
+}
 
-  public isGuest(): boolean {
-    return this.accountType === 'GUEST';
-  }
+export function isUserBarman(user: User): boolean {
+  return user.accountType === 'BARMAN';
+}
 
-  public isBarman(): boolean {
-    return this.accountType === 'BARMAN';
-  }
+export function isActiveBarman(user: User): boolean {
+  if (!isUserBarman(user)) return false;
 
-  public isServiceAccount(): boolean {
-    return this.accountType === 'SERVICE';
-  }
+  const barman = user.account as Barman;
+  if (!barman.leaveAt) return true;
+  return Date.now() < barman.leaveAt.getTime();
+}
+
+export function isUserServiceAccount(user: User): boolean {
+  return user.accountType === 'SERVICE';
 }

@@ -15,13 +15,7 @@ export class KommissionService {
   list(options: MoleculerListOptions): Promise<MoleculerList<Kommission>> {
     return this.http.get<MoleculerList<Kommission>>(
       BASE_URL,
-      {
-        params: createHttpParams({
-          ...options,
-          page: options.page && options.page.toString(),
-          pageSize: options.pageSize && options.pageSize.toString(),
-        }),
-      },
+      { params: createHttpParams({ ...options }) },
     ).toPromise();
   }
 

@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Barman, Day, Service } from '../../shared/models';
+import { Day, Service } from '../../shared/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addWeeks, format } from 'date-fns';
-import { getCurrentWeek } from '../../shared/utils';
+import { createHttpParams, getCurrentWeek } from '../../shared/utils';
 import { fr } from 'date-fns/locale';
 import { toURL } from './api-utils';
+import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+
+const BASE_URL = toURL('v2/core/v1/services');
+
+export interface ServicesOptions extends MoleculerListOptions {
+  startAt: Date;
+  endAt: Date;
+}
 
 @Injectable()
 export class ServiceService {
@@ -14,53 +22,40 @@ export class ServiceService {
 
   constructor(private http: HttpClient) { }
 
-  get(start: Date, end: Date): Promise<Service[]> {
-    return this.http.get<Service[]>(toURL('v1/services'), {
-      params: {
-        startAt: start.toISOString(),
-        endAt: end.toISOString(),
-      },
-    }).toPromise();
+  list(options: ServicesOptions): Promise<MoleculerList<Service>> {
+    return this.http.get<MoleculerList<Service>>(
+      BASE_URL,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
-  getById(id: number): Promise<Service> {
-    return this.http.get<Service>(toURL(`v1/services/${id}`)).toPromise();
+  get(id: string): Promise<Service> {
+    return this.http.get<Service>(`${BASE_URL}/${id}`).toPromise();
   }
 
-  getBarmen(id: number): Promise<Barman[]> {
-    return this.http.get<Barman[]>(toURL(`v1/services/${id}/barmen`)).toPromise();
+  async create(service: Service): Promise<Service> {
+    return await this.http.post<Service>(BASE_URL, service).toPromise();
   }
 
-  create(services: Service[]): Promise<Service[]> {
-    return this.http.post<Service[]>(toURL('v1/services'), services).toPromise();
+  async update(service: Service): Promise<Service> {
+    return await this.http.put<Service>(`${BASE_URL}/${service._id}`, service).toPromise();
   }
 
-  update(service: Service): Promise<Service> {
-    return this.http.put<Service>(toURL(`v1/services/${service.id}`), service).toPromise();
-  }
-
-  delete(id: number): Promise<Service> {
-    return this.http.post<Service>(toURL(`v1/services/${id}/delete`), null).toPromise();
-  }
-
-  getWeek(): Observable<{ start: Date, end: Date }> {
-    return new Observable((week) => {
-      this.$weekInterval.subscribe((weekInterval) => {
-        const current = getCurrentWeek();
-        week.next({
-          start: addWeeks(current.start, weekInterval),
-          end: addWeeks(current.end, weekInterval),
-        });
-      });
-    });
+  async remove(id: string): Promise<Service> {
+    return await this.http.delete<Service>(`${BASE_URL}/${id}`).toPromise();
   }
 
   async getPlanning(start: Date, end: Date): Promise<Day[]> {
     const days: Day[] = [];
 
-    const services = await this.get(start, end);
+    const services = await this.list({
+      startAt: start,
+      endAt: end,
+      pageSize: 10_000,
+      populate: 'barmen',
+    });
 
-    services.forEach((service) => {
+    services.rows.forEach((service) => {
       const name = format(service.startAt, 'EEE', { locale: fr });
       const day = days.find(currentDay => currentDay.name === name);
 
@@ -74,5 +69,17 @@ export class ServiceService {
       });
     });
     return days;
+  }
+
+  getWeek(): Observable<{ start: Date; end: Date }> {
+    return new Observable((week) => {
+      this.$weekInterval.subscribe((weekInterval) => {
+        const current = getCurrentWeek();
+        week.next({
+          start: addWeeks(current.start, weekInterval),
+          end: addWeeks(current.end, weekInterval),
+        });
+      });
+    });
   }
 }

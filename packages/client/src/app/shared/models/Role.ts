@@ -1,6 +1,4 @@
-import { ExcludeMethods } from '../../../utils';
-
-export class Role {
+export interface Role {
 
   _id?: string;
   createdAt?: Date;
@@ -8,8 +6,4 @@ export class Role {
   name: string;
   description?: string;
   permissions?: string[];
-
-  constructor(values: ExcludeMethods<Role>) {
-    Object.assign(this, values);
-  }
 }

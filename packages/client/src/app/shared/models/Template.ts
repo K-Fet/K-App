@@ -1,5 +1,3 @@
-import { ExcludeMethods } from '../../../utils';
-
 export interface TemplateServiceUnit {
   nbMax?: number;
 
@@ -12,15 +10,11 @@ export interface TemplateServiceUnit {
   endMinutes: number;
 }
 
-export class Template {
+export interface Template {
 
   _id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   name: string;
   services: TemplateServiceUnit[];
-
-  constructor(values: ExcludeMethods<Template>) {
-    Object.assign(this, values);
-  }
 }
