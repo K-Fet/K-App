@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BarmanService } from '../../core/api-services/barman.service';
 import { AuthService } from '../../core/api-services/auth.service';
 import { ServiceService } from '../../core/api-services/service.service';
-import { ConnectedUser, Service } from '../../shared/models';
+import { isUserBarman, Service, User } from '../../shared/models';
 
 @Component({
   selector: 'app-my-services',
@@ -11,19 +10,22 @@ import { ConnectedUser, Service } from '../../shared/models';
 export class MyServicesComponent implements OnInit {
 
   myServices: Service[];
-  user: ConnectedUser;
+  user: User;
 
   constructor(private authService: AuthService,
-              private barmanService: BarmanService,
-              private serviceService: ServiceService) {
+    private serviceService: ServiceService) {
   }
 
   ngOnInit(): void {
-    this.authService.$currentUser.subscribe((user: ConnectedUser) => {
+    this.authService.$currentUser.subscribe((user) => {
       this.user = user;
-      if (this.user.isBarman()) {
+      if (isUserBarman(user)) {
         this.serviceService.getWeek().subscribe(async (week) => {
-          const services = await this.barmanService.getServices(this.user.barman.id, week.start, week.end);
+          const { rows: services } = await this.serviceService.getFromBarman(this.user._id, {
+            startAt: week.start,
+            endAt: week.end,
+            pageSize: 1000,
+          });
           this.myServices = services.length > 0 ? services : undefined;
         });
       }

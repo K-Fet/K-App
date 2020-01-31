@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const { xor } = require('lodash');
 const { Errors: { MoleculerClientError, MoleculerServerError } } = require('moleculer');
 const DbMixin = require('../../mixins/db-service.mixin');
 const DisableMixin = require('../../mixins/disable-actions.mixin');
@@ -67,7 +68,7 @@ const model = {
           firstName: Joi.string().required(),
           lastName: Joi.string().required(),
           nickName: Joi.string().required(),
-          leaveAt: Joi.date().max('now').allow(null),
+          leaveAt: Joi.date().allow(null),
           facebook: Joi.string().regex(
             /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w-]*\/)*([\w\-.]+)(\/)?/i,
           ),
@@ -91,19 +92,24 @@ module.exports = {
   ],
   hooks: {
     before: {
-      update: (ctx) => {
-        const user = ctx.locals.entity;
+      create: ['limitToServiceAccounts'],
+      update: [
+        (ctx) => {
+          const user = ctx.locals.entity;
 
-        // Prevent any change to fixed fields
-        [
-          'password',
-          'passwordToken',
-          'emailToken',
-          'accountType',
-        ].forEach((field) => {
-          ctx.params[field] = user[field];
-        });
-      },
+          // Prevent any change to fixed fields
+          [
+            'password',
+            'passwordToken',
+            'emailToken',
+            'accountType',
+          ].forEach((field) => {
+            ctx.params[field] = user[field];
+          });
+        },
+        'limitToServiceAccounts',
+      ],
+      remove: ['limitToServiceAccounts'],
       resetPassword: ['getUserByEmail'],
       definePassword: ['getUserByEmail'],
     },
@@ -118,6 +124,30 @@ module.exports = {
       const { id } = ctx.params;
 
       return _id === id;
+    },
+
+    // For actions create, remove and update
+    // If accountType === SERVICE limit to service account
+    // Also prevent a service account to edit itself (unless special perm) or add itself more perm
+    // than it currently have
+    limitToServiceAccounts(ctx) {
+      const { accountType: currentType } = ctx.meta.user;
+      const { accountType } = ctx.locals.entity || ctx.params;
+
+      if (accountType !== 'SERVICE') return;
+
+      if (currentType !== 'SERVICE') {
+        throw new MoleculerClientError('Only a service account can update another one', 400, 'NotServiceAccount');
+      }
+
+      const allowedPermissions = ctx.meta.userPermissions;
+      const diff = ctx.locals.entity
+        ? xor(ctx.locals.entity.account.permissions, ctx.params.account.permissions)
+        : ctx.params.account.permissions;
+
+      if (diff.some(p => !allowedPermissions.includes(p))) {
+        throw new MoleculerClientError('Tried to set permissions that you don\'t have', 400, 'NotEnoughPermissions');
+      }
     },
 
     removeSensitiveData(ctx, res) {
@@ -178,6 +208,7 @@ module.exports = {
     create: {
       // Remove some fields that should not be set now
       params: () => model.joi.keys({
+        password: Joi.any().forbidden(),
         passwordToken: Joi.any().forbidden(),
         emailToken: Joi.any().forbidden(),
       }),
@@ -257,6 +288,9 @@ module.exports = {
 
     me: {
       rest: 'GET /me',
+      permissions: [
+        '$owner',
+      ],
       params: () => Joi.object({}),
       async handler(ctx) {
         ctx.params.id = ctx.meta.user.id;

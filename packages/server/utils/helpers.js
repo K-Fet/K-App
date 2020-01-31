@@ -203,6 +203,18 @@ function groupBy(list, keyGetter) {
   return map;
 }
 
+/**
+ * Return a list of all permissions enabled on an user.
+ * @param user
+ * @return {Array<string>}
+ */
+function getAllPermissionsFromUser(user) {
+  if (!user) return [];
+
+  const { roles = [], permissions = [] } = user.account;
+  return [...new Set([...roles.flatMap(r => r.permissions), ...permissions]).entries()];
+}
+
 function createSchema(schemaObj, options, { textIndex } = {}) {
   const schema = mongoose.Schema(schemaObj, options);
 
@@ -221,6 +233,7 @@ module.exports = {
   joiThrough,
   groupBy,
   createSchema,
+  getAllPermissionsFromUser,
   ID_SCHEMA,
   RANGE_SCHEMA,
   MONGO_ID,

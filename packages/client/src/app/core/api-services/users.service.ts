@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
-import { User } from '../../shared/models';
+import { AccountType, User } from '../../shared/models';
 import { toURL } from './api-utils';
 import { createHttpParams } from '../../shared/utils';
+import { Subject } from 'rxjs';
 
 const BASE_URL = toURL('v2/acl/v1/users');
 
 export interface UsersOptions extends MoleculerListOptions {
-  accountType: 'SERVICE' | 'BARMAN';
+  accountType: AccountType;
   onlyActive?: boolean;
 }
 
 @Injectable()
 export class UsersService {
+  private refreshSubject = new Subject<void>();
+
+  public refresh$ = this.refreshSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -32,15 +36,21 @@ export class UsersService {
   }
 
   async create(user: User): Promise<User> {
-    return await this.http.post<User>(BASE_URL, user).toPromise();
+    const newUser = await this.http.post<User>(BASE_URL, user).toPromise();
+    this.refreshSubject.next();
+    return newUser;
   }
 
   async update(user: User): Promise<User> {
-    return await this.http.put<User>(`${BASE_URL}/${user._id}`, user).toPromise();
+    const updatedUser = await this.http.put<User>(`${BASE_URL}/${user._id}`, user).toPromise();
+    this.refreshSubject.next();
+    return updatedUser;
   }
 
   async remove(id: string): Promise<User> {
-    return await this.http.delete<User>(`${BASE_URL}/${id}`).toPromise();
+    const user = await this.http.delete<User>(`${BASE_URL}/${id}`).toPromise();
+    this.refreshSubject.next();
+    return user;
   }
 
   me(): Promise<User> {

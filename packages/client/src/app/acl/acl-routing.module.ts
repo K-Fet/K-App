@@ -4,16 +4,16 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const routes: Routes = [
   {
-    path: 'special-accounts',
-    data: { permissions: { only: ['specialaccount:read'] } },
-    canLoad: [NgxPermissionsGuard],
-    loadChildren: () => import('./special-accounts/special-accounts.module').then(m => m.SpecialAccountsModule),
-  },
-  {
     path: 'roles',
-    data: { permissions: { only: ['role:read'] } },
+    data: { permissions: { only: ['roles:read'] } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule),
+  },
+  {
+    path: 'users',
+    data: { permissions: { only: ['users:read'] } },
+    canLoad: [NgxPermissionsGuard],
+    loadChildren: () => import('./users/users.module').then(m => m.UsersModule),
   },
 ];
 

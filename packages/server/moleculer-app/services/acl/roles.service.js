@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
+const { xor } = require('lodash');
+const { Errors: { MoleculerClientError } } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
+const DisableMixin = require('../../mixins/disable-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { MONGO_ID, MONGOOSE_INTERNALS, createSchema } = require('../../../utils');
 
@@ -24,9 +27,33 @@ module.exports = {
   authorization: true,
   version: 1,
   mixins: [
+    DisableMixin(['insert']),
     JoiDbActionsMixin(model.joi, 'roles'),
     DbMixin(model.mongoose),
   ],
+
+  hooks: {
+    before: {
+      update: ['hasEnoughPermissions'],
+      create: ['hasEnoughPermissions'],
+    },
+  },
+
+  methods: {
+    // Prevent adding/removing permissions that the user
+    // does not have
+    hasEnoughPermissions(ctx) {
+      const { userPermissions } = ctx.meta;
+      const { permissions: newPermissions } = ctx.params;
+      const { entity } = ctx.locals;
+
+      const diff = xor(entity ? entity.permissions : [], newPermissions);
+
+      if (diff.some(p => !userPermissions.include(p))) {
+        throw new MoleculerClientError('Tried to set permissions that you don\'t have', 400, 'NotEnoughPermissions');
+      }
+    },
+  },
 
   settings: {
     rest: '/v1/roles',

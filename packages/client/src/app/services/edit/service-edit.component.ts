@@ -11,7 +11,7 @@ import { Service } from '../../shared/models';
 export class ServiceEditComponent {
 
   serviceForm: FormGroup;
-  id: number;
+  id: string;
 
   constructor(private serviceService: ServiceService,
               private toasterService: ToasterService,
@@ -22,7 +22,7 @@ export class ServiceEditComponent {
     this.createForm();
     this.route.params.subscribe(async (params) => {
       this.id = params['id'];
-      const service = await this.serviceService.getById(+this.id);
+      const service = await this.serviceService.get(this.id);
       this.serviceForm.get('startAt').setValue(service.startAt);
       this.serviceForm.get('endAt').setValue(service.endAt);
       this.serviceForm.get('nbMax').setValue(service.nbMax);
@@ -37,12 +37,13 @@ export class ServiceEditComponent {
     });
   }
 
-  async edit() {
-    const service = new Service();
-    service.id = this.id;
-    service.startAt = this.serviceForm.value.startAt;
-    service.endAt = this.serviceForm.value.endAt;
-    service.nbMax = this.serviceForm.value.nbMax;
+  async edit(): Promise<void> {
+    const service: Service = {
+      _id: this.id,
+      startAt: this.serviceForm.value.startAt,
+      endAt: this.serviceForm.value.endAt,
+      nbMax: this.serviceForm.value.nbMax,
+    };
 
     await this.serviceService.update(service);
     this.toasterService.showToaster('Service modifié');

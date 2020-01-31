@@ -28,11 +28,11 @@ export class OpenServicesComponent implements OnInit {
   generalFormGroup: FormGroup;
 
   constructor(private templateService: TemplateService,
-              private toasterService: ToasterService,
-              private serviceService: ServiceService,
-              private formBuilder: FormBuilder,
-              public dialog: MatDialog,
-              private router: Router) {
+    private toasterService: ToasterService,
+    private serviceService: ServiceService,
+    private formBuilder: FormBuilder,
+    public dialog: MatDialog,
+    private router: Router) {
     this.createForms();
   }
 
@@ -100,10 +100,10 @@ export class OpenServicesComponent implements OnInit {
     return null;
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.onFormChanges();
     // Get templates
-    this.templates = await this.templateService.getAll();
+    this.templates = (await this.templateService.list({ pageSize: 1000 })).rows;
   }
 
   onFormChanges(): void {
@@ -111,8 +111,7 @@ export class OpenServicesComponent implements OnInit {
     this.templateSelectorFormGroup.valueChanges.subscribe((val) => {
       if (val.templateSelectorFormControl) {
         (val.templateSelectorFormControl as Template).services.forEach((service) => {
-          let startAt = templateDateToDate(service.startAt);
-          let endAt = templateDateToDate(service.endAt);
+          let { startAt, endAt } = templateDateToDate(service);
 
           while (isBefore(startAt, firstDayOfNextWeek)) {
             startAt = addWeeks(startAt, 1);
@@ -125,12 +124,16 @@ export class OpenServicesComponent implements OnInit {
     });
   }
 
-  async createServices() {
+  async createServices(): Promise<void> {
     const services: Service[] = this.servicesFormArray.controls.map((formGroup) => {
       return this.prepareService((formGroup as FormGroup).controls);
     });
 
-    const actualServices = await this.serviceService.get(services[0].startAt, services[services.length - 1].endAt);
+    const { rows: actualServices } = await this.serviceService.list({
+      startAt: services[0].startAt,
+      endAt: services[services.length - 1].endAt,
+      pageSize: 10000,
+    });
     if (actualServices.length === 0) return this.callServer(services);
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -145,17 +148,17 @@ export class OpenServicesComponent implements OnInit {
     if (result) this.callServer(services);
   }
 
-  async callServer(services: any) {
-    await this.serviceService.create(services);
+  async callServer(services: Service[]): Promise<void> {
+    await this.serviceService.insert(services);
     this.toasterService.showToaster('Nouveaux services enregistrés');
     this.router.navigate(['/']);
   }
 
   prepareService(controls): Service {
-    return new Service({
+    return {
       startAt: controls.startAtFormControl.value,
       endAt: controls.endAtFormControl.value,
       nbMax: controls.nbMaxFormControl.value,
-    });
+    };
   }
 }

@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -48,7 +47,11 @@ export class ServiceListComponent implements OnInit {
 
   update(): void {
     this.serviceService.getWeek().subscribe(async (week) => {
-      const services = await this.serviceService.get(week.start, week.end);
+      const { rows: services } = await this.serviceService.list({
+        startAt: week.start,
+        endAt: week.end,
+        pageSize: 1000,
+      });
       this.servicesData = new MatTableDataSource(services);
       this.servicesData.paginator = this.paginator;
       this.servicesData.sort = this.sort;
@@ -56,16 +59,16 @@ export class ServiceListComponent implements OnInit {
   }
 
   edit(service: Service): void {
-    this.router.navigate(['/services/services-manager/', service.id]);
+    this.router.navigate(['/services/services-manager/', service._id]);
   }
 
-  async delete(service: Service) {
-    await this.serviceService.delete(service.id);
+  async delete(service: Service): Promise<void> {
+    await this.serviceService.remove(service._id);
     this.toasterService.showToaster('Service supprimé');
     this.update();
   }
 
-  async openConfirmationDialog(service: Service) {
+  async openConfirmationDialog(service: Service): Promise<void> {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {

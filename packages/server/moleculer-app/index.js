@@ -5,12 +5,10 @@ const JoiValidator = require('./utils/joi.validator');
 const FindEntityMiddleware = require('./middlewares/find-entity');
 const { loggerConfig } = require('../logger');
 const { PERMISSION_LIST } = require('./constants');
+const { getAllPermissionsFromUser } = require('../utils');
 
 const guard = new PermissionGuard({
-  getUserPermissions: (ctx) => {
-    const { roles = [], permissions = [] } = ctx.meta.user.account;
-    return [...new Set([...roles.flatMap(r => r.permissions), ...permissions]).entries()];
-  },
+  getUserPermissions: ctx => getAllPermissionsFromUser(ctx.meta.user),
 });
 
 const broker = new ServiceBroker({

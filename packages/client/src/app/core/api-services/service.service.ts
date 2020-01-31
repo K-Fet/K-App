@@ -40,6 +40,10 @@ export class ServiceService {
     return await this.http.post<Service>(BASE_URL, service).toPromise();
   }
 
+  async insert(services: Service[]): Promise<Service[]> {
+    return await this.http.post<Service[]>(`${BASE_URL}/insert`, { entities: services }).toPromise();
+  }
+
   async update(service: Service): Promise<Service> {
     return await this.http.put<Service>(`${BASE_URL}/${service._id}`, service).toPromise();
   }

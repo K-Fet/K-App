@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const xhub = require('express-x-hub');
 const conf = require('nconf');
 const util = require('util');
+const { getAllPermissionsFromUser } = require('../../utils');
 
 const { UnAuthorizedError, ERR_INVALID_TOKEN, ERR_NO_TOKEN } = ApiGateway.Errors;
 const jwtVerify = util.promisify(jwt.verify);
@@ -146,9 +147,11 @@ module.exports = {
       // Check token
       try {
         const { userId, _id } = await ctx.call('v1.acl.auth.check', { id: decoded.jit });
+        const user = await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' });
 
+        ctx.meta.userPermissions = getAllPermissionsFromUser(user);
         ctx.meta.jit = _id;
-        return await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' });
+        return user;
       } catch (e) {
         ctx.meta.authenticationError = ERR_INVALID_TOKEN;
         return null;

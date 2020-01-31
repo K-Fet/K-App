@@ -1,0 +1,105 @@
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <!-- HEADER -->
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <h1 class="title">Liste des utilisateurs</h1>
+    <div fxFlexAlign="center">
+      <button mat-stroked-button [routerLink]="[ {outlets: { modal: 'newuser' } } ]">Nouveau</button>
+    </div>
+  </div>
+
+  <!-- SEARCH & FILTER -->
+  <div
+    fxLayout="row"
+    fxLayout.lt-sm="column"
+    fxFlexAlign="center"
+    fxLayoutGap.gt-xs="10px"
+  >
+    <mat-form-field appearance="outline" fxFlex.gt-xs="300px">
+      <mat-label>Rechercher ...</mat-label>
+      <input matInput autofocus #input>
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select [(value)]="selectedAccountType" (selectionChange)="loadUsersPage()">
+        <mat-option value="BARMAN">Barman</mat-option>
+        <mat-option value="SERVICE">Compte de service</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- TABLE -->
+  <div
+    fxLayoutAlign="center"
+  >
+    <div
+      style="width: 100%; max-width: 1000px !important"
+      fxLayout="column"
+      class="table-spinner-container with-paginator"
+    >
+      <div class="table-spinner" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+      <table mat-table
+             [dataSource]="dataSource"
+             matSort
+             matSortActive="updatedAt"
+             matSortDirection="desc"
+             matSortDisableClear
+             fxFlex
+      >
+        <ng-container matColumnDef="nickname" *ngIf="selectedAccountType === 'BARMAN'">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Surnom</mat-header-cell>
+          <mat-cell *matCellDef="let user">{{user.account.nickName}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName" *ngIf="selectedAccountType === 'BARMAN'">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.account.lastName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName" *ngIf="selectedAccountType === 'BARMAN'">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.account.firstName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email" *ngIf="selectedAccountType === 'SERVICE'">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="description" *ngIf="selectedAccountType === 'SERVICE'">
+          <mat-header-cell *matHeaderCellDef> Description</mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.account.description}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="updatedAt">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Dernière modification</mat-header-cell>
+          <mat-cell *matCellDef="let user">{{user.updatedAt | date:'d LLLL yyyy' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let user">
+            <div fxLayout="row">
+              <button mat-icon-button (click)="edit(user)" *ngxPermissionsOnly="['users:write']">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="view(user)">
+                <mat-icon>zoom_in</mat-icon>
+              </button>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </table>
+      <mat-paginator
+        [length]="dataSource.total"
+        [pageSize]="dataSource.pageSize"
+        [pageSizeOptions]="[10, 25, 100]">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

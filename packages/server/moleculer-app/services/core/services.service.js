@@ -52,7 +52,7 @@ module.exports = {
       rest: 'GET /barmen/:id',
       permissions: [
         'services.read',
-        'barmen.read',
+        'users.read',
         // A barman can see its own services
         ctx => ctx.meta.user._id === ctx.params.id,
       ],
@@ -155,7 +155,7 @@ module.exports = {
       rest: 'GET /barmen',
       permissions: [
         'services.read',
-        'barmen.read',
+        'users.read',
       ],
       params: () => Joi.object(RANGE_SCHEMA),
       async handler(ctx) {

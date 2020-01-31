@@ -19,6 +19,7 @@
     "express-rate-limit": "^2.14.2",
     "express-x-hub": "^1.0.4",
     "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.15",
     "moleculer": "^0.14.0-beta5",
     "moleculer-db": "0.8.2",
     "moleculer-db-adapter-mongoose": "^0.8.2",

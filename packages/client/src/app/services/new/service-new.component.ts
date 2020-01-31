@@ -13,8 +13,8 @@ export class ServiceNewComponent {
   serviceForm: FormGroup;
 
   constructor(private serviceService: ServiceService,
-              private toasterService: ToasterService,
-              private router: Router) { }
+    private toasterService: ToasterService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -29,12 +29,14 @@ export class ServiceNewComponent {
     });
   }
 
-  async add() {
-    const service = new Service();
-    service.startAt = this.serviceForm.value.startAt;
-    service.endAt = this.serviceForm.value.endAt;
-    service.nbMax = this.serviceForm.value.nbMax;
-    await this.serviceService.create([service]);
+  async add(): Promise<void> {
+    const service: Service = {
+      startAt: this.serviceForm.value.startAt,
+      endAt: this.serviceForm.value.endAt,
+      nbMax: this.serviceForm.value.nbMax,
+    };
+    await this.serviceService.create(service);
+
     this.toasterService.showToaster('Service créé');
     this.router.navigate(['/services/services-manager']);
   }
