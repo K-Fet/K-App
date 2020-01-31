@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AccountType, ConnectedUser } from '../../shared/models';
+import { AccountType, isUserBarman, isUserGuest, isUserServiceAccount, User } from '../../shared/models';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { AuthService } from '../../core/api-services/auth.service';
 import { Router } from '@angular/router';
@@ -59,7 +59,7 @@ const NAV_MENUS: SubMenu[] = [
   },
   {
     name: 'Gestion des stocks',
-    accountType: [AccountType.BARMAN, AccountType.SPECIAL_ACCOUNT],
+    accountType: [AccountType.BARMAN, AccountType.SERVICE],
     links: [
       { name: 'Fournisseurs', route: '/inventory-management/providers' },
       { name: 'Produits', route: '/inventory-management/products' },
@@ -78,7 +78,7 @@ const NAV_MENUS: SubMenu[] = [
   },
   {
     name: 'Contacts',
-    accountType: [AccountType.BARMAN, AccountType.SPECIAL_ACCOUNT],
+    accountType: [AccountType.BARMAN, AccountType.SERVICE],
     links: [{ name: 'Pour un problème avec le site', route: '/contact/website' }],
   },
 ];
@@ -90,7 +90,7 @@ const NAV_MENUS: SubMenu[] = [
 export class NavMenuComponent implements OnInit {
 
   menu: SubMenu[] = NAV_MENUS;
-  user: ConnectedUser;
+  user: User;
 
   @Output() onNavigate = new EventEmitter<Link>();
 
@@ -114,9 +114,9 @@ export class NavMenuComponent implements OnInit {
 
   isVisible(subMenu: SubMenu): boolean {
     if (subMenu.accountType) {
-      if (this.user.isGuest() && !subMenu.accountType.includes(AccountType.GUEST)) return false;
-      if (this.user.isBarman() && !subMenu.accountType.includes(AccountType.BARMAN)) return false;
-      if (this.user.isSpecialAccount() && !subMenu.accountType.includes(AccountType.SPECIAL_ACCOUNT)) return false;
+      if (isUserGuest(this.user) && !subMenu.accountType.includes(AccountType.GUEST)) return false;
+      if (isUserBarman(this.user) && !subMenu.accountType.includes(AccountType.BARMAN)) return false;
+      if (isUserServiceAccount(this.user) && !subMenu.accountType.includes(AccountType.SERVICE)) return false;
     }
 
     const allPerms = [

@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/api-services/auth.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { Router } from '@angular/router';
-import { ConnectedUser } from '../../models';
+import { User } from '../../models';
 import { getEditPasswordModel, getPasswordFromForm } from './edit-password.form-model';
 import { FormGroup } from '@angular/forms';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { UsersService } from '../../../core/api-services/users.service';
 
 @Component({
   selector: 'app-edit-password',
@@ -13,12 +14,13 @@ import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 })
 export class EditPasswordComponent implements OnInit {
 
-  currentUser: ConnectedUser;
+  currentUser: User;
   formGroup: FormGroup;
   formModel: DynamicFormModel = getEditPasswordModel();
 
   constructor(private authService: AuthService,
               private toasterService: ToasterService,
+              private usersService: UsersService,
               private dynamicFormService: DynamicFormService,
               private router: Router) { }
 
@@ -30,7 +32,7 @@ export class EditPasswordComponent implements OnInit {
   async onNgSubmit() {
     const { oldPassword, newPassword } = getPasswordFromForm(this.formGroup);
 
-    await this.authService.definePassword(this.currentUser.getConnection().email, newPassword, undefined, oldPassword);
+    await this.usersService.definePassword(this.currentUser.email, newPassword, undefined, oldPassword);
     this.toasterService.showToaster('Modification du mot de passe enregistré');
     this.router.navigate(['/auth/login']);
   }

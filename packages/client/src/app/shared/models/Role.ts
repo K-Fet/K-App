@@ -1,3 +1,5 @@
+import { Permission } from './Permission';
+
 export interface Role {
 
   _id?: string;
@@ -5,5 +7,5 @@ export interface Role {
   updatedAt?: Date;
   name: string;
   description?: string;
-  permissions?: string[];
+  permissions?: Permission[];
 }

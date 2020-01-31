@@ -7,7 +7,6 @@ import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { ViewComponent } from './view/view.component';
 import { KommissionsRoutingModule } from './kommissions-routing.module';
-import { TasksModule } from './tasks/tasks.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +17,6 @@ import { TasksModule } from './tasks/tasks.module';
   ],
   imports: [
     SharedModule,
-    TasksModule,
     NgxPermissionsModule.forChild(),
     KommissionsRoutingModule,
   ],

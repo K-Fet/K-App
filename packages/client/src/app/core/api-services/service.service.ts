@@ -7,7 +7,7 @@ import { addWeeks, format } from 'date-fns';
 import { createHttpParams, getCurrentWeek } from '../../shared/utils';
 import { fr } from 'date-fns/locale';
 import { toURL } from './api-utils';
-import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 
 const BASE_URL = toURL('v2/core/v1/services');
 
@@ -29,8 +29,11 @@ export class ServiceService {
     ).toPromise();
   }
 
-  get(id: string): Promise<Service> {
-    return this.http.get<Service>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<Service> {
+    return this.http.get<Service>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
   async create(service: Service): Promise<Service> {

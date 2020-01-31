@@ -10,7 +10,7 @@ const serviceController = require('../controllers/service-controller');
 router.get(
   '/',
   guard.check('service:read'),
-  validator.query(RANGE_SCHEMA),
+  validator.query(Joi.object(RANGE_SCHEMA)),
   am(serviceController.getAllServices),
 );
 router.post(

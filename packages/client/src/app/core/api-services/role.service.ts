@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { Role } from '../../shared/models';
 import { toURL } from './api-utils';
 import { createHttpParams } from '../../shared/utils';
@@ -19,9 +19,13 @@ export class RoleService {
     ).toPromise();
   }
 
-  get(id: string): Promise<Role> {
-    return this.http.get<Role>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<Role> {
+    return this.http.get<Role>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
+
 
   async create(role: Role): Promise<Role> {
     return await this.http.post<Role>(BASE_URL, role).toPromise();

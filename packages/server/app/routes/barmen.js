@@ -24,7 +24,7 @@ router.post(
 router.get(
   '/services',
   guard.check('barman:read'),
-  validator.query(RANGE_SCHEMA),
+  validator.query(Joi.object(RANGE_SCHEMA)),
   am(barmanController.getServicesBarmen),
 );
 
@@ -52,7 +52,7 @@ router.get(
   '/:id/services',
   guard.check('barman:read', 'service:read'),
   validator.params(ID_SCHEMA),
-  validator.query(RANGE_SCHEMA),
+  validator.query(Joi.object(RANGE_SCHEMA)),
   am(barmanController.getServicesBarman),
 );
 router.post(

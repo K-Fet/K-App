@@ -12,9 +12,9 @@ export class KommissionDetailResolverService implements Resolve<Kommission> {
               private router: Router) {}
 
   async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Kommission> {
-    const id = +route.paramMap.get('id');
+    const id = route.paramMap.get('id');
 
-    const kommission = await this.kommissionService.getById(id);
+    const kommission = await this.kommissionService.get(id, { populate: 'barmen' });
     if (kommission) return kommission;
 
     this.router.navigate(['/kommissions']);

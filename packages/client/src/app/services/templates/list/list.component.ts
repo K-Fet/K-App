@@ -22,8 +22,8 @@ export class ListComponent implements OnInit {
               private router: Router) {
   }
 
-  async ngOnInit() {
-    const templates = await this.templateService.getAll();
+  async ngOnInit(): Promise<void> {
+    const { rows: templates } = await this.templateService.list({ pageSize: 100 });
     this.templatesData = new MatTableDataSource(templates);
     this.templatesData.paginator = this.paginator;
     this.templatesData.sort = this.sort;
@@ -34,11 +34,11 @@ export class ListComponent implements OnInit {
   }
 
   view(template: Template): void {
-    this.router.navigate(['/services/templates', template.id]);
+    this.router.navigate(['/services/templates', template._id]);
   }
 
   edit(template: Template): void {
-    this.router.navigate(['/services/templates', template.id, 'edit']);
+    this.router.navigate(['/services/templates', template._id, 'edit']);
   }
 
 }

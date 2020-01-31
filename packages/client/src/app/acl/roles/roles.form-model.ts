@@ -1,9 +1,8 @@
 import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
-import { Role } from '../../shared/models';
-import { getDifference } from '../../../utils';
+import { Permission, Role } from '../../shared/models';
 
-const BASE_ROLE = new Role({ permissions: [] });
+const BASE_ROLE = { permissions: [] } as Role;
 
 export function getRoleModel(role?: Role): DynamicFormModel {
   const values = role || BASE_ROLE;
@@ -24,18 +23,13 @@ export function getRoleModel(role?: Role): DynamicFormModel {
   ];
 }
 
-export function getRoleFromForm(form: FormGroup, selectedPermissions: number[], role?: Role): Role {
+export function getRoleFromForm(form: FormGroup, selectedPermissions: Permission[], role?: Role): Role {
   const value = form.value;
   const original = role || BASE_ROLE;
 
-  const res = new Role({
-    id: original.id,
+  return {
+    id: original._id,
     ...value,
-  });
-
-  res._embedded = {
-    permissions: getDifference(original.permissions.map(p => p.id), selectedPermissions),
+    permissions: selectedPermissions,
   };
-
-  return res;
 }

@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { Template, TemplateDateUnit, TemplateServiceUnit } from '../../../shared/models';
+import { Template } from '../../../shared/models';
 import { TemplateService } from '../../../core/api-services/template.service';
-import { templateDateToDate } from '../templates.helper';
+import { getUnitFromControls, templateDateToDate } from '../templates.helper';
 import { compareAsc, format } from 'date-fns';
 
 @Component({
@@ -16,7 +16,8 @@ export class EditComponent implements OnInit {
   servicesFormArray: FormArray;
   generalFormArray: FormArray;
   generalFormGroup: FormGroup;
-  templateId: number;
+
+  originalTemplate: Template;
 
   WEEK_DAY = [
     { id: '1', value: 'Lundi' },
@@ -52,26 +53,23 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(async (params) => {
-      this.templateId = params['id'];
-      const template = await this.templateService.getById(params['id']);
-      this.templateNameFormGroup.controls.templateNameFormControl.setValue(template.name);
-      this.addServiceFormFromTemplate(template);
+    this.route.data.subscribe((data: { template: Template }) => {
+      this.originalTemplate = data.template;
+      this.templateNameFormGroup.controls.templateNameFormControl.setValue(data.template.name);
+      this.addServiceFormFromTemplate(data.template);
       this.sortServiceForm();
     });
-
   }
 
   addServiceFormFromTemplate(template: Template): void {
     template.services.forEach((service) => {
-      const startTime = templateDateToDate(service.startAt);
-      const endTime = templateDateToDate(service.endAt);
+      const { startAt, endAt } = templateDateToDate(service);
 
       const serviceFormGroup = this.fb.group({
-        startFormControl: [format(startTime, 'HH:mm'), Validators.required],
-        startDayFormControl: [service.startAt.day.toString(), Validators.required],
-        endFormControl: [format(endTime, 'HH:mm'), Validators.required],
-        endDayFormControl: [service.endAt.day.toString(), Validators.required],
+        startFormControl: [format(startAt, 'HH:mm'), Validators.required],
+        startDayFormControl: [service.startDay.toString(), Validators.required],
+        endFormControl: [format(endAt, 'HH:mm'), Validators.required],
+        endDayFormControl: [service.endDay.toString(), Validators.required],
         nbMaxFormControl: [service.nbMax, Validators.required],
       });
       serviceFormGroup.valueChanges.subscribe(() => {
@@ -95,24 +93,18 @@ export class EditComponent implements OnInit {
     this.servicesFormArray.push(serviceFormGroup);
   }
 
-  async updateTemplate() {
-    const template = new Template();
-    template.id = this.templateId;
-    template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
-    template.services = this.servicesFormArray.controls.map((formGroup) => {
-      return this.prepareService((formGroup as FormGroup).controls);
-    });
+  async updateTemplate(): Promise<void> {
+    const template: Template = {
+      _id: this.originalTemplate._id,
+      name: this.templateNameFormGroup.controls.templateNameFormControl.value,
+      services: this.servicesFormArray.controls.map((formGroup) => {
+        return getUnitFromControls((formGroup as FormGroup).controls);
+      }),
+    };
+
     await this.templateService.update(template);
     this.toasterService.showToaster('Template modifié');
     this.router.navigate(['/services/templates']);
-  }
-
-  prepareService(controls): TemplateServiceUnit {
-    return {
-      nbMax: controls.nbMaxFormControl.value,
-      startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),
-      endAt: this.toNumber(controls.endFormControl.value, controls.endDayFormControl.value),
-    };
   }
 
   sortServiceForm(): void {
@@ -120,17 +112,8 @@ export class EditComponent implements OnInit {
       const aValue = (a as FormGroup).value;
       const bValue = (b as FormGroup).value;
 
-      const aStartAt = templateDateToDate({
-        day: +aValue.startDayFormControl,
-        hours: aValue.startFormControl ? aValue.startFormControl.split(':')[0] : 0,
-        minutes: aValue.startFormControl ? aValue.startFormControl.split(':')[1] : 0,
-      });
-
-      const bStartAt = templateDateToDate({
-        day: +bValue.startDayFormControl,
-        hours: bValue.startFormControl ? bValue.startFormControl.split(':')[0] : 0,
-        minutes: bValue.startFormControl ? bValue.startFormControl.split(':')[1] : 0,
-      });
+      const { startAt: aStartAt } = templateDateToDate(getUnitFromControls(aValue));
+      const { startAt: bStartAt } = templateDateToDate(getUnitFromControls(bValue));
 
       return compareAsc(aStartAt, bStartAt);
     });
@@ -142,14 +125,6 @@ export class EditComponent implements OnInit {
 
   removeServiceForm(fromGroupId: number): void {
     this.servicesFormArray.removeAt(+fromGroupId);
-  }
-
-  toNumber(date: string, selectedDay): TemplateDateUnit {
-    return {
-      day: selectedDay,
-      hours: +date.split(':')[0],
-      minutes: +date.split(':')[1],
-    };
   }
 
   findWeekDay(dayId: string): string {

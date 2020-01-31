@@ -9,7 +9,7 @@ import { ServiceService } from '../../core/api-services/service.service';
 export class WeekPickerComponent implements OnInit {
 
   weekInterval: number;
-  week: { start: Date, end: Date };
+  week: { start: Date; end: Date };
 
   ngOnInit(): void {
     this.serviceService.$weekInterval.subscribe((weekInterval) => {

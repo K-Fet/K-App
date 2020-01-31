@@ -1,6 +1,7 @@
 import { Kommission } from './Kommission';
 import { Role } from './Role';
 import { Service } from './Service';
+import { Permission } from './Permission';
 
 export interface Barman {
   firstName: string;
@@ -22,13 +23,19 @@ export interface Barman {
 export interface ServiceAccount {
   code: string;
   description: string;
-  permissions: string[];
+  permissions: Permission[];
+}
+
+export enum AccountType {
+  SERVICE = 'SERVICE',
+  BARMAN = 'BARMAN',
+  GUEST = 'GUEST',
 }
 
 export interface User {
   _id?: number;
   email?: string;
-  accountType: 'SERVICE' | 'BARMAN' | 'GUEST';
+  accountType: AccountType;
   account: Barman | ServiceAccount | null;
   permissions?: string[];
   createdAt?: Date;
@@ -36,11 +43,11 @@ export interface User {
 }
 
 export function isUserGuest(user: User): boolean {
-  return user.accountType === 'GUEST';
+  return user.accountType === AccountType.GUEST;
 }
 
 export function isUserBarman(user: User): boolean {
-  return user.accountType === 'BARMAN';
+  return user.accountType === AccountType.BARMAN;
 }
 
 export function isActiveBarman(user: User): boolean {
@@ -52,5 +59,5 @@ export function isActiveBarman(user: User): boolean {
 }
 
 export function isUserServiceAccount(user: User): boolean {
-  return user.accountType === 'SERVICE';
+  return user.accountType === AccountType.SERVICE;
 }

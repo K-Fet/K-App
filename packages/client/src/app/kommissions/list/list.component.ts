@@ -32,24 +32,24 @@ export class ListComponent implements OnInit {
   }
 
   async update() {
-    const kommissions = await this.kommissionService.getAll();
+    const { rows: kommissions } = await this.kommissionService.list({ pageSize: 10000 });
     this.kommissionsData = new MatTableDataSource(kommissions);
     this.kommissionsData.paginator = this.paginator;
     this.kommissionsData.sort = this.sort;
   }
 
   edit(kommission: Kommission): void {
-    this.router.navigate(['/kommissions', kommission.id, 'edit']);
+    this.router.navigate(['/kommissions', kommission._id, 'edit']);
   }
 
   async delete(kommission: Kommission) {
-    await this.kommissionService.delete(kommission.id);
+    await this.kommissionService.remove(kommission._id);
     this.toasterService.showToaster('Kommission supprimée');
     this.update();
   }
 
   view(kommission: Kommission): void {
-    this.router.navigate(['/kommissions', kommission.id]);
+    this.router.navigate(['/kommissions', kommission._id]);
   }
 
   async openConfirmationDialog(kommission: Kommission) {

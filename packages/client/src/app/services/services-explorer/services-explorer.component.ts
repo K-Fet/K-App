@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { AuthService } from '../../core/api-services/auth.service';
-import { Barman, ConnectedUser } from '../../shared/models';
+import { isActiveBarman, User } from '../../shared/models';
 
 @Component({
   templateUrl: './services-explorer.component.html',
 })
 export class ServiceExplorerComponent implements OnInit {
 
-  private user: ConnectedUser;
+  private user: User;
 
   constructor(private authService: AuthService, private ngxPermissionsService: NgxPermissionsService) { }
 
@@ -19,7 +19,7 @@ export class ServiceExplorerComponent implements OnInit {
   }
 
   isActive(): boolean {
-    return this.user.isBarman() && new Barman(this.user.barman).isActive();
+    return isActiveBarman(this.user);
   }
 
   hasServiceWritePerm(): boolean {

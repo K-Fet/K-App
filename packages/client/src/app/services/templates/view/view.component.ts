@@ -12,7 +12,7 @@ import { templateDateToDate } from '../templates.helper';
 })
 export class ViewComponent implements OnInit {
 
-  template: Template = new Template();
+  template: Template;
   services: Service[] = [];
 
   constructor(private templateService: TemplateService,
@@ -29,12 +29,10 @@ export class ViewComponent implements OnInit {
   }
 
   changeFormatDate(): void {
-    this.services = this.template.services.map(n =>
-      new Service({
-        startAt: templateDateToDate(n.startAt),
-        endAt: templateDateToDate(n.endAt),
-        nbMax: n.nbMax,
-      }));
+    this.services = this.template.services.map(n => ({
+      ...templateDateToDate(n),
+      nbMax: n.nbMax,
+    }));
   }
 
   async openConfirmationDialog() {
@@ -51,7 +49,7 @@ export class ViewComponent implements OnInit {
   }
 
   async delete() {
-    await this.templateService.delete(this.template.id);
+    await this.templateService.remove(this.template._id);
     this.toasterService.showToaster('Template supprimé');
     this.router.navigate(['/services/templates']);
   }

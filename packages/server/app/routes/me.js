@@ -19,7 +19,7 @@ router.put(
 router.get(
   '/services',
   isBarman,
-  validator.query(RANGE_SCHEMA),
+  validator.query(Joi.object(RANGE_SCHEMA)),
   am(meController.getBarmanService),
 );
 router.post(

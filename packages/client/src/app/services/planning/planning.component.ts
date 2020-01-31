@@ -49,7 +49,7 @@ export class PlanningComponent implements OnInit {
     });
   }
 
-  getColor(service: Service): Object {
+  getColor(service: Service): string {
     return (service.barmen && service.barmen.length >= service.nbMax) ? 'red' : 'green';
   }
 }

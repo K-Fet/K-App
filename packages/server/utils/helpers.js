@@ -101,13 +101,11 @@ const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
 /**
  * This constant is used by Joi to validate query from a request.
  * It represents an object with a start and end date.
- *
- * @type {ObjectSchema} Joi schema
  */
-const RANGE_SCHEMA = Joi.object({
+const RANGE_SCHEMA = {
   startAt: Joi.date().required(),
   endAt: Joi.date().greater(Joi.ref('startAt')).required(),
-});
+};
 
 /**
  * This constant is used by Joi to validate query from a request.

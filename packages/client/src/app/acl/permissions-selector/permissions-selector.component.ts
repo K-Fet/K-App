@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Permission } from '../../shared/models';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { Permission } from '../../shared/models';
 
 @Component({
   selector: 'app-permissions-selector',
@@ -10,56 +10,45 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 export class PermissionsSelectorComponent implements OnInit, OnChanges {
 
   @Input() permissions: Permission[];
-  @Input() initiallySelected: number[] | Permission[];
+  @Input() initiallySelected: Permission[];
 
-  selected: Set<number> = new Set();
-  permissionMap: { [key: number]: Permission };
-  userPermissions: string[];
+  selected: Set<Permission> = new Set();
+  userPermissions: Permission[];
 
   constructor(private ngxPermissionsService: NgxPermissionsService) { }
 
-  ngOnInit() {
-    this.updatePermissionMap();
-
+  ngOnInit(): void {
     this.userPermissions = Object.keys(this.ngxPermissionsService.getPermissions());
   }
 
   ngOnChanges(_changes: SimpleChanges): void {
-    this.updatePermissionMap();
     if (this.initiallySelected) {
       this.selected = new Set([].concat(
         this.selected,
-        // @ts-ignore
-        this.initiallySelected.map(p => typeof p === 'number' ? p : (p as Permission).id),
       ));
     }
   }
 
   isDisabled(permission: Permission): boolean {
-    return !this.ngxPermissionsService.getPermission(permission.name);
+    return !this.ngxPermissionsService.getPermission(permission);
   }
 
-  onCheck(perm: Permission, event: MatCheckboxChange) {
-    if (event.checked) this.selected.add(perm.id);
-    if (!event.checked) this.selected.delete(perm.id);
+  onCheck(perm: Permission, event: MatCheckboxChange): void {
+    if (event.checked) this.selected.add(perm);
+    if (!event.checked) this.selected.delete(perm);
   }
 
-  selectAll(event: MouseEvent) {
+  selectAll(event: MouseEvent): void {
     event.preventDefault();
-    this.selected = new Set(this.permissions.filter(p => !this.isDisabled(p)).map(p => p.id));
+    this.selected = new Set(this.permissions.filter(p => !this.isDisabled(p)));
   }
 
-  deselectAll(event: MouseEvent) {
+  deselectAll(event: MouseEvent): void {
     event.preventDefault();
     this.selected = new Set();
   }
 
-  updatePermissionMap() {
-    if (!this.permissions) return;
-    this.permissionMap = this.permissions.reduce((map, p) => ({ ...map, [p.id]: p }), {});
-  }
-
   get selectedPermissions(): Permission[] {
-    return this.permissions.filter(p => this.selected.has(p.id));
+    return this.permissions.filter(p => this.selected.has(p));
   }
 }

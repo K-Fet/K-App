@@ -9,12 +9,12 @@ import { TemplateService } from '../../core/api-services/template.service';
 export class TemplateDetailResolverService implements Resolve<Template> {
 
   constructor(private templateService: TemplateService,
-              private router: Router) {}
+    private router: Router) {}
 
   async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Template> {
-    const id = +route.paramMap.get('id');
+    const id = route.paramMap.get('id');
 
-    const template = await this.templateService.getById(id);
+    const template = await this.templateService.get(id);
     if (template) return template;
     // Not found
     this.router.navigate(['/services/templates']);

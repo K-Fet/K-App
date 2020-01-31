@@ -41,6 +41,6 @@ export function getEditPasswordModel(): DynamicFormModel {
   ];
 }
 
-export function getPasswordFromForm(form: FormGroup): { oldPassword: string, newPassword: string } {
+export function getPasswordFromForm(form: FormGroup): { oldPassword: string; newPassword: string } {
   return form.value;
 }

@@ -27,10 +27,10 @@ export class AuthService {
     private ngxRolesService: NgxRolesService) { }
 
   async initializeAuth(): Promise<void> {
-    this.$currentUser = new BehaviorSubject<User>(new User({
+    this.$currentUser = new BehaviorSubject<User>({
       accountType: 'GUEST',
       account: null,
-    }));
+    });
 
     const currentUser = {
       ...JSON.parse(localStorage.getItem('currentUser')),
@@ -78,10 +78,10 @@ export class AuthService {
 
   private clearUser(): void {
     clearBugsnagUser();
-    this.$currentUser.next(new User({
+    this.$currentUser.next({
       accountType: 'GUEST',
       account: null,
-    }));
+    });
     this.ngxPermissionsService.flushPermissions();
     this.ngxRolesService.flushRoles();
     if (localStorage.getItem('currentUser')) localStorage.removeItem('currentUser');
@@ -111,7 +111,7 @@ export class AuthService {
 
     this.isLoggedIn = true;
 
-    this.$currentUser.next(new User(user));
+    this.$currentUser.next(user);
     this.ngxRolesService.addRole(user.accountType, ['']);
 
     setBugsnagUser(this.$currentUser.getValue());

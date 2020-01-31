@@ -12,9 +12,9 @@ export class RoleDetailResolverService implements Resolve<Role> {
               private router: Router) {}
 
   async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Role> {
-    const id = +route.paramMap.get('id');
+    const id = route.paramMap.get('id');
 
-    const role = await this.roleService.getById(id);
+    const role = await this.roleService.get(id);
     if (role) return role;
 
     this.router.navigate(['/acl/role']);

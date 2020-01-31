@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Member } from './member.model';
-import { MoleculerList, MoleculerListOptions } from '../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../shared/utils';
 import { Subject } from 'rxjs';
 import { toURL } from '../core/api-services/api-utils';
@@ -29,9 +29,11 @@ export class MembersService {
     ).toPromise();
   }
 
-  get(id: string): Promise<Member> {
-    // Always populate shelf with products
-    return this.http.get<Member>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<Member> {
+    return this.http.get<Member>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
   async create(member: Member): Promise<Member> {

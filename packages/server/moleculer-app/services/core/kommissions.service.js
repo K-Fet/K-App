@@ -14,6 +14,8 @@ const model = {
     ...MONGOOSE_INTERNALS,
     name: Joi.string().trim().required(),
     description: Joi.string().trim(),
+    // Strip any barmen sent with it (todo: add support for editing barmen from here)
+    barmen: Joi.any().strip(),
   }),
 };
 

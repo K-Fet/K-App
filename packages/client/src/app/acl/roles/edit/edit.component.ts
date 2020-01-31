@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Permission, Role } from '../../../shared/models';
+import { Role } from '../../../shared/models';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { PermissionService } from '../../../core/api-services/permission.service';
 import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
 import { RoleService } from '../../../core/api-services/role.service';
 import { getRoleFromForm, getRoleModel } from '../roles.form-model';
@@ -19,12 +18,11 @@ export class EditComponent implements OnInit {
 
   originalRole: Role;
 
-  permissions: Permission[] = [];
+  permissions: string[] = [];
 
   @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
 
   constructor(private formService: DynamicFormService,
-              private permissionService: PermissionService,
               private roleService: RoleService,
               private toasterService: ToasterService,
               private route: ActivatedRoute,
@@ -32,8 +30,6 @@ export class EditComponent implements OnInit {
 
   ngOnInit() {
     this.formGroup = this.formService.createFormGroup([]);
-
-    this.permissionService.getAll().then(permissions => this.permissions = permissions);
 
     this.route.data.subscribe((data: { role: Role }) => {
       this.originalRole = data.role;
@@ -45,7 +41,7 @@ export class EditComponent implements OnInit {
   async onNgSubmit() {
     const updatedRole = getRoleFromForm(
       this.formGroup,
-      this.permSelector.selectedPermissions.map(p => p.id),
+      this.permSelector.selectedPermissions,
       this.originalRole,
     );
 

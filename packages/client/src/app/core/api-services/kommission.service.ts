@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { Kommission } from '../../shared/models';
 import { toURL } from './api-utils';
 import { createHttpParams } from '../../shared/utils';
@@ -19,9 +19,13 @@ export class KommissionService {
     ).toPromise();
   }
 
-  get(id: string): Promise<Kommission> {
-    return this.http.get<Kommission>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<Kommission> {
+    return this.http.get<Kommission>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
+
 
   async create(kommission: Kommission): Promise<Kommission> {
     return await this.http.post<Kommission>(BASE_URL, kommission).toPromise();

@@ -27,8 +27,6 @@ export class FooterComponent implements OnInit {
     this.buildDate = format(buildDate, 'PPpp', { locale: fr });
   }
 
-  ngOnInit() {
-
-  }
-
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  ngOnInit(): void { }
 }

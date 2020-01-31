@@ -37,18 +37,18 @@ export class ListComponent implements OnInit {
   }
 
   async update() {
-    const roles = await this.roleService.getAll();
+    const { rows: roles } = await this.roleService.list({pageSize: 1000});
     this.rolesData = new MatTableDataSource(roles);
     this.rolesData.paginator = this.paginator;
     this.rolesData.sort = this.sort;
   }
 
   edit(role: Role): void {
-    this.router.navigate(['/acl/roles', role.id, 'edit']);
+    this.router.navigate(['/acl/roles', role._id, 'edit']);
   }
 
   async delete(role: Role) {
-    await this.roleService.delete(role.id);
+    await this.roleService.remove(role._id);
     this.toasterService.showToaster('Role supprimé');
     this.update();
   }

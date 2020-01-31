@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/api-services/auth.service';
 import { ToasterService } from '../../core/services/toaster.service';
+import { UsersService } from '../../core/api-services/users.service';
 
 @Component({
   selector: 'app-email-verification',
@@ -15,7 +15,7 @@ export class EmailVerificationComponent implements OnInit {
   email: string;
   userId: number;
 
-  constructor(private authService: AuthService,
+  constructor(private usersService: UsersService,
               private toasterService: ToasterService,
               private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -40,7 +40,7 @@ export class EmailVerificationComponent implements OnInit {
 
   async verifyEmail() {
     const password = this.passwordForm.get('password').value;
-    await this.authService.verifyEmail(this.userId, this.email, password, this.token);
+    await this.usersService.verifyEmail(this.userId, this.email, password, this.token);
     this.toasterService.showToaster('Enregistré, veuillez vous connecter');
     this.router.navigate(['/auth/login']);
   }

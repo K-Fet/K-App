@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { Template } from '../../shared/models';
 import { toURL } from './api-utils';
 import { createHttpParams } from '../../shared/utils';
@@ -19,8 +19,11 @@ export class TemplateService {
     ).toPromise();
   }
 
-  get(id: string): Promise<Template> {
-    return this.http.get<Template>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<Template> {
+    return this.http.get<Template>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
   async create(template: Template): Promise<Template> {

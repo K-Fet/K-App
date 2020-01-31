@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
+import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { User } from '../../shared/models';
 import { toURL } from './api-utils';
 import { createHttpParams } from '../../shared/utils';
@@ -23,8 +23,11 @@ export class UsersService {
     ).toPromise();
   }
 
-  get(id: string): Promise<User> {
-    return this.http.get<User>(`${BASE_URL}/${id}`).toPromise();
+  get(id: string, options: MoleculerGetOptions = {}): Promise<User> {
+    return this.http.get<User>(
+      `${BASE_URL}/${id}`,
+      { params: createHttpParams({ ...options }) },
+    ).toPromise();
   }
 
   async create(user: User): Promise<User> {

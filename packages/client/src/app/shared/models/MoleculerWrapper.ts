@@ -15,3 +15,9 @@ export interface MoleculerListOptions {
   search?: string;
   searchFields?: string;
 }
+
+export interface MoleculerGetOptions {
+  populate?: string;
+  fields?: string;
+  mapping?: boolean;
+}

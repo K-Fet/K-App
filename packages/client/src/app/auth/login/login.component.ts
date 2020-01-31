@@ -12,6 +12,7 @@ import { AuthService } from '../../core/api-services/auth.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { FormGroup } from '@angular/forms';
 import { ResetPasswordDialogComponent } from '../reset-password-dialog/reset-password-dialog.component';
+import { UsersService } from '../../core/api-services/users.service';
 
 const LOGIN_FORM_MODEL: DynamicFormModel = [
   new DynamicInputModel({
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
   formGroup: FormGroup;
 
   constructor(private authService: AuthService,
+              private usersService: UsersService,
               private toasterService: ToasterService,
               private router: Router,
               private formService: DynamicFormService,
@@ -65,7 +67,7 @@ export class LoginComponent implements OnInit {
 
     const email = await dialogRef.afterClosed().toPromise();
     if (email) {
-      await this.authService.resetPassword(email);
+      await this.usersService.resetPassword(email);
       this.toasterService.showToaster('Réinitialisation enregistrée. Merci de consulter votre boite mail');
     }
   }
