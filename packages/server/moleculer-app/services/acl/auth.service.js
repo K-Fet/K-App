@@ -78,14 +78,14 @@ module.exports = {
       async handler(ctx) {
         const { userId } = ctx.params;
 
-        this.logger.verbose(`Removing all current JWTs from user ${userId}`);
+        this.logger.debug(`Removing all current JWTs from user ${userId}`);
 
         await this.adapter.removeMany({ userId });
       },
     },
   },
 
-  method: {
+  methods: {
     async create({ userId, duration }) {
       const id = uuidv4();
       const expiresIn = Math.floor(Date.now() / 1000) + (60 * duration);
@@ -96,7 +96,7 @@ module.exports = {
         expireAt: new Date(expiresIn),
       });
 
-      this.logger.verbose(`Creating a new JWT ${userId}`);
+      this.logger.debug(`Creating a new JWT ${userId}`);
 
       return jwt.sign({
         jit: id,
