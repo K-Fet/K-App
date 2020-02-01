@@ -25,7 +25,8 @@
     "dev:front": "yarn workspace k-app-client start",
     "cli": "yarn workspace k-app-cli run cli",
     "test:lint": "eslint .",
-    "test:integration": "true"
+    "test:integration": "true",
+    "test:unit": "yarn workspace k-app-server run test"
   },
   "dependencies": {},
   "devDependencies": {

@@ -26,6 +26,10 @@ jobs:
         run: |
           yarn run test:lint
 
+      - name: 'Run the unit tests'
+        run: |
+          yarn run test:unit
+
       - name: 'Run the integration tests'
         run: |
           yarn run test:integration
