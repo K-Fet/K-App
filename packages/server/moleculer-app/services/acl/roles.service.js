@@ -49,7 +49,7 @@ module.exports = {
 
       const diff = xor(entity ? entity.permissions : [], newPermissions);
 
-      if (diff.some(p => !userPermissions.include(p))) {
+      if (diff.some(p => !userPermissions.includes(p))) {
         throw new MoleculerClientError('Tried to set permissions that you don\'t have', 400, 'NotEnoughPermissions');
       }
     },

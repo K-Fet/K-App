@@ -7,10 +7,12 @@ const DbMixin = require('../../mixins/db-service.mixin');
 const DisableMixin = require('../../mixins/disable-actions.mixin');
 const { createSchema, MONGO_ID } = require('../../../utils');
 
+const { ObjectId } = mongoose.Schema.Types;
+
 const model = {
   mongoose: mongoose.model('JWT', createSchema({
     _id: { type: String, required: true },
-    userId: { type: String, required: true, index: true },
+    userId: { type: ObjectId, required: true, index: true },
     // Auto deletes token with default to one day
     expireAt: { type: Date, expires: 0 },
   }, { timestamps: true })),

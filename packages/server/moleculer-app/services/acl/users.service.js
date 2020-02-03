@@ -151,13 +151,15 @@ module.exports = {
     },
 
     removeSensitiveData(ctx, res) {
-      const clear = item => ({
-        ...item,
-        password: undefined,
-        passwordToken: undefined,
-        emailToken: undefined,
-      });
+      const clear = (item) => {
+        const clean = { ...item };
+        delete clean.password;
+        delete clean.passwordToken;
+        delete clean.emailToken;
+        return clean;
+      };
 
+      if (!res) return res;
       if (res.rows) {
         res.rows = res.rows.map(clear);
         return res;
