@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const { xor } = require('lodash');
+const conf = require('nconf');
 const { Errors: { MoleculerClientError, MoleculerServerError } } = require('moleculer');
 const DbMixin = require('../../mixins/db-service.mixin');
 const DisableMixin = require('../../mixins/disable-actions.mixin');
@@ -219,10 +220,15 @@ module.exports = {
 
         const user = await this._create(ctx);
 
-        await mailService.sendWelcomeMail(email);
         ctx.locals.entity = user;
 
         await ctx.call('v1.acl.users.resetPassword', { email });
+
+        await ctx.call('v1.service.mail.send', {
+          message: { to: email },
+          template: 'welcome-mail',
+          data: { email, website: conf.get('web:clientUrl') },
+        }, { retries: 3, timeout: 5000 });
 
         return user;
       },

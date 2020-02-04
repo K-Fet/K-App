@@ -8,7 +8,30 @@ describe('Test acl.users.service', () => {
     validator: new JoiValidator(),
   });
 
+  const mailSend = jest.fn();
+  broker.createService({
+    name: 'service.mail',
+    version: 1,
+    actions: {
+      send: mailSend,
+    },
+  });
+
   const service = broker.createService(UsersService);
+
+  const resetPassword = jest.fn();
+  broker.createService(UsersService, {
+    name: 'user-create',
+    actions: {
+      resetPassword,
+    },
+  });
+
+  const adminMeta = {
+    user: { accountType: 'SERVICE' },
+    userPermissions: ['user.create'],
+  };
+
   const { model } = service.adapter;
 
   beforeAll(() => broker.start());
@@ -134,6 +157,29 @@ describe('Test acl.users.service', () => {
 
         expect(await service.getUserByEmail(ctx)).toBeUndefined();
         expect(ctx.locals.user).not.toBeDefined();
+      });
+    });
+  });
+
+  describe('Test actions', () => {
+    describe('create action', () => {
+      it('should create a simple barman', async () => {
+        const data = {
+          email: 'test+barman@example.com',
+          accountType: 'BARMAN',
+          account: {
+            firstName: 'John',
+            lastName: 'Doe',
+            nickName: 'Jo',
+            dateOfBirth: new Date(1997),
+          },
+        };
+
+        const user = await broker.call('user-create.create', data, { meta: adminMeta });
+
+        expect(user).toEqual(expect.objectContaining(data));
+        expect(resetPassword).toHaveBeenCalledTimes(1);
+        expect(mailSend).toHaveBeenCalledTimes(1);
       });
     });
   });

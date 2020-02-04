@@ -1,0 +1,19 @@
+doctype html
+html(lang="fr")
+body
+  h1 Hey #{email},
+  p Un nouveau formulaire pour un
+    i=form.title
+  | vient d'être rempli avec les valeurs suivantes:
+
+  each val, key in values
+    li.
+      b #{TRANSLATIONS[key] ? TRANSLATIONS[key].french : key}:
+    | #{val}
+
+  p Essaye de répondre rapidement
+    b avec l'adresse générique en @kfet-insa.fr!
+
+  p Cordialement,
+    br
+  | La team K-App
