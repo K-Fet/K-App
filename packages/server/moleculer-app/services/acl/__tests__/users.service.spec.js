@@ -175,7 +175,7 @@ describe('Test acl.users.service', () => {
           },
         };
 
-        const user = await broker.call('user-create.create', data, { meta: adminMeta });
+        const user = await broker.call('v1.user-create.create', data, { meta: adminMeta });
 
         expect(user).toEqual(expect.objectContaining(data));
         expect(resetPassword).toHaveBeenCalledTimes(1);

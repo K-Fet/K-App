@@ -218,7 +218,7 @@ module.exports = {
       async handler(ctx) {
         const { email } = ctx.params;
 
-        const user = await this._create(ctx);
+        const user = await this._create(ctx, ctx.params);
 
         ctx.locals.entity = user;
 
@@ -290,7 +290,7 @@ module.exports = {
           }
         }
 
-        return this._update(ctx);
+        return this._update(ctx, ctx.params);
       },
     },
 
@@ -302,7 +302,7 @@ module.exports = {
       params: () => Joi.object({}),
       async handler(ctx) {
         ctx.params.id = ctx.meta.user.id;
-        return this._get(ctx);
+        return this._get(ctx, ctx.params);
       },
     },
 
