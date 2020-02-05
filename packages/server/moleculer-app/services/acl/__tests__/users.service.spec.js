@@ -23,7 +23,9 @@ describe('Test acl.users.service', () => {
   broker.createService(UsersService, {
     name: 'user-create',
     actions: {
-      resetPassword,
+      resetPassword: {
+        handler: resetPassword,
+      },
     },
   });
 
@@ -36,6 +38,11 @@ describe('Test acl.users.service', () => {
 
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
+
+  beforeEach(() => {
+    resetPassword.mockClear();
+    mailSend.mockClear();
+  });
 
   describe('Test methods', () => {
     describe('isEntityOwner method', () => {
@@ -171,16 +178,52 @@ describe('Test acl.users.service', () => {
             firstName: 'John',
             lastName: 'Doe',
             nickName: 'Jo',
-            dateOfBirth: new Date(1997),
+            dateOfBirth: new Date(1997, 3, 23),
           },
         };
 
         const user = await broker.call('v1.user-create.create', data, { meta: adminMeta });
 
-        expect(user).toEqual(expect.objectContaining(data));
+        expect(user).toMatchObject(data);
         expect(resetPassword).toHaveBeenCalledTimes(1);
         expect(mailSend).toHaveBeenCalledTimes(1);
       });
+
+      it('should create a simple service account', async () => {
+        const data = {
+          email: 'test+service@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Example service account',
+          },
+        };
+
+        const user = await broker.call('v1.user-create.create', data, { meta: adminMeta });
+
+        expect(user).toMatchObject(data);
+        expect(resetPassword).toHaveBeenCalledTimes(1);
+        expect(mailSend).toHaveBeenCalledTimes(1);
+      });
+
+      it('should prevent setting password', async () => {
+        const data = {
+          email: 'test+service@example.com',
+          password: 'password',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Example service account',
+          },
+        };
+
+        await expect(broker.call('v1.user-create.create', data, { meta: adminMeta })).rejects
+          .toHaveProperty('type', 'VALIDATION_ERROR');
+      });
+    });
+
+    describe('list action', () => {
+
     });
   });
 });

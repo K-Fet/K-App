@@ -16,5 +16,8 @@ module.exports = {
         from: conf.get('mail:auth:user'),
       },
     },
+    locals: {
+      _website: conf.get('web:clientUrl'),
+    },
   },
 };

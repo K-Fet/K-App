@@ -57,10 +57,10 @@ const model = {
       .when('accountType', {
         is: 'SERVICE',
         then: Joi.object({
-          code: Joi.number().integer().min(4).max(6)
+          code: Joi.string().min(4).max(6).regex(/^[0-9]+$/, 'numbers')
             .required(),
           description: Joi.string().required(),
-          permissions: Joi.array().items(Joi.string()),
+          permissions: Joi.array().items(Joi.string()).default([]),
         }).required(),
       })
       .when('accountType', {
@@ -220,14 +220,14 @@ module.exports = {
 
         const user = await this._create(ctx, ctx.params);
 
-        ctx.locals.entity = user;
+        ctx.locals.user = user;
 
-        await ctx.call('v1.acl.users.resetPassword', { email });
+        await this.actions.resetPassword({ email });
 
         await ctx.call('v1.service.mail.send', {
           message: { to: email },
           template: 'welcome-mail',
-          data: { email, website: conf.get('web:clientUrl') },
+          data: { email },
         }, { retries: 3, timeout: 5000 });
 
         return user;
@@ -314,15 +314,24 @@ module.exports = {
       }),
       async handler(ctx) {
         const { user } = ctx.locals;
+        const { email } = ctx.params;
+
+        // Fail silently
+        if (!user) return;
 
         if (user.emailToken) {
           throw new MoleculerClientError('A valid email is required to reset the password', 400, 'UnverifiedEmail');
         }
 
         const passwordToken = await generateToken(128);
+        const link = `${conf.get('web:clientUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(passwordToken)}`;
 
         try {
-          await mailService.sendPasswordResetMail(user.email, passwordToken);
+          await ctx.call('v1.service.mail.send', {
+            message: { to: user.email },
+            template: 'password-reset',
+            data: { email, link },
+          }, { retries: 3, timeout: 10000 });
         } catch (err) {
           this.logger.error('Error while sending reset password mail at %s, %o', user.email, err);
 
