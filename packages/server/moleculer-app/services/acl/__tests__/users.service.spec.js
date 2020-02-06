@@ -1,11 +1,13 @@
 const { ServiceBroker, Errors: { MoleculerClientError } } = require('moleculer');
 const JoiValidator = require('../../../utils/joi.validator');
 const UsersService = require('../users.service');
+const FindEntityMiddleware = require('../../../middlewares/find-entity');
 
 describe('Test acl.users.service', () => {
   const broker = new ServiceBroker({
     logger: false,
     validator: new JoiValidator(),
+    middlewares: [FindEntityMiddleware],
   });
 
   const mailSend = jest.fn();
@@ -39,7 +41,8 @@ describe('Test acl.users.service', () => {
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await model.deleteMany({});
     resetPassword.mockClear();
     mailSend.mockClear();
   });
@@ -223,7 +226,115 @@ describe('Test acl.users.service', () => {
     });
 
     describe('list action', () => {
+      it('should list all users', async () => {
+        await model.insertMany([
+          { accountType: 'BARMAN', account: {}, email: 'test+1@example.com' },
+          { accountType: 'BARMAN', account: {}, email: 'test+2@example.com' },
+          { accountType: 'SERVICE', account: {}, email: 'test+3@example.com' },
+        ]);
 
+        const list = await broker.call('v1.acl.users.list', {});
+
+        expect(list).toMatchObject({
+          rows: [
+            expect.objectContaining({ email: 'test+1@example.com' }),
+            expect.objectContaining({ email: 'test+2@example.com' }),
+            expect.objectContaining({ email: 'test+3@example.com' }),
+          ],
+        });
+      });
+
+      it('should list only barmen', async () => {
+        await model.insertMany([
+          { accountType: 'BARMAN', account: {}, email: 'test+1@example.com' },
+          { accountType: 'BARMAN', account: {}, email: 'test+2@example.com' },
+          { accountType: 'SERVICE', account: {}, email: 'test+3@example.com' },
+        ]);
+
+        const list = await broker.call('v1.acl.users.list', { accountType: 'BARMAN' });
+
+        expect(list).toMatchObject({
+          rows: [
+            expect.objectContaining({ email: 'test+1@example.com' }),
+            expect.objectContaining({ email: 'test+2@example.com' }),
+          ],
+        });
+      });
+
+      it('should list only service accounts', async () => {
+        await model.insertMany([
+          { accountType: 'BARMAN', account: {}, email: 'test+1@example.com' },
+          { accountType: 'BARMAN', account: {}, email: 'test+2@example.com' },
+          { accountType: 'SERVICE', account: {}, email: 'test+3@example.com' },
+        ]);
+
+        const list = await broker.call('v1.acl.users.list', { accountType: 'SERVICE' });
+
+        expect(list).toMatchObject({
+          rows: [
+            expect.objectContaining({ email: 'test+3@example.com' }),
+          ],
+        });
+      });
+
+      it('should list only active barmen', async () => {
+        await model.insertMany([
+          {
+            accountType: 'BARMAN',
+            account: { leaveAt: new Date(2018, 1, 21) },
+            email: 'test+1@example.com',
+          },
+          { accountType: 'BARMAN', account: {}, email: 'test+2@example.com' },
+        ]);
+
+        const list = await broker.call('v1.acl.users.list', { accountType: 'BARMAN', onlyActive: true });
+
+        expect(list).toMatchObject({
+          rows: [
+            expect.objectContaining({ email: 'test+2@example.com' }),
+          ],
+        });
+      });
+
+      it('should not apply onlyActive if accountType is SERVICE', async () => {
+        await model.insertMany([
+          { accountType: 'BARMAN', account: {}, email: 'test+1@example.com' },
+          { accountType: 'SERVICE', account: {}, email: 'test+2@example.com' },
+        ]);
+
+        const list = await broker.call('v1.acl.users.list', { accountType: 'SERVICE', onlyActive: true });
+
+        expect(list).toMatchObject({
+          rows: [
+            expect.objectContaining({ email: 'test+2@example.com' }),
+          ],
+        });
+      });
+    });
+
+    describe('update action', () => {
+      it('should update simple user', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+        user.account.description = 'New description';
+
+        const updated = await broker.call('v1.acl.users.update', user);
+        const dbUser = await model.getById(user._id).lean();
+
+        expect(updated.account.description).toEqual('New description');
+        expect(dbUser.account.description).toEqual('New description');
+
+      });
     });
   });
 });

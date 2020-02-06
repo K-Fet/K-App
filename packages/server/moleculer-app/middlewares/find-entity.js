@@ -11,7 +11,7 @@ module.exports = {
       const svc = ctx.service;
       const entity = await svc.getById(ctx.params.id, true);
       if (!entity) {
-        throw new MoleculerClientError('Entity not found!', 400, 'ERR_ENTITY_NOT_FOUND');
+        throw new MoleculerClientError('Entity not found!', 404, 'ERR_ENTITY_NOT_FOUND');
       }
 
       ctx.locals.entity = entity;

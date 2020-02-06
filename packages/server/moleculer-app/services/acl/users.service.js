@@ -30,7 +30,7 @@ const model = {
       // Service account
       code: { type: String },
       description: { type: String },
-      permissions: [{ type: String }],
+      permissions: { type: [String], default: undefined },
 
       // Barman account
       firstName: { type: String },
@@ -41,8 +41,8 @@ const model = {
       godFather: { type: ObjectID },
       dateOfBirth: { type: Date },
       flow: { type: String },
-      roles: [{ type: ObjectID, index: true }],
-      kommissions: [{ type: ObjectID, index: true }],
+      roles: { type: [ObjectID], index: { sparse: true }, default: undefined },
+      kommissions: { type: [ObjectID], index: { sparse: true }, default: undefined },
     },
   }, { timestamps: true })),
   joi: Joi.object({
