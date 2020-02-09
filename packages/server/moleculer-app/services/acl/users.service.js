@@ -321,6 +321,7 @@ module.exports = {
         if (!user) return;
 
         if (user.emailToken) {
+          // TODO Send a mail saying that you need to validate email first
           throw new MoleculerClientError('A valid email is required to reset the password', 400, 'UnverifiedEmail');
         }
 

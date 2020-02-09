@@ -438,5 +438,87 @@ describe('Test acl.users.service', () => {
         expect(meUser).toEqual({ ...user, _id: user._id.toString() });
       });
     });
+
+    describe('resetPassword action', () => {
+      it('should reset password', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+
+        const res = await broker.call('v1.acl.users.resetPassword', { email: user.email }, { meta: { user } });
+        const dbUser = await model.findById(user._id).lean();
+
+        expect(dbUser.passwordToken).toBeDefined();
+        expect(res).not.toBeDefined();
+        expect(mailSend).toHaveBeenCalledTimes(1);
+      });
+
+      it('should prevent reset if email not valid', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          emailToken: 'somebigtoken',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+
+        await expect(broker.call('v1.acl.users.resetPassword', { email: user.email }, { meta: { user } }))
+          .rejects.toBeInstanceOf(MoleculerClientError);
+      });
+
+      it('should fail silently if email not found', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+
+        const res = await broker.call('v1.acl.users.resetPassword', { email: 'unknown@example.com' }, { meta: { user } });
+
+        expect(res).not.toBeDefined();
+      });
+
+      it('should fail if unable to send email', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+
+        mailSend.mockImplementationOnce(() => { throw new Error(); });
+
+        await expect(broker.call('v1.acl.users.resetPassword', { email: user.email }, { meta: { user } }))
+          .rejects.toBeInstanceOf(MoleculerServerError);
+      });
+    });
   });
 });
