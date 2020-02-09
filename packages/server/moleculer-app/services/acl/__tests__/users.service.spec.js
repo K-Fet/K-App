@@ -1,4 +1,4 @@
-const { ServiceBroker, Errors: { MoleculerClientError } } = require('moleculer');
+const { ServiceBroker, Errors: { MoleculerClientError, MoleculerServerError } } = require('moleculer');
 const JoiValidator = require('../../../utils/joi.validator');
 const UsersService = require('../users.service');
 const MailService = require('../../service/mail.service');
@@ -347,10 +347,95 @@ describe('Test acl.users.service', () => {
 
         user._id = user._id.toString();
         user.id = user._id;
-        user.account.email = 'test+new@example.com';
+        user.email = 'test+new@example.com';
 
         await expect(broker.call('v1.acl.users.update', user, { meta: adminMeta })).rejects
-          .toBeInstanceOf(MoleculerClientError);
+          .toHaveProperty('message', expect.stringContaining('You must define a password'));
+      });
+
+      it('should keep current email even if updating it', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+        user.email = 'test+new@example.com';
+
+        const updated = await broker.call('v1.acl.users.update', user, { meta: adminMeta });
+        const dbUser = await model.findById(user._id).lean();
+
+        expect(updated.email).toEqual('test@example.com');
+        expect(dbUser.email).toEqual('test@example.com');
+      });
+
+      it('should send email to current email and new email', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+        user.email = 'test+new@example.com';
+
+        await broker.call('v1.acl.users.update', user, { meta: adminMeta });
+        const dbUser = await model.findById(user._id).lean();
+
+        expect(mailSend).toHaveBeenCalledTimes(2);
+        expect(dbUser.emailToken).toBeDefined();
+      });
+
+      it('should throw server error if unable to send email', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+        user.email = 'test+new@example.com';
+
+        mailSend.mockImplementationOnce(() => { throw new Error(); });
+
+        await expect(broker.call('v1.acl.users.update', user, { meta: adminMeta })).rejects
+          .toBeInstanceOf(MoleculerServerError);
+
+        expect(mailSend).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('me action', () => {
+      it('should return authenticated user', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        const meUser = await broker.call('v1.acl.users.me', {}, { meta: { user: { id: user._id.toString() } } });
+
+        expect(meUser).toEqual({ ...user, _id: user._id.toString() });
       });
     });
   });

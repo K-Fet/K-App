@@ -264,7 +264,7 @@ module.exports = {
       async handler(ctx) {
         // In case of change of email, create a emailToken and send emails
         const { email: currentEmail } = ctx.locals.entity;
-        const { passwordToken, email, _id } = ctx.params;
+        const { passwordToken, email, id } = ctx.params;
         if (currentEmail !== email) {
           if (passwordToken) {
             throw new MoleculerClientError('You must define a password. Please, check your email.', 400, 'UndefinedPassword');
@@ -276,14 +276,14 @@ module.exports = {
           ctx.params.email = currentEmail;
 
           try {
-            await ctx.call('v1.service.mail.verifyEmailMail', { email, token: emailToken, userId: _id }, {
+            await ctx.call('v1.service.mail.verifyEmailMail', { email, token: emailToken, userId: id }, {
               retries: 3, timeout: 5000,
             });
 
             await ctx.call('v1.service.mail.emailUpdateInformationMail', {
               email: currentEmail,
               newEmail: email,
-              userId: _id,
+              userId: id,
             }, { retries: 3, timeout: 5000 });
           } catch (err) {
             this.logger.error('Error while sending reset password mail at %s or %s, %o', currentEmail, email, err);
