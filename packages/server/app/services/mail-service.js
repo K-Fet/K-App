@@ -24,7 +24,7 @@ function createMailTemplate(emailBody) {
  * @param html {String} mail content with html tag
  * @returns {Promise<void>} Nothing
  */
-async function sendMail(to, subject, html) {
+async function sendMail({ to, subject, html }) {
   const transporter = nodemailer.createTransport(conf.get('mail'));
 
   const mailOptions = {
@@ -44,7 +44,7 @@ async function sendMail(to, subject, html) {
  * @param token {String} passwordToken
  * @returns {Promise<void>} Nothing
  */
-async function sendPasswordResetMail(email, token) {
+async function sendPasswordResetMail({ email, token }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.RESET_PASSWORD)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -70,7 +70,7 @@ async function sendPasswordResetMail(email, token) {
  * @param userId {Number} User id
  * @returns {Promise<void>} Nothing
  */
-async function sendVerifyEmailMail(email, token, userId) {
+async function sendVerifyEmailMail({ email, token, userId }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.VERIFY_EMAIL)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -96,7 +96,7 @@ async function sendVerifyEmailMail(email, token, userId) {
  * @param userId {Number} user id
  * @returns {Promise<void>} Nothing
  */
-async function sendEmailUpdateInformationMail(email, newEmail, userId) {
+async function sendEmailUpdateInformationMail({ email, newEmail, userId }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_UPDATE_INFORMATION)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -122,7 +122,7 @@ async function sendEmailUpdateInformationMail(email, newEmail, userId) {
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendEmailConfirmation(email) {
+async function sendEmailConfirmation({ email }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_CONFIRM_CHANGE)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -144,7 +144,7 @@ async function sendEmailConfirmation(email) {
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendPasswordUpdate(email) {
+async function sendPasswordUpdate({ email }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.PASSWORD_UPDATE)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -166,7 +166,7 @@ async function sendPasswordUpdate(email) {
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendCancelEmailConfirmation(email) {
+async function sendCancelEmailConfirmation({ email }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.EMAIL_CHANGE_CANCEL_CONFIRMATION)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {
@@ -188,7 +188,7 @@ async function sendCancelEmailConfirmation(email) {
  * @param email {String} recipient email address
  * @returns {Promise<void>} Nothing
  */
-async function sendWelcomeMail(email) {
+async function sendWelcomeMail({ email }) {
   const mail = createMailTemplate(EMAIL_TEMPLATES.WELCOME).replace(REGEX_TOKEN, (matches, replaceToken) => {
     switch (replaceToken) {
       case 'MAIL_WEBSITE':
@@ -211,7 +211,7 @@ async function sendWelcomeMail(email) {
  * @param values {Object} Key/value pairs representing form values
  * @returns {Promise<void>} Nothing
  */
-async function sendContactForm(formName, emails, values) {
+async function sendContactForm({ formName, emails, values }) {
   const emailTemplate = createMailTemplate(EMAIL_TEMPLATES.CONTACT)
     .replace(REGEX_TOKEN, (matches, replaceToken) => {
       switch (replaceToken) {

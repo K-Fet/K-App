@@ -1,8 +1,25 @@
 const Joi = require('@hapi/joi');
+const { MoleculerClientError } = require('moleculer').Errors;
 const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
 
 module.exports = function joiDbActions(joiModel, name) {
+  const findEntity = async (ctx) => {
+    const entity = await ctx.service.getById(ctx.params.id, true);
+    if (!entity) {
+      throw new MoleculerClientError('Entity not found!', 404, 'ERR_ENTITY_NOT_FOUND');
+    }
+
+    ctx.locals.entity = entity;
+  };
+
   return {
+    hooks: {
+      before: {
+        get: [findEntity],
+        update: [findEntity],
+        remove: [findEntity],
+      },
+    },
     actions: {
       find: {
         rest: 'GET /find',
@@ -73,7 +90,6 @@ module.exports = function joiDbActions(joiModel, name) {
           `${name}.read`,
           '$owner',
         ],
-        needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
           populate: JOI_STRING_OR_STRING_ARRAY,
@@ -87,7 +103,6 @@ module.exports = function joiDbActions(joiModel, name) {
           `${name}.write`,
           '$owner',
         ],
-        needEntity: true,
         params: () => joiModel.append({
           id: JOI_ID.required(),
         }),
@@ -98,7 +113,6 @@ module.exports = function joiDbActions(joiModel, name) {
           `${name}.delete`,
           '$owner',
         ],
-        needEntity: true,
         params: () => Joi.object({
           id: JOI_ID.required(),
         }),

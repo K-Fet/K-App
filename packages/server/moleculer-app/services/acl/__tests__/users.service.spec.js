@@ -1,21 +1,19 @@
 const { ServiceBroker, Errors: { MoleculerClientError } } = require('moleculer');
 const JoiValidator = require('../../../utils/joi.validator');
 const UsersService = require('../users.service');
-const FindEntityMiddleware = require('../../../middlewares/find-entity');
+const MailService = require('../../service/mail.service');
 
 describe('Test acl.users.service', () => {
   const broker = new ServiceBroker({
     logger: false,
     validator: new JoiValidator(),
-    middlewares: [FindEntityMiddleware],
+    middlewares: [],
   });
 
   const mailSend = jest.fn();
-  broker.createService({
-    name: 'service.mail',
-    version: 1,
-    actions: {
-      send: mailSend,
+  broker.createService(MailService, {
+    methods: {
+      sendEmail: mailSend,
     },
   });
 
@@ -328,12 +326,31 @@ describe('Test acl.users.service', () => {
         user.id = user._id;
         user.account.description = 'New description';
 
-        const updated = await broker.call('v1.acl.users.update', user);
-        const dbUser = await model.getById(user._id).lean();
+        const updated = await broker.call('v1.acl.users.update', user, { meta: adminMeta });
+        const dbUser = await model.findById(user._id).lean();
 
         expect(updated.account.description).toEqual('New description');
         expect(dbUser.account.description).toEqual('New description');
+      });
 
+      it('should fail if user update email while having passwordToken', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          passwordToken: 'bigToken',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        user._id = user._id.toString();
+        user.id = user._id;
+        user.account.email = 'test+new@example.com';
+
+        await expect(broker.call('v1.acl.users.update', user, { meta: adminMeta })).rejects
+          .toBeInstanceOf(MoleculerClientError);
       });
     });
   });

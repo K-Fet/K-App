@@ -1,23 +1,93 @@
-const path = require('path');
-const MoleculerMail = require('@k-fet/moleculer-mail');
-const conf = require('nconf');
+const Joi = require('@hapi/joi');
+const mailService = require('../../../app/services/mail-service');
 
 module.exports = {
   name: 'service.mail',
   version: 1,
-  mixins: [MoleculerMail],
 
-  settings: {
-    // Email template config (https://github.com/niftylettuce/email-templates/)
-    template: {
-      transport: conf.get('mail'),
-      views: { root: path.join(__dirname, '../../../resources/mail/templates') },
-      message: {
-        from: conf.get('mail:auth:user'),
+  actions: {
+    passwordResetMail: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+        token: Joi.string().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
       },
     },
-    locals: {
-      _website: conf.get('web:clientUrl'),
+    verifyEmailMail: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+        token: Joi.string().required(),
+        userId: Joi.string().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+    emailUpdateInformationMail: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+        newEmail: Joi.string().email().required(),
+        userId: Joi.string().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+    emailConfirmation: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+    welcomeMail: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+    cancelEmailConfirmation: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+    passwordUpdate: {
+      visibility: 'public',
+      params: () => Joi.object({
+        email: Joi.string().email().required(),
+      }),
+      async handler(ctx) {
+        return this.sendEmail(ctx);
+      },
+    },
+  },
+
+  methods: {
+    async sendEmail(ctx) {
+      const { name } = ctx.action;
+
+      const service = `send${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+      const fn = mailService[service];
+
+      if (typeof fn !== 'function') {
+        throw new Error('Unable to find this mail service');
+      }
+
+      await fn(ctx.params);
     },
   },
 };

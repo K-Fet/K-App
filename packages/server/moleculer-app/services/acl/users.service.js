@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const { xor } = require('lodash');
-const conf = require('nconf');
 const { Errors: { MoleculerClientError, MoleculerServerError } } = require('moleculer');
 const DbMixin = require('../../mixins/db-service.mixin');
 const DisableMixin = require('../../mixins/disable-actions.mixin');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
-const mailService = require('../../../app/services/mail-service');
 const {
   createSchema, MONGO_ID, MONGOOSE_INTERNALS, verify, generateToken, hash, JOI_STRING_OR_STRING_ARRAY,
 } = require('../../../utils');
@@ -224,11 +222,7 @@ module.exports = {
 
         await this.actions.resetPassword({ email });
 
-        await ctx.call('v1.service.mail.send', {
-          message: { to: email },
-          template: 'welcome-mail',
-          data: { email },
-        }, { retries: 3, timeout: 5000 });
+        await ctx.call('v1.service.mail.welcomeMail', { email }, { retries: 3, timeout: 5000 });
 
         return user;
       },
@@ -282,8 +276,15 @@ module.exports = {
           ctx.params.email = currentEmail;
 
           try {
-            await mailService.sendVerifyEmailMail(email, emailToken, _id);
-            await mailService.sendEmailUpdateInformationMail(currentEmail, email, _id);
+            await ctx.call('v1.service.mail.verifyEmailMail', { email, token: emailToken, userId: _id }, {
+              retries: 3, timeout: 5000,
+            });
+
+            await ctx.call('v1.service.mail.emailUpdateInformationMail', {
+              email: currentEmail,
+              newEmail: email,
+              userId: _id,
+            }, { retries: 3, timeout: 5000 });
           } catch (err) {
             this.logger.error('Error while sending reset password mail at %s or %s, %o', currentEmail, email, err);
             throw new MoleculerServerError('Unable to send email to the provided address', 500, 'MailerError');
@@ -324,14 +325,11 @@ module.exports = {
         }
 
         const passwordToken = await generateToken(128);
-        const link = `${conf.get('web:clientUrl')}/auth/define-password?email=${email}&passwordToken=${encodeURIComponent(passwordToken)}`;
 
         try {
-          await ctx.call('v1.service.mail.send', {
-            message: { to: user.email },
-            template: 'password-reset',
-            data: { email, link },
-          }, { retries: 3, timeout: 10000 });
+          await ctx.call('v1.service.mail.passwordResetMail', { email, token: passwordToken }, {
+            retries: 3, timeout: 5000,
+          });
         } catch (err) {
           this.logger.error('Error while sending reset password mail at %s, %o', user.email, err);
 
@@ -395,7 +393,7 @@ module.exports = {
         });
 
         try {
-          await mailService.sendPasswordUpdate(user.email);
+          await ctx.call('v1.service.mail.passwordUpdate', { email: user.email }, { retries: 3, timeout: 5000 });
         } catch (e) {
           this.logger.warn('Error while sending password update mail');
         }
@@ -430,7 +428,7 @@ module.exports = {
         await this.adapter.updateById(userId, { $set: { email, emailToken: null } });
 
         try {
-          await mailService.sendEmailConfirmation(email);
+          await ctx.call('v1.service.mail.emailConfirmation', { email: user.email }, { retries: 3, timeout: 5000 });
         } catch (err) {
           this.logger.error('Error while sending a confirmation for email update for %s, %o', email, err);
         }
@@ -456,7 +454,9 @@ module.exports = {
         await this.adapter.updateById(userId, { $set: { emailToken: null } });
 
         try {
-          await mailService.sendCancelEmailConfirmation(email);
+          await ctx.call('v1.service.mail.cancelEmailConfirmation', { email: user.email }, {
+            retries: 3, timeout: 5000,
+          });
         } catch (err) {
           this.logger.error('Error while sending a confirmation for email update for %s, %o', email, err);
         }
