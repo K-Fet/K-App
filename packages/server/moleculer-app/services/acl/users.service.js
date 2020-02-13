@@ -111,6 +111,7 @@ module.exports = {
       remove: ['limitToServiceAccounts'],
       resetPassword: ['getUserByEmail'],
       definePassword: ['getUserByEmail'],
+      authenticate: ['getUserByEmail'],
     },
     after: {
       '*': ['removeSensitiveData'],
@@ -363,22 +364,29 @@ module.exports = {
       }).xor('oldPassword', 'passwordToken'),
       async handler(ctx) {
         const { user } = ctx.locals;
-        const { password, passwordToken, oldPassword } = ctx.params;
+        const {
+          password, passwordToken, oldPassword, email,
+        } = ctx.params;
+
+        const baseError = new MoleculerClientError('Unable to define password', 400, 'InvalidRequest');
 
         if (passwordToken) {
-          if (!user.passwordToken) {
-            throw new MoleculerClientError('passwordToken database value is null for the provided user', 400, 'NoPasswordToken');
+          if (!user || !user.passwordToken) {
+            this.logger.info(`Define password action rejected for email ${email} because no password token`);
+            throw baseError;
           }
           if (!await verify(user.passwordToken, passwordToken)) {
-            throw new MoleculerClientError('Provided password token has not been found for this user', 400, 'UnknownPasswordToken');
+            this.logger.info(`Define password action rejected for email ${email} because invalid password token`);
+            throw baseError;
           }
         } else if (oldPassword) {
-          if (!await verify(user.password, oldPassword)) {
+          if (!user || !await verify(user.password, oldPassword)) {
             throw LOGIN_ERROR;
           }
         }
 
         if (user.emailToken) {
+          this.logger.warn(`Define password action rejected for user ${user._id} because email token already defined`);
           throw new MoleculerClientError(
             'A verified email is required, if you can not gain access to your account, contact an administrator',
             400,
@@ -471,9 +479,8 @@ module.exports = {
         password: Joi.string().required(),
       }),
       async handler(ctx) {
-        const { email, password } = ctx.params;
-
-        const user = await this.adapter.findOne({ email });
+        const { password } = ctx.params;
+        const { user } = ctx.locals;
 
         if (!user) throw LOGIN_ERROR;
 

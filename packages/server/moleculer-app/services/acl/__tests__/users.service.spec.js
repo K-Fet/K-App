@@ -2,6 +2,7 @@ const { ServiceBroker, Errors: { MoleculerClientError, MoleculerServerError } } 
 const JoiValidator = require('../../../utils/joi.validator');
 const UsersService = require('../users.service');
 const MailService = require('../../service/mail.service');
+const { hash, verify } = require('../../../../utils');
 
 describe('Test acl.users.service', () => {
   const broker = new ServiceBroker({
@@ -14,6 +15,15 @@ describe('Test acl.users.service', () => {
   broker.createService(MailService, {
     methods: {
       sendEmail: mailSend,
+    },
+  });
+
+  const revokeAll = jest.fn();
+  broker.createService({
+    name: 'acl.auth',
+    version: 1,
+    actions: {
+      revokeAll,
     },
   });
 
@@ -43,6 +53,7 @@ describe('Test acl.users.service', () => {
     await model.deleteMany({});
     resetPassword.mockClear();
     mailSend.mockClear();
+    revokeAll.mockClear();
   });
 
   describe('Test methods', () => {
@@ -518,6 +529,256 @@ describe('Test acl.users.service', () => {
 
         await expect(broker.call('v1.acl.users.resetPassword', { email: user.email }, { meta: { user } }))
           .rejects.toBeInstanceOf(MoleculerServerError);
+      });
+    });
+
+    describe('definePassword action', () => {
+      it('should update password from old password', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          oldPassword: 'oldPassword',
+          password: 'newPassword123',
+        });
+        const dbUser = await model.findById(user._id).lean();
+
+        expect(await verify(dbUser.password, 'newPassword123')).toBeTruthy();
+      });
+
+      it('should update password from passwordToken', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          passwordToken: await hash('token'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          passwordToken: 'token',
+          password: 'newPassword123',
+        });
+        const dbUser = await model.findById(user._id).lean();
+
+        expect(await verify(dbUser.password, 'newPassword123')).toBeTruthy();
+        expect(dbUser.passwordToken).toBeNull();
+      });
+
+      it('should send a mail after update', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          oldPassword: 'oldPassword',
+          password: 'newPassword123',
+        });
+
+        expect(mailSend).toHaveBeenCalledTimes(1);
+      });
+
+      it('should revoke all token at the end', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          passwordToken: await hash('token'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          passwordToken: 'token',
+          password: 'newPassword123',
+        });
+
+        expect(revokeAll).toHaveBeenCalledTimes(1);
+      });
+
+      it('should fail if no user found with passwordToken', async () => {
+        await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        });
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: 'unknown@example.com',
+          passwordToken: 'token',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'InvalidRequest');
+      });
+
+      it('should fail if no user found with oldPassword', async () => {
+        await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        });
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: 'unknown@example.com',
+          oldPassword: 'oldPassword',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'LoginError');
+      });
+
+      it('should fail if no passwordToken in db', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          passwordToken: 'token',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'InvalidRequest');
+      });
+
+      it('should fail if passwordToken does not match', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          passwordToken: await hash('token'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          passwordToken: 'notAToken',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'InvalidRequest');
+      });
+
+      it('should fail if oldPassword does not match', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          oldPassword: 'badPassword',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'LoginError');
+      });
+
+      it('should fail if emailToken is already defined', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          emailToken: 'exist',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          oldPassword: 'oldPassword',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'UnverifiedEmail');
+      });
+
+      it('should work even if mail does not send', async () => {
+        const user = (await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          password: await hash('oldPassword'),
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        })).toObject();
+
+        mailSend.mockImplementationOnce(() => { throw new Error(); });
+
+        await broker.call('v1.acl.users.definePassword', {
+          email: user.email,
+          oldPassword: 'oldPassword',
+          password: 'newPassword123',
+        });
+
+        expect(revokeAll).toHaveBeenCalledTimes(1);
+      });
+    });
+
+
+    describe('authenticate action', () => {
+      it('should fail if no user found with passwordToken', async () => {
+        await model.create({
+          email: 'test@example.com',
+          accountType: 'SERVICE',
+          account: {
+            code: '1234',
+            description: 'Test account',
+            permissions: [],
+          },
+        });
+
+        await expect(broker.call('v1.acl.users.definePassword', {
+          email: 'unknown@example.com',
+          passwordToken: 'token',
+          password: 'newPassword123',
+        })).rejects.toHaveProperty('type', 'InvalidRequest');
       });
     });
   });

@@ -63,7 +63,10 @@ module.exports = {
 
         const rMap = await ctx.call('v1.acl.users.populateRoles', { rolesIds });
 
-        return docs.map(d => ({ ...d, barmen: rMap[d._id] }));
+        docs.forEach((d) => {
+          // eslint-disable-next-line no-param-reassign
+          d.barmen = rMap[d._id];
+        });
       },
     },
   },
