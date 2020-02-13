@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve --proxy-config proxy.conf.json --host 0.0.0.0 --disable-host-check",
     "build": "ng build --aot",
     "build:prod": "ng build --prod",
     "prestart": "yarn run gitversion",

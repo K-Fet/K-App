@@ -3,7 +3,7 @@
   "version": "2.3.5",
   "private": true,
   "scripts": {
-    "dev:back": "nodemon --watch server --inspect",
+    "dev:back": "nodemon --watch . --inspect",
     "test": "jest"
   },
   "dependencies": {
