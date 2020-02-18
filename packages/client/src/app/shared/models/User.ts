@@ -8,12 +8,12 @@ export interface Barman {
   lastName: string;
   nickName: string;
   leaveAt?: Date;
-  facebook: string;
+  facebook?: string;
   godFather?: string | Barman;
   dateOfBirth: Date;
-  flow: string;
-  createdAt: Date;
-  updatedAt: Date;
+  flow?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 
   kommissions: string[] | Kommission[];
   roles: string[] | Role[];

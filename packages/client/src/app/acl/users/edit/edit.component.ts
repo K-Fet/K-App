@@ -1,94 +1,60 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-
-import { SpecialAccountService } from '../special-account.service';
-import { AccountType, ConnectedUser, Permission, SpecialAccount } from '../../../shared/models';
-import { getSpecialAccountFromForm, getSpecialAccountModel } from '../users.form-model';
-import { CodeDialogComponent } from '../../../shared/dialogs/code-dialog/code-dialog.component';
-import { AuthService } from '../../../core/api-services/auth.service';
-import { MeService } from '../../../core/api-services/me.service';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from '../../../core/api-services/users.service';
+import { User } from '../../../shared/models';
+import { getUserFromForm, getUserModel } from '../users.form-model';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { PermissionService } from '../../../core/api-services/permission.service';
-import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
 
 @Component({
   templateUrl: './edit.component.html',
-  styleUrls: ['./edit.component.scss'],
 })
-export class EditComponent implements OnInit {
+export class EditComponent implements OnInit, AfterContentChecked {
+
+  @ViewChild('dialog', { static: true }) dialog: ModalComponent<string>;
 
   formGroup: FormGroup;
   model: DynamicFormModel;
 
-  originalSpecialAccount: SpecialAccount;
-  connectedUser: ConnectedUser;
-
-  permissions: Permission[] = [];
-
-  @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
+  originalUser: User;
 
   constructor(private formService: DynamicFormService,
-              private authService: AuthService,
-              private meService: MeService,
-              private permissionService: PermissionService,
-              private specialAccountService: SpecialAccountService,
-              private toasterService: ToasterService,
-              private route: ActivatedRoute,
-              private dialog: MatDialog,
-              private router: Router) { }
+    private toasterService: ToasterService,
+    private usersService: UsersService,
+    private route: ActivatedRoute,
+    private cdref: ChangeDetectorRef) {
+  }
 
-  ngOnInit() {
-    this.authService.$currentUser.subscribe(user => this.connectedUser = user);
-    this.formGroup = this.formService.createFormGroup([]);
-
-    this.permissionService.getAll().then(permissions => this.permissions = permissions);
-
-    this.route.data.subscribe((data: { specialAccount: SpecialAccount }) => {
-      this.originalSpecialAccount = data.specialAccount;
-      this.model = getSpecialAccountModel(this.originalSpecialAccount);
+  ngOnInit(): void {
+    this.route.data.subscribe((data: { user: User }) => {
+      this.originalUser = data.user;
+      this.model = getUserModel(this.originalUser.accountType);
       this.formGroup = this.formService.createFormGroup(this.model);
     });
-  }
 
-  isMe(): boolean {
-    if (!this.connectedUser || !this.originalSpecialAccount || !this.originalSpecialAccount.connection) return false;
-    const { id: connectedId } = this.connectedUser.getConnection();
-    const { id: specialAccountId } = this.originalSpecialAccount.connection;
-    return connectedId === specialAccountId;
-  }
-
-  async onNgSubmit() {
-    const dialogRef = this.dialog.open(CodeDialogComponent, {
-      width: '350px',
-      data: { message: `Edition du compte special ${this.originalSpecialAccount.connection.email}` },
+    this.dialog.afterClosed().subscribe((result) => {
+      if (!result) return;
+      if (result === 'save') return this.onEdit();
+      if (result === 'delete') return this.onDelete();
     });
-
-    const code = await dialogRef.afterClosed().toPromise();
-    if (code) this.doUpdate(code);
   }
 
-  async doUpdate(code: number) {
-    const updateSpecialAccount = getSpecialAccountFromForm(
-      this.formGroup,
-      this.permSelector.selectedPermissions.map(p => p.id),
-      this.originalSpecialAccount,
-    );
+  // Fix ExpressionChangedAfterItHasBeenCheckedError
+  // https://github.com/angular/angular/issues/23657#issuecomment-526913914
+  ngAfterContentChecked(): void {
+    this.cdref.detectChanges();
+  }
 
-    if (this.isMe()) {
-      await this.meService.put(
-        new ConnectedUser({ accountType: AccountType.SPECIAL_ACCOUNT, specialAccount: updateSpecialAccount }),
-        code,
-      );
-      this.toasterService.showToaster('Modification(s) enregistrée(s)');
-      this.router.navigate(['/home']);
-      this.authService.me();
-    } else {
-      await this.specialAccountService.update(updateSpecialAccount, code);
-      this.toasterService.showToaster('Compte spécial modifié');
-      this.router.navigate(['/acl/special-accounts']);
-    }
+  async onEdit(): Promise<void> {
+    const updatedUser = getUserFromForm(this.formGroup, this.originalUser.accountType, this.originalUser);
+    await this.usersService.update(updatedUser);
+    this.toasterService.showToaster('Utilisateur mis à jour');
+  }
+
+  async onDelete(): Promise<void> {
+    await this.usersService.remove(this.originalUser._id);
+    this.toasterService.showToaster('Utilisateur supprimé');
   }
 }

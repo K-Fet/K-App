@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss'],
+  styleUrls: [],
 })
 export class ListComponent implements OnInit, AfterViewInit {
 

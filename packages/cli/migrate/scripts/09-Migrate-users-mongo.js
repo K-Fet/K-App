@@ -58,6 +58,8 @@ module.exports = {
       .map(u => u.toJSON())
       .map(u => ({
         _id: Types.ObjectId(),
+        createdAt: u.createdAt,
+        updatedAt: u.updatedAt,
         email: u.email,
         password: u.password,
         passwordToken: u.passwordToken,

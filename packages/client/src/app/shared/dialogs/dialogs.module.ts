@@ -12,11 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ConfirmationDialogComponent,
     RegisterMemberDialogComponent,
   ],
-  entryComponents: [
-    CodeDialogComponent,
-    ConfirmationDialogComponent,
-    RegisterMemberDialogComponent,
-  ],
   imports: [
     CommonModule,
     MaterialModule,

@@ -28,9 +28,8 @@
         </mat-card-subtitle>
       </mat-card-header>
     </mat-card>
-    <div *ngIf="currentUser.isBarman()" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center stretch"
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center stretch"
          fxLayoutGap="20px">
-      <app-my-tasks fxFlex *ngxPermissionsOnly="['task:read']"></app-my-tasks>
       <app-my-services fxFlex *ngIf="isActive()"></app-my-services>
     </div>
     <app-feed fxFlex></app-feed>

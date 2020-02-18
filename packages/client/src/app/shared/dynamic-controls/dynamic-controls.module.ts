@@ -15,9 +15,6 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
   declarations: [
     DynamicOwlDateTimeComponent,
   ],
-  entryComponents: [
-    DynamicOwlDateTimeComponent,
-  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,

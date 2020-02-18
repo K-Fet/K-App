@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../../shared/models';
+import { AccountType, User } from '../../shared/models';
 import * as jwtDecode from 'jwt-decode';
 import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ROLES } from '../../constants';
@@ -28,7 +28,7 @@ export class AuthService {
 
   async initializeAuth(): Promise<void> {
     this.$currentUser = new BehaviorSubject<User>({
-      accountType: 'GUEST',
+      accountType: AccountType.GUEST,
       account: null,
     });
 
@@ -54,14 +54,14 @@ export class AuthService {
   }
 
   async login(email: string, password: string, rememberMe: number): Promise<void> {
-    const currentUser = await this.http.post<{ jwt: string }>(`${BASE_URL}/login`, {
+    const jwt = await this.http.post<string>(`${BASE_URL}/login`, {
       email,
       password,
       rememberMe,
     })
       .toPromise();
 
-    this.saveUser(currentUser, (rememberMe >= environment.JWT_DAY_EXP_LONG));
+    this.saveUser({ jwt }, (rememberMe >= environment.JWT_DAY_EXP_LONG));
 
     await this.reloadCurrentUser();
   }
@@ -79,7 +79,7 @@ export class AuthService {
   private clearUser(): void {
     clearBugsnagUser();
     this.$currentUser.next({
-      accountType: 'GUEST',
+      accountType: AccountType.GUEST,
       account: null,
     });
     this.ngxPermissionsService.flushPermissions();

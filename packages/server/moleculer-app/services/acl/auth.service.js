@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 const uuidv4 = require('uuid/v4');
 const conf = require('nconf');
+const { addMinutes } = require('date-fns');
 const jwt = require('jsonwebtoken');
 const DbMixin = require('../../mixins/db-service.mixin');
 const DisableMixin = require('../../mixins/disable-actions.mixin');
@@ -39,7 +40,9 @@ module.exports = {
       async handler(ctx) {
         const { id } = ctx.params;
 
-        return this._get(ctx, { id });
+        const match = await this._get(ctx, { id });
+        match.userId = match.userId.toString();
+        return match;
       },
     },
 
@@ -56,7 +59,7 @@ module.exports = {
 
         const user = await ctx.call('v1.acl.users.authenticate', { email, password });
 
-        return this.create({ userId: user._id, duration: rememberMe });
+        return this.createToken(ctx, { userId: user._id, duration: rememberMe });
       },
     },
 
@@ -88,21 +91,21 @@ module.exports = {
   },
 
   methods: {
-    async create({ userId, duration }) {
+    async createToken(ctx, { userId, duration }) {
       const id = uuidv4();
-      const expiresIn = Math.floor(Date.now() / 1000) + (60 * duration);
+      const expireAt = addMinutes(new Date(), duration);
 
-      await this._create(this.currentContext, {
+      await this._create(ctx, {
         _id: id,
         userId,
-        expireAt: new Date(expiresIn),
+        expireAt,
       });
 
       this.logger.debug(`Creating a new JWT ${userId}`);
 
       return jwt.sign({
         jit: id,
-        expiresIn,
+        expiresIn: Math.floor(expireAt / 1000),
         userId,
       }, conf.get('web:jwtSecret'));
     },

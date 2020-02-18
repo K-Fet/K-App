@@ -41,7 +41,6 @@ const SHARED_MODULES = [
     ModalComponent,
     ConfirmButtonComponent,
   ],
-  entryComponents: [ModalComponent],
   imports: SHARED_MODULES,
   exports: [
     ...SHARED_MODULES,

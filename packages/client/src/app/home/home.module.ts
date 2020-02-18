@@ -4,7 +4,6 @@ import { SharedModule } from '../shared/shared.module';
 import { FeedComponent } from './feed/feed.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { PresentationComponent } from './presentation/presentation.component';
-import { TasksModule } from '../kommissions/tasks/tasks.module';
 import { MyServicesModule } from '../services/my-services/my-services.module';
 
 @NgModule({
@@ -15,7 +14,6 @@ import { MyServicesModule } from '../services/my-services/my-services.module';
   ],
   imports: [
     SharedModule,
-    TasksModule,
     MyServicesModule,
     HomeRoutingModule,
   ],

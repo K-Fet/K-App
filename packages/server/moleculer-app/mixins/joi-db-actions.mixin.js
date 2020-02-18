@@ -4,12 +4,12 @@ const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
 
 module.exports = function joiDbActions(joiModel, name) {
   const findEntity = async (ctx) => {
-    const entity = await ctx.service.getById(ctx.params.id, true);
+    const entity = await ctx.service.getById(ctx.params.id);
     if (!entity) {
       throw new MoleculerClientError('Entity not found!', 404, 'ERR_ENTITY_NOT_FOUND');
     }
 
-    ctx.locals.entity = entity;
+    ctx.locals.entity = entity.toJSON();
   };
 
   return {

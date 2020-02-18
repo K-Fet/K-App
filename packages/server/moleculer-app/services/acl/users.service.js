@@ -120,6 +120,8 @@ module.exports = {
 
   methods: {
     isEntityOwner(ctx) {
+      if (!ctx.meta.user) return false;
+
       const { _id } = ctx.meta.user;
       const { id } = ctx.params;
 
@@ -175,7 +177,7 @@ module.exports = {
       // Fail silently
       if (!user) return;
 
-      ctx.locals.user = user;
+      ctx.locals.user = user.toJSON();
     },
   },
 
@@ -187,10 +189,11 @@ module.exports = {
       async permissions(ids, docs, rule, ctx) {
         const roleIds = [...new Set([...docs
           .filter(d => d.accountType === 'BARMAN')
-          .flatMap(d => d.account.roles),
+          .flatMap(d => d.account.roles)
+          .map(r => r.toString()),
         ]).entries()];
 
-        const roles = await ctx.call('v1.acl.roles.get', { id: roleIds, mapping: true });
+        const roles = roleIds.length ? await ctx.call('v1.acl.roles.get', { id: roleIds, mapping: true }) : {};
 
         docs.forEach((d) => {
           if (d.accountType === 'SERVICE') {
@@ -298,12 +301,13 @@ module.exports = {
 
     me: {
       rest: 'GET /me',
-      permissions: [
-        '$owner',
-      ],
+      permissions: [],
       params: () => Joi.object({}),
       async handler(ctx) {
-        ctx.params.id = ctx.meta.user.id;
+        ctx.params = {
+          id: ctx.meta.user._id,
+          populate: ['permissions'],
+        };
         return this._get(ctx, ctx.params);
       },
     },

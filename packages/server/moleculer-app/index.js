@@ -4,10 +4,9 @@ const PermissionGuard = require('moleculer-middleware-permissions');
 const JoiValidator = require('./utils/joi.validator');
 const { loggerConfig } = require('../logger');
 const { PERMISSION_LIST } = require('./constants');
-const { getAllPermissionsFromUser } = require('../utils');
 
 const guard = new PermissionGuard({
-  getUserPermissions: ctx => getAllPermissionsFromUser(ctx.meta.user),
+  getUserPermissions: ctx => ctx.meta.userPermissions,
 });
 
 const broker = new ServiceBroker({

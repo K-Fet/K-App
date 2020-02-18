@@ -15,12 +15,6 @@ const routes: Routes = [
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
   },
   {
-    path: 'barmen',
-    data: { permissions: { only: 'barman:read' } },
-    canLoad: [NgxPermissionsGuard],
-    loadChildren: () => import('./barmen/barmen.module').then(m => m.BarmenModule),
-  },
-  {
     path: 'contact',
     loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule),
   },

@@ -14,7 +14,7 @@ const jwtVerify = util.promisify(jwt.verify);
  * You must disable `authorization` at route level!
  */
 async function onBeforeCallAuthorize(ctx, route, req) {
-  const serviceAuthorization = req.$service.settings.authorization;
+  const serviceAuthorization = req.$service.authorization;
   const actionAuthorization = req.$action.authorization;
 
   if ((serviceAuthorization && !(actionAuthorization === false)) || actionAuthorization) {
@@ -147,7 +147,9 @@ module.exports = {
       // Check token
       try {
         const { userId, _id } = await ctx.call('v1.acl.auth.check', { id: decoded.jit });
-        const user = await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' });
+        const user = await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' }, {
+          meta: { userPermissions: ['users.read'] },
+        });
 
         ctx.meta.userPermissions = getAllPermissionsFromUser(user);
         ctx.meta.jit = _id;

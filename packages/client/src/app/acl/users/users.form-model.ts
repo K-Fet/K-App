@@ -1,14 +1,40 @@
 import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
-import { AccountType, Barman, User } from '../../shared/models';
+import { subYears } from 'date-fns';
+import { AccountType, Barman, ServiceAccount, User } from '../../shared/models';
 
-const BASE_USER: User = { accountType: AccountType.BARMAN };
+const baseUserFactory = (accountType: AccountType): User => {
+  if (accountType === AccountType.BARMAN) {
+    return {
+      accountType,
+      account: {
+        lastName: '',
+        firstName: '',
+        nickName: '',
+        dateOfBirth: subYears(new Date(), 19),
+        kommissions: [],
+        roles: [],
+        services: [],
+      },
+    };
+  }
 
-export function getBarmanFormModel(originalUser?: Barman): DynamicFormModel {
-  const account = originalUser || {} as Barman;
+  if (accountType === AccountType.SERVICE) {
+    return {
+      accountType,
+      account: {
+        code: '',
+        description: '',
+        permissions: [],
+      },
+    };
+  }
+};
+
+export function getBarmanFormModel(account?: Barman): DynamicFormModel {
   return [
     new DynamicInputModel({
-      id: 'firstName',
+      id: 'account.firstName',
       label: 'Prénom',
       value: account.firstName,
       validators: {
@@ -16,7 +42,7 @@ export function getBarmanFormModel(originalUser?: Barman): DynamicFormModel {
       },
     }),
     new DynamicInputModel({
-      id: 'lastName',
+      id: 'account.lastName',
       label: 'Nom',
       value: account.lastName,
       validators: {
@@ -24,7 +50,7 @@ export function getBarmanFormModel(originalUser?: Barman): DynamicFormModel {
       },
     }),
     new DynamicInputModel({
-      id: 'nickName',
+      id: 'account.nickName',
       label: 'Surnom',
       value: account.nickName,
       validators: {
@@ -32,10 +58,25 @@ export function getBarmanFormModel(originalUser?: Barman): DynamicFormModel {
       },
     }),
     new DynamicInputModel({
-      id: 'facebook',
+      id: 'account.facebook',
       label: 'Facebook',
       value: account.facebook,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       pattern: /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w-]*\/)*([\w\-.]+)(\/)?/i,
+    }),
+  ];
+}
+
+export function getServiceFormModel(account?: ServiceAccount): DynamicFormModel {
+  return [
+    new DynamicInputModel({
+      id: 'account.description',
+      label: 'Description',
+      value: account.description,
+      validators: {
+        required: null,
+      },
     }),
   ];
 }
@@ -45,7 +86,7 @@ export function getUserModel(accountType: AccountType, originalUser?: User): Dyn
     throw new Error('User accountType don\'t match');
   }
 
-  const values = originalUser || BASE_USER;
+  const values = originalUser || baseUserFactory(AccountType.BARMAN);
 
   return [
     new DynamicInputModel({
@@ -58,12 +99,27 @@ export function getUserModel(accountType: AccountType, originalUser?: User): Dyn
         email: null,
       },
     }),
+    ...((): DynamicFormModel => {
+      switch (accountType) {
+        case AccountType.BARMAN:
+          return getBarmanFormModel(originalUser.account as Barman);
+        case AccountType.SERVICE:
+          return getServiceFormModel(originalUser.account as ServiceAccount);
+      }
+    })(),
   ];
 }
 
-export function getUserFromForm(form: FormGroup, originalUser?: User): User {
+export function getUserFromForm(form: FormGroup, accountType: AccountType, originalUser?: User): User {
   const value = form.value;
-  const original = originalUser || BASE_USER;
+  const original = originalUser || baseUserFactory(accountType);
 
-  return value;
+  return {
+    ...originalUser,
+    ...value,
+    account: {
+      ...original.account,
+      ...value.account,
+    },
+  };
 }
