@@ -43,12 +43,9 @@ describe('Test acl.auth.service', () => {
       });
 
       it('throw if no related jwt', async () => {
-        expect.assertions(1);
-        try {
-          await broker.call('v1.acl.auth.check', { id: uuidv4() });
-        } catch (e) {
-          expect(e.code).toEqual(404);
-        }
+        await expect(broker.call('v1.acl.auth.check', { id: uuidv4() })).rejects.toThrow(
+          expect.objectContaining({ code: 404 }),
+        );
       });
     });
 

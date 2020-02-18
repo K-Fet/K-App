@@ -9,7 +9,7 @@ import {
 import {
   DynamicDatePickerModel,
   DynamicFormControlComponent,
-  DynamicFormLayout,
+  DynamicFormControlLayout,
   DynamicFormLayoutService,
   DynamicFormValidationService,
 } from '@ng-dynamic-forms/core';
@@ -25,7 +25,7 @@ import { LabelOptions, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material/core';
 export class DynamicOwlDateTimeComponent extends DynamicFormControlComponent {
 
   @Input() group: FormGroup;
-  @Input() layout: DynamicFormLayout;
+  @Input() layout: DynamicFormControlLayout;
   @Input() model: DynamicDatePickerModel;
 
   @Output() blur: EventEmitter<any> = new EventEmitter();
@@ -35,8 +35,8 @@ export class DynamicOwlDateTimeComponent extends DynamicFormControlComponent {
   @ViewChild(OwlDateTimeComponent, { static: true }) owlDateTimeComponent: OwlDateTimeComponent<Date>;
 
   constructor(protected layoutService: DynamicFormLayoutService,
-              protected validationService: DynamicFormValidationService,
-              @Inject(MAT_LABEL_GLOBAL_OPTIONS) @Optional() public LABEL_OPTIONS: LabelOptions,
+    protected validationService: DynamicFormValidationService,
+    @Inject(MAT_LABEL_GLOBAL_OPTIONS) @Optional() public LABEL_OPTIONS: LabelOptions,
   ) {
 
     super(layoutService, validationService);
