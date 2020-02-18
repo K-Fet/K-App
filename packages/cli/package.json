@@ -6,11 +6,11 @@
     "cli": "node index.js"
   },
   "dependencies": {
+    "@hapi/joi": "^14.5.0",
     "dotenv": "^8.2.0",
     "inquirer": "^7.0.0",
-    "@hapi/joi": "^14.5.0",
     "k-app-server": "^2.3.5",
-    "mongoose": "^5.9.0",
+    "mongoose": "^5.9.1",
     "mysql2": "^1.7.0",
     "sequelize": "^4.44.3",
     "umzug": "^2.2.0"

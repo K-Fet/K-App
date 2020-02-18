@@ -6,7 +6,9 @@
       <p class="mat-body">Adhérent inscrit pour les années {{getAllYears()}}</p>
     </mat-dialog-content>
     <mat-dialog-actions>
-      <app-confirm-button (click)="dialog.close('delete')">Supprimer</app-confirm-button>
+      <app-confirm-button *ngxPermissionsOnly="['members.delete']" (click)="dialog.close('delete')">
+        Supprimer
+      </app-confirm-button>
       <span fxFlex></span>
       <button mat-button (click)="dialog.close()">Annuler</button>
       <button mat-button (click)="dialog.close('save')" [disabled]="formGroup && !formGroup.valid && !formGroup.dirty">

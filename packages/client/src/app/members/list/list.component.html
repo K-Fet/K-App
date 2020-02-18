@@ -72,12 +72,12 @@
             <div fxLayout="row">
               <button mat-icon-button (click)="register(member)"
                       [disabled]="isRegistered(member)"
-                      *ngxPermissionsOnly="['v1:core:members:register']">
+                      *ngxPermissionsOnly="['members.register']">
                 <mat-icon>person_add</mat-icon>
               </button>
               <button mat-icon-button
                       [routerLink]="[ {outlets: { modal: [member._id, 'edit'] } } ]"
-                      *ngxPermissionsOnly="['v1:core:members:update']">
+                      *ngxPermissionsOnly="['members.write']">
                 <mat-icon>edit</mat-icon>
               </button>
             </div>

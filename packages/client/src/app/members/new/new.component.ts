@@ -31,7 +31,7 @@ export class NewComponent implements OnInit {
 
   private pagination = {
     pageSize: 5,
-    pageIndex: 0,
+    pageIndex: 1,
   };
 
   get newMember() {

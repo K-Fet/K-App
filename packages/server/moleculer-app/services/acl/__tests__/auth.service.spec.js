@@ -34,11 +34,12 @@ describe('Test acl.auth.service', () => {
     describe('check action', () => {
       it('find the related jwt', async () => {
         const id = uuidv4();
-        const entity = await model.create({ _id: id, userId: defaultUserId });
+        const entity = (await model.create({ _id: id, userId: defaultUserId })).toJSON();
+        entity.userId = entity.userId.toString();
 
         const jwtId = await broker.call('v1.acl.auth.check', { id });
 
-        expect(jwtId).toEqual(entity.toJSON());
+        expect(jwtId).toEqual(entity);
       });
 
       it('throw if no related jwt', async () => {

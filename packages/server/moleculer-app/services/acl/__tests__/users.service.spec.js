@@ -444,9 +444,13 @@ describe('Test acl.users.service', () => {
           },
         })).toObject();
 
-        const meUser = await broker.call('v1.acl.users.me', {}, { meta: { user: { id: user._id.toString() } } });
+        const meUser = await broker.call('v1.acl.users.me', {}, { meta: { user: { _id: user._id.toString() } } });
 
-        expect(meUser).toEqual({ ...user, _id: user._id.toString() });
+        expect(meUser).toEqual({
+          ...user,
+          _id: user._id.toString(),
+          permissions: [],
+        });
       });
     });
 
