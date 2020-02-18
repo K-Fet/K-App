@@ -3,10 +3,12 @@ const { ServiceBroker } = require('moleculer');
 const PermissionGuard = require('moleculer-middleware-permissions');
 const JoiValidator = require('./utils/joi.validator');
 const { loggerConfig } = require('../logger');
-const { PERMISSION_LIST } = require('./constants');
 
 const guard = new PermissionGuard({
-  getUserPermissions: ctx => ctx.meta.userPermissions,
+  getUserPermissions: ctx => {
+    console.log('DEBUG1', ctx.meta);
+    return ctx.meta.userPermissions;
+  },
 });
 
 const broker = new ServiceBroker({
@@ -20,7 +22,7 @@ const broker = new ServiceBroker({
   validator: new JoiValidator(),
 });
 
-async function populatePermissions(sb) {
+async function upgradePermissionsForAdmin(sb) {
   const actions = await sb.call('$node.actions', { skipInternal: true, onlyLocal: true });
 
   const set = new Set(actions
@@ -30,9 +32,15 @@ async function populatePermissions(sb) {
     .filter(perm => typeof perm === 'string')
     .filter(perm => !perm.startsWith('$')));
 
-  sb.logger.info(`Added ${set.size} permissions from moleculer app`);
-  sb.logger.debug(`Added permissions: ${[...set].join(', ')}.`);
-  PERMISSION_LIST.push(...set);
+  sb.logger.info(`Got ${set.size} permissions from moleculer app`);
+  sb.logger.debug(`Permissions: [${[...set].join(', ')}]`);
+
+  // We override any permissions set before
+  const userService = sb.getLocalService('v1.acl.users');
+  await userService.adapter.updateMany(
+    { 'account.autoUpgradePermissions': true },
+    { $set: { 'account.permissions': [...set] } },
+  );
 }
 
 async function start({ expressApp, apiPath }) {
@@ -44,7 +52,7 @@ async function start({ expressApp, apiPath }) {
 
   await broker.start();
 
-  await populatePermissions(broker);
+  await upgradePermissionsForAdmin(broker);
 }
 
 module.exports = {

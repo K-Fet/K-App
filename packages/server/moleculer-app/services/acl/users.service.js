@@ -27,6 +27,7 @@ const model = {
     account: {
       // Service account
       code: { type: String },
+      autoUpgradePermissions: { type: Boolean, default: false }, // Always false
       description: { type: String },
       permissions: { type: [String], default: undefined },
 
@@ -57,6 +58,8 @@ const model = {
         then: Joi.object({
           code: Joi.string().min(4).max(6).regex(/^[0-9]+$/, 'numbers')
             .required(),
+          // Cannot be updated from here
+          autoUpgradePermissions: Joi.boolean().strip(),
           description: Joi.string().required(),
           permissions: Joi.array().items(Joi.string()).default([]),
         }).required(),

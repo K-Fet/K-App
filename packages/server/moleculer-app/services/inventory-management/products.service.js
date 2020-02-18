@@ -4,9 +4,7 @@ const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { BASE_UNIT } = require('../../constants');
-const {
-  MONGO_ID, UNIT_SCHEMA, JOI_ID, JOI_STRING_OR_STRING_ARRAY,
-} = require('../../../utils');
+const { MONGO_ID, UNIT_SCHEMA, JOI_STRING_OR_STRING_ARRAY } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 const { ObjectId } = mongoose.Types;

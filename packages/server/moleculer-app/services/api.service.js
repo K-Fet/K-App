@@ -152,6 +152,7 @@ module.exports = {
         });
 
         ctx.meta.userPermissions = getAllPermissionsFromUser(user);
+        console.log('DEBUG2', ctx.meta);
         ctx.meta.jit = _id;
         return user;
       } catch (e) {

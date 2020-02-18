@@ -39,10 +39,10 @@ const NAV_MENUS: SubMenu[] = [
       },
     ],
   },
-  { links: [{ name: 'Adhérents', route: '/members', permissions: ['member:read'] }] },
+  { links: [{ name: 'Adhérents', route: '/members', permissions: ['members.read'] }] },
   { links: [{ name: 'Barmen', route: '/barmen', permissions: ['barman:read'] }] },
-  { links: [{ name: 'Kommissions', route: '/kommissions', permissions: ['kommission:read'] }] },
-  { links: [{ name: 'Roles', route: '/acl/roles', permissions: ['role:read'] }] },
+  { links: [{ name: 'Kommissions', route: '/kommissions', permissions: ['kommissions.read'] }] },
+  { links: [{ name: 'Roles', route: '/acl/roles', permissions: ['roles.read'] }] },
   {
     links: [{
       name: 'Comptes spéciaux',
@@ -54,7 +54,7 @@ const NAV_MENUS: SubMenu[] = [
     links: [{
       name: 'Templates',
       route: '/services/templates',
-      permissions: ['template:write'],
+      permissions: ['services-templates:write'],
     }],
   },
   {

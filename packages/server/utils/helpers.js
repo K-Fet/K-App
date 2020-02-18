@@ -212,7 +212,7 @@ function getAllPermissionsFromUser(user) {
   if (!user) return [];
 
   const { roles = [], permissions = [] } = user.account;
-  return [...new Set([...roles.flatMap(r => r.permissions), ...permissions]).entries()];
+  return [...new Set([...roles.flatMap(r => r.permissions), ...permissions])];
 }
 
 function createSchema(schemaObj, options, { textIndex } = {}) {

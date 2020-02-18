@@ -38,7 +38,7 @@ module.exports = {
   name: 'core.members',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi), 'members',
+    JoiDbActionsMixin(model.joi, 'members'),
     DbMixin(model.mongoose),
   ],
 
@@ -60,24 +60,28 @@ module.exports = {
         searchField: JOI_STRING_OR_STRING_ARRAY,
         // Remove query as it may be a security issue if published
         query: Joi.object().forbidden(),
-      }).oxor('active', 'inactive'),
+      }),
       async handler(ctx) {
         const params = this.sanitizeParams(ctx, ctx.params);
 
-        // Add scoped query
-        if (params.active) {
+        if (params.active && !params.inactive) {
           params.query = { 'registrations.year': getCurrentSchoolYear() };
         }
-        if (params.inactive) {
+        if (params.inactive && !params.active) {
           params.query = { 'registrations.year': { $ne: getCurrentSchoolYear() } };
         }
         return this._list(ctx, params);
       },
     },
 
+    count: {
+      // Use a specific perm for count
+      permissions: ['members.count'],
+    },
+
     register: {
       rest: 'POST /:id/register',
-      permissions: true,
+      permissions: ['members.register'],
       params: () => Joi.object({
         id: JOI_ID.required(),
         newSchool: Joi.string().min(3),

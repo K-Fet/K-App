@@ -103,6 +103,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   hideTotal(): boolean {
-    return !this.ngxPermissionsService.getPermission('v1:core:members:count');
+    return !this.ngxPermissionsService.getPermission('members.count');
   }
 }
