@@ -2,7 +2,6 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Router } from '@angular/router';
 import { UsersOptions, UsersService } from '../../../core/api-services/users.service';
 import { MoleculerDataSource } from '../../../shared/utils/moleculer-data-source';
 import { AccountType, User } from '../../../shared/models';
@@ -15,7 +14,6 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['email', 'description', 'action'];
   dataSource: MoleculerDataSource<User, UsersOptions>;
 
   // Filters
@@ -26,21 +24,31 @@ export class ListComponent implements OnInit, AfterViewInit {
   @ViewChild('input', { static: true }) input: ElementRef;
 
   constructor(private usersService: UsersService,
-              private router: Router,
-              private ngxPermissionService: NgxPermissionsService) {
+    private ngxPermissionService: NgxPermissionsService) {
   }
 
   async ngOnInit(): Promise<void> {
-    if (!this.ngxPermissionService.getPermissions()['users:write']) {
-      this.displayedColumns = ['email', 'description'];
-    }
-
     this.dataSource = new MoleculerDataSource<User, UsersOptions>(this.usersService);
 
     await this.dataSource.load({ accountType: this.selectedAccountType });
 
     // Refresh list on change
     this.usersService.refresh$.subscribe(() => this.loadUsersPage());
+  }
+
+  getColumns(): string[] {
+    const canWrite = this.ngxPermissionService.getPermissions()['users.write'];
+    switch (this.selectedAccountType) {
+      case AccountType.SERVICE:
+        return ['email', 'description', 'updatedAt', canWrite && 'action'];
+      case AccountType.BARMAN:
+        return ['nickName', 'firstName', 'lastName', 'updatedAt', canWrite && 'action'];
+    }
+    return [];
+  }
+
+  has(name: string): boolean {
+    return this.getColumns().includes(name);
   }
 
   ngAfterViewInit(): void {
@@ -70,9 +78,5 @@ export class ListComponent implements OnInit, AfterViewInit {
     };
 
     await this.dataSource.load(options);
-  }
-
-  edit(user: User): void {
-    this.router.navigate(['/acl/users', user._id, 'edit']);
   }
 }

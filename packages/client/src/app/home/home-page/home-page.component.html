@@ -1,18 +1,3 @@
-<div fxLayoutAlign="center" *ngIf="!isConnected()">
-  <div fxFlex class="max-width" fxLayout="column" fxLayoutGap="20px">
-    <mat-card fxFlex>
-      <mat-card-content fxLayout="column" fxLayoutAlign="center center">
-        <div>
-          Mais qu'est ce que la K-Fêt de l'INSA Lyon ?
-        </div>
-        <div>
-          Check la <span class="link" routerLink="/home/presentation">page de présentation</span>!
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <app-feed fxFlex></app-feed>
-  </div>
-</div>
 <div fxLayoutAlign="center" *ngIf="isConnected()">
   <div fxFlex fxLayout="column" fxLayoutGap="20px" class="max-width">
     <mat-card>
@@ -33,6 +18,5 @@
          fxLayoutGap="20px">
       <app-my-services fxFlex *ngIf="isActive()"></app-my-services>
     </div>
-    <app-feed fxFlex></app-feed>
   </div>
 </div>

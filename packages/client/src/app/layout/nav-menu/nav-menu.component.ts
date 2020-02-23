@@ -20,13 +20,9 @@ interface SubMenu {
 const NAV_MENUS: SubMenu[] = [
   { links: [{ name: 'Accueil', route: '/home' }] },
   {
-    accountType: [AccountType.GUEST],
-    links: [{ name: 'Présentation', route: '/home/presentation' }],
-  },
-  {
     name: 'Services',
     links: [
-      { name: 'Planning', route: '/services/services-explorer', permissions: ['service:read'] },
+      { name: 'Planning', route: '/services/services-explorer', permissions: ['services.read'] },
       {
         name: 'Ouvrir les services',
         route: '/services/open-services',
@@ -40,21 +36,14 @@ const NAV_MENUS: SubMenu[] = [
     ],
   },
   { links: [{ name: 'Adhérents', route: '/members', permissions: ['members.read'] }] },
-  { links: [{ name: 'Barmen', route: '/barmen', permissions: ['barman:read'] }] },
+  { links: [{ name: 'Utilisateurs', route: '/acl/users', permissions: ['users.read'] }] },
   { links: [{ name: 'Kommissions', route: '/kommissions', permissions: ['kommissions.read'] }] },
   { links: [{ name: 'Roles', route: '/acl/roles', permissions: ['roles.read'] }] },
   {
     links: [{
-      name: 'Comptes spéciaux',
-      route: '/acl/special-accounts',
-      permissions: ['specialaccount:read'],
-    }],
-  },
-  {
-    links: [{
       name: 'Templates',
       route: '/services/templates',
-      permissions: ['services-templates:write'],
+      permissions: ['services-templates.read'],
     }],
   },
   {
@@ -65,21 +54,6 @@ const NAV_MENUS: SubMenu[] = [
       { name: 'Produits', route: '/inventory-management/products' },
       { name: 'Rayons', route: '/inventory-management/shelves' },
     ],
-  },
-  {
-    name: 'Contacts',
-    accountType: [AccountType.GUEST],
-    links: [
-      { name: 'Pour un concert', route: '/contact/concert' },
-      { name: 'Pour un évenement | soirée', route: '/contact/event' },
-      { name: 'Pour un objet perdu', route: '/contact/lost' },
-      { name: 'Pour un problème avec le site', route: '/contact/website' },
-    ],
-  },
-  {
-    name: 'Contacts',
-    accountType: [AccountType.BARMAN, AccountType.SERVICE],
-    links: [{ name: 'Pour un problème avec le site', route: '/contact/website' }],
   },
 ];
 

@@ -12,7 +12,7 @@ const routes: Routes = [
     path: 'new',
     component: NewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['kommission:write'] } },
+    data: { permissions: { only: ['kommissions.create'] } },
   },
   {
     path: ':id',
@@ -25,7 +25,7 @@ const routes: Routes = [
     path: ':id/edit',
     component: EditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['kommission:write'] } },
+    data: { permissions: { only: ['kommissions.write'] } },
     resolve: {
       kommission: KommissionDetailResolverService,
     },

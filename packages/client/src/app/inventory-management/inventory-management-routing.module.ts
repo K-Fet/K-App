@@ -7,13 +7,7 @@ const routes: Routes = [
     path: 'providers',
     loadChildren: () => import('./providers/providers.module').then(m => m.ProvidersModule),
     data: {
-      permissions: {
-        only: [
-          'inventory-management:providers:find',
-          'inventory-management:providers:list',
-          'inventory-management:providers:get',
-        ],
-      },
+      permissions: { only: ['inventory-providers.read'] },
     },
     canLoad: [NgxPermissionsGuard],
   },
@@ -21,13 +15,7 @@ const routes: Routes = [
     path: 'shelves',
     loadChildren: () => import('./shelves/shelves.module').then(m => m.ShelvesModule),
     data: {
-      permissions: {
-        only: [
-          'inventory-management:shelves:find',
-          'inventory-management:shelves:list',
-          'inventory-management:shelves:get',
-        ],
-      },
+      permissions: { only: ['inventory-shelves.read'] },
     },
     canLoad: [NgxPermissionsGuard],
   },
@@ -35,13 +23,7 @@ const routes: Routes = [
     path: 'products',
     loadChildren: () => import('./products/products.module').then(m => m.ProductsModule),
     data: {
-      permissions: {
-        only: [
-          'inventory-management:products:find',
-          'inventory-management:products:list',
-          'inventory-management:products:get',
-        ],
-      },
+      permissions: { only: ['inventory-products.read'] },
     },
     canLoad: [NgxPermissionsGuard],
   },

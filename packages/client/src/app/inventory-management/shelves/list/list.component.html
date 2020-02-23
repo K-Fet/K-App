@@ -8,7 +8,7 @@
       </mat-card-title>
       <div fxFlex></div>
       <a mat-mini-fab color="accent" routerLink="/inventory-management/shelves/new"
-         *ngxPermissionsOnly="['inventory-management:shelves:create']">
+         *ngxPermissionsOnly="['inventory-shelves.create']">
         <mat-icon>add</mat-icon>
       </a>
     </mat-card-header>
@@ -31,12 +31,10 @@
             <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
             <mat-cell *matCellDef="let shelf">
               <div fxLayout="row">
-                <button mat-icon-button (click)="view(shelf)"
-                        *ngxPermissionsOnly="['inventory-management:shelves:get']">
+                <button mat-icon-button (click)="view(shelf)">
                   <mat-icon>zoom_in</mat-icon>
                 </button>
-                <button mat-icon-button (click)="edit(shelf)"
-                        *ngxPermissionsOnly="['inventory-management:shelves:update']">
+                <button mat-icon-button (click)="edit(shelf)" *ngxPermissionsOnly="['inventory-shelves.write']">
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>

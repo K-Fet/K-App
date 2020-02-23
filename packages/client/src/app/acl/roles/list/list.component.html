@@ -7,7 +7,7 @@
         </section>
       </mat-card-title>
       <div fxFlex></div>
-      <a mat-mini-fab color="accent" routerLink="/acl/roles/new" *ngxPermissionsOnly="['role:write']">
+      <a mat-mini-fab color="accent" routerLink="/acl/roles/new" *ngxPermissionsOnly="['roles.create']">
         <mat-icon>add</mat-icon>
       </a>
     </mat-card-header>
@@ -20,15 +20,20 @@
       <div class="mat-elevation-z3">
         <mat-table #table [dataSource]="rolesData" matSort>
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Nom </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Nom</mat-header-cell>
             <mat-cell *matCellDef="let role"> {{role.name}} </mat-cell>
           </ng-container>
           <ng-container matColumnDef="action">
-            <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> Actions</mat-header-cell>
             <mat-cell *matCellDef="let role">
               <div fxLayout="row">
-                <button mat-icon-button (click)="edit(role)"><mat-icon>edit</mat-icon></button>
-                <button color="warn" mat-icon-button (click)="openConfirmationDialog(role)"><mat-icon>delete</mat-icon></button>
+                <button mat-icon-button (click)="edit(role)" *ngxPermissionsOnly="['roles.write']">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button color="warn" mat-icon-button (click)="openConfirmationDialog(role)"
+                        *ngxPermissionsOnly="['roles.delete']">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </div>
             </mat-cell>
           </ng-container>

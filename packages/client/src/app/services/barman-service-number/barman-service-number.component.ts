@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,7 +14,7 @@ interface BarmanServiceData {
   selector: 'app-barman-service-number',
   templateUrl: './barman-service-number.component.html',
 })
-export class BarmanServiceNumberComponent implements OnInit {
+export class BarmanServiceNumberComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['name', 'services'];
   barmenData: MatTableDataSource<BarmanServiceData> = new MatTableDataSource();
@@ -22,7 +22,7 @@ export class BarmanServiceNumberComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.barmenData.paginator = this.paginator;
     this.barmenData.sort = this.sort;
   }

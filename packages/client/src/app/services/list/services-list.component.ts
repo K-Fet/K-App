@@ -40,7 +40,7 @@ export class ServiceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.update();
-    if (!this.ngxPermissionsService.getPermissions()['service:write']) {
+    if (!this.ngxPermissionsService.getPermissions()['services.write']) {
       this.displayedColumns = ['date', 'start', 'end'];
     }
   }

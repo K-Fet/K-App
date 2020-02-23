@@ -55,7 +55,7 @@
               <span mat-line style="white-space: normal;" *ngIf="service.barmen" class="mat-caption">
                 Avec
                 <span *ngFor="let barman of service.barmen; let idx = index">
-                  {{barman.nickname}}
+                  {{barman.account.nickName}}
                   <span *ngIf="service.barmen.length != (idx+1)">, </span>
                 </span>
               </span>

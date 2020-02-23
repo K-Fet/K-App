@@ -7,7 +7,7 @@
         </section>
       </mat-card-title>
       <div fxFlex></div>
-      <a mat-mini-fab color="accent" *ngxPermissionsOnly="['template:write']" routerLink="/services/templates/new" >
+      <a mat-mini-fab color="accent" *ngxPermissionsOnly="['services-templates.create']" routerLink="/services/templates/new" >
         <mat-icon>add</mat-icon>
       </a>
     </mat-card-header>
@@ -28,7 +28,7 @@
           <ng-container matColumnDef="action">
             <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
             <mat-cell *matCellDef="let template" >
-              <button mat-icon-button (click)="edit(template)" *ngxPermissionsOnly="['template:write']"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button (click)="edit(template)" *ngxPermissionsOnly="['services-templates.write']"><mat-icon>edit</mat-icon></button>
               <button mat-icon-button (click)="view(template)"><mat-icon>zoom_in</mat-icon></button>
             </mat-cell>
           </ng-container>

@@ -48,27 +48,27 @@
              matSortDisableClear
              fxFlex
       >
-        <ng-container matColumnDef="nickname" *ngIf="selectedAccountType === 'BARMAN'">
+        <ng-container matColumnDef="nickName" *ngIf="has('nickName')">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Surnom</mat-header-cell>
           <mat-cell *matCellDef="let user">{{user.account.nickName}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="lastName" *ngIf="selectedAccountType === 'BARMAN'">
+        <ng-container matColumnDef="firstName" *ngIf="has('firstName')">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Prénom</mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{user.account.firstName}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName" *ngIf="has('lastName')">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
           <mat-cell *matCellDef="let user"> {{user.account.lastName}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="firstName" *ngIf="selectedAccountType === 'BARMAN'">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>Nom</mat-header-cell>
-          <mat-cell *matCellDef="let user"> {{user.account.firstName}} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="email" *ngIf="selectedAccountType === 'SERVICE'">
+        <ng-container matColumnDef="email" *ngIf="has('email')">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
           <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="description" *ngIf="selectedAccountType === 'SERVICE'">
+        <ng-container matColumnDef="description" *ngIf="has('description')">
           <mat-header-cell *matHeaderCellDef> Description</mat-header-cell>
           <mat-cell *matCellDef="let user"> {{user.account.description}} </mat-cell>
         </ng-container>
@@ -82,7 +82,9 @@
           <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
           <mat-cell *matCellDef="let user">
             <div fxLayout="row">
-              <button mat-icon-button (click)="edit(user)" *ngxPermissionsOnly="['users:write']">
+              <button mat-icon-button
+                      [routerLink]="[ {outlets: { modal: [user._id, 'edit'] } } ]"
+                      *ngxPermissionsOnly="['users.write']">
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-icon-button (click)="view(user)">
@@ -92,8 +94,8 @@
           </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <mat-header-row *matHeaderRowDef="getColumns()"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: getColumns();"></mat-row>
       </table>
       <mat-paginator
         [length]="dataSource.total"

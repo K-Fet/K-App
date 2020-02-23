@@ -80,6 +80,7 @@ module.exports = {
             kommissions: u.barman.kommissions.map(k => kommissions[k.id]),
           }
           : {
+            autoUpgradePermissions: u.specialAccount.permissions.some(p => p.name === 'admin:upgrade'),
             code: u.specialAccount.code,
             description: u.specialAccount.description,
             permissions: u.specialAccount.permissions.map(p => p.name),

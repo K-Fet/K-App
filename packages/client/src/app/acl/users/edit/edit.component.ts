@@ -30,7 +30,7 @@ export class EditComponent implements OnInit, AfterContentChecked {
   ngOnInit(): void {
     this.route.data.subscribe((data: { user: User }) => {
       this.originalUser = data.user;
-      this.model = getUserModel(this.originalUser.accountType);
+      this.model = getUserModel(this.originalUser.accountType, this.originalUser);
       this.formGroup = this.formService.createFormGroup(this.model);
     });
 

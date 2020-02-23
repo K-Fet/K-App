@@ -15,35 +15,46 @@ const { ObjectID } = mongoose.Schema.Types;
 
 const model = {
   mongoose: mongoose.model('User', createSchema({
-    email: {
-      type: String, required: true, unique: true, lowercase: true,
-    },
-    password: { type: String },
-    passwordToken: { type: String },
-    emailToken: { type: String },
-    accountType: {
-      type: String, enum: ['SERVICE', 'BARMAN'], required: true, index: true,
-    },
-    account: {
-      // Service account
-      code: { type: String },
-      autoUpgradePermissions: { type: Boolean, default: false }, // Always false
-      description: { type: String },
-      permissions: { type: [String], default: undefined },
+      email: {
+        type: String, required: true, unique: true, lowercase: true,
+      },
+      password: { type: String },
+      passwordToken: { type: String },
+      emailToken: { type: String },
+      accountType: {
+        type: String, enum: ['SERVICE', 'BARMAN'], required: true, index: true,
+      },
+      account: {
+        // Service account
+        code: { type: String },
+        autoUpgradePermissions: { type: Boolean, default: false }, // Always false
+        description: { type: String },
+        permissions: { type: [String], default: undefined },
 
-      // Barman account
-      firstName: { type: String },
-      lastName: { type: String },
-      nickName: { type: String },
-      leaveAt: { type: Date, index: { sparse: true } },
-      facebook: { type: String },
-      godFather: { type: ObjectID },
-      dateOfBirth: { type: Date },
-      flow: { type: String },
-      roles: { type: [ObjectID], index: { sparse: true }, default: undefined },
-      kommissions: { type: [ObjectID], index: { sparse: true }, default: undefined },
+        // Barman account
+        firstName: { type: String },
+        lastName: { type: String },
+        nickName: { type: String },
+        leaveAt: { type: Date, index: { sparse: true } },
+        facebook: { type: String },
+        godFather: { type: ObjectID },
+        dateOfBirth: { type: Date },
+        flow: { type: String },
+        roles: { type: [ObjectID], index: { sparse: true }, default: undefined },
+        kommissions: { type: [ObjectID], index: { sparse: true }, default: undefined },
+      },
     },
-  }, { timestamps: true })),
+    { timestamps: true },
+    {
+      textIndex: [
+        'email',
+        'account.firstName',
+        'account.lastName',
+        'account.nickName',
+        'account.description',
+      ],
+    },
+  )),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     ...MONGOOSE_INTERNALS,
@@ -98,6 +109,7 @@ module.exports = {
       update: [
         (ctx) => {
           const user = ctx.locals.entity;
+          const { userEditItself } = ctx.meta;
 
           // Prevent any change to fixed fields
           [
@@ -128,7 +140,12 @@ module.exports = {
       const { _id } = ctx.meta.user;
       const { id } = ctx.params;
 
-      return _id === id;
+      const res = _id === id;
+
+      if (res) {
+        ctx.meta.userEditItself = true;
+      }
+      return res;
     },
 
     // For actions create, remove and update
@@ -518,9 +535,11 @@ module.exports = {
       async handler(ctx) {
         const { kommissionsIds } = ctx.params;
 
-        const users = await this.adapter.find({
-          accountType: 'BARMAN',
-          'account.kommissions': { $in: kommissionsIds },
+        const users = await this._find(ctx, {
+          query: {
+            accountType: 'BARMAN',
+            'account.kommissions': { $in: kommissionsIds },
+          },
         });
 
         return Object.fromEntries(kommissionsIds.map((kId) => {

@@ -4,7 +4,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { NgxPermissionsService } from 'ngx-permissions';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { RoleService } from '../../../core/api-services/role.service';
 import { Role } from '../../../shared/models';
@@ -25,19 +24,15 @@ export class ListComponent implements OnInit {
   constructor(private roleService: RoleService,
               private toasterService: ToasterService,
               private router: Router,
-              private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.update();
-    if (!this.ngxPermissionsService.getPermissions()['role:write']) {
-      this.displayedColumns = ['name'];
-    }
   }
 
   async update() {
-    const { rows: roles } = await this.roleService.list({pageSize: 1000});
+    const { rows: roles } = await this.roleService.list({ pageSize: 1000 });
     this.rolesData = new MatTableDataSource(roles);
     this.rolesData.paginator = this.paginator;
     this.rolesData.sort = this.sort;

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NgxPermissionsService } from 'ngx-permissions';
 import { AuthService } from '../../core/api-services/auth.service';
 import { isActiveBarman, User } from '../../shared/models';
 
@@ -10,7 +9,7 @@ export class ServiceExplorerComponent implements OnInit {
 
   private user: User;
 
-  constructor(private authService: AuthService, private ngxPermissionsService: NgxPermissionsService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.authService.$currentUser.subscribe((user) => {
@@ -20,9 +19,5 @@ export class ServiceExplorerComponent implements OnInit {
 
   isActive(): boolean {
     return isActiveBarman(this.user);
-  }
-
-  hasServiceWritePerm(): boolean {
-    return !!this.ngxPermissionsService.getPermissions()['service:write'];
   }
 }

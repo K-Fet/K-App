@@ -5,13 +5,13 @@ import { NgxPermissionsGuard } from 'ngx-permissions';
 const routes: Routes = [
   {
     path: 'roles',
-    data: { permissions: { only: ['roles:read'] } },
+    data: { permissions: { only: ['roles.read'] } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: () => import('./roles/roles.module').then(m => m.RolesModule),
   },
   {
     path: 'users',
-    data: { permissions: { only: ['users:read'] } },
+    data: { permissions: { only: ['users.read'] } },
     canLoad: [NgxPermissionsGuard],
     loadChildren: () => import('./users/users.module').then(m => m.UsersModule),
   },

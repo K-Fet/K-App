@@ -15,10 +15,6 @@ const routes: Routes = [
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
   },
   {
-    path: 'contact',
-    loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule),
-  },
-  {
     path: 'inventory-management',
     loadChildren: () => import('./inventory-management/inventory-management.module')
       .then(m => m.InventoryManagementModule),

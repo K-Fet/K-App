@@ -9,7 +9,7 @@ export interface Barman {
   nickName: string;
   leaveAt?: Date;
   facebook?: string;
-  godFather?: string | Barman;
+  godFather?: string | User;
   dateOfBirth: Date;
   flow?: string;
   createdAt?: Date;
