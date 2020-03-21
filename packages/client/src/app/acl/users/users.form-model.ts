@@ -2,12 +2,16 @@ import {
   DynamicDatePickerModel,
   DynamicFormGroupModel,
   DynamicFormModel,
-  DynamicInputModel, DynamicSelectModel, DynamicTextAreaModel,
+  DynamicInputModel,
+  DynamicInputModelConfig,
+  DynamicTextAreaModel,
 } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { subYears } from 'date-fns';
-import { AccountType, Barman, Kommission, Role, ServiceAccount, User } from '../../shared/models';
-import { from } from 'rxjs';
+import { AccountType, Barman, ServiceAccount, User } from '../../shared/models';
+import { BehaviorSubject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { UsersService } from '../../core/api-services/users.service';
 
 const baseUserFactory = (accountType: AccountType): User => {
   if (accountType === AccountType.BARMAN) {
@@ -37,7 +41,28 @@ const baseUserFactory = (accountType: AccountType): User => {
   }
 };
 
-export function getBarmanFormModel(account?: Barman): DynamicFormModel {
+function createInputFromAsync<T>({ config, loader, displayWith }: {
+  config: DynamicInputModelConfig;
+  loader: (str: string) => Promise<T[]>;
+  displayWith: (option?: T) => string;
+}): DynamicInputModel {
+  const filterSubject = new BehaviorSubject<string>('');
+
+  const model = new DynamicInputModel({
+    ...config,
+    list: filterSubject.pipe(switchMap(loader)),
+    additional: {
+      matAutocomplete: true,
+      displayWith,
+      optionLabel: 'email',
+    },
+  });
+
+  model.valueChanges.subscribe(value => filterSubject.next(value as string));
+  return model;
+}
+
+export function getBarmanFormModel(userService: UsersService, account?: Barman): DynamicFormModel {
   return [
     new DynamicInputModel({
       id: 'firstName',
@@ -99,27 +124,31 @@ export function getBarmanFormModel(account?: Barman): DynamicFormModel {
       // @ts-ignore
       pattern: /(https?:\/\/)?(www\.)?(facebook|fb|m\.facebook)\.(com|me)\/((\w)*#!\/)?([\w-]*\/)*([\w\-.]+)(\/)?/i,
     }),
-    new DynamicSelectModel<string>({
-      id: 'godFather',
-      label: 'Parrain ou marraine',
-      value: account.godFather && (account.godFather as User)._id,
-      options: from(barmen.then(optionMap('_id', 'nickname')),
-      ),
+    createInputFromAsync<User>({
+      config: {
+        id: 'godFather',
+        label: 'Parrain ou marraine',
+        value: account.godFather && (account.godFather as User)._id,
+      },
+      displayWith: (user) => user && user.email,
+      loader: (search) => userService.find({ accountType: AccountType.BARMAN, search }),
     }),
-    new DynamicSelectModel<string>({
-      id: 'roles',
-      label: 'Roles',
-      multiple: true,
-      value: (account.roles as Role[]).map(r => r._id),
-      options: from(roles.then(optionMap('id', 'name'))),
-    }),
-    new DynamicSelectModel<string>({
-      id: 'kommissions',
-      label: 'Kommissions',
-      multiple: true,
-      value: (account.kommissions as Kommission[]).map(k => k._id),
-      options: from(kommissions.then(optionMap('id', 'name'))),
-    }),
+    // createInputFromAsync<Role>({
+    //   config: {
+    //     id: 'roles',
+    //     label: 'Roles',
+    //     value: (account.roles as Role[]).map(r => r._id),
+    //     multiple: true,
+    //   },
+    //   displayWith: (role) => role.name,
+    //   loader: (search) => userService.find({ accountType: AccountType.BARMAN, search }),
+    // }),
+    // new DynamicSelectModel<string>({
+    //   id: 'roles',
+    //   label: 'Roles',
+    //   multiple: true,
+    //   value: (account.roles as Role[]).map(r => r._id),
+    // }),
   ];
 }
 
@@ -136,7 +165,7 @@ export function getServiceFormModel(account?: ServiceAccount): DynamicFormModel 
   ];
 }
 
-export function getUserModel(accountType: AccountType, originalUser?: User): DynamicFormModel {
+export function getUserModel(accountType: AccountType, usersService: UsersService, originalUser?: User): DynamicFormModel {
   if (originalUser && originalUser.accountType !== accountType) {
     throw new Error('User accountType don\'t match');
   }
@@ -160,7 +189,7 @@ export function getUserModel(accountType: AccountType, originalUser?: User): Dyn
       group: ((): DynamicFormModel => {
         switch (accountType) {
           case AccountType.BARMAN:
-            return getBarmanFormModel(values.account as Barman);
+            return getBarmanFormModel(usersService, values.account as Barman);
           case AccountType.SERVICE:
             return getServiceFormModel(values.account as ServiceAccount);
         }

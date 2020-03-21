@@ -2,7 +2,7 @@ import { NgxPermissionsService } from 'ngx-permissions';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { UsersOptions, UsersService } from '../../../core/api-services/users.service';
+import { AdditionalUsersOptions, UsersService } from '../../../core/api-services/users.service';
 import { MoleculerDataSource } from '../../../shared/utils/moleculer-data-source';
 import { AccountType, User } from '../../../shared/models';
 import { fromEvent, merge } from 'rxjs';
@@ -14,7 +14,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  dataSource: MoleculerDataSource<User, UsersOptions>;
+  dataSource: MoleculerDataSource<User, AdditionalUsersOptions>;
 
   // Filters
   selectedAccountType: AccountType = AccountType.BARMAN;
@@ -28,7 +28,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.dataSource = new MoleculerDataSource<User, UsersOptions>(this.usersService);
+    this.dataSource = new MoleculerDataSource<User, AdditionalUsersOptions>(this.usersService);
 
     await this.dataSource.load({ accountType: this.selectedAccountType });
 

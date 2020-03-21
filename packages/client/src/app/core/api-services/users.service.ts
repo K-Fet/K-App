@@ -1,60 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MoleculerGetOptions, MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { AccountType, User } from '../../shared/models';
 import { toURL } from './api-utils';
-import { createHttpParams } from '../../shared/utils';
-import { Subject } from 'rxjs';
+import { BaseCrudService } from './base-crud.service';
 
-const BASE_URL = toURL('v2/acl/v1/users');
-
-export interface UsersOptions extends MoleculerListOptions {
+export type AdditionalUsersOptions = {
   accountType: AccountType;
   onlyActive?: boolean;
 }
 
 @Injectable()
-export class UsersService {
-  private refreshSubject = new Subject<void>();
-
-  public refresh$ = this.refreshSubject.asObservable();
-
-  constructor(private http: HttpClient) { }
-
-  list(options: UsersOptions): Promise<MoleculerList<User>> {
-    return this.http.get<MoleculerList<User>>(
-      BASE_URL,
-      { params: createHttpParams({ ...options }) },
-    ).toPromise();
-  }
-
-  get(id: string, options: MoleculerGetOptions = {}): Promise<User> {
-    return this.http.get<User>(
-      `${BASE_URL}/${id}`,
-      { params: createHttpParams({ ...options }) },
-    ).toPromise();
-  }
-
-  async create(user: User): Promise<User> {
-    const newUser = await this.http.post<User>(BASE_URL, user).toPromise();
-    this.refreshSubject.next();
-    return newUser;
-  }
-
-  async update(user: User): Promise<User> {
-    const updatedUser = await this.http.put<User>(`${BASE_URL}/${user._id}`, user).toPromise();
-    this.refreshSubject.next();
-    return updatedUser;
-  }
-
-  async remove(id: string): Promise<User> {
-    const user = await this.http.delete<User>(`${BASE_URL}/${id}`).toPromise();
-    this.refreshSubject.next();
-    return user;
+export class UsersService extends BaseCrudService<User, AdditionalUsersOptions> {
+  constructor(http: HttpClient) {
+    super(http, toURL('v2/acl/v1/users'));
   }
 
   me(): Promise<User> {
-    return this.http.get<User>(`${BASE_URL}/me`).toPromise();
+    return this.http.get<User>(`${this.baseUrl}/me`).toPromise();
   }
 
   definePassword(email: string, password: string, passwordToken: string, oldPassword: string): Promise<{}> {
@@ -65,11 +27,11 @@ export class UsersService {
       passwordToken: passwordToken || undefined,
       oldPassword: oldPassword || undefined,
     };
-    return this.http.post(`${BASE_URL}/define-password`, body).toPromise();
+    return this.http.post(`${this.baseUrl}/define-password`, body).toPromise();
   }
 
   verifyEmail(userId: number, email: string, password: string, emailToken: string): Promise<{}> {
-    return this.http.post(`${BASE_URL}/email-verify`, {
+    return this.http.post(`${this.baseUrl}/email-verify`, {
       userId,
       email,
       password,
@@ -78,13 +40,13 @@ export class UsersService {
   }
 
   cancelEmailUpdate(userId: number, email: string): Promise<{}> {
-    return this.http.post(`${BASE_URL}/cancel-email-update`, {
+    return this.http.post(`${this.baseUrl}/cancel-email-update`, {
       userId,
       email,
     }).toPromise();
   }
 
   resetPassword(email: string): Promise<{}> {
-    return this.http.post(`${BASE_URL}/reset-password`, { email }).toPromise();
+    return this.http.post(`${this.baseUrl}/reset-password`, { email }).toPromise();
   }
 }

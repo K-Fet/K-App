@@ -1,6 +1,7 @@
 const Joi = require('@hapi/joi');
 const { MoleculerClientError } = require('moleculer').Errors;
-const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
+const { JOI_ID } = require('../../utils');
+const { actionValidators } = require('../utils/action-validators');
 
 module.exports = function joiDbActions(joiModel, name) {
   const findEntity = async (ctx) => {
@@ -26,46 +27,21 @@ module.exports = function joiDbActions(joiModel, name) {
         permissions: [
           `${name}.read`,
         ],
-        params: () => Joi.object({
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          limit: Joi.number().integer().min(0),
-          offset: Joi.number().integer().min(0),
-          sort: Joi.string(),
-          search: Joi.string(),
-          searchField: JOI_STRING_OR_STRING_ARRAY,
-          // Remove query as it may be a security issue if published
-          query: Joi.object().forbidden(),
-        }),
+        params: () => actionValidators.find,
       },
       count: {
         rest: 'GET /count',
         permissions: [
           `${name}.read`,
         ],
-        params: () => Joi.object({
-          search: Joi.string(),
-          searchFields: JOI_STRING_OR_STRING_ARRAY,
-          // Remove query as it may be a security issue if published
-          query: Joi.object().forbidden(),
-        }),
+        params: () => actionValidators.count,
       },
       list: {
         rest: 'GET /',
         permissions: [
           `${name}.read`,
         ],
-        params: () => Joi.object({
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          page: Joi.number().integer().min(1),
-          pageSize: Joi.number().integer().min(0),
-          sort: Joi.string(),
-          search: Joi.string(),
-          searchField: JOI_STRING_OR_STRING_ARRAY,
-          // Remove query as it may be a security issue if published
-          query: Joi.object().forbidden(),
-        }),
+        params: () => actionValidators.list,
       },
       create: {
         rest: 'POST /',
@@ -90,12 +66,7 @@ module.exports = function joiDbActions(joiModel, name) {
           `${name}.read`,
           '$owner',
         ],
-        params: () => Joi.object({
-          id: JOI_ID.required(),
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          mapping: Joi.bool(),
-        }),
+        params: () => actionValidators.get,
       },
       update: {
         rest: 'PUT /:id',

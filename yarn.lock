@@ -7869,10 +7869,10 @@ moleculer-middleware-permissions@^2.0.0-rc0:
   resolved "https://registry.yarnpkg.com/moleculer-middleware-permissions/-/moleculer-middleware-permissions-2.0.0-rc0.tgz#91166a022b3af7be862a184e99daada19208adc2"
   integrity sha512-lpyJz5ep7jcobalxzIdCTNs/1tslaNWNy3vphTTKNXfU5zs/i55SpEZtz96xufuttXglzJIJjUyefPDRerS9oA==
 
-moleculer-web@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/moleculer-web/-/moleculer-web-0.9.0.tgz#7884ab4ff5b925f1979198de7452e85269849576"
-  integrity sha512-L7lzYXjy+k9UuBlNRnoRHoT6nDRXqYm2aox7AjGw0PE8O+cECP/77ALirjUMKyEsNbtHO29iS0O52L3juSbTNQ==
+moleculer-web@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/moleculer-web/-/moleculer-web-0.9.1.tgz#c47368ecc4d454e92a728d1139193195c3222509"
+  integrity sha512-sq/NH4amE58mxaTl1JD7ohNpFqkE9K7VT9xkQKtonROjdf23imxz3r8WTh6zJv/FzmuklULlgf+LdIiPFZtI5A==
   dependencies:
     body-parser "^1.19.0"
     busboy "^0.3.1"
@@ -7886,10 +7886,10 @@ moleculer-web@^0.9.0:
     qs "^6.9.1"
     serve-static "^1.14.1"
 
-moleculer@^0.14.2:
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/moleculer/-/moleculer-0.14.2.tgz#0c857954026fc58bfbc42733f57f0d88fdd2761d"
-  integrity sha512-ExII1MPNM8N+W1Q/lnT7JtlRmsZvi8DCCukf4fsRN5nS9s+Ot69eTAdfIZLq/3ykyvn9MpqmJqDEHnvxyCDjsA==
+moleculer@^0.14.4:
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/moleculer/-/moleculer-0.14.4.tgz#1068a6f070436194078e01b7f541fbdef8f89d97"
+  integrity sha512-t///CADPTl/Nz9DJ/83vPm8yNOA3wd1ZV7x1zutf67lLgswn1f0HTP9xloIK6tb/a1DZkPPkBVXvv35vO3BHUQ==
   dependencies:
     args "^5.0.1"
     es6-error "^4.1.1"

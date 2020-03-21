@@ -8,9 +8,10 @@ const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const {
   createSchema, MONGO_ID, MONGOOSE_INTERNALS, verify, generateToken, hash, JOI_STRING_OR_STRING_ARRAY,
 } = require('../../../utils');
+const { actionValidators } = require('../../utils/action-validators');
 
 const LOGIN_ERROR = new MoleculerClientError('Bad email/password combination', 400, 'LoginError');
-
+mongoose.set('debug', true);
 const { ObjectID } = mongoose.Schema.Types;
 
 const model = {
@@ -186,6 +187,9 @@ module.exports = {
         res.rows = res.rows.map(clear);
         return res;
       }
+      if (Array.isArray(res)) {
+        return res.map(clear);
+      }
       return clear(res);
     },
 
@@ -253,18 +257,9 @@ module.exports = {
     },
 
     list: {
-      params: () => Joi.object({
+      params: () => actionValidators.list.append({
         accountType: Joi.string().valid(['SERVICE', 'BARMAN']),
         onlyActive: Joi.boolean().default(false),
-        populate: JOI_STRING_OR_STRING_ARRAY,
-        fields: JOI_STRING_OR_STRING_ARRAY,
-        page: Joi.number().integer().min(1),
-        pageSize: Joi.number().integer().min(0),
-        sort: Joi.string(),
-        search: Joi.string(),
-        searchField: JOI_STRING_OR_STRING_ARRAY,
-        // Remove query as it may be a security issue if published
-        query: Joi.object().forbidden(),
       }),
       async handler(ctx) {
         const params = this.sanitizeParams(ctx, ctx.params);
@@ -281,6 +276,29 @@ module.exports = {
         }
 
         return this._list(ctx, params);
+      },
+    },
+
+    find: {
+      params: () => actionValidators.find.append({
+        accountType: Joi.string().valid(['SERVICE', 'BARMAN']),
+        onlyActive: Joi.boolean().default(false),
+      }),
+      async handler(ctx) {
+        const params = this.sanitizeParams(ctx, ctx.params);
+
+        if (params.accountType) {
+          params.query = { accountType: params.accountType };
+        }
+
+        if (params.onlyActive && params.accountType === 'BARMAN') {
+          params.query.$or = [
+            { 'account.leaveAt': { $exists: false } },
+            { 'account.leaveAt': { $gt: new Date() } },
+          ];
+        }
+
+        return this._find(ctx, params);
       },
     },
 

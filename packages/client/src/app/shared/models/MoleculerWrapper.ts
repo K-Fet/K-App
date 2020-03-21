@@ -21,3 +21,15 @@ export interface MoleculerGetOptions {
   fields?: string;
   mapping?: boolean;
 }
+
+export type MoleculerFind<T> = T[];
+
+export interface MoleculerFindOptions {
+  populate?: string;
+  fields?: string;
+  limit?: number;
+  offset?: number;
+  sort?: string;
+  search?: string;
+  searchFields?: string;
+}

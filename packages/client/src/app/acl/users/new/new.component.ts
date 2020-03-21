@@ -21,9 +21,9 @@ export class NewComponent implements OnInit {
   accountType: AccountType = AccountType.BARMAN;
 
   constructor(private formService: DynamicFormService,
-              private usersService: UsersService,
-              private toasterService: ToasterService,
-              private route: ActivatedRoute) { }
+    private usersService: UsersService,
+    private toasterService: ToasterService,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
@@ -31,7 +31,7 @@ export class NewComponent implements OnInit {
       if (type === AccountType.SERVICE) {
         this.accountType = type;
       }
-      this.model = getUserModel(this.accountType);
+      this.model = getUserModel(this.accountType, this.usersService);
       this.formGroup = this.formService.createFormGroup(this.model);
     });
 

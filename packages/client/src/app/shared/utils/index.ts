@@ -15,9 +15,11 @@ export function getCurrentWeek(): { start: Date, end: Date } {
   };
 }
 
-export function createHttpParams(params: { [key: string]: string | Date | number | boolean | undefined }): HttpParams {
+export type RawHttpParams = { [key: string]: string | Date | number | boolean | undefined };
+
+export function createHttpParams(params: RawHttpParams): HttpParams {
   return Object
     .entries(params)
-    .filter(([, value]) => value !== undefined && value !== '')
+    .filter(([, value]) => value !== undefined && value !== '' && value !== null)
     .reduce((params, [key, value]) => params.set(key, value.toString()), new HttpParams());
 }
