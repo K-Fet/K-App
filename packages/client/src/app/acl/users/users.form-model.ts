@@ -1,4 +1,5 @@
 import {
+  AUTOCOMPLETE_OFF,
   DynamicDatePickerModel,
   DynamicFormGroupModel,
   DynamicFormModel,
@@ -51,10 +52,11 @@ function createInputFromAsync<T>({ config, loader, displayWith }: {
   const model = new DynamicInputModel({
     ...config,
     list: filterSubject.pipe(switchMap(loader)),
+    autoComplete: AUTOCOMPLETE_OFF,
     additional: {
-      matAutocomplete: true,
+      matAutocomplete: 'auto',
       displayWith,
-      optionLabel: 'email',
+      optionLabel: '_id',
     },
   });
 
