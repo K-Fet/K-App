@@ -21,7 +21,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
-      <mat-select [(value)]="selectedAccountType" (selectionChange)="loadUsersPage()">
+      <mat-select [(value)]="selectedAccountType" (selectionChange)="dataLoader.reload()">
         <mat-option value="BARMAN">Barman</mat-option>
         <mat-option value="SERVICE">Compte de service</mat-option>
       </mat-select>
