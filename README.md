@@ -46,6 +46,8 @@ Optionally, you can install an integrated development environment (IDE):
 
 Follow the instructions according to your choice ([local](#developing---local-setup) or [docker](#developing---docker-setup)).
 
+Do not forget to read the [Notes](#notes) section. It contains some very useful information.
+
 ### Developing - Local setup
 
 To contribute to the project you will need:
@@ -158,7 +160,13 @@ You will be able to access to the logs using:
 
 ### Notes
 
-### Environment variables
+#### Email management
+
+We use https://ethereal.email/ as a fake SMTP service in development environnement.
+So every email sent will be caught by this service and will **not** be delivered.
+To read the caught emails, go to https://ethereal.email/ and use the credential in the `.env` file to log in. Click on `Message` on the top nav bar to see all the caught emails.
+
+#### Environment variables
 
 Environment variables are parsed with [nconf](https://github.com/indexzero/nconf/).
 The separator used is `__` and words are transformed into camelCase.
