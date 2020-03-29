@@ -13,6 +13,7 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.$currentUser.subscribe((curUser) => {
+      curUser.createdAt = new Date(curUser.createdAt);
       this.currentUser = curUser;
     });
   }

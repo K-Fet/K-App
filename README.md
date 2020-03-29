@@ -26,10 +26,27 @@ And we use *MySQL* and *MongoDB* as databases.
 For a production environment, please check [this document](./docs/Deployment.md) 
 which explain everything :).
 
-
 ---
 
-## Developing - No Docker
+## Developing
+
+### Introduction
+
+To develop the project, you have to run the all architecture on your local machine (frontend web server, backend web server, databases). We provide two different options to setup the project:
+
+- Install and configure everything in your local machine.
+- Use docker to virtualize each part of the architecture nearly without manual configuration. 
+
+> ⚠️ The docker setup is heavier (RAM and ROM) than local setup.
+
+Optionally, you can install an integrated development environment (IDE):
+- Text editor: Visual code https://code.visualstudio.com/
+- Or a full IDE: [Webstorm](https://www.jetbrains.com/webstorm/)
+    (student licence available) 
+
+Follow the instructions according to your choice ([local](#developing---local-setup) or [docker](#developing---docker-setup)).
+
+### Developing - Local setup
 
 To contribute to the project you will need:
 - [NodeJS](https://nodejs.org/en/) version 10.0.x or higher.
@@ -43,46 +60,37 @@ After installing NodeJS,
 you have to install `node-gyp` as recommended 
 [here](https://www.npmjs.com/package/node-gyp#installation).
 
-Optional:
-- Text editor: Visual code https://code.visualstudio.com/
-- Or a full IDE: [Webstorm](https://www.jetbrains.com/webstorm/)
-    (student licence available) 
-
 Clone the repo with `git clone https://github.com/K-Fet/K-App.git`.
 
-Then, run `yarn`.
+Then, run `yarn` to install all the dependencies (frontend and backend).
 
-### CLI
+#### Configuration
 
-The application comes with a small _cli_ which provide multiple actions. 
-Some of them are used only in production, others are used only in development.
+##### `.env`
 
-### Configuration
-
-#### `.env`
-To configure your environment, copy `/tools/config-samples/.env.example` to `/.env`.
-Then you just have to edit field as you want (`cp tools/config-samples/.env.example .env`).
+To configure your environment, copy `./docs/config-samples/.env.example` to `/.env`.
+Then you just have to edit field as you want (`cp ./docs/config-samples/.env.example ./.env`).
 
 P.S.: The file `.env` is already ignored by git.
 
-#### `proxy.conf.json`
+##### `proxy.conf.json`
 
 As the project could be used in two different dev env, we need two different configurations for the proxy of the front.
 
-Here, we want to use the docker configuration. So just copy the `local.proxy.conf.json` file using: `cp local.proxy.conf.json proxy.conf.json`
+Here, we want to use the docker configuration. So just copy the `local.proxy.conf.json` file using: `cp ./packages/client/local.proxy.conf.json ./packages/client/proxy.conf.json`
 
 P.S.: The file `proxy.conf.json` is already ignored by git.
 
+##### Create the super admin account
 
-### Environment variables
+We provide a simple _cli_ to perform some automated tasks (more information [here](#cli)).
+To create the super admin account, use the following command from the root folder of the project:
 
-Environment variables are parsed with [nconf](https://github.com/indexzero/nconf/).
-The separator used is `__` and words are transformed into camelCase.
+`yarn cli create-admin-account`
 
-E.g.: `WEB__JWT_SECRET` will be access with `conf.get('web:jwtSecret')`.
+Fill up the question to generate the super admin account. 
 
-
-### Launch server
+#### Launch server
 
 To launch the app, run: `yarn run dev:back` and `yarn run dev:front` in two terminal instances.
 
@@ -90,45 +98,49 @@ The front will be available at _http://localhost:4200_ and the back at _http://l
 
 All API calls made to the front will be transferred to the back.
 
-### Notes
+#### Tests (backend only)
 
-As you have to follow *eslint* and *tslint* configured guidelines, 
-you can install these plugins to watch linter errors.
+Launch the tests: `yarn test`.
 
-* For [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* For [Webstorm](http://plugins.jetbrains.com/plugin/7494)
+Create coverage report: `yarn run coverage`.
 
-The app uses [nodemon](https://nodemon.io/) to watch for code change.
-The app will restart or reload when you edit the code.
-
----
-
-## Developing - Docker
+### Developing - Docker setup
 
 To contribute to the project you will need:
 - [docker](https://docs.docker.com/install/): version 19.0.x or higher
 - [docker-compose](https://docs.docker.com/compose/install/): version 1.24.0 or higher
 
+Clone the repo with `git clone https://github.com/K-Fet/K-App.git`.
+
 Use `cd` to the root directory of the project.
 
-### Configuration
+#### Configuration
 
-#### `.env` file
+##### `.env` file
 
-To configure your environment, copy `/tools/config-samples/.env.docker.example` to `/.env`.
-Then you just have to edit field as you want (`cp tools/config-samples/.env.docker.example .env`).
+To configure your environment, copy `./docs/config-samples/.env.docker.example` to `./.env`.
+Then you just have to edit field as you want (`cp ./docs/config-samples/.env.docker.example .env`).
 
 P.S.: The file `.env` is already ignored by git.
 
-#### `proxy.conf.json`
+##### `proxy.conf.json`
 
 As the project could be used in two different dev env, we need two different configurations for the proxy of the front.
 
-Here, we want to use the docker configuration. So just copy the `docker.proxy.conf.json` file using: `cp docker.proxy.conf.json proxy.conf.json`
+Here, we want to use the docker configuration. So just copy the `docker.proxy.conf.json` file using: `cp ./packages/client/docker.proxy.conf.json ./packages/client/proxy.conf.json`
 
 P.S.: The file `proxy.conf.json` is already ignored by git.
 
-### Lunch containers!
+##### Create the super admin account
+
+We provide a simple _cli_ to perform some automated tasks (more information [here](#cli)).
+To create the super admin account, use the following command:
+
+`docker exec -t k-app-api bash -c 'cd k-app/ ; yarn cli create-admin-account'`
+
+Fill up the question to generate the super admin account. 
+
+#### Lunch containers!
 
 Then: `docker-compose up`
 
@@ -138,10 +150,40 @@ Then: `docker-compose up`
 - `k-app-back`: which run the node process of the backend
 - `k-app-front`: which run the process of the frontend 
 
----
+It is highly recommended to run the containers in detach mode (ie. in the background) to avoid to many logs in the same terminal instance. To do it, use `docker-compose up -d`.
 
-## Testing (back only)
+You will be able to access to the logs using:
+- Backend: `docker-compose -f logs back`
+- Frontend: `docker-compose -f logs front`
 
-Launch the tests: `yarn test`
+### Notes
 
-Create coverage report: `yarn run coverage`
+### Environment variables
+
+Environment variables are parsed with [nconf](https://github.com/indexzero/nconf/).
+The separator used is `__` and words are transformed into camelCase.
+
+E.g.: `WEB__JWT_SECRET` will be access with `conf.get('web:jwtSecret')`.
+
+#### CLI
+
+The application comes with a small _cli_ which provide multiple actions. 
+Some of them are used only in production, others are used only in development.
+For example, the _cli_ is used to create the first super admin account.
+
+#### Watch lint errors
+
+As you have to follow *eslint* and *tslint* configured guidelines, 
+you can install these plugins to watch linter errors.
+
+* For [VSCode](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+* For [Webstorm](http://plugins.jetbrains.com/plugin/7494)
+
+#### Hot reload
+
+- `Backend`
+The app uses [nodemon](https://nodemon.io/) to watch for code change.
+The app will restart or reload when you edit the code.
+- `Frontend`
+The app uses `angular-cli` to watch for code change.
+The app will restart or reload when you edit the code.
