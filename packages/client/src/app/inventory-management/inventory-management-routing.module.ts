@@ -45,6 +45,20 @@ const routes: Routes = [
     },
     canLoad: [NgxPermissionsGuard],
   },
+  {
+    path: 'invoice-tool',
+    loadChildren: () => import('./invoice-tool/invoice-tool.module').then(m => m.InvoiceToolModule),
+    data: {
+      // permissions: {
+      //   only: [
+      //     'inventory-management:products:find',
+      //     'inventory-management:products:list',
+      //     'inventory-management:products:get',
+      //   ],
+      // },
+    },
+    canLoad: [NgxPermissionsGuard],
+  },
 ];
 
 @NgModule({

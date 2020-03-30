@@ -64,6 +64,7 @@ const NAV_MENUS: SubMenu[] = [
       { name: 'Fournisseurs', route: '/inventory-management/providers' },
       { name: 'Produits', route: '/inventory-management/products' },
       { name: 'Rayons', route: '/inventory-management/shelves' },
+      { name: 'Outil StoK-Fêt', route: '/inventory-management/invoice-tool' },
     ],
   },
   {

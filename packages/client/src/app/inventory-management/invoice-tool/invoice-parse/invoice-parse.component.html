@@ -1,0 +1,41 @@
+<div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+      <mat-card-header>
+        <mat-card-title>
+          <section class="mat-typography">
+            <h1>Outil de gestion des factures</h1>
+          </section>
+        </mat-card-title>
+        <div fxFlex></div>
+        <a mat-mini-fab color="accent" (click)="onRemove()">
+        <mat-icon>remove</mat-icon>
+      </a>
+      </mat-card-header>
+      <mat-card-content>
+        <section class="mat-typography">
+          <h1 style="margin: 17px">Entrez vos facture :</h1>
+        </section>
+        <div id="dropzone"
+          (dragover)="false"
+          (dragend)="false"
+          (drop)="onDrop($event)">
+          <p style="margin: 10px; text-align: center">
+            <strong>Pose tes fichier pdf ici</strong>
+          </p>
+          <p style="margin: 10px">
+            <strong>Tes factures prises en comptes :</strong>
+          </p>
+          <p style="margin: 20px">
+          <invoice-tool-invoice-file  *ngFor="let invoice of invoices"
+                      [invoicename]="invoice.name" ></invoice-tool-invoice-file>
+          </p>
+        </div>
+        <p></p>
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+          <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+            <button mat-stroked-button (click) = "onSubmit()">Lancer le calcul</button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+</div>
