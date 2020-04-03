@@ -11,8 +11,8 @@ export class InvoiceParseService {
   nbplastinvoice = 0;
   async fromFiletoText(invoice: File){
 
-    var url = URL.createObjectURL(invoice);
-    let oneinvoice = await this.gettext(url);
+    const url = URL.createObjectURL(invoice);
+    const oneinvoice = await this.gettext(url);
     this.nbplastinvoice = oneinvoice.length;
     for(let i=0;i<oneinvoice.length;i++){
       this.textinvoices.push(oneinvoice[i]);
@@ -20,12 +20,12 @@ export class InvoiceParseService {
     URL.revokeObjectURL(url);
   }
 
-  parsePDF(){
-    
-    var listinvoices = this.textinvoices;
-    var listothers = [];
-    var toremove = [];   
-    
+  parsePDF() {
+
+    const listinvoices = this.textinvoices;
+    const listothers = [];
+    let toremove = [];
+
     //Separate invoices and credits
     for(let i = 0; i<listinvoices.length; i++){
       if(listinvoices[i].indexOf('FACTURECOMMUNAUTE')<0){
@@ -46,8 +46,8 @@ export class InvoiceParseService {
     for(let i = toremove.length-1;i>=0;i--){
       listothers.push(listinvoices.splice(toremove[i],1));
     }
-    
-    //Parsing 
+
+    //Parsing
     for(let i = 0; i<listinvoices.length; i++){
       let index = listinvoices[i].indexOf('CLIENT FACTURE');
       listinvoices[i] = listinvoices[i].substring(0,index-1);
@@ -60,11 +60,11 @@ export class InvoiceParseService {
         listinvoices[i] = listinvoices[i].substring(0,index);
       }
     }
-    
+
 
     for(let i = 0; i<listinvoices.length; i++){
       listinvoices[i] = listinvoices[i].replace('19,5L','20L');   //Grolsch
-      let listinvoicesparse = listinvoices[i].split(' ');
+      const listinvoicesparse = listinvoices[i].split(' ');
       toremove = [];
       for(let i = 0; i<listinvoicesparse.length; i++){
         if(listinvoicesparse[i]=='' || listinvoicesparse[i].indexOf(',')>=0 || listinvoicesparse[i].indexOf('°')>=0){
@@ -78,21 +78,21 @@ export class InvoiceParseService {
       listinvoices[i]=listinvoicesparse.join(' ');
     }
 
-    var listarticles = [];
+    const listarticles = [];
     for(let i=0;i<listinvoices.length; i++){
-      let listinvoicesparse = listinvoices[i].split(' net');
+      const listinvoicesparse = listinvoices[i].split(' net');
       for(let i=0;i<listinvoicesparse.length;i++){
         listarticles.push(listinvoicesparse[i]);
       }
     }
 
 
-    var listarticlesparse = [];
+    const listarticlesparse = [];
     //Cols and Colis
     for(let i=0;i<listarticles.length;i++){
-      let articlenombre = [];
+      const articlenombre = [];
       let nomarticle = '';
-      let articlesparse = listarticles[i].split(' ');
+      const articlesparse = listarticles[i].split(' ');
       let last = articlesparse[articlesparse.length-1].split('');
       if(last.length<5){
         last.splice(1,last.length);
@@ -109,12 +109,12 @@ export class InvoiceParseService {
       listarticlesparse.push(articlenombre);
       listarticles[i]=nomarticle+' '+last;
     }
-    
-    var nomarticle = [];
-    var finallist = [];
 
-    for(let i in listarticlesparse){
-      let index = nomarticle.indexOf(listarticlesparse[i][0]);
+    const nomarticle = [];
+    const finallist = [];
+
+    for(const i in listarticlesparse){
+      const index = nomarticle.indexOf(listarticlesparse[i][0]);
       if(index<0){
         nomarticle.push(listarticlesparse[i][0]);
         finallist.push(listarticlesparse[i]);
@@ -123,9 +123,9 @@ export class InvoiceParseService {
         finallist[index][1] += listarticlesparse[i][1];
       }
     }
-    
+
     toremove = [];
-    for(let i in finallist){
+    for(const i in finallist){
       if(finallist[i][0]=='') toremove.push(i);
     }
     for(let i = toremove.length-1;i>=0;i--){
@@ -146,18 +146,18 @@ export class InvoiceParseService {
 
   gettext(pdfUrl){
     PDFJS.GlobalWorkerOptions.workerSrc = PDFJSWorker;
-    var pdf = PDFJS.getDocument(pdfUrl).promise;
+    const pdf = PDFJS.getDocument(pdfUrl).promise;
     return pdf.then(function(pdf) { // get all pages text
-      var maxPages = pdf.numPages;
-      var countPromises = []; // collecting all page promises
-      for (var j = 1; j <= maxPages; j++) {
-        var page = pdf.getPage(j);
-  
+      const maxPages = pdf.numPages;
+      const countPromises = []; // collecting all page promises
+      for (let j = 1; j <= maxPages; j++) {
+        const page = pdf.getPage(j);
+
         //var txt = "";
         countPromises.push(page.then(function(page) { // add page promise
-          var textContent = page.getTextContent();
+          const textContent = page.getTextContent();
           return textContent.then(function(text){ // return content promise
-            return text.items.map(function (s) { return s.str; }).join(''); // value page text 
+            return text.items.map(function (s) { return s.str; }).join(''); // value page text
           });
         }));
       }

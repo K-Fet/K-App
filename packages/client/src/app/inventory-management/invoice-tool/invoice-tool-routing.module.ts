@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: InvoiceParse,
     canActivate: [NgxPermissionsGuard],
-    //data: { permissions: { only: ['inventory-management:products:create'] } },
+    data: { permissions: { only: ['inventory-management:invoice-tool'] } },
   },
 ];
 
