@@ -40,9 +40,9 @@ export class InvoiceParse implements OnInit {
 
   onDrop(e) {
     e.preventDefault(); //<span spellcheck="true">;// évite d'ouvrir le fichier recherché</span>
-    var files:File = e.dataTransfer.files;
+    const files: File = e.dataTransfer.files;
     Object.keys(files).forEach((key) => {
-      let file: File = files[key];
+      const file: File = files[key];
       this.invoiceParseService.fromFiletoText(file);
       this.invoiceService.addInvoice(file);
     });
