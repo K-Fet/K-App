@@ -38,6 +38,7 @@
     "ng-pick-datetime": "^7.0.0",
     "ngx-date-fns": "^5.0.0",
     "ngx-permissions": "^7.0.3",
+    "pdfjs-dist": "^2.3.200",
     "rxjs": "^6.5.2",
     "zone.js": "~0.9.1"
   },

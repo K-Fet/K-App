@@ -13,7 +13,7 @@
       </mat-card-header>
       <mat-card-content>
         <section class="mat-typography">
-          <h1 style="margin: 17px">Entrez vos facture :</h1>
+          <h1 style="margin: 17px">Entre tes factures :</h1>
         </section>
         <div id="dropzone"
           (dragover)="false"
@@ -21,6 +21,7 @@
           (drop)="onDrop($event)">
           <p style="margin: 10px; text-align: center">
             <strong>Pose tes fichier pdf ici</strong>
+            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
           </p>
           <p style="margin: 10px">
             <strong>Tes factures prises en comptes :</strong>
@@ -36,6 +37,15 @@
             <button mat-stroked-button (click) = "onSubmit()">Lancer le calcul</button>
           </div>
         </div>
+        
+          <section class="mat-typography" *ngIf="!isEmpty">
+            <h1>Résultat :</h1>
+          </section>
+          <p style="margin: 30px">
+              <invoice-tool-invoice-article  *ngFor="let article of articles"
+              [articlename]="article[0]"
+              [nbarticle]="article[1]">  </invoice-tool-invoice-article>
+          </p>
       </mat-card-content>
     </mat-card>
 </div>

@@ -17,9 +17,15 @@ export class InvoiceService {
         this.invoices.push(invoiceObject);
         this.emitAppareilSubject();
       }
+
     removeInvoice() {
         this.invoices.pop();
         this.emitAppareilSubject();
       }
+    
+    removeAll() {
+      this.invoices = [];
+      this.emitAppareilSubject();
+    }
 
 }

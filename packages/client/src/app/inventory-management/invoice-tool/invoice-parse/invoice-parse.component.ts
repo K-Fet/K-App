@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { InvoiceService } from '../invoice-service/invoice.service';
+import { InvoiceParseService } from '../invoice-service/invoice-parse.service';
 import { Subscription } from 'rxjs';
+
 
 @Component({
   templateUrl: './invoice-parse.component.html',
@@ -18,9 +20,13 @@ import { Subscription } from 'rxjs';
 })
 export class InvoiceParse implements OnInit {
 
-  invoices: any[];
+  invoices: File[];
+  articles: any[];
+  isEmpty: boolean;
+
   invoiceSubscription: Subscription;
-  constructor(private invoiceService: InvoiceService) { }
+  constructor(private invoiceService: InvoiceService,
+              private invoiceParseService: InvoiceParseService) { }
 
   ngOnInit() {
     this.invoiceSubscription = this.invoiceService.invoicesSubject.subscribe(
@@ -29,6 +35,7 @@ export class InvoiceParse implements OnInit {
       }
     );
     this.invoiceService.emitAppareilSubject();
+    this.isEmpty = true;
   }
 
   onDrop(e) {
@@ -36,16 +43,25 @@ export class InvoiceParse implements OnInit {
     var files:File = e.dataTransfer.files;
     Object.keys(files).forEach((key) => {
       let file: File = files[key];
+      this.invoiceParseService.fromFiletoText(file);
       this.invoiceService.addInvoice(file);
-      console.log(file);
     });
   }
 
   onRemove() {
     this.invoiceService.removeInvoice();
+    this.invoiceParseService.removeOne();
   }
 
-  onSubmit() {
-    console.log("Submition...");
+  async onSubmit() {
+    if(this.invoices.length <= 0){
+      alert("Vous devez rentrer au moins une facture");
+    }
+    else{
+      this.invoiceParseService.parsePDF();
+      this.articles = this.invoiceParseService.listarticle;
+      this.isEmpty = false;
+      this.invoiceService.removeAll();
+    }
   }
 }
