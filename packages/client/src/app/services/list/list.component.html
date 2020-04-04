@@ -1,0 +1,61 @@
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <app-week-picker fxFlex></app-week-picker>
+  <!-- HEADER -->
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <h1 class="title">Liste des services</h1>
+    <div fxFlexAlign="center">
+      <button mat-stroked-button routerLink="/services/services-manager/new" *ngxPermissionsOnly="['services.create']">Nouveau</button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div
+    fxLayoutAlign="center"
+  >
+    <div
+      style="width: 100%; max-width: 1000px !important"
+      fxLayout="column"
+      class="table-spinner-container with-paginator"
+    >
+      <div class="table-spinner" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+      <table mat-table
+             [dataSource]="dataSource"
+             matSort
+             matSortActive="updatedAt"
+             matSortDirection="desc"
+             matSortDisableClear
+             fxFlex
+      >
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Date </mat-header-cell>
+          <mat-cell *matCellDef="let service"> {{service.startAt | date:'EEEE d LLLL':'':'fr'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="start">
+          <mat-header-cell *matHeaderCellDef> Début </mat-header-cell>
+          <mat-cell *matCellDef="let service"> {{service.startAt | date:'H'}}h </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="end">
+          <mat-header-cell *matHeaderCellDef> Fin </mat-header-cell>
+          <mat-cell *matCellDef="let service"> {{service.endAt | date:'H'}}h </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+          <mat-cell *matCellDef="let service">
+            <button mat-icon-button (click)="edit(service)"><mat-icon>edit</mat-icon></button>
+            <button color="warn" mat-icon-button (click)="openConfirmationDialog(service)"><mat-icon>delete</mat-icon></button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </table>
+      <mat-paginator
+        [length]="dataSource.total"
+        [pageSize]="dataSource.pageSize"
+        [pageSizeOptions]="[10, 25, 100]">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

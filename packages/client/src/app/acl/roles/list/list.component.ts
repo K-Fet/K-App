@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { RoleService } from '../../../core/api-services/role.service';
+import { RolesService } from '../../../core/api-services/roles.service';
 import { Role } from '../../../shared/models';
 import { ConfirmationDialogComponent } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private roleService: RoleService,
+  constructor(private roleService: RolesService,
               private toasterService: ToasterService,
               private router: Router,
               private dialog: MatDialog) {

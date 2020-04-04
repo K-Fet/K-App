@@ -1313,19 +1313,15 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@ng-dynamic-forms/core@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/core/-/core-10.1.0.tgz#b706c5b5645cd6b3a29da4e6a43c482053b9a122"
-  integrity sha512-BrtbPSXDHtD40dv4dWqdEkC7PIQbh+SYFrpBvDTuBULgujQk2HKDP+UREK1h57COMTDJCvwQ6OV0Kbxk1+Vqbg==
-  dependencies:
-    tslib "^1.9.0"
+"@ng-dynamic-forms2/core@^10.1.10":
+  version "10.1.10"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms2/core/-/core-10.1.10.tgz#6808eb5af09efaa98f1dafaa04e7c925fd1f36cb"
+  integrity sha512-GsvgM98hx+gjRPobs8yX+nET9WmebtTyrAlTRxxfZwqQyBG7b++Z0z919l7vB+0P3BEUie1PN42RYgPdDYHxVQ==
 
-"@ng-dynamic-forms/ui-material@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms/ui-material/-/ui-material-10.1.0.tgz#37d05ed034419c85a8e0f2c045ac07f71ebf672c"
-  integrity sha512-ujNwv0efp7O+dNzzYc2uoRkcf8zt0tTk1Wm+h+UrOPKPX5Zr/cq+x/MGm+WNJC9oYG8svcoVMPVwd0hyFsEB8g==
-  dependencies:
-    tslib "^1.9.0"
+"@ng-dynamic-forms2/ui-material@^10.1.10":
+  version "10.1.10"
+  resolved "https://registry.yarnpkg.com/@ng-dynamic-forms2/ui-material/-/ui-material-10.1.10.tgz#d2e4963ccf3784c2c32008e71268e281e4e5ea80"
+  integrity sha512-F06/P8H+2Us4BuOra/3ldpbnB6XVwTxon9o4Qb8g+I3Pomfu+mTOZMTyuiHI7u9rbUNscrUEqk8RbghMvLFqlw==
 
 "@ngtools/webpack@9.0.2":
   version "9.0.2"

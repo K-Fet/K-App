@@ -11,7 +11,7 @@ const {
 const { actionValidators } = require('../../utils/action-validators');
 
 const LOGIN_ERROR = new MoleculerClientError('Bad email/password combination', 400, 'LoginError');
-mongoose.set('debug', true);
+
 const { ObjectID } = mongoose.Schema.Types;
 
 const model = {

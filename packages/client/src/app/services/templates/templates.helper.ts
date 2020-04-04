@@ -1,14 +1,14 @@
 import { setHours, setISODay, setMinutes } from 'date-fns';
-import { TemplateServiceUnit } from '../../shared/models';
+import { ServiceTemplateUnit } from '../../shared/models';
 
-export function templateDateToDate(val: TemplateServiceUnit): { startAt: Date; endAt: Date } {
+export function templateDateToDate(val: ServiceTemplateUnit): { startAt: Date; endAt: Date } {
   return {
     startAt: setMinutes(setHours(setISODay(new Date(), val.startDay), val.startHours), val.startMinutes),
     endAt: setMinutes(setHours(setISODay(new Date(), val.endDay), val.endHours), val.endMinutes),
   };
 }
 
-export function getUnitFromControls(controls): TemplateServiceUnit {
+export function getUnitFromControls(controls): ServiceTemplateUnit {
   return {
     nbMax: controls.nbMaxFormControl.value,
     startDay: controls.startDayFormControl.value,

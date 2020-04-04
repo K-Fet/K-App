@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Kommission } from '../shared/models';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { KommissionService } from '../core/api-services/kommission.service';
+import { KommissionsService } from '../core/api-services/kommissions.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class KommissionDetailResolverService implements Resolve<Kommission> {
 
-  constructor(private kommissionService: KommissionService,
+  constructor(private kommissionService: KommissionsService,
               private router: Router) {}
 
   async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Kommission> {

@@ -1,4 +1,4 @@
-export interface TemplateServiceUnit {
+export interface ServiceTemplateUnit {
   nbMax?: number;
 
   startDay: number;
@@ -10,11 +10,10 @@ export interface TemplateServiceUnit {
   endMinutes: number;
 }
 
-export interface Template {
-
+export interface ServicesTemplate {
   _id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   name: string;
-  services: TemplateServiceUnit[];
+  services: ServiceTemplateUnit[];
 }

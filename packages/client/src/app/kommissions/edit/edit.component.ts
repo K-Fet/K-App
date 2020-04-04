@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KommissionService } from '../../core/api-services/kommission.service';
+import { KommissionsService } from '../../core/api-services/kommissions.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { Kommission } from '../../shared/models';
 import { getKommissionFromForm, getKommissionModel } from '../kommissions.form-model';
@@ -18,7 +18,7 @@ export class EditComponent implements OnInit {
   originalKommission: Kommission;
 
   constructor(private formService: DynamicFormService,
-              private kommissionService: KommissionService,
+              private kommissionService: KommissionsService,
               private toasterService: ToasterService,
               private route: ActivatedRoute,
               private router: Router) { }

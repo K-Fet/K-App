@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { Template } from '../../../shared/models';
-import { TemplateService } from '../../../core/api-services/template.service';
+import { ServicesTemplate } from '../../../shared/models';
+import { ServicesTemplatesService } from '../../../core/api-services/services-templates.service';
 import { getUnitFromControls, templateDateToDate } from '../templates.helper';
 import { compareAsc, format } from 'date-fns';
 
@@ -17,7 +17,7 @@ export class EditComponent implements OnInit {
   generalFormArray: FormArray;
   generalFormGroup: FormGroup;
 
-  originalTemplate: Template;
+  originalTemplate: ServicesTemplate;
 
   WEEK_DAY = [
     { id: '1', value: 'Lundi' },
@@ -30,7 +30,7 @@ export class EditComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private templateService: TemplateService,
+    private templateService: ServicesTemplatesService,
     private route: ActivatedRoute,
     private router: Router,
     private toasterService: ToasterService,
@@ -53,7 +53,7 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { template: Template }) => {
+    this.route.data.subscribe((data: { template: ServicesTemplate }) => {
       this.originalTemplate = data.template;
       this.templateNameFormGroup.controls.templateNameFormControl.setValue(data.template.name);
       this.addServiceFormFromTemplate(data.template);
@@ -61,7 +61,7 @@ export class EditComponent implements OnInit {
     });
   }
 
-  addServiceFormFromTemplate(template: Template): void {
+  addServiceFormFromTemplate(template: ServicesTemplate): void {
     template.services.forEach((service) => {
       const { startAt, endAt } = templateDateToDate(service);
 
@@ -94,7 +94,7 @@ export class EditComponent implements OnInit {
   }
 
   async updateTemplate(): Promise<void> {
-    const template: Template = {
+    const template: ServicesTemplate = {
       _id: this.originalTemplate._id,
       name: this.templateNameFormGroup.controls.templateNameFormControl.value,
       services: this.servicesFormArray.controls.map((formGroup) => {

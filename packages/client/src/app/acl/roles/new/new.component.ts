@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { RoleService } from '../../../core/api-services/role.service';
+import { RolesService } from '../../../core/api-services/roles.service';
 import { getRoleFromForm, getRoleModel } from '../roles.form-model';
 import { PermissionsSelectorComponent } from '../../permissions-selector/permissions-selector.component';
 
@@ -19,7 +19,7 @@ export class NewComponent implements OnInit {
   @ViewChild(PermissionsSelectorComponent, { static: true }) permSelector: PermissionsSelectorComponent;
 
   constructor(private formService: DynamicFormService,
-              private roleService: RoleService,
+              private roleService: RolesService,
               private toasterService: ToasterService,
               private router: Router) { }
 

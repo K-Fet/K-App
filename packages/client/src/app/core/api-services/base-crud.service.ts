@@ -45,6 +45,12 @@ export class BaseCrudService<T extends { _id?: string }, AdditionalFilterFields 
     return t;
   }
 
+  async insert(models: T[]): Promise<T[]> {
+    const t = await this.http.post<T[]>(`${this.baseUrl}/insert`, { entities: models }).toPromise();
+    this.refreshSubject.next();
+    return t;
+  }
+
   async update(model: T): Promise<T> {
     const t = await this.http.put<T>(`${this.baseUrl}/${model._id}`, model).toPromise();
     this.refreshSubject.next();

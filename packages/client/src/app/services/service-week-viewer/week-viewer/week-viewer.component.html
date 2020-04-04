@@ -1,0 +1,5 @@
+<div>
+  <div *ngFor="let item of weekViewerController.items$ | async">
+    <ng-container *ngTemplateOutlet="slotTemplate;context:getContext(item)"></ng-container>
+  </div>
+</div>

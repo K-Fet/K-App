@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@ng-dynamic-forms2/core';
 import { Kommission } from '../shared/models';
 import { FormGroup } from '@angular/forms';
 

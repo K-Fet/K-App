@@ -51,7 +51,7 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(forwardRequest).pipe(
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
-          const body = event.body;
+          const { body } = event;
           convertToDate(body);
         }
       }),

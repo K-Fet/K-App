@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 import { Barman } from '../../shared/models';
 
 interface BarmanServiceData {
@@ -27,7 +27,7 @@ export class BarmanServiceNumberComponent implements OnInit, AfterViewInit {
     this.barmenData.sort = this.sort;
   }
 
-  constructor(private serviceService: ServiceService) { }
+  constructor(private serviceService: ServicesService) { }
 
   ngOnInit(): void {
     this.serviceService.getWeek().subscribe(async (week) => {

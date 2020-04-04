@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../../core/api-services/users.service';
 import { User } from '../../../shared/models';

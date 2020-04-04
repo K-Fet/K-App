@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TemplateService } from '../../../core/api-services/template.service';
+import { ServicesTemplatesService } from '../../../core/api-services/services-templates.service';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { Template } from '../../../shared/models';
+import { ServicesTemplate } from '../../../shared/models';
 import { getUnitFromControls } from '../templates.helper';
 
 @Component({
@@ -28,7 +28,7 @@ export class NewComponent {
 
   constructor(
     private fb: FormBuilder,
-    private templateService: TemplateService,
+    private templateService: ServicesTemplatesService,
     private toasterService: ToasterService,
     private router: Router,
   ) {
@@ -86,7 +86,7 @@ export class NewComponent {
   }
 
   async addTemplate() {
-    const template: Template = {
+    const template: ServicesTemplate = {
       name: this.templateNameFormGroup.controls.templateNameFormControl.value,
       services: this.servicesFormArray.controls.map((formGroup) => {
         return getUnitFromControls((formGroup as FormGroup).controls);

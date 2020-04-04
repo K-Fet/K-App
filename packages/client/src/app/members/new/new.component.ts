@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { getMemberModel, getMemberFromForm } from '../members.form-model';
 import { Member } from '../member.model';
 import { MembersService } from '../members.service';

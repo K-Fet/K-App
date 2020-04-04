@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms2/core';
 import { FormGroup } from '@angular/forms';
 import { Shelf } from './shelf.model';
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { UsersService } from '../../../core/api-services/users.service';
 import { getUserFromForm, getUserModel } from '../users.form-model';
 import { AccountType } from '../../../shared/models';

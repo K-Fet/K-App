@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/api-services/auth.service';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 import { isUserBarman, Service, User } from '../../shared/models';
 
 @Component({
@@ -13,15 +13,15 @@ export class MyServicesComponent implements OnInit {
   user: User;
 
   constructor(private authService: AuthService,
-    private serviceService: ServiceService) {
+    private servicesService: ServicesService) {
   }
 
   ngOnInit(): void {
     this.authService.$currentUser.subscribe((user) => {
       this.user = user;
       if (isUserBarman(user)) {
-        this.serviceService.getWeek().subscribe(async (week) => {
-          const { rows: services } = await this.serviceService.getFromBarman(this.user._id, {
+        this.servicesService.$week.subscribe(async (week) => {
+          const { rows: services } = await this.servicesService.getFromBarman(this.user._id, {
             startAt: week.start,
             endAt: week.end,
             pageSize: 1000,

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/api-services/auth.service';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 import { Day, isServicePassed, isUserBarman, Service, User } from '../../shared/models';
 import { ToasterService } from '../../core/services/toaster.service';
 
@@ -16,7 +16,7 @@ export class PlanMyServicesComponent implements OnInit {
   days: Day[] = [];
   user: User;
 
-  constructor(private serviceService: ServiceService,
+  constructor(private serviceService: ServicesService,
     private authService: AuthService,
     private toasterService: ToasterService) {}
 

@@ -5,7 +5,7 @@ import {
   DynamicFormModel,
   DynamicFormService,
   DynamicInputModel,
-} from '@ng-dynamic-forms/core';
+} from '@ng-dynamic-forms2/core';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/api-services/auth.service';

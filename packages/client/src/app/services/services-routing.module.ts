@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { PlanMyServicesComponent } from './plan-my-services/plan-my-services.component';
 import { ServiceExplorerComponent } from './services-explorer/services-explorer.component';
-import { ServiceListComponent } from './list/services-list.component';
+import { ServiceListComponent } from './list/list.component';
 import { ServiceNewComponent } from './new/service-new.component';
 import { ServiceEditComponent } from './edit/service-edit.component';
 import { OpenServicesComponent } from './open-services/open-services.component';

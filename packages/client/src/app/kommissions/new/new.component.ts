@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { KommissionService } from '../../core/api-services/kommission.service';
+import { KommissionsService } from '../../core/api-services/kommissions.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { getKommissionFromForm, getKommissionModel } from '../kommissions.form-model';
 
@@ -15,7 +15,7 @@ export class NewComponent implements OnInit {
   model: DynamicFormModel;
 
   constructor(private formService: DynamicFormService,
-              private kommissionService: KommissionService,
+              private kommissionService: KommissionsService,
               private toasterService: ToasterService,
               private router: Router) { }
 

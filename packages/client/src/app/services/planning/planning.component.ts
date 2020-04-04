@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Day, Service } from '../../shared/models';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 import { isSameDay } from 'date-fns';
 
 @Component({
@@ -13,7 +13,7 @@ export class PlanningComponent implements OnInit {
   days: Day[] = [];
   dayServices: Service[];
 
-  constructor(private serviceService: ServiceService) {}
+  constructor(private serviceService: ServicesService) {}
 
   updateDayDetails(day: Day): void {
     this.days.map((currentDay) => {

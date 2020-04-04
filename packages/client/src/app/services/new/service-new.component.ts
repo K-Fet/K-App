@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { Service } from '../../shared/models';
 
@@ -12,7 +12,7 @@ export class ServiceNewComponent {
 
   serviceForm: FormGroup;
 
-  constructor(private serviceService: ServiceService,
+  constructor(private serviceService: ServicesService,
     private toasterService: ToasterService,
     private router: Router) { }
 

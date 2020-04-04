@@ -18,7 +18,7 @@ interface MoleculerAdditionalLoader<Options> {
    * Function called before loading data from DataSource. Receive base options that will be sent
    * and must return a full option object.
    */
-  addQueryOptions?: (options: Partial<Options>) => Options;
+  addQueryOptions?: (options: Partial<Options>) => Options | Promise<Options>;
   /**
    * Refresh Observable used to reload data on change.
    */
@@ -113,7 +113,7 @@ export class MoleculerDataLoader<Model, AdditionalFilterFields extends RawHttpPa
     } as AdditionalFilterFields & MoleculerListOptions;
 
     if (this.options.addQueryOptions) {
-      options = this.options.addQueryOptions(options as AdditionalFilterFields & MoleculerListOptions);
+      options = await this.options.addQueryOptions(options as AdditionalFilterFields & MoleculerListOptions);
     }
 
     await this.dataSource.load(options);

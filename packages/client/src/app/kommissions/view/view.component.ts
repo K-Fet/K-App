@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ToasterService } from '../../core/services/toaster.service';
 import { isActiveBarman, Kommission, User } from '../../shared/models';
-import { KommissionService } from '../../core/api-services/kommission.service';
+import { KommissionsService } from '../../core/api-services/kommissions.service';
 
 @Component({
   templateUrl: './view.component.html',
@@ -15,7 +15,7 @@ export class ViewComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private toasterService: ToasterService,
-              private kommissionService: KommissionService,
+              private kommissionService: KommissionsService,
               private router: Router,
               public dialog: MatDialog) { }
 

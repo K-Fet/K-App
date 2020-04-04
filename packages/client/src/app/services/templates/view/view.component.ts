@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Service, Template } from '../../../shared/models';
-import { TemplateService } from '../../../core/api-services/template.service';
+import { Service, ServicesTemplate } from '../../../shared/models';
+import { ServicesTemplatesService } from '../../../core/api-services/services-templates.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,17 +12,17 @@ import { templateDateToDate } from '../templates.helper';
 })
 export class ViewComponent implements OnInit {
 
-  template: Template;
+  template: ServicesTemplate;
   services: Service[] = [];
 
-  constructor(private templateService: TemplateService,
+  constructor(private templateService: ServicesTemplatesService,
               private toasterService: ToasterService,
               private route: ActivatedRoute,
               private router: Router,
               public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { template: Template }) => {
+    this.route.data.subscribe((data: { template: ServicesTemplate }) => {
       this.template = data.template;
       this.changeFormatDate();
     });

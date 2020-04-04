@@ -5,7 +5,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { SharedModule } from '../shared/shared.module';
 import { BarmanServiceNumberComponent } from './barman-service-number/barman-service-number.component';
 import { ServiceEditComponent } from './edit/service-edit.component';
-import { ServiceListComponent } from './list/services-list.component';
+import { ServiceListComponent } from './list/list.component';
 import { ServiceNewComponent } from './new/service-new.component';
 import { OpenServicesComponent } from './open-services/open-services.component';
 import { PlanMyServicesComponent } from './plan-my-services/plan-my-services.component';
@@ -13,6 +13,7 @@ import { PlanningComponent } from './planning/planning.component';
 import { ServiceExplorerComponent } from './services-explorer/services-explorer.component';
 import { WeekPickerComponent } from './week-picker/week-picker.component';
 import { MyServicesModule } from './my-services/my-services.module';
+import { ServiceWeekViewerModule } from './service-week-viewer/service-week-viewer.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { MyServicesModule } from './my-services/my-services.module';
     MyServicesModule,
     NgxPermissionsModule.forChild(),
     ServicesRoutingModule,
+    ServiceWeekViewerModule,
   ],
 })
 export class ServicesModule {}

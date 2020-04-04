@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { Role } from '../../shared/models';
-import { RoleService } from '../../core/api-services/role.service';
+import { RolesService } from '../../core/api-services/roles.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoleDetailResolverService implements Resolve<Role> {
 
-  constructor(private roleService: RoleService,
+  constructor(private roleService: RolesService,
               private router: Router) {}
 
   async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Role> {

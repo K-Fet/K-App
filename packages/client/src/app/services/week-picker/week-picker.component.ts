@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ServiceService } from '../../core/api-services/service.service';
+import { ServicesService } from '../../core/api-services/services.service';
 
 @Component({
   selector: 'app-week-picker',
@@ -11,6 +11,8 @@ export class WeekPickerComponent implements OnInit {
   weekInterval: number;
   week: { start: Date; end: Date };
 
+  constructor(private serviceService: ServicesService) {}
+
   ngOnInit(): void {
     this.serviceService.$weekInterval.subscribe((weekInterval) => {
       this.weekInterval = weekInterval;
@@ -19,8 +21,6 @@ export class WeekPickerComponent implements OnInit {
       this.week = week;
     });
   }
-
-  constructor(private serviceService: ServiceService) {}
 
   next(): void {
     this.serviceService.$weekInterval.next(this.weekInterval + 1);

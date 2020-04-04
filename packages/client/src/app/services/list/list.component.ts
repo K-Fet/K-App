@@ -2,16 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxPermissionsService } from 'ngx-permissions';
-import { FormGroup } from '@angular/forms';
 import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
-import { ServiceService } from '../../core/api-services/service.service';
+import { AdditionalServicesOptions, ServicesService } from '../../core/api-services/services.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { Service } from '../../shared/models';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { MoleculerDataSource } from '../../shared/utils/moleculer-data-source';
+import { MoleculerDataLoader } from '../../shared/utils/moleculer-data-loader';
 
 function transformServiceToDate(date: Service): string {
   return `${format(date.startAt, 'EEEE d LLLL', { locale: fr })} de
@@ -20,42 +20,52 @@ function transformServiceToDate(date: Service): string {
 }
 
 @Component({
-  templateUrl: './services-list.component.html',
+  templateUrl: './list.component.html',
 })
 export class ServiceListComponent implements OnInit {
 
   displayedColumns = ['date', 'start', 'end', 'action'];
-  servicesData: MatTableDataSource<Service>;
-  searchFormGroup: FormGroup;
+  dataSource: MoleculerDataSource<Service, AdditionalServicesOptions>;
+  dataLoader: MoleculerDataLoader<Service, AdditionalServicesOptions>;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private serviceService: ServiceService,
-              private toasterService: ToasterService,
-              private router: Router,
-              private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService) {
+  constructor(private servicesService: ServicesService,
+    private toasterService: ToasterService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private ngxPermissionsService: NgxPermissionsService) {
   }
 
-  ngOnInit(): void {
-    this.update();
+  async ngOnInit(): Promise<void> {
     if (!this.ngxPermissionsService.getPermissions()['services.write']) {
       this.displayedColumns = ['date', 'start', 'end'];
     }
-  }
 
-  update(): void {
-    this.serviceService.getWeek().subscribe(async (week) => {
-      const { rows: services } = await this.serviceService.list({
-        startAt: week.start,
-        endAt: week.end,
-        pageSize: 1000,
-      });
-      this.servicesData = new MatTableDataSource(services);
-      this.servicesData.paginator = this.paginator;
-      this.servicesData.sort = this.sort;
-    });
+    this.dataSource = new MoleculerDataSource<Service, AdditionalServicesOptions>(this.servicesService);
+    this.dataLoader = new MoleculerDataLoader<Service, AdditionalServicesOptions>(
+      this.router,
+      this.route,
+      this.dataSource,
+      this.paginator,
+      this.sort,
+      {
+        refresh: this.servicesService.refresh$,
+        // TODO Load week from query param
+        addQueryOptions: async (options) => {
+          const { end, start } = await this.servicesService.$week.toPromise();
+          return ({
+            ...options,
+            startAt: start,
+            endAt: end,
+          });
+        },
+      },
+    );
+
+    await this.dataLoader.init();
   }
 
   edit(service: Service): void {
@@ -63,9 +73,8 @@ export class ServiceListComponent implements OnInit {
   }
 
   async delete(service: Service): Promise<void> {
-    await this.serviceService.remove(service._id);
+    await this.servicesService.remove(service._id);
     this.toasterService.showToaster('Service supprimé');
-    this.update();
   }
 
   async openConfirmationDialog(service: Service): Promise<void> {

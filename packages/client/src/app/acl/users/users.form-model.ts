@@ -6,7 +6,7 @@ import {
   DynamicInputModel,
   DynamicInputModelConfig,
   DynamicTextAreaModel,
-} from '@ng-dynamic-forms/core';
+} from '@ng-dynamic-forms2/core';
 import { FormGroup } from '@angular/forms';
 import { subYears } from 'date-fns';
 import { AccountType, Barman, ServiceAccount, User } from '../../shared/models';

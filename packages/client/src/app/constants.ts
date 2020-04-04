@@ -33,23 +33,23 @@ export const ROLES = [
   {
     name: 'TEMPLATE_MANAGER',
     permissions: [
-      'services-templates:read',
-      'services-templates:write',
+      'services-templates.read',
+      'services-templates.write',
     ],
   },
   {
     name: 'SERVICE_MANAGER',
     permissions: [
-      'services:read',
-      'services:create',
-      'services:write',
+      'services.read',
+      'services.create',
+      'services.write',
     ],
   },
   {
     name: 'SERVICE_PLAN',
     permissions: [
-      'services:read',
-      'users:read',
+      'services.read',
+      'users.read',
     ],
   },
 ];
