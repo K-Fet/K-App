@@ -17,7 +17,7 @@ export class WeekPickerComponent implements OnInit {
     this.serviceService.$weekInterval.subscribe((weekInterval) => {
       this.weekInterval = weekInterval;
     });
-    this.serviceService.getWeek().subscribe((week) => {
+    this.serviceService.$week.subscribe((week) => {
       this.week = week;
     });
   }

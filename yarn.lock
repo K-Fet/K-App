@@ -3825,6 +3825,11 @@ date-fns@^2.0.1:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.4.1.tgz#b53f9bb65ae6bd9239437035710e01cf383b625e"
   integrity sha512-2RhmH/sjDSCYW2F3ZQxOUx/I7PvzXpi89aQL2d3OAxSTwLx6NilATeUbe0menFE3Lu5lFkOFci36ivimwYHHxw==
 
+date-fns@^2.11.1:
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.11.1.tgz#197b8be1bbf5c5e6fe8bea817f0fe111820e7a12"
+  integrity sha512-3RdUoinZ43URd2MJcquzBbDQo+J87cSzB8NkXdZiN5ia1UNyep0oCyitfiL88+R7clGTeq/RniXAc16gWyAu1w==
+
 date-fns@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.9.0.tgz#d0b175a5c37ed5f17b97e2272bbc1fa5aec677d2"
@@ -8171,10 +8176,10 @@ ngrok@^3.2.7:
     request-promise-native "^1.0.7"
     uuid "^3.3.2"
 
-ngx-date-fns@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-date-fns/-/ngx-date-fns-6.0.0.tgz#997d0a56b83285adc46c0c9f06b241c5ad2eade1"
-  integrity sha512-mHqE/oiSvkWmjZTQIU67J7rQiRH5Q/ky6nEXkhEEgpJE2s30erer4+IrI1YSuXCtrgDwIc5f7jOWRTe3E8le/w==
+ngx-date-fns@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/ngx-date-fns/-/ngx-date-fns-6.2.1.tgz#51c92ecb920579e240d1647cc43b18fa24ccc367"
+  integrity sha512-x453EmMSLXWeKzP1zIiK93McJo6C9amvVLf953DLEVRUcxBf0NEvDRzYxSaH4gdrQXu300qVcCfg1gVOX7aXAw==
   dependencies:
     tslib "^1.9.0"
 

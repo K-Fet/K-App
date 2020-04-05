@@ -45,9 +45,7 @@ export class WeekViewerController {
     }));
 
   constructor(initialItems?: WeekViewerItem[]) {
-    if (initialItems) {
-      this.currentItems = initialItems;
-    }
+    this.resetItems(initialItems);
   }
 
   resetItems(newItems?: WeekViewerItem[]): void {
