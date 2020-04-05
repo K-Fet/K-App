@@ -1,16 +1,33 @@
 <div fxFlex>
   <!-- Header -->
   <div fxLayout="row">
-    <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder">
-      <span>{{ toFrenchWeekday(entry.key) | dfnsWeekdayName: 'x3' }}</span>
+    <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder" class="same-width day-title-container">
+      <div matRipple class="day-title" fxLayout="column">
+        <div class="day-title-day">{{ entry.key | dfnsFormat: 'eee' }}</div>
+        <div class="day-title-date">{{ entry.key | dfnsFormat: 'd' }}</div>
+      </div>
     </div>
   </div>
   <!-- Body -->
   <div fxLayout="row">
-    <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder">
-      <div fxLayout="column" *ngFor="let item of entry.value">
+    <mat-accordion
+      fxFlex="100"
+      fxLayout="column"
+      fxLayoutAlign="space-evenly stretch"
+      *ngFor="let entry of range | keyvalue: byKeyOrder"
+      class="same-width"
+    >
+      <ng-container *ngFor="let item of entry.value">
         <ng-container *ngTemplateOutlet="slotTemplate;context:getContext(item)"></ng-container>
-      </div>
-    </div>
+      </ng-container>
+      <button
+        fxFlex
+        fxFlexAlign="center"
+        mat-icon-button
+        aria-label="Ajouter un autre service" (click)="onAdd(entry.key)"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </mat-accordion>
   </div>
 </div>

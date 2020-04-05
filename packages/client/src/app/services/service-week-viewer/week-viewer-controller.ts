@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export type WeekViewerItem = {
-  key: string;
+  key: symbol;
   start: Date;
   end: Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +31,7 @@ export class WeekViewerController {
 
       switch (value.type) {
         case 'removed':
-          newItems = this.currentItems.filter(item => item.key === value.item.key);
+          newItems = this.currentItems.filter(item => item.key !== value.item.key);
           break;
         case 'created':
           newItems = [...this.currentItems, value.item];
@@ -57,7 +57,7 @@ export class WeekViewerController {
   }
 
   removeItem(item: WeekViewerItem): void {
-    this.changeSubject.next({ type: 'created', item });
+    this.changeSubject.next({ type: 'removed', item });
   }
 
   editItem(newItem: WeekViewerItem): void {

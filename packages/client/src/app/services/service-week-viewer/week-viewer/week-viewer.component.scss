@@ -1,0 +1,27 @@
+.same-width {
+  flex-basis: 0;
+  min-width: 100px;
+}
+
+.day-title-container {
+  justify-content: center;
+  display: flex;
+
+  $radius: 45px;
+
+  .day-title {
+    border-radius: 50%;
+    height: $radius;
+    width: $radius;
+    text-align: center;
+    justify-content: space-around;
+
+    .day-title-day {
+
+    }
+
+    .day-title-date {
+
+    }
+  }
+}

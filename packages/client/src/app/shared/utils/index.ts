@@ -23,3 +23,6 @@ export function createHttpParams(params: RawHttpParams): HttpParams {
     .filter(([, value]) => value !== undefined && value !== '' && value !== null)
     .reduce((params, [key, value]) => params.set(key, value.toString()), new HttpParams());
 }
+
+
+export const getUniqishID = (): string => '_' + Math.random().toString(36).substr(2, 9);

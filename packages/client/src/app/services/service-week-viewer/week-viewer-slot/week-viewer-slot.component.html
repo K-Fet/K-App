@@ -1,3 +1,25 @@
-<div>
-  My Item {{ item.key }}
-</div>
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      De {{ item.start | dfnsFormat:'H'}}h à {{ item.end | dfnsFormat:'H'}}h
+    </mat-panel-title>
+    <mat-panel-description>
+      <button
+        mat-icon-button
+        aria-label="Enlever ce service" (click)="remove()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <mat-form-field>
+    <mat-label>First name</mat-label>
+    <input matInput>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Age</mat-label>
+    <input matInput type="number" min="1">
+  </mat-form-field>
+</mat-expansion-panel>

@@ -1,6 +1,15 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { WeekViewerController, WeekViewerItem } from '../week-viewer-controller';
-import { eachDayOfInterval, endOfWeek, getDay, isWithinInterval, startOfWeek } from 'date-fns';
+import {
+  eachDayOfInterval,
+  endOfWeek,
+  getTime,
+  isWithinInterval,
+  setHours,
+  setMinutes,
+  startOfDay,
+  startOfWeek,
+} from 'date-fns';
 import { DEFAULT_WEEK_SWITCH } from '../../../constants';
 import { KeyValue } from '@angular/common';
 
@@ -26,26 +35,17 @@ export class WeekViewerComponent implements OnInit {
         end: endOfWeek(first.start, { weekStartsOn: DEFAULT_WEEK_SWITCH }),
       };
 
-      this.range = new Map(eachDayOfInterval(interval).map(date => [getDay(date), []]));
+      this.range = new Map(eachDayOfInterval(interval).map(date => [getTime(startOfDay(date)), []]));
 
       items
         .filter(item => isWithinInterval(item.start, interval))
-        .forEach(item => this.range.get(getDay(item.start)).push(item));
+        .forEach(item => this.range.get(getTime(startOfDay(item.start))).push(item));
       console.log(this.range);
     });
   }
 
   byKeyOrder(a: KeyValue<number, WeekViewerItem[]>, b: KeyValue<number, WeekViewerItem[]>): number {
-    const normalizedA = a.key > DEFAULT_WEEK_SWITCH ? a.key - 7 : a.key;
-    const normalizedB = b.key > DEFAULT_WEEK_SWITCH ? b.key - 7 : b.key;
-
-    return normalizedA - normalizedB;
-  }
-
-  // ngx-date-fns set locale to french by default and have weekStartsOn to monday.
-  // This is a ugly workaround to force use the english version.
-  toFrenchWeekday(day: number): number {
-    return day === 0 ? 6 : day - 1;
+    return a.key - b.key;
   }
 
   getContext(item: WeekViewerItem): { item: WeekViewerItem; controller: WeekViewerController } {
@@ -55,13 +55,12 @@ export class WeekViewerComponent implements OnInit {
     };
   }
 
-  onAdd() {
+  onAdd(timestamp: number): void {
     // TODO Find start date and end date
     this.weekViewerController.createItem({
-      key: '...',
-      start: new Date(),
+      key: Symbol(),
+      start: setMinutes(setHours(timestamp, 18), 0),
       end: new Date(),
     });
   }
-
 }
