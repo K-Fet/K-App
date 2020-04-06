@@ -12,16 +12,12 @@
       </a>
       </mat-card-header>
       <mat-card-content>
-        <section class="mat-typography">
-          <h1 style="margin: 17px">Entre tes factures :</h1>
-        </section>
         <div id="dropzone"
           (dragover)="false"
           (dragend)="false"
           (drop)="onDrop($event)">
           <p style="margin: 10px; text-align: center">
             <strong>Pose tes fichier pdf ici</strong>
-            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
           </p>
           <p style="margin: 10px">
             <strong>Tes factures prises en comptes :</strong>
@@ -34,18 +30,23 @@
         <p></p>
         <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
           <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
-            <button mat-stroked-button (click) = "onSubmit()">Lancer le calcul</button>
+            <button mat-stroked-button (click) = "onSubmit()" 
+                    [disabled]="invoices.length===0">Lancer le calcul</button>
           </div>
         </div>
-        
-          <section class="mat-typography" *ngIf="!isEmpty">
-            <h1>Résultat :</h1>
-          </section>
-          <p style="margin: 30px">
-              <invoice-tool-invoice-article  *ngFor="let article of articles"
-              [articlename]="article[0]"
-              [nbarticle]="article[1]">  </invoice-tool-invoice-article>
-          </p>
-      </mat-card-content>
-    </mat-card>
+        <p></p>
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="articles.length>0">
+          <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+            <button mat-stroked-button (click) = "onPrint()" >Afficher le résultat</button>
+            <button mat-stroked-button (click) = "onCopyData()" >Copier le résultat</button>
+          </div>
+        </div>
+        <p style="margin: 30px" *ngIf="isPrint">
+        <invoice-tool-invoice-article  *ngFor="let article of articles"
+          [articlename]="article[0]"
+          [nbarticle]="article[1]">  </invoice-tool-invoice-article>
+        </p>
+    </mat-card-content>
+  </mat-card>
 </div>

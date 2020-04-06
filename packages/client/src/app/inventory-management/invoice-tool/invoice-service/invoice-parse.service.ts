@@ -9,7 +9,10 @@ export class InvoiceParseService {
   textinvoices = [];
   listarticle = [];
   nbplastinvoice = 0;
-  async fromFiletoText(invoice: File){
+
+
+
+  async fromFiletoText(invoice: File): Promise<void> {
 
     const url = URL.createObjectURL(invoice);
     const oneinvoice = await this.gettext(url);
@@ -18,9 +21,10 @@ export class InvoiceParseService {
       this.textinvoices.push(oneinvoice[i]);
     }
     URL.revokeObjectURL(url);
+    return Promise.resolve();
   }
 
-  parsePDF() {
+  parsePDF(): void {
 
     const listinvoices = this.textinvoices;
     const listothers = [];
@@ -136,28 +140,21 @@ export class InvoiceParseService {
 
   }
 
-  removeOne(){
-    for(let i=0;i<this.nbplastinvoice;i++){
-      this.textinvoices.pop();
-    }
-  }
 
-
-
-  gettext(pdfUrl){
+  async gettext(pdfUrl: string): Promise<string[]> {
     PDFJS.GlobalWorkerOptions.workerSrc = PDFJSWorker;
     const pdf = PDFJS.getDocument(pdfUrl).promise;
-    return pdf.then(function(pdf) { // get all pages text
+    return pdf.then(function(pdf: { numPages: number; getPage: (arg0: number) => any}) { // get all pages text
       const maxPages = pdf.numPages;
       const countPromises = []; // collecting all page promises
       for (let j = 1; j <= maxPages; j++) {
         const page = pdf.getPage(j);
-
+        
         //var txt = "";
-        countPromises.push(page.then(function(page) { // add page promise
+        countPromises.push(page.then(function(page: { getTextContent: () => any}) { // add page promise
           const textContent = page.getTextContent();
-          return textContent.then(function(text){ // return content promise
-            return text.items.map(function (s) { return s.str; }).join(''); // value page text
+          return textContent.then(function(text: { items: any[]}){ // return content promise
+            return text.items.map(function (s: { str: any}) { return s.str; }).join(''); // value page text
           });
         }));
       }

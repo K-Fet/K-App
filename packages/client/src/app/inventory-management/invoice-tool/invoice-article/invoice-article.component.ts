@@ -1,16 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'invoice-tool-invoice-article',
   templateUrl: './invoice-article.component.html',
 })
-export class InvoiceArticle implements OnInit {
+export class InvoiceArticle {
 
-  @Input() articlename: String;
+  @Input() articlename: string;
   @Input() nbarticle: number;
-  constructor() { }
-
-  ngOnInit() {
-  }
 
 }

@@ -5,25 +5,29 @@ import { Injectable } from '@angular/core';
 
 export class InvoiceService {
 
-    invoicesSubject = new Subject<any[]>();
-    private invoices = [];
+    invoicesSubject = new Subject<File[]>();
+    private invoices: File[];
 
-    emitAppareilSubject() {
+    constructor() {
+      this.invoices = [];
+    }
+
+    emitAppareilSubject(): void {
         this.invoicesSubject.next(this.invoices.slice());
     }
 
-    addInvoice(file : File) {
+    addInvoice(file: File): void {
         const invoiceObject = file;
         this.invoices.push(invoiceObject);
         this.emitAppareilSubject();
       }
 
-    removeInvoice() {
+    removeInvoice(): void {
         this.invoices.pop();
         this.emitAppareilSubject();
       }
     
-    removeAll() {
+    removeAll(): void {
       this.invoices = [];
       this.emitAppareilSubject();
     }

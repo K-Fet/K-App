@@ -18,50 +18,84 @@ import { Subscription } from 'rxjs';
     }
   `]
 })
+
 export class InvoiceParse implements OnInit {
 
   invoices: File[];
   articles: any[];
-  isEmpty: boolean;
+  isLoading: boolean;
+  isPrint: boolean;
+
 
   invoiceSubscription: Subscription;
   constructor(private invoiceService: InvoiceService,
               private invoiceParseService: InvoiceParseService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.invoiceSubscription = this.invoiceService.invoicesSubject.subscribe(
-      (invoices: any[]) => {
+      (invoices: File[]) => {
         this.invoices = invoices;
       }
     );
     this.invoiceService.emitAppareilSubject();
-    this.isEmpty = true;
+    this.isLoading = false;
+    this.articles = [];
+    this.isPrint = false;
   }
 
-  onDrop(e) {
-    e.preventDefault(); //<span spellcheck="true">;// évite d'ouvrir le fichier recherché</span>
+  onDrop(e: any): void {
+    e.preventDefault(); 
     const files: File = e.dataTransfer.files;
     Object.keys(files).forEach((key) => {
       const file: File = files[key];
-      this.invoiceParseService.fromFiletoText(file);
-      this.invoiceService.addInvoice(file);
+      if(file.type === "application/pdf"){
+        this.invoiceService.addInvoice(file);
+      }
     });
   }
 
-  onRemove() {
+  onRemove(): void {
     this.invoiceService.removeInvoice();
-    this.invoiceParseService.removeOne();
   }
 
-  async onSubmit() {
-    if(this.invoices.length <= 0){
-      alert("Vous devez rentrer au moins une facture");
+  async onSubmit(): Promise<void>{
+
+    this.isLoading = true;
+    for(let i=0; i<this.invoices.length; i++){
+      await this.invoiceParseService.fromFiletoText(this.invoices[i]);
     }
-    else{
-      this.invoiceParseService.parsePDF();
-      this.articles = this.invoiceParseService.listarticle;
-      this.isEmpty = false;
-      this.invoiceService.removeAll();
-    }
+    this.invoiceParseService.parsePDF();
+    this.articles = this.invoiceParseService.listarticle;
+    this.invoiceService.removeAll();
+    
+    this.isLoading = false;
+    return Promise.resolve();
   }
+
+  onPrint(): void{
+    this.isPrint = !this.isPrint;
+  }
+  
+
+
+
+  onCopyData(): void{
+    let tocopy = '';
+    for(let i =0 ; i<this.articles.length ; i++){
+      tocopy += this.articles[i][0] + ';' + this.articles[i][1] + '\n';
+    }
+
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = tocopy;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
 }

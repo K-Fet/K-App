@@ -1,15 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'invoice-tool-invoice-file',
   templateUrl: './invoice-file.component.html',
 })
-export class InvoiceFile implements OnInit {
+export class InvoiceFile {
 
   @Input() invoicename: string;
-  constructor() { }
-
-  ngOnInit() {
-  }
 
 }
