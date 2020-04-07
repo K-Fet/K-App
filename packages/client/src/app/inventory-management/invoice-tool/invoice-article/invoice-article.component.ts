@@ -6,6 +6,7 @@ import { Component, Input } from '@angular/core';
 })
 export class InvoiceArticle {
 
+  @Input() datearticle: Date;
   @Input() articlename: string;
   @Input() nbarticle: number;
 

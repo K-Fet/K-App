@@ -22,9 +22,11 @@ import { Subscription } from 'rxjs';
 export class InvoiceParse implements OnInit {
 
   invoices: File[];
+  articlessum: any[];
   articles: any[];
   isLoading: boolean;
   isPrint: boolean;
+  isPrintSum: boolean;
 
 
   invoiceSubscription: Subscription;
@@ -39,8 +41,10 @@ export class InvoiceParse implements OnInit {
     );
     this.invoiceService.emitAppareilSubject();
     this.isLoading = false;
+    this.articlessum = [];
     this.articles = [];
     this.isPrint = false;
+    this.isPrintSum = false;
   }
 
   onDrop(e: any): void {
@@ -65,11 +69,16 @@ export class InvoiceParse implements OnInit {
       await this.invoiceParseService.fromFiletoText(this.invoices[i]);
     }
     this.invoiceParseService.parsePDF();
+    this.articlessum = this.invoiceParseService.productSum;
     this.articles = this.invoiceParseService.listarticle;
     this.invoiceService.removeAll();
-    
+    this.invoiceParseService.removeAll();
     this.isLoading = false;
     return Promise.resolve();
+  }
+
+  onPrintSum(): void{
+    this.isPrintSum = !this.isPrintSum;
   }
 
   onPrint(): void{
@@ -81,8 +90,8 @@ export class InvoiceParse implements OnInit {
 
   onCopyData(): void{
     let tocopy = '';
-    for(let i =0 ; i<this.articles.length ; i++){
-      tocopy += this.articles[i][0] + ';' + this.articles[i][1] + '\n';
+    for(let i =0 ; i<this.articlessum.length ; i++){
+      tocopy += this.articlessum[i][0] + ';' + this.articlessum[i][1] + '\n';
     }
 
     const selBox = document.createElement('textarea');
