@@ -8,7 +8,7 @@ export class InvoiceParseService {
 
   textinvoices = [];
   listarticle = [];
-  productSum = [];
+  articleSum = [];
 
 
 
@@ -157,7 +157,7 @@ export class InvoiceParseService {
 
     console.log(finallistsum);
 
-    this.productSum = finallistsum;
+    this.articleSum = finallistsum;
 
     //Create list with date
     const finallist = [];
@@ -219,7 +219,7 @@ export class InvoiceParseService {
 
   removeAll(): void{
     this.listarticle = [];
-    this.productSum = [];
+    this.articleSum = [];
     this.textinvoices = [];
   }
 }

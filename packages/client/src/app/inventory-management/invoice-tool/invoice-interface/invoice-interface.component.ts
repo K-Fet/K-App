@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 
 @Component({
-  templateUrl: './invoice-parse.component.html',
+  templateUrl: './invoice-interface.component.html',
   styles: [`
     #dropzone {
       background-color: white;
@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
   `]
 })
 
-export class InvoiceParse implements OnInit {
+export class InvoiceInterface implements OnInit {
 
   invoices: File[];
   articlessum: any[];
