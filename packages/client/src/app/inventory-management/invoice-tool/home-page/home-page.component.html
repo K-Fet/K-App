@@ -23,37 +23,23 @@
             <strong>Tes factures prises en comptes :</strong>
           </p>
           <p style="margin: 20px">
-          <invoice-tool-invoice-file  *ngFor="let invoice of invoices"
-                      [invoicename]="invoice.name" ></invoice-tool-invoice-file>
+          <invoice-tool-invoices></invoice-tool-invoices>
           </p>
         </div>
         <p></p>
         <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
           <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
             <button mat-stroked-button (click) = "onSubmit()" 
-                    [disabled]="invoices.length===0">Rouler sa bosse</button>
+                    [disabled]="invoicesEmpty">Rouler sa bosse</button>
           </div>
         </div>
         <p></p>
         <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="articles.length>0">
-          <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
-            <button mat-stroked-button (click) = "onPrint()" >Afficher le résultat avec date</button>
-            <button mat-stroked-button (click) = "onPrintSum()" >Afficher le résultat par article</button>
-            <button mat-stroked-button (click) = "onCopyData()" >Copier le résultat par article</button>
-          </div>
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="!articlesEmpty">
+          <invoice-tool-articles></invoice-tool-articles>
         </div>
-        <p style="margin: 30px" *ngIf="isPrint">
-          <invoice-tool-invoice-article  *ngFor="let article of articles"
-            [datearticle]="article[0]"
-            [articlename]="article[1]"
-            [nbarticle]="article[2]">  </invoice-tool-invoice-article>
-        </p>
-        <p style="margin: 30px" *ngIf="isPrintSum">
-        <invoice-tool-invoice-article  *ngFor="let article of articlessum"
-          [articlename]="article[0]"
-          [nbarticle]="article[1]">  </invoice-tool-invoice-article>
-        </p>
+
+
     </mat-card-content>
   </mat-card>
 </div>
