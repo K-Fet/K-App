@@ -4,7 +4,7 @@ import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 @Injectable()
 
-export class InvoiceParseService {
+export class ParseService {
 
   textinvoices = [];
   listarticle = [];
@@ -20,6 +20,7 @@ export class InvoiceParseService {
       this.textinvoices.push(oneinvoice[i]);
     }
     URL.revokeObjectURL(url);
+    this.parsePDF();
     return Promise.resolve();
   }
 
@@ -155,7 +156,6 @@ export class InvoiceParseService {
       (finallistsum.splice(toremove[i],1));
     }
 
-    console.log(finallistsum);
 
     this.articleSum = finallistsum;
 
@@ -173,9 +173,8 @@ export class InvoiceParseService {
     for(let i = toremove.length-1;i>=0;i--){
       (finallist.splice(toremove[i],1));
     }
-    
+  
     this.listarticle = finallist;
-
   }
 
   getDate(invoice: string): Date{

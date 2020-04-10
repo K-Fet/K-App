@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
-import { InvoiceParse } from './invoice-parse/invoice-parse.component';
+import { HomePageComponent } from './home-page/home-page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: InvoiceParse,
+    component: HomePageComponent,
     canActivate: [NgxPermissionsGuard],
     data: { permissions: { only: ['inventory-management:invoice-tool'] } },
   },
