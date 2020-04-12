@@ -1,0 +1,15 @@
+<app-modal #dialog [config]="{width: '600px', disableClose: true}">
+  <h2 mat-dialog-title>Ajouter un utilisateur</h2>
+  <mat-dialog-content fxLayout="column">
+    <form [formGroup]="formGroup" fxLayout="column" class="form-field-block">
+      <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <span fxFlex></span>
+    <button mat-button (click)="dialog.close()">Annuler</button>
+    <button mat-button [disabled]="!formGroup.valid && !formGroup.dirty" (click)="dialog.close('create')">
+      Créer
+    </button>
+  </mat-dialog-actions>
+</app-modal>

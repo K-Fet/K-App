@@ -1,5 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { ConnectionInformationSchema } = require('./connection-information');
 const { AssociationChangesSchema } = require('./association-changes');
 

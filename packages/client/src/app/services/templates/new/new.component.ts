@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TemplateService } from '../../../core/api-services/template.service';
+import { ServicesTemplatesService } from '../../../core/api-services/services-templates.service';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { Template, TemplateDateUnit, TemplateServiceUnit } from '../../../shared/models';
+import { ServicesTemplate } from '../../../shared/models';
+import { getUnitFromControls } from '../templates.helper';
 
 @Component({
   templateUrl: './new.component.html',
@@ -27,7 +28,7 @@ export class NewComponent {
 
   constructor(
     private fb: FormBuilder,
-    private templateService: TemplateService,
+    private templateService: ServicesTemplatesService,
     private toasterService: ToasterService,
     private router: Router,
   ) {
@@ -84,31 +85,17 @@ export class NewComponent {
     this.servicesFormArray.removeAt(+fromGroupId);
   }
 
-  toNumber(date: string, selectedDay): TemplateDateUnit {
-    return {
-      day: +selectedDay,
-      hours: +date.split(':')[0],
-      minutes: +date.split(':')[1],
-    };
-  }
-
   async addTemplate() {
-    const template = new Template();
-    template.name = this.templateNameFormGroup.controls.templateNameFormControl.value;
-    template.services = this.servicesFormArray.controls.map((formGroup) => {
-      return this.prepareService((formGroup as FormGroup).controls);
-    });
+    const template: ServicesTemplate = {
+      name: this.templateNameFormGroup.controls.templateNameFormControl.value,
+      services: this.servicesFormArray.controls.map((formGroup) => {
+        return getUnitFromControls((formGroup as FormGroup).controls);
+      }),
+    };
+
     await this.templateService.create(template);
     this.toasterService.showToaster('Template créé');
     this.router.navigate(['/services/templates']);
-  }
-
-  prepareService(controls): TemplateServiceUnit {
-    return {
-      nbMax: controls.nbMaxFormControl.value,
-      startAt: this.toNumber(controls.startFormControl.value, controls.startDayFormControl.value),
-      endAt: this.toNumber(controls.endFormControl.value, controls.endDayFormControl.value),
-    };
   }
 
   findWeekDay(dayId: string): string {

@@ -1,94 +1,83 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MediaObserver } from '@angular/flex-layout';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
-import { fromEvent, merge } from 'rxjs';
 import { Member } from '../member.model';
 import { MoleculerDataSource } from '../../shared/utils/moleculer-data-source';
-import { MembersOptions, MembersService } from '../members.service';
+import { AdditionalMembersOptions, MembersService } from '../members.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { CURRENT_SCHOOL_YEAR } from '../../constants';
 import { RegisterMemberDialogComponent } from '../../shared/dialogs/register-member/register-member-dialog.component';
 import { NgxPermissionsService } from 'ngx-permissions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MoleculerDataLoader } from '../../shared/utils/moleculer-data-loader';
 
 @Component({
   templateUrl: './list.component.html',
 })
-export class ListComponent implements OnInit, AfterViewInit {
+export class ListComponent implements OnInit {
 
   displayedColumns = ['lastName', 'firstName', 'school', 'updatedAt', 'actions'];
-  dataSource: MoleculerDataSource<Member, MembersOptions>;
+  dataSource: MoleculerDataSource<Member, AdditionalMembersOptions>;
+  dataLoader: MoleculerDataLoader<Member, AdditionalMembersOptions>;
 
   // Filters
   selectedStatus = '';
 
-  totalRegistered = 0;
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild('input', { static: true }) input: ElementRef;
+  @ViewChild('searchInput', { static: true }) searchInput: ElementRef;
 
   constructor(private membersService: MembersService,
-              private toasterService: ToasterService,
-              private mediaObserver: MediaObserver,
-              private ngxPermissionsService: NgxPermissionsService,
-              private dialog: MatDialog) {
+    private toasterService: ToasterService,
+    private mediaObserver: MediaObserver,
+    private ngxPermissionsService: NgxPermissionsService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private dialog: MatDialog) {
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     if (this.mediaObserver.isActive('sm') || this.mediaObserver.isActive('xs')) {
       this.displayedColumns = ['lastName', 'firstName', 'actions'];
     }
 
-    this.dataSource = new MoleculerDataSource<Member, MembersOptions>(this.membersService);
+    this.dataSource = new MoleculerDataSource<Member, AdditionalMembersOptions>(this.membersService);
+    this.dataLoader = new MoleculerDataLoader<Member, AdditionalMembersOptions>(
+      this.router,
+      this.route,
+      this.dataSource,
+      this.paginator,
+      this.sort,
+      {
+        searchInput: this.searchInput,
+        refresh: this.membersService.refresh$,
+        loadFromQuery: (params): void => {
+          if (params['active'] === 'true') {
+            this.selectedStatus = 'active';
+          } else if (params['inactive'] === 'true') {
+            this.selectedStatus = 'inactive';
+          } else {
+            this.selectedStatus = '';
+          }
+        },
+        addQueryOptions: options => ({
+          ...options,
+          active: this.selectedStatus === 'active',
+          inactive: this.selectedStatus === 'inactive',
+        }),
+      },
+    );
 
-    // Load and save initial count as number of registered members
-    await this.dataSource.load({ sort: '-updatedAt' });
-    this.totalRegistered = this.dataSource.total;
-
-    // Refresh list on change
-    this.membersService.refresh$.subscribe(() => this.loadMembersPage());
-  }
-
-  ngAfterViewInit(): void {
-    // Server-side search
-    fromEvent(this.input.nativeElement, 'keyup').pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      tap(() => {
-        this.paginator.pageIndex = 0;
-        this.loadMembersPage();
-      }),
-    ).subscribe();
-
-    // Paginator and Sort
-    // reset the paginator after sorting
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadMembersPage())).subscribe();
-  }
-
-  async loadMembersPage() {
-    const options = {
-      pageSize: this.paginator.pageSize,
-      page: this.paginator.pageIndex + 1,
-      search: this.input.nativeElement.value,
-      sort: this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
-      active: this.selectedStatus === 'active',
-      inactive: this.selectedStatus === 'inactive',
-    };
-
-    await this.dataSource.load(options);
-    // If initial settings, update totalRegistered
-    if (!options.search && options.active) this.totalRegistered = this.dataSource.total;
+    await this.dataLoader.init();
   }
 
   isRegistered(member: Member): boolean {
     return !!member.registrations.find(r => r.year === CURRENT_SCHOOL_YEAR);
   }
 
-  async register(member: Member) {
+  async register(member: Member): Promise<void> {
     const dialogRef = this.dialog.open(RegisterMemberDialogComponent, {
       width: '350px',
       data: member,
@@ -103,6 +92,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   hideTotal(): boolean {
-    return !this.ngxPermissionsService.getPermission('v1:core:members:count');
+    return !this.ngxPermissionsService.getPermission('members.count');
   }
 }

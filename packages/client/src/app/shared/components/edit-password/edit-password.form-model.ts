@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicInputModel } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { validateEqual } from '../../validators/equal.validator';
 
@@ -41,6 +41,6 @@ export function getEditPasswordModel(): DynamicFormModel {
   ];
 }
 
-export function getPasswordFromForm(form: FormGroup): { oldPassword: string, newPassword: string } {
+export function getPasswordFromForm(form: FormGroup): { oldPassword: string; newPassword: string } {
   return form.value;
 }

@@ -1,0 +1,43 @@
+.header-container {
+  overflow-x: auto;
+}
+
+.day-title-container {
+  flex: 1 1 0;
+  justify-content: center;
+  display: flex;
+  min-width: 30px;
+
+  $radius: 45px;
+
+  .day-title {
+    border-radius: 50%;
+    height: $radius;
+    width: $radius;
+    text-align: center;
+    justify-content: space-around;
+
+    .day-title-day {
+
+    }
+
+    .day-title-date {
+
+    }
+  }
+}
+
+.day-view {
+  flex: 1 1 0;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.week-view {
+  padding-top: 15px;
+}
+
+.viewer-container {
+  overflow-x: auto;
+  padding-bottom: 10px;
+}

@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const mongoose = require('mongoose');
 const { isBefore, parse } = require('date-fns');
 
@@ -101,13 +101,11 @@ const ID_SCHEMA = Joi.object({ id: Joi.number().integer().required() });
 /**
  * This constant is used by Joi to validate query from a request.
  * It represents an object with a start and end date.
- *
- * @type {ObjectSchema} Joi schema
  */
-const RANGE_SCHEMA = Joi.object({
+const RANGE_SCHEMA = {
   startAt: Joi.date().required(),
   endAt: Joi.date().greater(Joi.ref('startAt')).required(),
-});
+};
 
 /**
  * This constant is used by Joi to validate query from a request.
@@ -160,8 +158,7 @@ const MONGOOSE_INTERNALS = {
 
 const JOI_ID = Joi.alt(
   Joi.string(),
-  Joi.number(),
-  Joi.array(),
+  Joi.number().integer(),
 );
 const JOI_STRING_OR_STRING_ARRAY = Joi.alt(
   Joi.string(),
@@ -206,6 +203,18 @@ function groupBy(list, keyGetter) {
   return map;
 }
 
+/**
+ * Return a list of all permissions enabled on an user.
+ * @param user
+ * @return {Array<string>}
+ */
+function getAllPermissionsFromUser(user) {
+  if (!user) return [];
+
+  const { roles = [], permissions = [] } = user.account;
+  return [...new Set([...roles.flatMap(r => r.permissions), ...permissions])];
+}
+
 function createSchema(schemaObj, options, { textIndex } = {}) {
   const schema = mongoose.Schema(schemaObj, options);
 
@@ -224,6 +233,7 @@ module.exports = {
   joiThrough,
   groupBy,
   createSchema,
+  getAllPermissionsFromUser,
   ID_SCHEMA,
   RANGE_SCHEMA,
   MONGO_ID,

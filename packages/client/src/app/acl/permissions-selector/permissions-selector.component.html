@@ -6,6 +6,6 @@
     <mat-checkbox
       (change)="onCheck(perm, $event)"
       [disabled]="isDisabled(perm)"
-      [checked]="selected.has(perm.id)">{{perm.name}}</mat-checkbox>
+      [checked]="selected.has(perm)">{{perm}}</mat-checkbox>
   </div>
 </div>

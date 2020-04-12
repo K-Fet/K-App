@@ -16,9 +16,6 @@ import { EmailVerificationComponent } from './email-verification/email-verificat
     DefinePasswordComponent,
     EmailVerificationComponent,
   ],
-  entryComponents: [
-    ResetPasswordDialogComponent,
-  ],
   imports: [
     SharedModule,
     AuthRoutingModule,

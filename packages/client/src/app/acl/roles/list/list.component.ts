@@ -4,9 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { NgxPermissionsService } from 'ngx-permissions';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { RoleService } from '../../../core/api-services/role.service';
+import { RolesService } from '../../../core/api-services/roles.service';
 import { Role } from '../../../shared/models';
 import { ConfirmationDialogComponent } from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -22,33 +21,29 @@ export class ListComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private roleService: RoleService,
+  constructor(private roleService: RolesService,
               private toasterService: ToasterService,
               private router: Router,
-              private dialog: MatDialog,
-              private ngxPermissionsService: NgxPermissionsService) {
+              private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.update();
-    if (!this.ngxPermissionsService.getPermissions()['role:write']) {
-      this.displayedColumns = ['name'];
-    }
   }
 
   async update() {
-    const roles = await this.roleService.getAll();
+    const { rows: roles } = await this.roleService.list({ pageSize: 1000 });
     this.rolesData = new MatTableDataSource(roles);
     this.rolesData.paginator = this.paginator;
     this.rolesData.sort = this.sort;
   }
 
   edit(role: Role): void {
-    this.router.navigate(['/acl/roles', role.id, 'edit']);
+    this.router.navigate(['/acl/roles', role._id, 'edit']);
   }
 
   async delete(role: Role) {
-    await this.roleService.delete(role.id);
+    await this.roleService.remove(role._id);
     this.toasterService.showToaster('Role supprimé');
     this.update();
   }

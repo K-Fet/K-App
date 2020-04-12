@@ -1,19 +1,11 @@
-import { AssociationChanges, Permission } from '.';
+import { Permission } from './Permission';
 
-export class Role {
+export interface Role {
 
-  id: number;
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   name: string;
-  description: string;
-
-  // Association
-  permissions: Permission[];
-
-  _embedded: {
-    permissions?: AssociationChanges,
-  };
-
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
-  }
+  description?: string;
+  permissions?: Permission[];
 }

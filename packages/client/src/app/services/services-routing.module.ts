@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
 import { PlanMyServicesComponent } from './plan-my-services/plan-my-services.component';
 import { ServiceExplorerComponent } from './services-explorer/services-explorer.component';
-import { ServiceListComponent } from './list/services-list.component';
+import { ServiceListComponent } from './list/list.component';
 import { ServiceNewComponent } from './new/service-new.component';
 import { ServiceEditComponent } from './edit/service-edit.component';
 import { OpenServicesComponent } from './open-services/open-services.component';
@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: 'templates',
     canLoad: [NgxPermissionsGuard],
-    data: { permissions: { only: ['template:read'] } },
+    data: { permissions: { only: ['services-templates.read'] } },
     loadChildren: () => import('./templates/templates.module').then(m => m.TemplatesModule),
   },
   {
@@ -34,13 +34,13 @@ const routes: Routes = [
     path: 'services-manager/new',
     component: ServiceNewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['service:write'] } },
+    data: { permissions: { only: ['services.create'] } },
   },
   {
     path: 'services-manager/:id',
     component: ServiceEditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['service:write'] } },
+    data: { permissions: { only: ['services.write'] } },
   },
   {
     path: 'open-services',

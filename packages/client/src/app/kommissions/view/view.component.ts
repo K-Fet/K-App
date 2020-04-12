@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 import { ToasterService } from '../../core/services/toaster.service';
-import { Barman, Kommission } from '../../shared/models';
-import { KommissionService } from '../../core/api-services/kommission.service';
+import { isActiveBarman, Kommission, User } from '../../shared/models';
+import { KommissionsService } from '../../core/api-services/kommissions.service';
 
 @Component({
   templateUrl: './view.component.html',
@@ -15,7 +15,7 @@ export class ViewComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private toasterService: ToasterService,
-              private kommissionService: KommissionService,
+              private kommissionService: KommissionsService,
               private router: Router,
               public dialog: MatDialog) { }
 
@@ -39,13 +39,13 @@ export class ViewComponent implements OnInit {
   }
 
   async delete() {
-    await this.kommissionService.delete(this.kommission.id);
+    await this.kommissionService.remove(this.kommission._id);
     this.toasterService.showToaster('Kommission supprimée');
     this.router.navigate(['/kommissions']);
   }
 
-  getBarmen(active: boolean): Barman[] {
-    if (this.kommission) return this.kommission.barmen.filter(b => (new Barman(b).isActive()) === active);
+  getBarmen(active: boolean): User[] {
+    if (this.kommission) return (this.kommission.barmen as User[]).filter(b => isActiveBarman(b) === active);
     return [];
   }
 }

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/api-services/auth.service';
-import { ConnectedUser, Barman } from '../../shared/models';
+import { Barman, isActiveBarman, isUserBarman, isUserGuest, isUserServiceAccount, User } from '../../shared/models';
 
 @Component({
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent implements OnInit {
 
-  private currentUser: ConnectedUser;
+  private currentUser: User;
 
   constructor(private authService: AuthService) { }
 
@@ -18,20 +18,20 @@ export class HomePageComponent implements OnInit {
   }
 
   getName(): string {
-    if (this.currentUser.specialAccount) {
+    if (isUserServiceAccount(this.currentUser)) {
       return this.currentUser.email;
     }
-    if (this.currentUser.barman) {
-      return this.currentUser.barman.nickname;
+    if (isUserBarman(this.currentUser)) {
+      return (this.currentUser.account as Barman).nickName;
     }
     return '';
   }
 
   isConnected(): boolean {
-    return !this.currentUser.isGuest();
+    return !isUserGuest(this.currentUser);
   }
 
   isActive(): boolean {
-    return new Barman(this.currentUser.barman).isActive();
+    return isActiveBarman(this.currentUser);
   }
 }

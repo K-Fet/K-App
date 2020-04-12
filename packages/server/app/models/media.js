@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 /**
  * This class represent a Media.

@@ -15,13 +15,7 @@ export class ShelvesService {
   list(options: MoleculerListOptions = {}): Promise<MoleculerList<Shelf>> {
     return this.http.get<MoleculerList<Shelf>>(
       BASE_URL,
-      {
-        params: createHttpParams({
-          ...options,
-          page: options.page && options.page.toString(),
-          pageSize: options.pageSize && options.pageSize.toString(),
-        }),
-      },
+      { params: createHttpParams({ ...options }) },
     ).toPromise();
   }
 

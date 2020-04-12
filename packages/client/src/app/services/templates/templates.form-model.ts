@@ -1,20 +1,20 @@
-import { DynamicFormModel } from '@ng-dynamic-forms/core';
+import { DynamicFormModel } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
-import { Template } from '../../shared/models';
+import { ServicesTemplate } from '../../shared/models';
 
-const BASE_TEMPLATE = new Template({});
+const BASE_TEMPLATE = {} as ServicesTemplate;
 
-export function getTemplateModel(_originalTemplate?: Template): DynamicFormModel {
+export function getTemplateModel(_originalTemplate?: ServicesTemplate): DynamicFormModel {
   // TODO Move to a dynamic form
   return [];
 }
 
-export function getTemplateFromForm(form: FormGroup, originalTemplate?: Template): Template {
+export function getTemplateFromForm(form: FormGroup, originalTemplate?: ServicesTemplate): ServicesTemplate {
   const value = form.value;
   const original = originalTemplate || BASE_TEMPLATE;
 
-  return new Template({
-    id: original.id,
+  return {
+    id: original._id,
     ...value,
-  });
+  };
 }

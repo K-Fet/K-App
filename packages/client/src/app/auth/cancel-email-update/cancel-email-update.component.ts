@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToasterService } from '../../core/services/toaster.service';
-import { AuthService } from '../../core/api-services/auth.service';
+import { UsersService } from '../../core/api-services/users.service';
 
 @Component({
   selector: 'app-cancel-email-update',
@@ -11,7 +11,7 @@ export class CancelEmailUpdateComponent implements OnInit {
   userId: number;
   email: string;
 
-  constructor(private authService: AuthService,
+  constructor(private usersService: UsersService,
               private toasterService: ToasterService,
               private route: ActivatedRoute,
               private router: Router) { }
@@ -29,7 +29,7 @@ export class CancelEmailUpdateComponent implements OnInit {
   }
 
   async cancelEmail() {
-    await this.authService.cancelEmailUpdate(this.userId, this.email);
+    await this.usersService.cancelEmailUpdate(this.userId, this.email);
     this.toasterService.showToaster('Annulation enregistré, veuillez vous connecter');
     this.router.navigate(['/auth/login']);
   }

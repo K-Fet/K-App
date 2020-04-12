@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
@@ -38,7 +38,7 @@ module.exports = {
   name: 'core.members',
   version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'members'),
     DbMixin(model.mongoose),
   ],
 
@@ -58,39 +58,30 @@ module.exports = {
         sort: Joi.string(),
         search: Joi.string(),
         searchField: JOI_STRING_OR_STRING_ARRAY,
-        query: Joi.object(),
-      }).oxor('active', 'inactive'),
+        // Remove query as it may be a security issue if published
+        query: Joi.object().forbidden(),
+      }),
       async handler(ctx) {
         const params = this.sanitizeParams(ctx, ctx.params);
 
-        // Add scoped query
-        if (params.active) {
+        if (params.active && !params.inactive) {
           params.query = { 'registrations.year': getCurrentSchoolYear() };
         }
-        if (params.inactive) {
+        if (params.inactive && !params.active) {
           params.query = { 'registrations.year': { $ne: getCurrentSchoolYear() } };
         }
-
-        const countParams = { ...params };
-        // Remove pagination params
-        if (countParams.limit) countParams.limit = null;
-        if (countParams.offset) countParams.offset = null;
-
-        this.logger.debug('Calling members.list with %o', params);
-        const [rows, count] = await Promise.all([this.adapter.find(params), this.adapter.count(countParams)]);
-        return {
-          rows: await this.transformDocuments(ctx, params, rows),
-          total: count,
-          page: params.page,
-          pageSize: params.pageSize,
-          totalPages: Math.floor((count + params.pageSize - 1) / params.pageSize),
-        };
+        return this._list(ctx, params);
       },
+    },
+
+    count: {
+      // Use a specific perm for count
+      permissions: ['members.count'],
     },
 
     register: {
       rest: 'POST /:id/register',
-      permissions: true,
+      permissions: ['members.register'],
       params: () => Joi.object({
         id: JOI_ID.required(),
         newSchool: Joi.string().min(3),

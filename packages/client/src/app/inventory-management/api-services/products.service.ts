@@ -15,13 +15,7 @@ export class ProductsService {
   list(options: MoleculerListOptions = {}): Promise<MoleculerList<Product>> {
     return this.http.get<MoleculerList<Product>>(
       BASE_URL,
-      {
-        params: createHttpParams({
-          ...options,
-          page: options.page && options.page.toString(),
-          pageSize: options.pageSize && options.pageSize.toString(),
-        }),
-      },
+      { params: createHttpParams({ ...options }) },
     ).toPromise();
   }
 

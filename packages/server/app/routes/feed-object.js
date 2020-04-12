@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const guard = require('express-jwt-permissions')();
-const validator = require('express-joi-validation')({ passError: true });
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const feedObjectController = require('../controllers/feed-object-controller');
 const { ID_SCHEMA } = require('../../utils');
 const { FeedObjectSchema } = require('../models/schemas');

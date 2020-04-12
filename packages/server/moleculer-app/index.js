@@ -1,34 +1,43 @@
 const path = require('path');
-const { ServiceBroker, Logger } = require('moleculer');
+const { ServiceBroker } = require('moleculer');
 const PermissionGuard = require('moleculer-middleware-permissions');
 const JoiValidator = require('./utils/joi.validator');
-const logger = require('../logger');
-const { PERMISSION_LIST } = require('./constants');
+const { loggerConfig } = require('../logger');
 
-const guard = new PermissionGuard();
+const guard = new PermissionGuard({
+  getUserPermissions: ctx => ctx.meta.userPermissions,
+});
 
 const broker = new ServiceBroker({
-  logger: () => Logger.extend(logger),
+  logger: {
+    type: 'Winston',
+    options: { winston: loggerConfig },
+  },
   middlewares: [
     guard.middleware(),
   ],
-  validation: true,
   validator: new JoiValidator(),
 });
 
-async function populatePermissions(sb) {
+async function upgradePermissionsForAdmin(sb) {
   const actions = await sb.call('$node.actions', { skipInternal: true, onlyLocal: true });
 
   const set = new Set(actions
-  // Only keep permissions published through the ApiGw
+    // Only keep permissions published through the ApiGw
     .filter(a => !['private', 'protected', 'public'].includes(a.action.visibility))
-    .map(a => a.action.rawPermissions)
-    .filter(perms => Array.isArray(perms) && perms.length > 0)
-    .reduce((a, b) => a.concat(b), []));
+    .flatMap(a => a.action.permissions)
+    .filter(perm => typeof perm === 'string')
+    .filter(perm => !perm.startsWith('$')));
 
-  logger.info(`Added ${set.size} permissions from moleculer app`);
-  logger.debug(`Added permissions: ${[...set].join(', ')}.`);
-  PERMISSION_LIST.push(...set);
+  sb.logger.info(`Got ${set.size} permissions from moleculer app`);
+  sb.logger.debug(`Permissions: [${[...set].join(', ')}]`);
+
+  // We override any permissions set before
+  const userService = sb.getLocalService('v1.acl.users');
+  await userService.adapter.updateMany(
+    { 'account.autoUpgradePermissions': true },
+    { $set: { 'account.permissions': [...set] } },
+  );
 }
 
 async function start({ expressApp, apiPath }) {
@@ -40,7 +49,7 @@ async function start({ expressApp, apiPath }) {
 
   await broker.start();
 
-  await populatePermissions(broker);
+  await upgradePermissionsForAdmin(broker);
 }
 
 module.exports = {

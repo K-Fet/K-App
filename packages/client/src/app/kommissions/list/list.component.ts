@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Kommission } from '../../shared/models';
-import { KommissionService } from '../../core/api-services/kommission.service';
+import { KommissionsService } from '../../core/api-services/kommissions.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { ConfirmationDialogComponent } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(private kommissionService: KommissionService,
+  constructor(private kommissionService: KommissionsService,
               private toasterService: ToasterService,
               private router: Router,
               private dialog: MatDialog) {
@@ -32,24 +32,24 @@ export class ListComponent implements OnInit {
   }
 
   async update() {
-    const kommissions = await this.kommissionService.getAll();
+    const { rows: kommissions } = await this.kommissionService.list({ pageSize: 10000 });
     this.kommissionsData = new MatTableDataSource(kommissions);
     this.kommissionsData.paginator = this.paginator;
     this.kommissionsData.sort = this.sort;
   }
 
   edit(kommission: Kommission): void {
-    this.router.navigate(['/kommissions', kommission.id, 'edit']);
+    this.router.navigate(['/kommissions', kommission._id, 'edit']);
   }
 
   async delete(kommission: Kommission) {
-    await this.kommissionService.delete(kommission.id);
+    await this.kommissionService.remove(kommission._id);
     this.toasterService.showToaster('Kommission supprimée');
     this.update();
   }
 
   view(kommission: Kommission): void {
-    this.router.navigate(['/kommissions', kommission.id]);
+    this.router.navigate(['/kommissions', kommission._id]);
   }
 
   async openConfirmationDialog(kommission: Kommission) {

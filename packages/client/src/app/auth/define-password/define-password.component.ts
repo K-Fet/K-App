@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../core/api-services/auth.service';
 import { ToasterService } from '../../core/services/toaster.service';
 import { validateEqual } from '../../shared/validators/equal.validator';
+import { UsersService } from '../../core/api-services/users.service';
 
 @Component({
   selector: 'app-define-password',
@@ -15,7 +15,7 @@ export class DefinePasswordComponent implements OnInit {
   token: string;
   email: string;
 
-  constructor(private authService: AuthService,
+  constructor(private usersService: UsersService,
               private toasterService: ToasterService,
               private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -40,7 +40,7 @@ export class DefinePasswordComponent implements OnInit {
 
   async definePassword() {
     const password = this.passwordForm.get('password').value;
-    await this.authService.definePassword(this.email, password, this.token, null);
+    await this.usersService.definePassword(this.email, password, this.token, null);
     this.toasterService.showToaster('Mot de passe enregistré, veuillez vous connecter');
     this.router.navigate(['/auth/login']);
   }

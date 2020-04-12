@@ -11,13 +11,13 @@ const routes: Routes = [
     path: 'new',
     component: NewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['role:write'] } },
+    data: { permissions: { only: ['roles.create'] } },
   },
   {
     path: ':id/edit',
     component: EditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['role:write'] } },
+    data: { permissions: { only: ['roles.write'] } },
     resolve: {
       role: RoleDetailResolverService,
     },

@@ -1,54 +1,60 @@
-const Joi = require('joi');
-const { JOI_ID, JOI_STRING_OR_STRING_ARRAY } = require('../../utils');
+const Joi = require('@hapi/joi');
+const { MoleculerClientError } = require('moleculer').Errors;
+const { JOI_ID } = require('../../utils');
+const { actionValidators } = require('../utils/action-validators');
 
-module.exports = function joiDbActions(joiModel) {
+module.exports = function joiDbActions(joiModel, name) {
+  const findEntity = async (ctx) => {
+    const entity = await ctx.service.getById(ctx.params.id);
+    if (!entity) {
+      throw new MoleculerClientError('Entity not found!', 404, 'ERR_ENTITY_NOT_FOUND');
+    }
+
+    ctx.locals.entity = entity.toJSON();
+  };
+
   return {
+    hooks: {
+      before: {
+        get: [findEntity],
+        update: [findEntity],
+        remove: [findEntity],
+      },
+    },
     actions: {
       find: {
         rest: 'GET /find',
-        permissions: true,
-        params: () => Joi.object({
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          limit: Joi.number().integer().min(0),
-          offset: Joi.number().integer().min(0),
-          sort: Joi.string(),
-          search: Joi.string(),
-          searchField: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
-        }),
+        permissions: [
+          `${name}.read`,
+        ],
+        params: () => actionValidators.find,
       },
       count: {
         rest: 'GET /count',
-        permissions: true,
-        params: () => Joi.object({
-          search: Joi.string(),
-          searchFields: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
-        }),
+        permissions: [
+          `${name}.read`,
+        ],
+        params: () => actionValidators.count,
       },
       list: {
         rest: 'GET /',
-        permissions: true,
-        params: () => Joi.object({
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          page: Joi.number().integer().min(1),
-          pageSize: Joi.number().integer().min(0),
-          sort: Joi.string(),
-          search: Joi.string(),
-          searchField: JOI_STRING_OR_STRING_ARRAY,
-          query: Joi.object(),
-        }),
+        permissions: [
+          `${name}.read`,
+        ],
+        params: () => actionValidators.list,
       },
       create: {
         rest: 'POST /',
-        permissions: true,
+        permissions: [
+          `${name}.create`,
+        ],
         params: () => joiModel,
       },
       insert: {
         rest: 'POST /insert',
-        permissions: true,
+        permissions: [
+          `${name}.create`,
+        ],
         params: () => Joi.object({
           entities: Joi.array().items(joiModel),
           entity: joiModel,
@@ -56,24 +62,28 @@ module.exports = function joiDbActions(joiModel) {
       },
       get: {
         rest: 'GET /:id',
-        permissions: true,
-        params: () => Joi.object({
-          id: JOI_ID.required(),
-          populate: JOI_STRING_OR_STRING_ARRAY,
-          fields: JOI_STRING_OR_STRING_ARRAY,
-          mapping: Joi.bool(),
-        }),
+        permissions: [
+          `${name}.read`,
+          '$owner',
+        ],
+        params: () => actionValidators.get,
       },
       update: {
         rest: 'PUT /:id',
-        permissions: true,
+        permissions: [
+          `${name}.write`,
+          '$owner',
+        ],
         params: () => joiModel.append({
           id: JOI_ID.required(),
         }),
       },
       remove: {
         rest: 'DELETE /:id',
-        permissions: true,
+        permissions: [
+          `${name}.delete`,
+          '$owner',
+        ],
         params: () => Joi.object({
           id: JOI_ID.required(),
         }),

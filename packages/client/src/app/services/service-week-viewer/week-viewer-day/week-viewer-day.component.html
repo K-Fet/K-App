@@ -1,0 +1,29 @@
+<mat-accordion fxFlex fxLayout="column">
+  <ng-container *ngFor="let item of items">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          De {{ item.start | dfnsFormat:'H'}}h à {{ item.end | dfnsFormat:'H'}}h
+        </mat-panel-title>
+        <mat-panel-description>
+          <button
+            *ngIf="!weekViewerController.hideRemove"
+            mat-icon-button
+            aria-label="Enlever ce service" (click)="onRemove(item)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <ng-container *ngTemplateOutlet="itemFormTemplate;context:getContext(item)"></ng-container>
+    </mat-expansion-panel>
+  </ng-container>
+  <mat-expansion-panel *ngIf="!weekViewerController.hideAdd">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Ajouter un autre service
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-container *ngTemplateOutlet="newItemFormTemplate;context:getContext(null)"></ng-container>
+  </mat-expansion-panel>
+</mat-accordion>

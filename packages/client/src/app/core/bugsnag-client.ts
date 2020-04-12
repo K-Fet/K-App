@@ -1,20 +1,20 @@
 // tslint:disable-next-line:import-name
 import bugsnag from '@bugsnag/js';
 import { environment } from '../../environments/environment';
-import { ConnectedUser } from '../shared/models';
+import { Barman, isUserBarman, isUserGuest, isUserServiceAccount, ServiceAccount, User } from '../shared/models';
 import { versions } from '../../environments/versions';
 
 const BUGSNAG_KEY = environment.BUGSNAG_KEY;
 
-function computeName(user: ConnectedUser) {
-  if (user.isBarman()) return `${user.barman.firstName} ${user.barman.lastName}`;
-  if (user.isGuest()) return 'Guest';
-  if (user.isSpecialAccount()) return user.specialAccount.description;
+function computeName(user: User): string {
+  if (isUserBarman(user)) return `${(user.account as Barman).firstName} ${(user.account as Barman).lastName}`;
+  if (isUserGuest(user)) return 'Guest';
+  if (isUserServiceAccount(user)) return (user.account as ServiceAccount).description;
   return 'Unknown';
 }
 
-function computeRoles(user: ConnectedUser) {
-  if (user.isBarman()) return user.barman.roles.map(r => r.name);
+function computeRoles(user: User): null | string[] {
+  if (isUserBarman(user)) return (user.account as Barman).roles as string[];
   return null;
 }
 
@@ -29,10 +29,10 @@ export const bugsnagClient = BUGSNAG_KEY ? bugsnag({
   ],
 }) : null;
 
-export function setBugsnagUser(user: ConnectedUser) {
+export function setBugsnagUser(user: User): void {
   if (bugsnagClient) {
     bugsnagClient.user = {
-      id: user.getConnection().id,
+      id: user._id,
       name: computeName(user),
       email: user.email,
     };
@@ -45,7 +45,7 @@ export function setBugsnagUser(user: ConnectedUser) {
   }
 }
 
-export function clearBugsnagUser() {
+export function clearBugsnagUser(): void {
   if (bugsnagClient) {
     bugsnagClient.user = null;
   }

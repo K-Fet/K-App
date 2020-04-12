@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const AssociationChangesSchema = Joi.object({
   add: Joi.array().items(Joi.number().integer()),

@@ -12,12 +12,7 @@ const routes: Routes = [
     component: ListComponent,
     canActivate: [NgxPermissionsGuard],
     data: {
-      permissions: {
-        only: [
-          'v1:core:members:find',
-          'v1:core:members:list',
-        ],
-      },
+      permissions: { only: ['members.read'] },
     },
   },
   {
@@ -30,7 +25,7 @@ const routes: Routes = [
     component: EditComponent,
     outlet: 'modal',
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['v1:core:members:update'] } },
+    data: { permissions: { only: ['members.update', 'members.create'] } },
     resolve: {
       member: MemberDetailResolverService,
     },

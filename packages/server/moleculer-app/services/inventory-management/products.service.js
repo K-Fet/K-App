@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { BASE_UNIT } = require('../../constants');
-const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
+const { MONGO_ID, UNIT_SCHEMA, JOI_STRING_OR_STRING_ARRAY } = require('../../../utils');
 
 const { MoleculerClientError } = Errors;
 const { ObjectId } = mongoose.Types;
@@ -44,13 +44,14 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.products',
+  version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-products'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/products',
+    rest: '/v1/products',
     populates: {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',
@@ -59,50 +60,53 @@ module.exports = {
 
   events: {
     // eslint-disable-next-line object-shorthand
-    'inventory-management.stock-events.added'(insertedEvents) {
-      const idsToSetUsed = insertedEvents.map(e => ObjectId(e.product));
-      this.logger.debug(`Updating ${insertedEvents.length} products to be set as used`);
+    'inventory-management.stock-events.added'(ctx) {
+      const idsToSetUsed = ctx.params.map(e => ObjectId(e.product));
+      this.logger.debug(`Updating ${idsToSetUsed.length} products to be set as used`);
       return this.adapter.updateMany({ _id: { $in: idsToSetUsed } }, { $set: { used: true } });
     },
   },
 
-  actions: {
-    update: {
-      async handler(ctx) {
+  hooks: {
+    before: {
+      update: (ctx) => {
         const { id } = ctx.params;
+        const product = ctx.locals.entity;
 
-        const product = await this.getById(id, true);
-        if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
         if (!this.isProductAllowedToUpdate(product, ctx.params)) {
-          return Promise.reject(new MoleculerClientError('Entity cannot be updated', 400, null, {
+          throw new MoleculerClientError('Entity cannot be updated', 400, null, {
             id, details: 'Some updated fields cannot be changed as it will cause inconsistency',
-          }));
+          });
         }
-        const doc = await this.adapter.updateById(id, { $set: ctx.params });
+      },
+      remove: (ctx) => {
+        const { id } = ctx.params;
+        const product = ctx.locals.entity;
 
-        const json = await this.transformDocuments(ctx, ctx.params, doc);
-        this.entityChanged('updated', json, ctx);
-
-        return json;
+        if (product.used) {
+          throw new MoleculerClientError('Entity cannot be removed', 400, null, {
+            id, details: 'This product has already received events/orders, it can only be archived',
+          });
+        }
       },
     },
-    remove: {
+  },
+
+  actions: {
+    getFromShelf: {
+      rest: false,
+      permissions: ['inventory-products.read'],
+      params: () => Joi.object({
+        id: JOI_STRING_OR_STRING_ARRAY.required(),
+        populate: JOI_STRING_OR_STRING_ARRAY,
+        fields: JOI_STRING_OR_STRING_ARRAY,
+      }),
       async handler(ctx) {
         const { id } = ctx.params;
 
-        const product = await this.getById(id, true);
-        if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
-        if (product.used) {
-          return Promise.reject(new MoleculerClientError('Entity cannot be removed', 400, null, {
-            id, details: 'This product has already received events/orders, it can only be archived',
-          }));
-        }
-        const doc = await this.adapter.removeById(id);
+        const shelfIds = Array.isArray(id) ? id : [id];
 
-        const json = await this.transformDocuments(ctx, ctx.params, doc);
-        this.entityChanged('removed', json, ctx);
-
-        return json;
+        return this._find(ctx, { query: { shelf: { $in: shelfIds } } });
       },
     },
   },

@@ -6,6 +6,13 @@ import { ErrorHandler, Injectable, Injector, isDevMode } from '@angular/core';
 import { BugsnagErrorHandler } from '@bugsnag/plugin-angular';
 import { bugsnagClient } from './bugsnag-client';
 
+const getErrorFromHttpError = (error: HttpErrorResponse): string => {
+  if (error.error.name === 'MoleculerClientError') {
+    return BAD_REQUEST_ERRORS[error.error.type] || error.error.message;
+  }
+  return 'Problème côté client';
+};
+
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
   private readonly bugsnag: BugsnagErrorHandler = null;
@@ -26,6 +33,7 @@ export class AppErrorHandler implements ErrorHandler {
     let realError = error;
 
     // Handle case where HttpErrorResponse is wrapped inside promise error
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     if (error.promise && error.rejection) realError = error.rejection;
 
@@ -37,9 +45,9 @@ export class AppErrorHandler implements ErrorHandler {
       }
       switch (realError.status) {
         case 400:
-          return toasterService.showToaster(BAD_REQUEST_ERRORS[realError.error.error]);
+          return toasterService.showToaster(getErrorFromHttpError(realError));
         case 401:
-          router.navigate(['/auth/login']);
+          router.navigate(['/']);
           return toasterService.showToaster('Opération non autorisée, redirection ...');
         case 403:
           return toasterService.showToaster('Autorisations non suffisante pour effectuer la requête');

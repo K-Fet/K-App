@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Service, Template } from '../../../shared/models';
-import { TemplateService } from '../../../core/api-services/template.service';
+import { Service, ServicesTemplate } from '../../../shared/models';
+import { ServicesTemplatesService } from '../../../core/api-services/services-templates.service';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,29 +12,27 @@ import { templateDateToDate } from '../templates.helper';
 })
 export class ViewComponent implements OnInit {
 
-  template: Template = new Template();
+  template: ServicesTemplate;
   services: Service[] = [];
 
-  constructor(private templateService: TemplateService,
+  constructor(private templateService: ServicesTemplatesService,
               private toasterService: ToasterService,
               private route: ActivatedRoute,
               private router: Router,
               public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { template: Template }) => {
+    this.route.data.subscribe((data: { template: ServicesTemplate }) => {
       this.template = data.template;
       this.changeFormatDate();
     });
   }
 
   changeFormatDate(): void {
-    this.services = this.template.services.map(n =>
-      new Service({
-        startAt: templateDateToDate(n.startAt),
-        endAt: templateDateToDate(n.endAt),
-        nbMax: n.nbMax,
-      }));
+    this.services = this.template.services.map(n => ({
+      ...templateDateToDate(n),
+      nbMax: n.nbMax,
+    }));
   }
 
   async openConfirmationDialog() {
@@ -51,7 +49,7 @@ export class ViewComponent implements OnInit {
   }
 
   async delete() {
-    await this.templateService.delete(this.template.id);
+    await this.templateService.remove(this.template._id);
     this.toasterService.showToaster('Template supprimé');
     this.router.navigate(['/services/templates']);
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicFormService } from '@k-fet/ng-dynamic-forms-core';
 import { getMemberModel, getMemberFromForm } from '../members.form-model';
 import { Member } from '../member.model';
 import { MembersService } from '../members.service';
@@ -31,7 +31,7 @@ export class NewComponent implements OnInit {
 
   private pagination = {
     pageSize: 5,
-    pageIndex: 0,
+    pageIndex: 1,
   };
 
   get newMember() {

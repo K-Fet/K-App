@@ -4,10 +4,31 @@ const jwt = require('jsonwebtoken');
 const xhub = require('express-x-hub');
 const conf = require('nconf');
 const util = require('util');
-const authService = require('../../app/services/auth-service');
+const { getAllPermissionsFromUser } = require('../../utils');
 
 const { UnAuthorizedError, ERR_INVALID_TOKEN, ERR_NO_TOKEN } = ApiGateway.Errors;
 const jwtVerify = util.promisify(jwt.verify);
+
+/**
+ * Service & Action level authorization field.
+ * You must disable `authorization` at route level!
+ */
+async function onBeforeCallAuthorize(ctx, route, req) {
+  const serviceAuthorization = req.$service.authorization;
+  const actionAuthorization = req.$action.authorization;
+
+  if ((serviceAuthorization && !(actionAuthorization === false)) || actionAuthorization) {
+    ctx.meta.user = await this.authenticate(ctx, route, req);
+    await this.authorize(ctx);
+  }
+}
+
+const DEFAULT_ROUTE_OPTS = {
+  authentication: true,
+  authorization: true,
+  autoAliases: true,
+  bodyParsers: { json: true },
+};
 
 module.exports = {
   name: 'api',
@@ -25,9 +46,10 @@ module.exports = {
 
     routes: [
       {
+        ...DEFAULT_ROUTE_OPTS,
         path: '/admin',
-        authorization: true,
         // Allow only declared routes
+        autoAliases: false,
         mappingPolicy: 'restrict',
         aliases: {
           'GET list': 'admin.internal.list',
@@ -39,18 +61,21 @@ module.exports = {
         },
       },
       {
-        path: '/core',
-        whitelist: ['v1.core.**'],
-        authorization: true,
-        autoAliases: true,
-        bodyParsers: { json: true },
+        ...DEFAULT_ROUTE_OPTS,
+        authorization: false,
+        path: '/acl',
+        whitelist: ['v1.acl.**'],
+        onBeforeCall: onBeforeCallAuthorize,
       },
       {
+        ...DEFAULT_ROUTE_OPTS,
+        path: '/core',
+        whitelist: ['v1.core.**'],
+      },
+      {
+        ...DEFAULT_ROUTE_OPTS,
         path: '/inventory-management',
         whitelist: ['inventory-management.**'],
-        authorization: true,
-        autoAliases: true,
-        bodyParsers: { json: true },
       },
     ],
 
@@ -99,10 +124,15 @@ module.exports = {
   },
 
   methods: {
-    async authorize(ctx, route, req) {
+    async authenticate(ctx, route, req) {
+      if (ctx.meta.user) return ctx.meta.user;
+
       // Read the token from header
       const auth = req.headers.authorization;
-      if (!auth || !auth.startsWith('Bearer')) throw new UnAuthorizedError(ERR_NO_TOKEN);
+      if (!auth || !auth.startsWith('Bearer')) {
+        ctx.meta.authenticationError = ERR_NO_TOKEN;
+        return null;
+      }
 
       // Decode JWT
       const token = auth.slice(7);
@@ -110,16 +140,28 @@ module.exports = {
       try {
         decoded = await jwtVerify(token, conf.get('web:jwtSecret'));
       } catch (e) {
-        throw new UnAuthorizedError(ERR_INVALID_TOKEN);
+        ctx.meta.authenticationError = ERR_INVALID_TOKEN;
+        return null;
       }
 
       // Check token
-      // TODO: Use moleculer service insteadof old app
-      const revoked = await authService.isTokenRevoked(decoded.jit);
-      if (revoked) throw new UnAuthorizedError(ERR_INVALID_TOKEN);
+      try {
+        const { userId, _id } = await ctx.call('v1.acl.auth.check', { id: decoded.jit });
+        const user = await ctx.call('v1.acl.users.get', { id: userId, populate: 'account.roles' }, {
+          meta: { userPermissions: ['users.read'] },
+        });
 
-      // Populate ctx.meta.user
-      ctx.meta.user = await authService.me(decoded.jit);
+        ctx.meta.userPermissions = getAllPermissionsFromUser(user);
+        ctx.meta.jit = _id;
+        return user;
+      } catch (e) {
+        ctx.meta.authenticationError = ERR_INVALID_TOKEN;
+        return null;
+      }
+    },
+
+    async authorize(ctx) {
+      if (!ctx.meta.user) throw new UnAuthorizedError(ctx.meta.authenticationError);
     },
   },
 };

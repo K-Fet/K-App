@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
+const DisableMixin = require('../../mixins/disable-actions.mixin');
 const { BASE_UNIT } = require('../../constants');
 const { MONGO_ID, UNIT_SCHEMA } = require('../../../utils');
 
@@ -33,13 +34,15 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.stock-events',
+  version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    DisableMixin(['create', 'update', 'remove']),
+    JoiDbActionsMixin(model.joi, 'inventory-stock-events'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/stock-events',
+    rest: '/v1/stock-events',
     populates: {
       product: 'inventory-management.products.get',
       order: 'inventory-management.orders.get',
@@ -49,7 +52,9 @@ module.exports = {
   actions: {
     add: {
       rest: 'POST /',
-      permissions: true,
+      permissions: [
+        'inventory-stock-events.create',
+      ],
       params: () => Joi.object({
         entities: Joi.array().items(model.joi),
         entity: model.joi,
@@ -61,7 +66,7 @@ module.exports = {
         const products = await ctx.call('inventory-management.products.get', { id: ids, mapping: true });
 
         const promises = events
-        // Get product
+          // Get product
           .map(async (event) => {
             const product = products[event.product];
 
@@ -94,20 +99,12 @@ module.exports = {
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
-        const res = await this.actions.insert({ entities: insertedEvents });
+        const res = await this._insert({ entities: insertedEvents });
 
         // Notify products because products are considered used now
         ctx.emit('inventory-management.stock-events.added', res, ['inventory-management.products']);
         return res;
       },
     },
-
-    // Must be called only via 'add' action
-    insert: { visibility: 'private', permissions: false },
-
-    // Disabled actions
-    create: false,
-    update: false,
-    remove: false,
   },
 };

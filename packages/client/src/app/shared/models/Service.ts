@@ -1,26 +1,16 @@
-import { Barman } from '.';
+import { User } from '.';
 
-export class Service {
-
-  id?: number;
+export interface Service {
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   startAt: Date;
   endAt: Date;
-  nbMax: number;
+  nbMax?: number;
 
-  // Association
+  barmen?: string[] | User[];
+}
 
-  barmen?: Barman[];
-
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
-
-    const castVal = values as Service;
-
-    this.startAt = castVal.startAt ? new Date(castVal.startAt) : null;
-    this.endAt = castVal.endAt ? new Date(castVal.endAt) : null;
-  }
-
-  isPassed(): boolean {
-    return this.endAt.getTime() < Date.now();
-  }
+export function isServicePassed(service: Service): boolean {
+  return service.endAt.getTime() < Date.now();
 }

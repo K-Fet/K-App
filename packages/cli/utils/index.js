@@ -25,7 +25,7 @@ function checkEnv(...variables) {
  */
 async function getSequelizeInstance() {
   const {
-    DB__HOST, DB__USERNAME, DB__PASSWORD, DB__DATABASE,
+    DB__HOST, DB__USERNAME, DB__PASSWORD, DB__DATABASE, DB__PORT,
   } = process.env;
 
   const sequelize = new Sequelize({
@@ -33,6 +33,7 @@ async function getSequelizeInstance() {
     username: DB__USERNAME,
     password: DB__PASSWORD,
     database: DB__DATABASE,
+    port: DB__PORT,
     dialect: 'mysql',
     define: {
       charset: 'utf8',

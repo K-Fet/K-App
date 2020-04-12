@@ -1,11 +1,11 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const BaseValidator = require('moleculer').Validator;
 const { ValidationError } = require('moleculer').Errors;
 
 class JoiValidator extends BaseValidator {
   compile(schema) {
     // Need to use a function because Joi is not cloneable
-    // The workaround might be dirty but should works
+    // The workaround might be dirty but should work
     if (typeof schema === 'function') {
       const compiledSchema = Joi.compile(schema());
       const checkFn = params => this.validate(params, compiledSchema);
@@ -34,7 +34,7 @@ class JoiValidator extends BaseValidator {
       // Wrap a param validator
       if (action.params) {
         const check = this.compile(action.params);
-        return function validateContextParams(ctx) {
+        return async function validateContextParams(ctx) {
           const res = check(ctx.params);
           if (res === true) return handler(ctx);
 
@@ -45,7 +45,7 @@ class JoiValidator extends BaseValidator {
             return handler(ctx);
           }
           // Error may be thrown by fastest-validator
-          return Promise.reject(new ValidationError('Parameters validation error!', null, res));
+          throw new ValidationError('Parameters validation error!', null, res);
         };
       }
       return handler;

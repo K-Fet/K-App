@@ -30,7 +30,8 @@ const stringify = format((info) => {
   };
 });
 
-const logger = createLogger({
+
+const loggerConfig = {
   level: process.env.LOGGER__LEVEL || 'silly',
   transports: [
     new Console(),
@@ -41,7 +42,9 @@ const logger = createLogger({
     format.timestamp({ format: 'YYYY-MM-DDTHH:mm:ss' }),
     stringify(),
   ),
-});
+};
+
+const logger = createLogger(loggerConfig);
 
 
 logger.stream = {
@@ -57,3 +60,5 @@ logger.stream = {
 };
 
 module.exports = logger;
+// Expose logger config to have the same config in moleculer
+module.exports.loggerConfig = loggerConfig;

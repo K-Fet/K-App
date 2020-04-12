@@ -12,13 +12,13 @@ const routes: Routes = [
     path: 'new',
     component: NewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:products:create'] } },
+    data: { permissions: { only: ['inventory-products.create'] } },
   },
   {
     path: ':id',
     component: ViewComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:products:get'] } },
+    data: { permissions: { only: ['inventory-products.read'] } },
     resolve: {
       product: ProductDetailResolverService,
     },
@@ -27,7 +27,7 @@ const routes: Routes = [
     path: ':id/edit',
     component: EditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:products:update'] } },
+    data: { permissions: { only: ['inventory-products.write'] } },
     resolve: {
       product: ProductDetailResolverService,
     },
@@ -35,14 +35,7 @@ const routes: Routes = [
   {
     path: '',
     canActivate: [NgxPermissionsGuard],
-    data: {
-      permissions: {
-        only: [
-          'inventory-management:products:find',
-          'inventory-management:products:list',
-        ],
-      },
-    },
+    data: { permissions: { only: ['inventory-products.read'] } },
     component: ListComponent,
   },
 ];

@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const crypto = require('crypto');
 const { hash } = require('k-app-server/utils/password-manager');
 const { initModel } = require('k-app-server/bootstrap/sequelize');

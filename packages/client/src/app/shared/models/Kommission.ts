@@ -1,15 +1,11 @@
-import { Barman } from './Barman';
-import { Task } from './Task';
+import { User } from './User';
 
-export class Kommission {
-
-  id: number;
+export interface Kommission {
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   name: string;
-  description: string;
-  barmen: Barman[];
-  tasks: Task[];
+  description?: string;
 
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
-  }
+  barmen: string[] | User[];
 }

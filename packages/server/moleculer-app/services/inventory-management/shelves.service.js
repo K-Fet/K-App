@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { MONGO_ID, groupBy } = require('../../../utils');
@@ -18,19 +18,18 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.shelves',
+  version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-shelves'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/shelves',
+    rest: '/v1/shelves',
     populates: {
       async products(ids, docs, rule, ctx) {
         // Get all corresponding products
-        const { rows: products } = await ctx.call('inventory-management.products.list', {
-          pageSize: 1000, query: { shelf: { $in: docs.map(d => d._id) } },
-        });
+        const products = await ctx.call('inventory-management.products.getFromShelf', { id: docs.map(d => d._id) });
 
         const productMap = groupBy(products, p => p.shelf.toString());
 

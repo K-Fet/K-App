@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Barman } from '../../shared/models';
 import { AuthService } from '../api-services/auth.service';
+import { isActiveBarman } from '../../shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class ActiveBarmanGuard implements CanActivate {
     return this.authService.$currentUser
       .pipe(
         map((connectedUser) => {
-          if (connectedUser.isBarman() && new Barman(connectedUser.barman).isActive()) {
+          if (isActiveBarman(connectedUser)) {
             return true;
           }
 

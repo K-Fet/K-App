@@ -1,5 +1,7 @@
 const nconf = require('nconf');
 
+const IS_TESTING = process.env.NODE_ENV === 'test';
+
 function start() {
   nconf
     .env({
@@ -50,7 +52,7 @@ function start() {
         level: 'silly',
       },
     })
-    .required([
+    .required(IS_TESTING ? [] : [
       // Database
       'db:host',
       'db:username',

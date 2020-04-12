@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { MONGO_ID } = require('../../../utils');
@@ -20,13 +20,14 @@ const model = {
 
 module.exports = {
   name: 'inventory-management.providers',
+  version: 1,
   mixins: [
-    JoiDbActionsMixin(model.joi),
+    JoiDbActionsMixin(model.joi, 'inventory-providers'),
     DbMixin(model.mongoose),
   ],
 
   settings: {
-    rest: '/providers',
+    rest: '/v1/providers',
   },
 
   actions: {

@@ -1,6 +1,6 @@
 const guard = require('express-jwt-permissions')();
-const Joi = require('joi');
-const validator = require('express-joi-validation')({ passError: true });
+const Joi = require('@hapi/joi');
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const router = require('express').Router();
 const am = require('../../utils/async-middleware');
 const { ID_SCHEMA, RANGE_SCHEMA } = require('../../utils');
@@ -10,7 +10,7 @@ const serviceController = require('../controllers/service-controller');
 router.get(
   '/',
   guard.check('service:read'),
-  validator.query(RANGE_SCHEMA),
+  validator.query(Joi.object(RANGE_SCHEMA)),
   am(serviceController.getAllServices),
 );
 router.post(

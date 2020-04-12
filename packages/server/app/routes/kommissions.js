@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const guard = require('express-jwt-permissions')();
-const validator = require('express-joi-validation')({ passError: true });
+const validator = require('express-joi-validation').createValidator({ passError: true });
 const am = require('../../utils/async-middleware');
 const { ID_SCHEMA } = require('../../utils');
 const { KommissionSchema } = require('../models/schemas');
