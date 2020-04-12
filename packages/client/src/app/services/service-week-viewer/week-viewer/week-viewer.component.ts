@@ -23,6 +23,7 @@ export class WeekViewerComponent implements OnInit {
   private weekViewerController: WeekViewerController;
 
   @Input()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   slotTemplate: TemplateRef<any>;
 
   range: Map<number, WeekViewerItem[]>;

@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel, DynamicInputModel } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { validateEqual } from '../../validators/equal.validator';
 

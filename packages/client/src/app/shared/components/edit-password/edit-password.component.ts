@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { User } from '../../models';
 import { getEditPasswordModel, getPasswordFromForm } from './edit-password.form-model';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel, DynamicFormService } from '@k-fet/ng-dynamic-forms-core';
 import { UsersService } from '../../../core/api-services/users.service';
 
 @Component({

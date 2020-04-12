@@ -3,6 +3,11 @@
   min-width: 100px;
 }
 
+.header-container {
+  min-width: 700px;
+  overflow-x: auto;
+}
+
 .day-title-container {
   justify-content: center;
   display: flex;

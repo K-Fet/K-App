@@ -1,4 +1,4 @@
-import { DynamicFormModel } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { ServicesTemplate } from '../../shared/models';
 

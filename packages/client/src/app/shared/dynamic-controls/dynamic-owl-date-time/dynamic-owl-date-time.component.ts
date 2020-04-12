@@ -12,9 +12,9 @@ import {
   DynamicFormControlLayout,
   DynamicFormLayoutService,
   DynamicFormValidationService,
-} from '@ng-dynamic-forms2/core';
+} from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
-import { OwlDateTimeComponent } from 'ng-pick-datetime';
+import { OwlDateTimeComponent } from '@danielmoncada/angular-datetime-picker';
 import { LabelOptions, MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material/core';
 
 @Component({

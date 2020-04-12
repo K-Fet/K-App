@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Member } from '../member.model';
 import { ModalComponent } from '../../shared/components/modal/modal.component';
 import { FormGroup } from '@angular/forms';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel, DynamicFormService } from '@k-fet/ng-dynamic-forms-core';
 import { ToasterService } from '../../core/services/toaster.service';
 import { ActivatedRoute } from '@angular/router';
 import { MembersService } from '../members.service';

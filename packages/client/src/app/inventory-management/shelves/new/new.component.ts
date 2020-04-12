@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicFormModel, DynamicFormService } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel, DynamicFormService } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ShelvesService } from '../../api-services/shelves.service';

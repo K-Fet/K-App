@@ -1,4 +1,4 @@
-import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@ng-dynamic-forms2/core';
+import { DynamicFormModel, DynamicInputModel, DynamicTextAreaModel } from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { Permission, Role } from '../../shared/models';
 

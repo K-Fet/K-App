@@ -4,7 +4,7 @@ import {
   DynamicFormModel,
   DynamicInputModel,
   DynamicSelectModel,
-} from '@ng-dynamic-forms2/core';
+} from '@k-fet/ng-dynamic-forms-core';
 import { FormGroup } from '@angular/forms';
 import { Product, ProductConversion } from './product.model';
 import { Provider } from '../providers/provider.model';

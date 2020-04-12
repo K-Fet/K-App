@@ -3,7 +3,7 @@ import {
   DynamicFormArrayModel,
   DynamicFormModel,
   DynamicFormService,
-} from '@ng-dynamic-forms2/core';
+} from '@k-fet/ng-dynamic-forms-core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
