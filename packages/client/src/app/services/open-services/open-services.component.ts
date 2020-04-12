@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WeekViewerController } from '../service-week-viewer/week-viewer-controller';
+import { WeekViewerController, WeekViewerItem } from '../service-week-viewer/week-viewer-controller';
 import { addDays } from 'date-fns';
 
 @Component({
@@ -21,5 +21,9 @@ export class OpenServicesComponent implements OnInit {
       { key: Symbol(), start: addDays(new Date(), 4), end: new Date() },
       { key: Symbol(), start: addDays(new Date(), 5), end: new Date() },
     ]);
+  }
+
+  onEdit(item: WeekViewerItem): void {
+    this.weekViewerController.editItem(item);
   }
 }

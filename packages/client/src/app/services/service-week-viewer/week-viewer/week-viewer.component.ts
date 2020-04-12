@@ -5,8 +5,6 @@ import {
   endOfWeek,
   getTime,
   isWithinInterval,
-  setHours,
-  setMinutes,
   startOfDay,
   startOfWeek,
 } from 'date-fns';
@@ -20,13 +18,18 @@ import { KeyValue } from '@angular/common';
 })
 export class WeekViewerComponent implements OnInit {
   @Input()
-  private weekViewerController: WeekViewerController;
+  weekViewerController: WeekViewerController;
 
   @Input()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  slotTemplate: TemplateRef<any>;
+  itemFormTemplate: TemplateRef<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  @Input()
+  newItemFormTemplate: TemplateRef<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   range: Map<number, WeekViewerItem[]>;
+
+  isSingleMode = false;
+  selectedDay = DEFAULT_WEEK_SWITCH;
 
   ngOnInit(): void {
     this.weekViewerController.items$.subscribe((items) => {
@@ -49,19 +52,14 @@ export class WeekViewerComponent implements OnInit {
     return a.key - b.key;
   }
 
-  getContext(item: WeekViewerItem): { item: WeekViewerItem; controller: WeekViewerController } {
-    return {
-      item,
-      controller: this.weekViewerController,
-    };
+  onDayClick(key: number): void {
+    this.selectedDay = key;
   }
 
-  onAdd(timestamp: number): void {
-    // TODO Find start date and end date
-    this.weekViewerController.createItem({
-      key: Symbol(),
-      start: setMinutes(setHours(timestamp, 18), 0),
-      end: new Date(),
-    });
+  getSelectedEntry(): { key: number; value: WeekViewerItem[] } {
+    return {
+      key: this.selectedDay,
+      value: this.range.get(this.selectedDay),
+    };
   }
 }

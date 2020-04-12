@@ -12,10 +12,42 @@
       style="width: 100%"
       fxLayout="column"
     >
-      <ng-template #slot let-item="item" let-controller="controller">
-        <app-week-viewer-slot [controller]="controller" [item]="item"></app-week-viewer-slot>
+      <ng-template #slot let-item="item">
+        <mat-form-field>
+          <input matInput
+                 placeholder="Début"
+                 [(ngModel)]="item.start"
+                 [owlDateTimeTrigger]="startAtDT"
+                 [owlDateTime]="startAtDT"
+          >
+          <owl-date-time [pickerType]="'timer'" #startAtDT></owl-date-time>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput
+                 placeholder="Fin"
+                 [(ngModel)]="item.end"
+                 [owlDateTimeTrigger]="endAtDT"
+                 [owlDateTime]="endAtDT"
+          >
+          <owl-date-time [pickerType]="'timer'" #endAtDT></owl-date-time>
+        </mat-form-field>
+
+        <mat-action-row>
+          <button mat-button color="primary" (click)="onEdit(item)">Valider</button>
+        </mat-action-row>
       </ng-template>
-      <app-week-viewer [slotTemplate]="slot"[weekViewerController]="weekViewerController"></app-week-viewer>
+
+      <ng-template #newSlot let-add="add">
+        <mat-action-row>
+          <button mat-button color="primary" (click)="add()">Ajouter</button>
+        </mat-action-row>
+      </ng-template>
+
+      <app-week-viewer
+        [itemFormTemplate]="slot"
+        [newItemFormTemplate]="newSlot"
+        [weekViewerController]="weekViewerController"
+      ></app-week-viewer>
     </div>
   </div>
 </div>

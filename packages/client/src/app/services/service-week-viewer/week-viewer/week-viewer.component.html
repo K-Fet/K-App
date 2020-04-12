@@ -1,33 +1,44 @@
 <div fxFlex>
   <!-- Header -->
   <div fxLayout="row" class="header-container">
-    <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder" class="same-width day-title-container">
-      <div matRipple class="day-title" fxLayout="column">
+    <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder" class="day-title-container">
+      <div
+        fxLayout="column"
+        class="day-title"
+        matRipple
+        [ngClass]="isSingleMode ? 'pointer' : null"
+        (click)="onDayClick(entry.key)"
+      >
         <div class="day-title-day">{{ entry.key | dfnsFormat: 'eee' }}</div>
         <div class="day-title-date">{{ entry.key | dfnsFormat: 'd' }}</div>
       </div>
     </div>
   </div>
   <!-- Body -->
-  <div fxLayout="row">
-    <mat-accordion
-      fxFlex="100"
-      fxLayout="column"
-      fxLayoutAlign="space-evenly stretch"
-      *ngFor="let entry of range | keyvalue: byKeyOrder"
-      class="same-width"
-    >
-      <ng-container *ngFor="let item of entry.value">
-        <ng-container *ngTemplateOutlet="slotTemplate;context:getContext(item)"></ng-container>
+  <div fxLayout="row" class="week-view">
+    <ng-container *ngIf="isSingleMode; else multiMode">
+      <ng-container *ngTemplateOutlet="dayView;context:getSelectedEntry()"></ng-container>
+    </ng-container>
+
+    <ng-template #multiMode>
+      <ng-container *ngFor="let entry of range | keyvalue: byKeyOrder">
+        <ng-container *ngTemplateOutlet="dayView;context:entry"></ng-container>
       </ng-container>
-      <button
-        fxFlex
-        fxFlexAlign="center"
-        mat-icon-button
-        aria-label="Ajouter un autre service" (click)="onAdd(entry.key)"
-      >
-        <mat-icon>add</mat-icon>
-      </button>
-    </mat-accordion>
+    </ng-template>
+
+    <ng-template
+      #dayView
+      let-value="value"
+      let-key="key"
+    >
+      <app-week-viewer-day
+        class="day-view"
+        [itemFormTemplate]="itemFormTemplate"
+        [newItemFormTemplate]="newItemFormTemplate"
+        [weekViewerController]="weekViewerController"
+        [dayDate]="key"
+        [items]="value"
+      ></app-week-viewer-day>
+    </ng-template>
   </div>
 </div>

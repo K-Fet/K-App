@@ -44,6 +44,9 @@ export class WeekViewerController {
       return this.currentItems;
     }));
 
+  hideRemove: boolean;
+  hideAdd: boolean;
+
   constructor(initialItems?: WeekViewerItem[]) {
     this.resetItems(initialItems);
   }
