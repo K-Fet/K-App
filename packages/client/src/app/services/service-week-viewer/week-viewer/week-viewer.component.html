@@ -1,4 +1,4 @@
-<div fxFlex>
+<div fxFlex class="viewer-container">
   <!-- Header -->
   <div fxLayout="row" class="header-container">
     <div fxFlex *ngFor="let entry of range | keyvalue: byKeyOrder" class="day-title-container">
@@ -6,6 +6,7 @@
         fxLayout="column"
         class="day-title"
         matRipple
+        [matBadge]="selectedDay === entry.key ? '-' : null"
         [ngClass]="isSingleMode ? 'pointer' : null"
         (click)="onDayClick(entry.key)"
       >

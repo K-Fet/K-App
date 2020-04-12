@@ -27,6 +27,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 
 // TODO Remove unused components
 const MATERIAL_COMPONENTS = [
@@ -57,6 +58,7 @@ const MATERIAL_COMPONENTS = [
   MatTableModule,
   MatToolbarModule,
   MatTooltipModule,
+  MatBadgeModule,
 ];
 
 @NgModule({

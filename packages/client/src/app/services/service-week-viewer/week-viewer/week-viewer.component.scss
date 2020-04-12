@@ -1,5 +1,4 @@
 .header-container {
-  min-width: 700px;
   overflow-x: auto;
 }
 
@@ -7,6 +6,7 @@
   flex: 1 1 0;
   justify-content: center;
   display: flex;
+  min-width: 30px;
 
   $radius: 45px;
 
@@ -37,3 +37,7 @@
   padding-top: 15px;
 }
 
+.viewer-container {
+  overflow-x: auto;
+  padding-bottom: 10px;
+}

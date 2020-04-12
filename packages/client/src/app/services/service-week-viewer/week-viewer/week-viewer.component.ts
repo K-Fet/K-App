@@ -10,6 +10,7 @@ import {
 } from 'date-fns';
 import { DEFAULT_WEEK_SWITCH } from '../../../constants';
 import { KeyValue } from '@angular/common';
+import { MediaObserver } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-week-viewer',
@@ -29,7 +30,9 @@ export class WeekViewerComponent implements OnInit {
   range: Map<number, WeekViewerItem[]>;
 
   isSingleMode = false;
-  selectedDay = DEFAULT_WEEK_SWITCH;
+  selectedDay: number;
+
+  constructor(private mediaObserver: MediaObserver) {}
 
   ngOnInit(): void {
     this.weekViewerController.items$.subscribe((items) => {
@@ -45,6 +48,11 @@ export class WeekViewerComponent implements OnInit {
         .filter(item => isWithinInterval(item.start, interval))
         .forEach(item => this.range.get(getTime(startOfDay(item.start))).push(item));
       console.log(this.range);
+
+      if (this.mediaObserver.isActive('sm') || this.mediaObserver.isActive('xs')) {
+        this.isSingleMode = true;
+        this.selectedDay = getTime(startOfDay(interval.start));
+      }
     });
   }
 
