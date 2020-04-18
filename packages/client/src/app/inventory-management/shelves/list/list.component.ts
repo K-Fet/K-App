@@ -28,7 +28,7 @@ export class ListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource = new MoleculerDataSource<Shelf>(this.shelfService);
     this.dataSource.load();
-  }
+    }
 
   ngAfterViewInit(): void {
     // Server-side search

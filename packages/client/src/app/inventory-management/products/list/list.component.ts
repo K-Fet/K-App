@@ -13,7 +13,7 @@ import { Product } from '../product.model';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit, AfterViewInit {
-
+  // Modified because it didn't work on my laptop
   displayedColumns = ['name', 'action'];
   dataSource: ProductsDataSource;
 
@@ -31,7 +31,6 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Server-side search
     fromEvent(this.input.nativeElement, 'keyup').pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -47,7 +46,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadProductsPage())).subscribe();
   }
 
-  loadProductsPage() {
+  loadProductsPage(): void {
     this.dataSource.loadProducts({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,

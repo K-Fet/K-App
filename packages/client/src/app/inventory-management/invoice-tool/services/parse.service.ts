@@ -12,14 +12,16 @@ export class ParseService {
 
 
 
-  async fromFiletoText(invoice: File): Promise<void> {
+  async fromFilestoText(invoices: File[]): Promise<void> {
 
-    const url = URL.createObjectURL(invoice);
-    const oneinvoice = await this.gettext(url);
-    for(let i=0;i<oneinvoice.length;i++){
-      this.textinvoices.push(oneinvoice[i]);
+    for(let i=0; i<invoices.length; i++){
+      const url = URL.createObjectURL(invoices[i]);
+      const oneinvoice = await this.gettext(url);
+      for(let i=0;i<oneinvoice.length;i++){
+        this.textinvoices.push(oneinvoice[i]);
+      }
+      URL.revokeObjectURL(url);
     }
-    URL.revokeObjectURL(url);
     this.parsePDF();
     return Promise.resolve();
   }
@@ -78,11 +80,10 @@ export class ParseService {
     }
 
     for(let i = 0; i<listinvoices.length; i++){
-      listinvoices[i][1] = listinvoices[i][1].replace('19,5L','20L');   //Grolsch
       const listinvoicesparse = listinvoices[i][1].split(' ');
       toremove = [];
       for(let i = 0; i<listinvoicesparse.length; i++){
-        if(listinvoicesparse[i]=='' || listinvoicesparse[i].indexOf(',')>=0 || listinvoicesparse[i].indexOf('°')>=0){
+        if(listinvoicesparse[i]=='' || listinvoicesparse[i].indexOf('°')>=0){
           toremove.push(i);
         }
       }
@@ -102,6 +103,33 @@ export class ParseService {
         listdates.push(date);
         listarticles.push(listinvoicesparse[i]);
       }
+    }
+    
+    //Parse , and manage GROLSCH exception
+    for(let i=0; i<listarticles.length; i++){
+      const onearticleparse = listarticles[i].split(' ');
+      if(onearticleparse.indexOf("GROLSCH")<0){
+        toremove = [];
+        for(let i = 0; i<onearticleparse.length; i++){
+          if(onearticleparse[i]=='' || onearticleparse[i].indexOf(',')>=0){
+            toremove.push(i);
+          }
+        }
+        for(let i = toremove.length-1;i>=0;i--){
+          onearticleparse.splice(toremove[i],1);
+        }
+      }
+      else{
+        if(onearticleparse[0] == "GROLSCH") onearticleparse.splice(onearticleparse.length-1,1);
+        else{
+          onearticleparse.splice(0,5);
+          onearticleparse.splice(onearticleparse.length-1,1);
+        }
+        if(onearticleparse[onearticleparse.length-1].indexOf(",")>0){
+          onearticleparse[onearticleparse.length-1] = onearticleparse[onearticleparse.length-1].substring(0,onearticleparse[onearticleparse.length-1].length-2) ;
+        }
+      }
+      listarticles[i]=onearticleparse.join(' ');
     }
 
     const listarticlesparse = [];

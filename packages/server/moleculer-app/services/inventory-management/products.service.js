@@ -14,7 +14,7 @@ const model = {
     name: {
       type: String, required: true, min: 3, text: true,
     },
-    image: { type: String },
+    image: { type: String, text: true },
     used: { type: Boolean, default: false },
     conversions: [new mongoose.Schema({
       displayName: { type: String },
@@ -30,7 +30,7 @@ const model = {
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
-    image: Joi.string().uri(),
+    image: Joi.string().uri().allow(null),
     conversions: Joi.array().unique('unit').items(Joi.object({
       displayName: Joi.string(),
       preferred: Joi.bool(),

@@ -98,7 +98,6 @@ export function getProductModel(
 export function getProductFromForm(form: FormGroup, originalProduct?: Product): Product {
   const value = form.value;
   const original = originalProduct || BASE_PRODUCT;
-
   return {
     _id: original._id,
     ...value,

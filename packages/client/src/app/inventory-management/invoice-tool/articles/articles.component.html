@@ -3,11 +3,21 @@
     <button mat-stroked-button (click) = "isPrint = !isPrint" >Afficher les articles par date</button>
     <button mat-stroked-button (click) = "isPrintSum = !isPrintSum" >Afficher les articles par somme</button>
     <button mat-stroked-button (click) = "onCopyData()" >Copier les articles par somme</button>
+  </div>
+</div>
+
+<p></p>
+
+
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <button mat-stroked-button (click) = "onNgSubmitProducts()" >Soumettre les produits</button>
     <button mat-stroked-button (click) = "downloadCSV = !downloadCSV" >Télécharger un fichier csv</button>
   </div>
 </div>
 
 <p></p>
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 
 <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="downloadCSV">
   <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
