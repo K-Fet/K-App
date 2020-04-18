@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ArticlesService } from '../services/articles.service';
 import { Article } from '../article';
 import { Subscription } from 'rxjs';
-
+import { ProductsSubmit } from '../services/products-submit.service';
 
 @Component({
   selector: 'invoice-tool-articles',
@@ -22,9 +22,15 @@ export class ArticlesComponent implements OnInit{
 
   isPrint: boolean;
   isPrintSum: boolean;
+  isLoading: boolean;
   downloadCSV: boolean;
 
-  constructor( private articleService: ArticlesService){}
+
+  constructor(  private articleService: ArticlesService,
+                private productsSubmit: ProductsSubmit,)
+              {
+                this.isLoading = false;
+              }
 
   ngOnInit(): void {
     this.articleSubscription = this.articleService.articlesSubject.subscribe(
@@ -84,6 +90,14 @@ export class ArticlesComponent implements OnInit{
     a.click();
     window.URL.revokeObjectURL(url);
     a.remove();
-}
+  }
+
+  async onNgSubmitProducts(): Promise<void> {
+
+    this.isLoading = true;
+    await this.productsSubmit.submitProducts(this.articlessum);
+    this.isLoading = false;
+    return Promise.resolve();
+  }
 
 }

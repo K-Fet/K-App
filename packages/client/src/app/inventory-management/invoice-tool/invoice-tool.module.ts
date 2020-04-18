@@ -11,6 +11,11 @@ import { Article } from './article';
 import { InvoicesService } from './services/invoices.service';
 import { ParseService } from './services/parse.service';
 import { ArticlesService } from './services/articles.service';
+import { ProductsSubmit } from './services/products-submit.service';
+import { ProductsService } from '../api-services/products.service';
+import { ShelvesService } from '../api-services/shelves.service';
+import { ProvidersService } from '../api-services/providers.service';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +32,11 @@ import { ArticlesService } from './services/articles.service';
     InvoicesService,
     ParseService,
     ArticlesService,
-    Article
+    ProductsSubmit,
+    ProductsService,
+    ShelvesService,
+    ProvidersService,
+    Article,
   ]
 })
 export class InvoiceToolModule {}
