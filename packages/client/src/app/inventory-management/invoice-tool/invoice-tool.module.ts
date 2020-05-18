@@ -15,6 +15,7 @@ import { ProductsSubmit } from './services/products-submit.service';
 import { ProductsService } from '../api-services/products.service';
 import { ShelvesService } from '../api-services/shelves.service';
 import { ProvidersService } from '../api-services/providers.service';
+import { StockEventsService } from '../api-services/stock-events.service';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { ProvidersService } from '../api-services/providers.service';
     ArticlesService,
     ProductsSubmit,
     ProductsService,
+    StockEventsService,
     ShelvesService,
     ProvidersService,
     Article,

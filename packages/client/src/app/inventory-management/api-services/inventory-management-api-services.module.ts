@@ -6,6 +6,8 @@ import { ProviderDetailResolverService } from './provider-detail-resolver.servic
 import { ProvidersService } from './providers.service';
 import { ShelfDetailResolverService } from './shelf-detail-resolver.service';
 import { ShelvesService } from './shelves.service';
+import { StockEventDetailResolverService } from './stock-event-detail-resolver.service';
+import { StockEventsService } from './stock-events.service';
 
 @NgModule({
   declarations: [],
@@ -16,6 +18,8 @@ import { ShelvesService } from './shelves.service';
     ProvidersService,
     ShelfDetailResolverService,
     ShelvesService,
+    StockEventsService,
+    StockEventDetailResolverService
   ],
   imports: [CommonModule],
 })
