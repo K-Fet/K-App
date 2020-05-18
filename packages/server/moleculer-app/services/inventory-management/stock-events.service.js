@@ -26,8 +26,8 @@ const model = {
     date: Joi.date().max('now'),
     unit: UNIT_SCHEMA.default(BASE_UNIT),
     type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
-    order: MONGO_ID,
-    meta: Joi.string(),
+    order: MONGO_ID.allow(null),
+    meta: Joi.string().allow(null),
   }),
 };
 
@@ -106,7 +106,7 @@ module.exports = {
     insert: { visibility: 'private', permissions: false },
 
     // Disabled actions
-    create: false,
+    create: true,
     update: false,
     remove: false,
   },

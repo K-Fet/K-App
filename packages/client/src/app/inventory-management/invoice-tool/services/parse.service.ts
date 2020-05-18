@@ -187,6 +187,7 @@ export class ParseService {
 
     this.articleSum = finallistsum;
 
+    
     //Create list with date
     const finallist = [];
     for(const i in listarticlesparse){
@@ -196,7 +197,24 @@ export class ParseService {
 
     toremove = [];
     for(const i in finallist){
-      if(finallist[i][1]=='') toremove.push(i);
+      if(finallist[i][1]==='' || isNaN(finallist[i][2])) toremove.push(i);
+    }
+
+    for(let i = toremove.length-1;i>=0;i--){
+      (finallist.splice(toremove[i],1));
+    }
+
+
+    toremove = [];
+    for(let i=0; i<finallist.length; i++){
+      for(let j=i+1; j<finallist.length; j++){
+        if(finallist[i][1]===finallist[j][1]){
+          if(finallist[i][0].getDate()===finallist[j][0].getDate() && finallist[i][0].getMonth()===finallist[j][0].getMonth() && finallist[i][0].getFullYear()===finallist[j][0].getFullYear()){
+            finallist[i][2] += finallist[j][2];
+            toremove.push(j);
+          }
+        }
+      }
     }
     for(let i = toremove.length-1;i>=0;i--){
       (finallist.splice(toremove[i],1));

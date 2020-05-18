@@ -9,6 +9,8 @@ export class ProductsDataSource implements DataSource<Product> {
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
   public loading$ = this.loadingSubject.asObservable();
+  public total = 0;
+  public pageSize = 0;
 
   constructor(private productsService: ProductsService) {}
 
@@ -24,8 +26,10 @@ export class ProductsDataSource implements DataSource<Product> {
   async loadProducts(options: MoleculerListOptions = {}) {
     this.loadingSubject.next(true);
     try {
-      const { rows: products } = await this.productsService.list(options);
-      this.productsSubject.next(products);
+      const { rows, total, pageSize } = await this.productsService.list(options);
+      this.total = total;
+      this.pageSize = pageSize;
+      this.productsSubject.next(rows);
     } catch (e) {
       this.productsSubject.next([]);
     }

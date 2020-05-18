@@ -100,4 +100,12 @@ export class ArticlesComponent implements OnInit{
     return Promise.resolve();
   }
 
+  async onNgSubmitStockEvents(): Promise<void> {
+
+    this.isLoading = true;
+    await this.productsSubmit.submitStockEvents(this.articles);
+    this.isLoading = false;
+    return Promise.resolve();
+  }
+
 }

@@ -61,9 +61,25 @@ const NAV_MENUS: SubMenu[] = [
     name: 'Gestion des stocks',
     accountType: [AccountType.BARMAN, AccountType.SPECIAL_ACCOUNT],
     links: [
-      { name: 'Fournisseurs', route: '/inventory-management/providers' },
-      { name: 'Produits', route: '/inventory-management/products' },
-      { name: 'Rayons', route: '/inventory-management/shelves' },
+      { 
+        name: 'Fournisseurs', 
+        route: '/inventory-management/providers',
+        permissions: ['inventory-management:providers:list'],
+      },
+      { 
+        name: 'Produits', 
+        route: '/inventory-management/products',
+        permissions: ['inventory-management:products:list'],
+      },
+      { 
+        name: 'Rayons', 
+        route: '/inventory-management/shelves' ,
+        permissions: ['inventory-management:shelves:list'],
+      },
+      { name: 'Evenements', 
+        route: '/inventory-management/stock-events', 
+        permissions: ['inventory-management:stock-events:list'],
+      },
       {
         name: 'Outil StoK-Fêt',
         route: '/inventory-management/invoice-tool',
