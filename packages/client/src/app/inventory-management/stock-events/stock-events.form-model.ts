@@ -30,10 +30,6 @@ export function getStockEventsModel(
       value: 'Transaction',
     }, 
     {
-      label: 'Ajustement des stocks',
-      value: 'InventoryAdjustment',
-    },
-    {
       label: 'Réception',
       value: 'Delivery',
     }];

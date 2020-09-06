@@ -6,6 +6,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { InvoicesComponent } from './invoices/invoices.component';
 import { ArticlesComponent } from './articles/articles.component';
+import { InstantStockComponent } from './instant-stock/instant-stock.component';
 import { Article } from './article';
 
 import { InvoicesService } from './services/invoices.service';
@@ -22,7 +23,8 @@ import { StockEventsService } from '../api-services/stock-events.service';
   declarations: [
     HomePageComponent,
     ArticlesComponent,
-    InvoicesComponent
+    InvoicesComponent,
+    InstantStockComponent
   ],
   imports: [
     SharedModule,

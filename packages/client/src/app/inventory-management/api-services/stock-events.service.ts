@@ -34,6 +34,9 @@ export class StockEventsService {
     return this.http.get<StockEvent>(`${BASE_URL}/${id}?populate=products`).toPromise();
   }
 
+  update(event: StockEvent): Promise<StockEvent> {
+    return this.http.put<StockEvent>(`${BASE_URL}/${event._id}`, event).toPromise();
+  }
 
   remove(id: string): Promise<StockEvent> {
     return this.http.delete<StockEvent>(`${BASE_URL}/${id}`).toPromise();

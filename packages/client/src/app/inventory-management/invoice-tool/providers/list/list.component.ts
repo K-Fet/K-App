@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
-import { ProvidersService } from '../../api-services/providers.service';
+import { ProvidersService } from '../../../api-services/providers.service';
 import { Provider } from '../provider.model';
 import { ProvidersDataSource } from '../providers.data-source';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';

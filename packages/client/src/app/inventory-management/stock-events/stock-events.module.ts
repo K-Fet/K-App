@@ -7,6 +7,7 @@ import { NewComponent } from './new/new.component';
 import { ListComponent } from './list/list.component';
 import { InventoryManagementApiServicesModule } from '../api-services/inventory-management-api-services.module';
 import { ListEventService } from './services/list-event.service';
+import { EditComponent } from './edit/edit.component';
 
 
 
@@ -14,6 +15,7 @@ import { ListEventService } from './services/list-event.service';
   declarations: [
     NewComponent,
     ListComponent,
+    EditComponent,
   ],
   imports: [
     SharedModule,

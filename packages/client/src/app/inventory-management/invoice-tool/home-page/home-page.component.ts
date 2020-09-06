@@ -6,17 +6,7 @@ import { ParseService } from '../services/parse.service';
 
 @Component({
   templateUrl: './home-page.component.html',
-  styles: [`
-    #dropzone {
-      background-color: white;
-      width: 100%;
-      border: 5px dotted #ccc;
-    }
-
-    #dropzone:hover {
-      border-color: black;
-    }
-  `]
+  styleUrls: ['./home-page.component.scss']
 })
 
 export class HomePageComponent implements OnInit {

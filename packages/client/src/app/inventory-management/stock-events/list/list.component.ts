@@ -8,6 +8,7 @@ import { StockEventsService } from '../../api-services/stock-events.service';
 
 import { StockEvent } from '../stock-events.model';
 import { ListEventService } from '../services/list-event.service';
+import { Router } from '@angular/router';
 
 
 
@@ -17,7 +18,7 @@ import { ListEventService } from '../services/list-event.service';
 })
 export class ListComponent implements OnInit, AfterViewInit {
 
-  displayedColumns = ['date', 'product', 'diff', 'type'];
+  displayedColumns = ['date', 'product', 'diff', 'type', 'action'];
   dataSource: StockEventsDataSource;
   
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -25,7 +26,8 @@ export class ListComponent implements OnInit, AfterViewInit {
   @ViewChild('input', { static: true }) input: ElementRef;
 
   constructor( private stockEventsService: StockEventsService,
-               private listEventService: ListEventService) {}
+               private listEventService: ListEventService,
+               private router: Router) {}
 
   async ngOnInit() {
     this.dataSource = new StockEventsDataSource(this.stockEventsService);
@@ -68,6 +70,11 @@ export class ListComponent implements OnInit, AfterViewInit {
         return "Type undefined";
       }
     }
+  }
+
+
+  edit(stockEvent: StockEvent): void {
+    this.router.navigate(['/inventory-management/stock-events', stockEvent._id, 'edit']);
   }
 
 }

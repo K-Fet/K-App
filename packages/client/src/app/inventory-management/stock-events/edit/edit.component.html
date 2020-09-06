@@ -2,11 +2,11 @@
   <mat-card fxFlex class="max-width">
     <mat-card-header>
       <mat-card-title fxLayout="row">
-        <a mat-button routerLink="/inventory-management/products">
+        <a mat-button routerLink="/inventory-management/stock-events">
           <mat-icon>arrow_back</mat-icon>
         </a>
         <section class="mat-typography">
-          <h1>Editer un produit</h1>
+          <h1>Editer un évènement</h1>
         </section>
       </mat-card-title>
     </mat-card-header>
@@ -14,17 +14,13 @@
       <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
         <dynamic-material-form [group]="formGroup" [model]="model">
           <ng-template modelId="conversions" let-group let-index="index" let-context="context">
+          </ng-template>
+        </dynamic-material-form>
+        <div fxLayout="row">
+          <div fxFlex>
             <button mat-icon-button type="button" (click)="removeItem(context, index)">
               <mat-icon aria-label="Supprimer la ligne">delete</mat-icon>
             </button>
-          </ng-template>
-        </dynamic-material-form>
-        <button mat-button type="button" (click)="addConversionLine()">Ajouter une conversion</button>
-        <div fxLayout="row">
-          <div fxFlex>
-            <!-- <button mat-icon-button type="button" (click)="removeProduct()">
-              <mat-icon aria-label="Supprimer le produit">delete</mat-icon>
-            </button> -->
           </div>
           <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid && !formGroup.dirty">
             Modifier

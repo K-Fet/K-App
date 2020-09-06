@@ -1,4 +1,4 @@
-import { Provider } from '../providers/provider.model';
+import { Provider } from '../invoice-tool/providers/provider.model';
 import { Shelf } from '../shelves/shelf.model';
 
 export interface ProductConversion {

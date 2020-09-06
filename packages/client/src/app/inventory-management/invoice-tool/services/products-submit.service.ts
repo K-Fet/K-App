@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Product } from '../../products/product.model';
 import { Article } from '../article';
 import { Shelf } from '../../shelves/shelf.model';
-import { Provider } from '../../providers/provider.model';
+import { Provider } from '../providers/provider.model';
 import { StockEvent } from '../../stock-events/stock-events.model';
 
 import { ShelvesService } from '../../api-services/shelves.service';
