@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Provider } from '../providers/provider.model';
+import { Provider } from '../invoice-tool/providers/provider.model';
 import { MoleculerList, MoleculerListOptions } from '../../shared/models/MoleculerWrapper';
 import { createHttpParams } from '../../shared/utils';
 import { toURL } from '../../core/api-services/api-utils';

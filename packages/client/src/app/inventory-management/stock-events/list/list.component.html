@@ -39,6 +39,17 @@
             <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
             <mat-cell *matCellDef="let stockEvent"> {{renameType(stockEvent)}} </mat-cell>
           </ng-container>
+          <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+            <mat-cell *matCellDef="let stockEvent">
+              <div fxLayout="row">
+                <button mat-icon-button (click)="edit(stockEvent)"
+                        *ngxPermissionsOnly="['inventory-management:stock-events:create']">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>

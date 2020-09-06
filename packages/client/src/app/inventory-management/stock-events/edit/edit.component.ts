@@ -1,4 +1,4 @@
-import { Component, OnInit, ValueSansProvider } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DynamicFormArrayModel,
   DynamicFormModel,
@@ -7,11 +7,10 @@ import {
 import { FormArray, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
-import { Product } from '../product.model';
+import { StockEvent } from '../stock-events.model';
+import { StockEventsService } from '../../api-services/stock-events.service';
+import { getStockEventFromForm, getStockEventsModel } from '../stock-events.form-model';
 import { ProductsService } from '../../api-services/products.service';
-import { getProductFromForm, getProductModel } from '../products.form-model';
-import { ProvidersService } from '../../api-services/providers.service';
-import { ShelvesService } from '../../api-services/shelves.service';
 
 @Component({
   templateUrl: './edit.component.html',
@@ -23,25 +22,23 @@ export class EditComponent implements OnInit {
   formConversionArray: FormArray;
   formConversionModel: DynamicFormArrayModel;
 
-  originalProduct: Product;
+  originalEvent: StockEvent;
 
   constructor(private formService: DynamicFormService,
               private toasterService: ToasterService,
               private productsService: ProductsService,
-              private providersService: ProvidersService,
-              private shelvesService: ShelvesService,
+              private stockEventsService: StockEventsService,
               private route: ActivatedRoute,
               private router: Router) { }
 
   ngOnInit() {
     this.formGroup = this.formService.createFormGroup([]);
 
-    this.route.data.subscribe((data: { product: Product }) => {
-      this.originalProduct = data.product;
-      this.model = getProductModel(
-        this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
-        this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
-        this.originalProduct,
+    this.route.data.subscribe((data: { stockEvent: StockEvent }) => { //TODO inscrire le produit en amont
+      this.originalEvent = data.stockEvent;
+      this.model = getStockEventsModel(
+        this.productsService.list({ pageSize: 1000 }).then(value => value.rows),
+        this.originalEvent,
       );
       this.formGroup = this.formService.createFormGroup(this.model);
       this.formConversionArray = this.formGroup.get('conversions') as FormArray;
@@ -49,27 +46,19 @@ export class EditComponent implements OnInit {
     });
   }
 
-  addConversionLine(): void {
+  addConversionLine() {
     this.formService.addFormArrayGroup(this.formConversionArray, this.formConversionModel);
   }
 
-  removeItem(context: DynamicFormArrayModel, index: number): void {
+  removeItem(context: DynamicFormArrayModel, index: number) {
     // TODO Check if it was here before
     this.formService.removeFormArrayGroup(index, this.formConversionArray, context);
   }
 
-  async onNgSubmit(): Promise<void> {
-    const updatedProduct = getProductFromForm(this.formGroup, this.originalProduct);
-    await this.productsService.update(updatedProduct);
+  async onNgSubmit() {
+    const updatedEvent = getStockEventFromForm(this.formGroup, this.originalEvent);
+    await this.stockEventsService.update(updatedEvent);
     this.toasterService.showToaster('Produit mis à jour');
-    this.router.navigate(['/inventory-management/products']);
-  }
-
-  async removeProduct(): Promise<void> {
-    this.productsService.remove(this.originalProduct._id).then((res) => {
-      if(res) this.toasterService.showToaster("Le produit a bien été supprimé");
-    })
-    .catch(err => this.toasterService.showToaster("une erreur est survenue."));
     this.router.navigate(['/inventory-management/products']);
   }
 }

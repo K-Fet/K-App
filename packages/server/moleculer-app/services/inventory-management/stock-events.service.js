@@ -47,7 +47,7 @@ module.exports = {
   },
 
   actions: {
-    add: {
+    add: { // TODO make product in used
       rest: 'POST /',
       permissions: true,
       params: () => Joi.object({
@@ -59,7 +59,7 @@ module.exports = {
 
         const ids = [...new Set(events.map(e => e.product)).keys()];
         const products = await ctx.call('inventory-management.products.get', { id: ids, mapping: true });
-
+        this.logger.info(products);
         const promises = events
         // Get product
           .map(async (event) => {
