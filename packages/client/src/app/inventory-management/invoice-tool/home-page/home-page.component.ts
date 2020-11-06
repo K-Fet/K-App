@@ -11,9 +11,12 @@ import { ParseService } from '../services/parse.service';
 
 export class HomePageComponent implements OnInit {
 
-  isLoading: boolean;
-  invoicesEmpty: boolean;
-  articlesEmpty: boolean;
+  public isLoading: boolean;
+  public invoicesEmpty: boolean;
+  public articlesEmpty: boolean;
+
+  public currentFileType: string;
+
 
   constructor(private invoiceService: InvoicesService,
               private parseService: ParseService,
@@ -22,7 +25,6 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = false;
     this.invoicesEmpty = true;
-    this.articlesEmpty = true;
   }
 
   onDrop(e: any): void {
@@ -31,8 +33,18 @@ export class HomePageComponent implements OnInit {
     Object.keys(files).forEach((key) => {
       const file: File = files[key];
       if(file.type === "application/pdf"){
-        this.invoiceService.addInvoice(file);
-        this.invoicesEmpty = false;
+        if(this.invoicesEmpty || this.currentFileType==="application/pdf"){
+          this.invoiceService.addInvoice(file);
+          this.invoicesEmpty = false;
+          this.currentFileType="application/pdf";
+        }
+      }
+      if(file.type === "text/csv"){
+        if(this.invoicesEmpty || this.currentFileType==="text/csv"){
+          this.invoiceService.addInvoice(file);
+          this.invoicesEmpty = false;
+          this.currentFileType="text/csv";
+        }
       }
     });
   }
@@ -54,7 +66,6 @@ export class HomePageComponent implements OnInit {
     this.parseService.removeAll();
     this.isLoading = false;
     this.invoicesEmpty = true;
-    this.articlesEmpty = false;
     return Promise.resolve();
   }
 }
