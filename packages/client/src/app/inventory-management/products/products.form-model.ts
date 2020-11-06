@@ -17,11 +17,13 @@ const BASE_CONVERSION = {} as ProductConversion;
 
 function getConversionGroups(originalProduct?: Product): DynamicFormArrayGroupModel[] | null {
   if (!originalProduct || !Array.isArray(originalProduct.conversions)) return null;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore Ask for unneeded $implicit variable
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return originalProduct.conversions.map(c => ({ group: conversionGroupFactory(c) }));
 }
 
-function conversionGroupFactory(conversion?: ProductConversion) {
+function conversionGroupFactory(conversion?: ProductConversion): DynamicInputModel[] {
   const value = conversion || BASE_CONVERSION;
   return [
     new DynamicInputModel({
@@ -73,6 +75,7 @@ export function getProductModel(
       id: 'shelf',
       label: 'Rayon',
       value: values.shelf && (values.shelf as Shelf)._id,
+      validators: { required: null },
       options: from(shelves.then(optionMap('_id', 'name')),
       ),
     }),
@@ -81,6 +84,7 @@ export function getProductModel(
       label: 'Fournisseur',
       value: values.provider && (values.provider as Provider)._id,
       disabled: values.used,
+      validators: { required: null },
       options: from(providers.then(optionMap('_id', 'name')),
       ),
     }),

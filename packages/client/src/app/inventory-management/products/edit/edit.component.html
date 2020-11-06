@@ -22,9 +22,9 @@
         <button mat-button type="button" (click)="addConversionLine()">Ajouter une conversion</button>
         <div fxLayout="row">
           <div fxFlex>
-            <!-- <button mat-icon-button type="button" (click)="removeProduct()">
+            <button mat-icon-button type="button" (click)="removeProduct()">
               <mat-icon aria-label="Supprimer le produit">delete</mat-icon>
-            </button> -->
+            </button>
           </div>
           <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid && !formGroup.dirty">
             Modifier

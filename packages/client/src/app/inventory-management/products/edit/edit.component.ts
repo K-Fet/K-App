@@ -1,4 +1,4 @@
-import { Component, OnInit, ValueSansProvider } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DynamicFormArrayModel,
   DynamicFormModel,
@@ -54,7 +54,6 @@ export class EditComponent implements OnInit {
   }
 
   removeItem(context: DynamicFormArrayModel, index: number): void {
-    // TODO Check if it was here before
     this.formService.removeFormArrayGroup(index, this.formConversionArray, context);
   }
 
@@ -69,7 +68,10 @@ export class EditComponent implements OnInit {
     this.productsService.remove(this.originalProduct._id).then((res) => {
       if(res) this.toasterService.showToaster("Le produit a bien été supprimé");
     })
-    .catch(err => this.toasterService.showToaster("une erreur est survenue."));
+    .catch( err => {
+      this.toasterService.showToaster("une erreur est survenue");
+      console.error(err);
+    });
     this.router.navigate(['/inventory-management/products']);
   }
 }

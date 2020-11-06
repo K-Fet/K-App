@@ -14,7 +14,11 @@
       <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
         <dynamic-material-form [group]="formGroup" [model]="model"></dynamic-material-form>
         <div fxLayout="row">
-          <div fxFlex></div>
+          <div fxFlex>
+            <button mat-icon-button type="button" (click)="removeShelf()">
+              <mat-icon aria-label="Supprimer le Rayon">delete</mat-icon>
+            </button>
+          </div>
           <button mat-raised-button type="submit" color="primary" [disabled]="!formGroup.valid && !formGroup.dirty">
             Modifier
           </button>

@@ -33,6 +33,18 @@ export class EditComponent implements OnInit {
     });
   }
 
+  public async removeShelf(): Promise<void> {
+    this.shelvesService.remove(this.originalShelf._id).then((res) => {
+      if(res) this.toasterService.showToaster("Le rayon a bien été supprimé");
+    })
+    .catch( err => {
+      this.toasterService.showToaster("Une erreur est survenue");
+      console.error(err);
+    });
+    this.router.navigate(['/inventory-management/shelves']);
+  }
+
+
   async onNgSubmit() {
     const updatedShelf = getShelfFromForm(this.formGroup, this.originalShelf);
     await this.shelvesService.update(updatedShelf);

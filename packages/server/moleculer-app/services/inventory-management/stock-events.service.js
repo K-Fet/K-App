@@ -47,67 +47,54 @@ module.exports = {
   },
 
   actions: {
-    add: { // TODO make product in used
+    add: {
       rest: 'POST /',
       permissions: true,
-      params: () => Joi.object({
-        entities: Joi.array().items(model.joi),
-        entity: model.joi,
-      }).without('entities', 'entity'),
+
       async handler(ctx) {
-        const events = ctx.params.entities || [ctx.params.entity];
+        const event = ctx.params;
+        const { product } = ctx.params;
 
-        const ids = [...new Set(events.map(e => e.product)).keys()];
-        const products = await ctx.call('inventory-management.products.get', { id: ids, mapping: true });
-        this.logger.info(products);
-        const promises = events
-        // Get product
-          .map(async (event) => {
-            const product = products[event.product];
+        const productToUpdate = await ctx.call('inventory-management.products.get', { id: product });
 
-            let conv;
+        let conv;
+        if (Array.isArray(productToUpdate.conversions)) {
+          conv = productToUpdate.conversions.find(c => c.unit === event.unit);
+        // eslint-disable-next-line brace-style
+        }
+        // If we could not find in the conversion array
+        // and the event doesn't need custom unit
+        // set default unit and coef
+        else {
+          conv = { coef: 1 };
+        }
+        conv = { coef: 1 }; // Don't use conversion, at all
+        if (!conv) {
+          throw new MoleculerClientError(`Could not find valid conversion info for product '${productToUpdate.name}' (tried to convert '${event.unit}')`);
+        }
 
-            if (Array.isArray(product.conversions)) {
-              conv = product.conversions.find(c => c.unit === event.unit);
-            }
-            // If we could not find in the conversion array
-            // and the event doesn't need custom unit
-            // set default unit and coef
-            if (!conv && event.unit === BASE_UNIT) {
-              conv = { coef: 1 };
-            }
+        const promise = {
+          ...event,
+          // Remove custom unit and convert to a single unit
+          diff: event.diff / conv.coef,
+        };
 
-
-            if (!conv) {
-              throw new MoleculerClientError(`Could not find valid conversion info for product '${product.name}' (tried to convert '${event.unit}')`);
-            }
-
-            return {
-              ...event,
-              // Remove custom unit and convert to a single unit
-              unit: undefined,
-              diff: event.diff / conv.coef,
-            };
-          });
-
-        const insertedEvents = await Promise.all(promises);
+        const insertedEvents = await Promise.resolve(promise);
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
-        const res = await this.actions.insert({ entities: insertedEvents });
+        const res = await this.actions.insert({ entities: [insertedEvents] });
 
-        // Notify products because products are considered used now
         ctx.emit('inventory-management.stock-events.added', res, ['inventory-management.products']);
         return res;
       },
     },
 
-    // Must be called only via 'add' action
+    // Must be called only via 'add' and 'delete' action
     insert: { visibility: 'private', permissions: false },
 
     // Disabled actions
-    create: true,
+    create: false,
     update: false,
-    remove: false,
   },
 };
