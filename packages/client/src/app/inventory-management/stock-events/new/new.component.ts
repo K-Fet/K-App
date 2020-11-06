@@ -29,7 +29,6 @@ export class NewComponent implements OnInit {
 
   ngOnInit() {
     this.model = getStockEventsModel(
-      // TODO Improve page size
       this.productsService.list({ pageSize: 1000 }).then(value => value.rows),
     );
     this.formGroup = this.formService.createFormGroup(this.model);

@@ -31,7 +31,6 @@ function conversionGroupFactory(conversion?: ProductConversion): DynamicInputMod
       label: 'Label',
       value: value.displayName,
     }),
-    // TODO Preferred
     new DynamicInputModel({
       id: 'unit',
       label: 'Unité',
@@ -95,7 +94,6 @@ export function getProductModel(
       groupFactory: conversionGroupFactory,
       groups: getConversionGroups(originalProduct),
     }),
-    // TODO Shelve
   ];
 }
 

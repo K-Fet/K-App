@@ -34,7 +34,7 @@ export class EditComponent implements OnInit {
   public ngOnInit(): void {
     this.formGroup = this.formService.createFormGroup([]);
 
-    this.route.data.subscribe((data: { stockEvent: StockEvent }) => { //TODO inscrire le produit en amont
+    this.route.data.subscribe((data: { stockEvent: StockEvent }) => {
       this.originalEvent = data.stockEvent;
       this.model = getStockEventsModel(
         this.productsService.list({ pageSize: 1000 }).then(value => value.rows),
