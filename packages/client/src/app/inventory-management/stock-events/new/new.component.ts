@@ -41,7 +41,6 @@ export class NewComponent implements OnInit {
 
   async onNgSubmit() {
     await this.stockEventsService.create(getStockEventFromForm(this.formGroup));
-    console.log(this.formGroup);
     this.toasterService.showToaster('Evenement créé');
     this.router.navigate(['/inventory-management/stock-events']);
   }

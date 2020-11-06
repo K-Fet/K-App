@@ -31,7 +31,7 @@ export class EditComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.formGroup = this.formService.createFormGroup([]);
 
     this.route.data.subscribe((data: { stockEvent: StockEvent }) => { //TODO inscrire le produit en amont
@@ -46,19 +46,21 @@ export class EditComponent implements OnInit {
     });
   }
 
-  addConversionLine() {
-    this.formService.addFormArrayGroup(this.formConversionArray, this.formConversionModel);
+  public async removeStockEvent(): Promise<void> {
+    this.stockEventsService.remove(this.originalEvent._id).then((res) => {
+      if(res) this.toasterService.showToaster("L'évènement a bien été supprimé");
+    })
+    .catch( err => {
+      this.toasterService.showToaster("Une erreur est survenue");
+      console.error(err);
+    });
+    this.router.navigate(['/inventory-management/stock-events']);
   }
 
-  removeItem(context: DynamicFormArrayModel, index: number) {
-    // TODO Check if it was here before
-    this.formService.removeFormArrayGroup(index, this.formConversionArray, context);
-  }
-
-  async onNgSubmit() {
+  public async onNgSubmit(): Promise<void> {
     const updatedEvent = getStockEventFromForm(this.formGroup, this.originalEvent);
     await this.stockEventsService.update(updatedEvent);
     this.toasterService.showToaster('Produit mis à jour');
-    this.router.navigate(['/inventory-management/products']);
+    this.router.navigate(['/inventory-management/stock-events']);
   }
 }

@@ -40,6 +40,7 @@ export function getStockEventsModel(
       id: 'product',
       label: 'Produit',
       value: values.product && (values.product as Product)._id,
+      validators: { required: null },
       options: from(products.then(optionMap('_id', 'name')),
       ),
     }),
@@ -65,6 +66,7 @@ export function getStockEventsModel(
       label: 'Type de l\'évènement',
       value: values.type,
       options: eventTypes,
+      validators: { required: null },
     }),
     new DynamicInputModel({
       id: 'order',
