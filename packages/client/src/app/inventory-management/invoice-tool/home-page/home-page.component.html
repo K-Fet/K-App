@@ -38,7 +38,7 @@
         </div>
         <p></p>
         <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="!articlesEmpty">
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="articleService.articles.length > 0">
           <invoice-tool-articles></invoice-tool-articles>
         </div>
       </mat-card-content>

@@ -14,16 +14,42 @@ export class ParseService {
 
   async fromFilestoText(invoices: File[]): Promise<void> {
 
-    for(let i=0; i<invoices.length; i++){
-      const url = URL.createObjectURL(invoices[i]);
-      const oneinvoice = await this.gettext(url);
-      for(let i=0;i<oneinvoice.length;i++){
-        this.textinvoices.push(oneinvoice[i]);
+    if(invoices[0].type === 'application/pdf'){
+      for(let i=0; i<invoices.length; i++){
+        const url = URL.createObjectURL(invoices[i]);
+        const oneinvoice = await this.gettext(url);
+        for(let i=0;i<oneinvoice.length;i++){
+          this.textinvoices.push(oneinvoice[i]);
+        }
+        URL.revokeObjectURL(url);
       }
-      URL.revokeObjectURL(url);
+      this.parsePDF();
     }
-    this.parsePDF();
+    else {
+      let textTotal = '';
+      for(const file of invoices){
+        textTotal += await file.text();
+      }
+      this.parseCsv(textTotal);
+    }
     return Promise.resolve();
+  }
+
+  private parseCsv(csv: string): void {
+    this.listarticle = [];
+    this.articleSum = [];
+    const articlesStr = csv.split('\n');
+    articlesStr.pop();
+    for(const art of articlesStr){
+      const artPrsStr = art.split(',');
+      if(artPrsStr.length != 3 ){
+        this.listarticle = [];
+        this.articleSum = [];
+        break;
+      }
+      this.listarticle.push([new Date(artPrsStr[0]), artPrsStr[1], +artPrsStr[2]]);
+    }
+    this.sumFromDate();
   }
 
   parsePDF(): void {
@@ -221,6 +247,7 @@ export class ParseService {
     }
   
     this.listarticle = finallist;
+    console.log(finallist);
   }
 
   getDate(invoice: string): Date{
@@ -260,6 +287,20 @@ export class ParseService {
         return texts;
       });
     });
+  }
+  
+  private sumFromDate(): void{
+    const soonAssigned: string[] = [];
+    for(const art of this.listarticle){
+      const index = soonAssigned.indexOf(art[1]);
+      if(index === -1){
+        this.articleSum.push([art[1], art[2]]);
+        soonAssigned.push(art[1]);
+      }
+      else {
+        this.articleSum[index][1] += art[2];
+      }
+    }
   }
 
   removeAll(): void{
