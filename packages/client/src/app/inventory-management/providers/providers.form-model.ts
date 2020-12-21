@@ -1,7 +1,7 @@
 import { DynamicFormModel, DynamicInputModel } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Provider } from './provider.model';
-import { URL_PATTERN } from '../../../constants';
+import { URL_PATTERN } from '../../constants';
 
 const BASE_PROVIDER = {} as Provider;
 

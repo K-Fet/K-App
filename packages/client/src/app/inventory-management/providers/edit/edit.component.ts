@@ -4,8 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Provider } from '../provider.model';
 import { getProviderFromForm, getProviderModel } from '../providers.form-model';
-import { ToasterService } from '../../../../core/services/toaster.service';
-import { ProvidersService } from '../../../api-services/providers.service';
+import { ToasterService } from '../../../core/services/toaster.service';
+import { ProvidersService } from '../../api-services/providers.service';
 
 @Component({
   templateUrl: './edit.component.html',
