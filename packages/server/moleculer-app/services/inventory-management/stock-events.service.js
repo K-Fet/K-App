@@ -46,7 +46,7 @@ module.exports = {
     },
   },
 
-  actions: {
+  actions: { // TODO: call ctx product service in update and remove to unset or not product.used
     add: {
       rest: 'POST /',
       permissions: true,
@@ -95,6 +95,6 @@ module.exports = {
 
     // Disabled actions
     create: false,
-    update: false,
+    update: true,
   },
 };
