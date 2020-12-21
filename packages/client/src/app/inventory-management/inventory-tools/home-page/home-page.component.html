@@ -7,7 +7,13 @@
             <h1>Outil de gestion des factures</h1>
           </section>
         </mat-card-title>
-        <div fxFlex></div>
+        <mat-card-subtitle>
+          <section class="mat-typography">
+            <button mat-button [routerLink]="['./adjustment']"> Ajustement des stocks </button>
+          </section>
+        </mat-card-subtitle>
+        <div fxFlex>            
+        </div>
         <a mat-mini-fab color="accent" (click)="onRemove()">
         <mat-icon>remove</mat-icon>
       </a>
