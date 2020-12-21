@@ -18,6 +18,9 @@ import { ShelvesService } from '../api-services/shelves.service';
 import { ProvidersService } from '../api-services/providers.service';
 import { StockEventsService } from '../api-services/stock-events.service';
 import { OptionsDialogComponent } from './options-dialog/options-dialog.component';
+import { InventoryAdjustmentModule } from './inventory-adjustment/inventory-adjustment.module';
+import { AdjustmentStockService } from './services/adjustment-stock.service';
+import { Stock } from './stock';
 
 
 @NgModule({
@@ -32,6 +35,7 @@ import { OptionsDialogComponent } from './options-dialog/options-dialog.componen
     SharedModule,
     NgxPermissionsModule.forChild(),
     InventoryToolsRoutingModule,
+    InventoryAdjustmentModule
   ],
   providers: [
     InvoicesService,
@@ -42,7 +46,9 @@ import { OptionsDialogComponent } from './options-dialog/options-dialog.componen
     StockEventsService,
     ShelvesService,
     ProvidersService,
+    AdjustmentStockService,
     Article,
+    Stock
   ],
   entryComponents: [
     OptionsDialogComponent

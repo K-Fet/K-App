@@ -7,7 +7,7 @@ import {
 } from '@ng-dynamic-forms/core';
 import { FormGroup } from '@angular/forms';
 import { Product, ProductConversion } from './product.model';
-import { Provider } from '../invoice-tool/providers/provider.model';
+import { Provider } from '../providers/provider.model';
 import { URL_PATTERN } from '../../constants';
 import { from } from 'rxjs';
 import { Shelf } from '../shelves/shelf.model';

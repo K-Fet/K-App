@@ -1,16 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Product } from '../../products/product.model';
-import { StockEvent } from '../../stock-events/stock-events.model';
-import { StockEventsService } from '../../api-services/stock-events.service';
-import { ProductsService } from '../../api-services/products.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { Stock } from '../stock';
+import { Subscription } from 'rxjs';
+import { AdjustmentStockService } from '../services/adjustment-stock.service';
 
 
-export interface Stock{
-  product: Product;
-  diff: number;
-} 
 
 @Component({
   selector: 'app-instant-stock',
@@ -20,6 +15,7 @@ export interface Stock{
 export class InstantStockComponent implements OnInit{
 
   public stocks: Stock[];
+  public stocksSubscription: Subscription;
 
   public displayedColumns: string[] = ['name', 'quantity'];
   public dataSource: MatTableDataSource<Stock>;
@@ -27,40 +23,18 @@ export class InstantStockComponent implements OnInit{
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
   constructor(
-    private readonly stockEventsService: StockEventsService,
-    private readonly productsService: ProductsService
+    private readonly adjustmentStockService: AdjustmentStockService,
   ) {}
 
   async ngOnInit(): Promise<void>{
-    const total: number = (await this.stockEventsService.list()).total;
-    const events: StockEvent[] =  (await this.stockEventsService.list({pageSize: total})).rows;
-    await this.setUpStocks(events);
-    this.dataSource = new MatTableDataSource<Stock>(this.stocks)
-    this.dataSource.paginator = this.paginator; 
-  }
-
-  private async setUpStocks(events): Promise<void> {
-    const totalProduct: number = (await this.productsService.list()).total;
-    const productsInDb: Product[] = (await this.productsService.list({pageSize: totalProduct})).rows;
-    const productIdInDb: string[] = productsInDb.map(product => product._id);
-    this.stocks = [];
-    const productsId: string[] = [];
-    for(const index in events){
-      const index2: number = productsId.indexOf(events[index].product);
-      if(index2===-1){
-        productsId.push(events[index].product);
-        const product: Product = productsInDb[productIdInDb.indexOf(events[index].product)]; 
-        const diff: number = events[index].diff; 
-        this.stocks.push({
-          product,
-          diff
-        });
+    this.stocksSubscription = this.adjustmentStockService.instantStockSubject.subscribe(
+      (stocks: Stock[]) => {
+        this.stocks = stocks;
+        this.dataSource = new MatTableDataSource<Stock>(this.stocks)
+        this.dataSource.paginator = this.paginator; 
       }
-      else{
-        this.stocks[index2].diff += events[index].diff;
-      }
-    }
-    this.stocks.sort(this.compareStock);
+    );
+    this.adjustmentStockService.setInstantStock();
   }
 
   public applyFilter(event: Event): void {
@@ -73,12 +47,6 @@ export class InstantStockComponent implements OnInit{
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
-  }
-
-  private compareStock(a: Stock, b: Stock): number {
-    if(a.product.name < b.product.name) return -1;
-    else if(a.product.name > b.product.name) return 1;
-    else return 0;
   }
 
 }

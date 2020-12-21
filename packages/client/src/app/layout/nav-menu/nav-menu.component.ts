@@ -82,7 +82,7 @@ const NAV_MENUS: SubMenu[] = [
       },
       {
         name: 'Outil StoK-Fêt',
-        route: '/inventory-management/invoice-tool',
+        route: '/inventory-management/inventory-tools',
         permissions: ['inventory-management:invoice-tool']
       },
     ],
