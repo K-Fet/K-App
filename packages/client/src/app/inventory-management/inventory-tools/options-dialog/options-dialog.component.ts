@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Provider } from '../providers/provider.model';
+import { Provider } from '../../providers/provider.model';
 import { ProvidersService } from 'src/app/inventory-management/api-services/providers.service';
 import { DynamicFormModel, DynamicSelectModel, DynamicFormService } from '@ng-dynamic-forms/core';
 import { from } from 'rxjs';

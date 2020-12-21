@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
-import { InvoiceToolRoutingModule } from './invoice-tool-routing.module';
+import { InventoryToolsRoutingModule } from './inventory-tools-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { InvoicesComponent } from './invoices/invoices.component';
@@ -31,7 +31,7 @@ import { OptionsDialogComponent } from './options-dialog/options-dialog.componen
   imports: [
     SharedModule,
     NgxPermissionsModule.forChild(),
-    InvoiceToolRoutingModule,
+    InventoryToolsRoutingModule,
   ],
   providers: [
     InvoicesService,
@@ -48,4 +48,4 @@ import { OptionsDialogComponent } from './options-dialog/options-dialog.componen
     OptionsDialogComponent
   ]
 })
-export class InvoiceToolModule {}
+export class InventoryToolsModule {}
