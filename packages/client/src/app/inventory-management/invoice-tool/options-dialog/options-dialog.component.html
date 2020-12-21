@@ -1,0 +1,19 @@
+<div fxLayoutAlign="center">
+    <div fxFlex class="max-width">
+        Choose options
+        <div *ngIf='data.shelves'>
+            {{ data.productName }}
+        </div>
+        <div>
+            <form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+                <dynamic-material-form [group]="formGroup" [model]="optionsFormModel">
+                </dynamic-material-form>
+            </form>
+            <mat-checkbox [(ngModel)]="stopDialog" *ngIf="data.shelves">
+                Appliquer automatiquement les rayons pour tous les produits.
+            </mat-checkbox>
+            <button mat-button  [disabled]="formGroup.invalid" (click)="onNgSubmit()">Submit</button>
+        </div>
+    </div>
+</div>
+  

@@ -31,7 +31,7 @@ export class StockEventsService {
 
   get(id: string): Promise<StockEvent> {
     // Always populate shelf with products
-    return this.http.get<StockEvent>(`${BASE_URL}/${id}?populate=products`).toPromise();
+    return this.http.get<StockEvent>(`${BASE_URL}/${id}?populate=product`).toPromise();
   }
 
   update(event: StockEvent): Promise<StockEvent> {

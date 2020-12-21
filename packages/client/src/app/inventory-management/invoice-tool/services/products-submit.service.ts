@@ -13,17 +13,21 @@ import { StockEventsService } from '../../api-services/stock-events.service';
 import { Router } from '@angular/router';
 import { ToasterService } from '../../../core/services/toaster.service';
 import { MoleculerListOptions } from 'src/app/shared/models/MoleculerWrapper';
+import { MatDialog } from '@angular/material/dialog';
+import { OptionsDialogComponent } from '../options-dialog/options-dialog.component';
 
 
 
 
 @Injectable()
 
-export class ProductsSubmit {
+export class ProductsSubmitService {
 
     BASE_PRODUCT = {} as Product;
     BASE_STOCKEVENT = {} as StockEvent;
     BASE_MOLECULERLISTOPTIONS = {} as MoleculerListOptions;
+
+    public automatiqueShelfAssignment = false;
 
     shelvesInDB: Shelf[];
     providersInDB: Provider[];
@@ -35,10 +39,13 @@ export class ProductsSubmit {
                  private providersService: ProvidersService,
                  private shelvesService: ShelvesService,
                  private toasterService: ToasterService,
-                 private router: Router, ){
+                 private router: Router, 
+                 private readonly dialog: MatDialog,
+               ){
     }
 
-    async submitProducts(articles: Article[]): Promise<void> {
+    async submitProducts(articles: Article[], provider: string): Promise<void> {
+        this.automatiqueShelfAssignment = false;
 
         const options =  this.BASE_MOLECULERLISTOPTIONS;
 
@@ -64,7 +71,7 @@ export class ProductsSubmit {
 
             if(!exist){
             //Create Product in db
-                const productToAdd = this.getProductFromArticle(articles[j], this.providersInDB, this.shelvesInDB);
+                const productToAdd = await this.getProductFromArticle(articles[j], provider,);
                 await this.productsService.create(productToAdd);
                 await this.setProductsInDB();
                 this.toasterService.showToaster("Le produit " + articles[j].name + " est ajouté à la DB");
@@ -74,13 +81,13 @@ export class ProductsSubmit {
         return Promise.resolve();
     }
 
-    getProductFromArticle(
+    async getProductFromArticle(
         article: Article,
-        providers: Provider[],
-        shelves: Shelf[]
-        ): Product {
+        provider: string,
+        ): Promise<Product> {
         const product = this.BASE_PRODUCT;
-       
+        const shelves = this.shelvesInDB;
+
         let oneShelf: Shelf;
         let oneShelfName: string;
         if(article.name.indexOf("FUT")>0) oneShelfName = "Pressions";
@@ -94,29 +101,39 @@ export class ProductsSubmit {
                 break;
             }
         }
-
-        let oneProvider: Provider;
         
-        for(let i=0; i<providers.length; i++){
-            if(providers[i].name == "France Boissons"){
-                oneProvider = providers[i];
-                break;
+        if(!this.automatiqueShelfAssignment){
+            const dialogRef = this.dialog.open(OptionsDialogComponent, {
+                data: {
+                    shelves: true,
+                    shelf: oneShelf,
+                    productName: article.name
+                }
+            });
+            const result = await dialogRef.afterClosed().toPromise();
+            if(result){
+                product.shelf = result.shelf;
+                this.automatiqueShelfAssignment = result.stopDialog;
+            }
+            else {
+                product.shelf = oneShelf._id;
             }
         }
-
+        else {
+            product.shelf = oneShelf._id;
+        }
         product.name = article.name;
-        product.provider = oneProvider._id; 
-        product.shelf = oneShelf._id;
+        product.provider = provider; 
         product.conversions = [];
+
         return product;
     }
 
-    async submitStockEvents(articles: Article[]): Promise<void> {
+    async submitStockEvents(articles: Article[], eventType: string): Promise<void> {
         
         await this.setProductsInDB();
 
         await this.setStockEventsInDB();
-
         for(let j=0; j<articles.length; j++){
             const productId = this.getProductId(articles[j].name,this.productsInDB);
             if(productId != undefined){
@@ -133,7 +150,7 @@ export class ProductsSubmit {
                 if(!exist){
                 //Create Event in db
                     
-                    const eventToAdd = this.getStockEventFromArticle(articles[j],productId);
+                    const eventToAdd = this.getStockEventFromArticle(articles[j],productId, eventType);
                     if(!isNaN(articles[j].quantity)){  //Treat some exceptions
                         await this.stockEventsService.create(eventToAdd);
                     }
@@ -156,12 +173,13 @@ export class ProductsSubmit {
     getStockEventFromArticle(
         article: Article,
         productId: string,
+        eventType: string,
         ): StockEvent {
         const stockEvent = this.BASE_STOCKEVENT;
         stockEvent.product = productId;
         stockEvent.diff = article.quantity; 
         stockEvent.date = article.date;
-        stockEvent.type = 'Delivery';
+        stockEvent.type = eventType;
         return stockEvent;
     }
 
