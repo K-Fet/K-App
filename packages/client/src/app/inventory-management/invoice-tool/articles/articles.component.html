@@ -1,7 +1,7 @@
 <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
   <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
-    <button mat-stroked-button (click) = "isPrint = !isPrint" >Afficher les articles par date</button>
-    <button mat-stroked-button (click) = "isPrintSum = !isPrintSum" >Afficher les articles par somme</button>
+    <button mat-stroked-button (click) = "setArticles()" >Afficher les articles par date</button>
+    <button mat-stroked-button (click) = "setArticlesSum()" >Afficher les articles par somme</button>
     <button mat-stroked-button (click) = "onCopyData()" >Copier les articles par somme</button>
   </div>
 </div>
@@ -28,44 +28,30 @@
   </div>
 </div>
 
-<table mat-table [dataSource]="articles" class="mat-elevation-z8" *ngIf="isPrint">
-  
-    <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef> Date </th>
-      <td mat-cell *matCellDef="let article"> {{article.date | date}} </td>
-    </ng-container>
-  
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Nom </th>
-      <td mat-cell *matCellDef="let article"> {{article.name}} </td>
-    </ng-container>
-
-    <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef> Quantité </th>
-        <td mat-cell *matCellDef="let article"> {{article.quantity}} </td>
+<div>
+  <table mat-table [dataSource]="articleDataSource" class="mat-elevation-z8" *ngIf="isPrint || isPrintSum">
+    
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let article"> {{article.date | date}} </td>
       </ng-container>
-  
-  
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nom </th>
+        <td mat-cell *matCellDef="let article"> {{article.name}} </td>
+      </ng-container>
 
-<p></p>
-<table mat-table [dataSource]="articlessum" class="mat-elevation-z8" *ngIf="isPrintSum">
+      <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Quantité </th>
+          <td mat-cell *matCellDef="let article"> {{article.quantity}} </td>
+        </ng-container>
+    
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+</div>
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Nom </th>
-    <td mat-cell *matCellDef="let article"> {{article.name}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="quantity">
-      <th mat-header-cell *matHeaderCellDef> Quantité </th>
-      <td mat-cell *matCellDef="let article"> {{article.quantity}} </td>
-    </ng-container>
-
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
-</table>
   
   

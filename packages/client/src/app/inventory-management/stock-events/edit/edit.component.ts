@@ -31,9 +31,8 @@ export class EditComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router) { }
 
-  public ngOnInit(): void {
+  public ngOnInit(): void { 
     this.formGroup = this.formService.createFormGroup([]);
-
     this.route.data.subscribe((data: { stockEvent: StockEvent }) => {
       this.originalEvent = data.stockEvent;
       this.model = getStockEventsModel(

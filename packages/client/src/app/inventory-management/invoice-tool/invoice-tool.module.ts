@@ -12,11 +12,12 @@ import { Article } from './article';
 import { InvoicesService } from './services/invoices.service';
 import { ParseService } from './services/parse.service';
 import { ArticlesService } from './services/articles.service';
-import { ProductsSubmit } from './services/products-submit.service';
+import { ProductsSubmitService } from './services/products-submit.service';
 import { ProductsService } from '../api-services/products.service';
 import { ShelvesService } from '../api-services/shelves.service';
 import { ProvidersService } from '../api-services/providers.service';
 import { StockEventsService } from '../api-services/stock-events.service';
+import { OptionsDialogComponent } from './options-dialog/options-dialog.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { StockEventsService } from '../api-services/stock-events.service';
     HomePageComponent,
     ArticlesComponent,
     InvoicesComponent,
-    InstantStockComponent
+    InstantStockComponent,
+    OptionsDialogComponent
   ],
   imports: [
     SharedModule,
@@ -35,12 +37,15 @@ import { StockEventsService } from '../api-services/stock-events.service';
     InvoicesService,
     ParseService,
     ArticlesService,
-    ProductsSubmit,
+    ProductsSubmitService,
     ProductsService,
     StockEventsService,
     ShelvesService,
     ProvidersService,
     Article,
+  ],
+  entryComponents: [
+    OptionsDialogComponent
   ]
 })
 export class InvoiceToolModule {}

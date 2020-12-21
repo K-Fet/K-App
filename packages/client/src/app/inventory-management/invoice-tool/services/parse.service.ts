@@ -10,6 +10,8 @@ export class ParseService {
   listarticle = [];
   articleSum = [];
 
+  csvtext = "";
+  fileReader = new FileReader();
 
 
   async fromFilestoText(invoices: File[]): Promise<void> {
@@ -26,13 +28,30 @@ export class ParseService {
       this.parsePDF();
     }
     else {
-      let textTotal = '';
-      for(const file of invoices){
-        textTotal += await file.text();
+      this.csvtext = '';
+      if(invoices[0]){
+        const text = await this.readfile(0, invoices);
+        this.parseCsv(text);
       }
-      this.parseCsv(textTotal);
     }
     return Promise.resolve();
+  }
+
+  private async readfile(index: number, files: File[]): Promise<string> {
+    return new Promise((resolve) => {
+      if( index >= files.length ) {
+        return;
+      }
+      const file = files[index];
+      this.fileReader.onload = async(e): Promise<void> => {  
+        // get file content  
+        const target = e.target as FileReader;
+        this.csvtext += target.result.toString();
+        await this.readfile(index+1, files);
+      }
+      this.fileReader.readAsText(file);
+      setTimeout(() => resolve(this.csvtext), 100*files.length);
+    });
   }
 
   private parseCsv(csv: string): void {
@@ -247,7 +266,6 @@ export class ParseService {
     }
   
     this.listarticle = finallist;
-    console.log(finallist);
   }
 
   getDate(invoice: string): Date{

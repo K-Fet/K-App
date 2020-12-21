@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ArticlesService } from '../services/articles.service';
 import { Article } from '../article';
 import { Subscription } from 'rxjs';
-import { ProductsSubmit } from '../services/products-submit.service';
+import { ProductsSubmitService } from '../services/products-submit.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { OptionsDialogComponent } from '../options-dialog/options-dialog.component';
 
 @Component({
   selector: 'invoice-tool-articles',
@@ -11,23 +16,29 @@ import { ProductsSubmit } from '../services/products-submit.service';
 })
 export class ArticlesComponent implements OnInit{
 
-  articles: Article[];
-  articleSubscription: Subscription;
+  public articles: Article[];
+  public articleSubscription: Subscription;
+   
+  public articlessum: Article[];
+  public articlesumSubscription: Subscription;
 
-  articlessum: Article[];
-  articlesumSubscription: Subscription;
+  public articleDataSource: MatTableDataSource<Article> = new MatTableDataSource<Article>();
 
-  displayedColumns: string[] = ['date', 'name', 'quantity'];
-  displayedColumns2: string[] = ['name', 'quantity'];
+  public displayedColumns: string[] = ['date', 'name', 'quantity'];
 
-  isPrint: boolean;
-  isPrintSum: boolean;
-  isLoading: boolean;
-  downloadCSV: boolean;
+  public isPrint: boolean;
+  public isPrintSum: boolean;
+  public isLoading: boolean;
+  public downloadCSV: boolean;
+
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
   constructor(  private articleService: ArticlesService,
-                private productsSubmit: ProductsSubmit,)
+                private productsSubmitService: ProductsSubmitService,
+                private readonly dialog: MatDialog,
+             )
               {
                 this.isLoading = false;
               }
@@ -46,6 +57,8 @@ export class ArticlesComponent implements OnInit{
       }
     );
     this.articleService.emitArticlesumSubject();
+    this.articleDataSource.sort = this.sort;
+    this.articleDataSource.paginator = this.paginator;
   }
 
   setAllArticles(): Article[]{
@@ -93,19 +106,56 @@ export class ArticlesComponent implements OnInit{
   }
 
   async onNgSubmitProducts(): Promise<void> {
-
-    this.isLoading = true;
-    await this.productsSubmit.submitProducts(this.articlessum);
-    this.isLoading = false;
-    return Promise.resolve();
+    const dialogRef = this.dialog.open(OptionsDialogComponent, {
+      data: {
+        providers: true,
+      }
+    });
+    dialogRef.afterClosed().subscribe(async (res) => {
+      if(res){
+        this.isLoading = true;
+        await this.productsSubmitService.submitProducts(this.articlessum, res.provider);
+        this.isLoading = false;
+        return Promise.resolve();
+      }
+    });
   }
 
   async onNgSubmitStockEvents(): Promise<void> {
+    const dialogRef = this.dialog.open(OptionsDialogComponent, {
+      data: {
+        types: true,
+      }
+    });
 
-    this.isLoading = true;
-    await this.productsSubmit.submitStockEvents(this.articles);
-    this.isLoading = false;
-    return Promise.resolve();
+    dialogRef.afterClosed().subscribe(async (res) => {
+      this.isLoading = true;
+      await this.productsSubmitService.submitStockEvents(this.articles, res.type);
+      this.isLoading = false;
+      return Promise.resolve();
+    });
+  }
+
+  public setArticles(): void {
+    if(this.isPrint) this.isPrint = false; 
+    else {
+      this.isPrintSum = false;
+      this.displayedColumns = ['date', 'name', 'quantity'];
+      this.articleDataSource.data = this.articles;
+      this.isPrint = true;
+      this.articleDataSource._updateChangeSubscription();
+    }
+  }
+
+  public setArticlesSum(): void {
+    if(this.isPrintSum) this.isPrintSum = false; 
+    else {
+      this.isPrint = false;
+      this.displayedColumns = ['name', 'quantity'];
+      this.articleDataSource.data = this.articlessum;
+      this.isPrintSum = true;
+      this.articleDataSource._updateChangeSubscription();
+    }
   }
 
 }

@@ -36,18 +36,21 @@ export class InstantStockComponent implements OnInit{
     const events: StockEvent[] =  (await this.stockEventsService.list({pageSize: total})).rows;
     await this.setUpStocks(events);
     this.dataSource = new MatTableDataSource<Stock>(this.stocks)
-    this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = this.paginator; 
   }
 
   private async setUpStocks(events): Promise<void> {
+    const totalProduct: number = (await this.productsService.list()).total;
+    const productsInDb: Product[] = (await this.productsService.list({pageSize: totalProduct})).rows;
+    const productIdInDb: string[] = productsInDb.map(product => product._id);
     this.stocks = [];
     const productsId: string[] = [];
     for(const index in events){
       const index2: number = productsId.indexOf(events[index].product);
       if(index2===-1){
         productsId.push(events[index].product);
-        const product: Product = await this.productsService.get(events[index].product);
-        const diff: number = events[index].diff;
+        const product: Product = productsInDb[productIdInDb.indexOf(events[index].product)]; 
+        const diff: number = events[index].diff; 
         this.stocks.push({
           product,
           diff
@@ -61,7 +64,7 @@ export class InstantStockComponent implements OnInit{
   }
 
   public applyFilter(event: Event): void {
-    this.dataSource.filterPredicate = (data:Stock, filterValue: string) =>
+    this.dataSource.filterPredicate = (data: Stock, filterValue: string): boolean =>
       data.product.name.trim().toLowerCase().indexOf(filterValue) !== -1;
 
     const filterValue = (event.target as HTMLInputElement).value;
