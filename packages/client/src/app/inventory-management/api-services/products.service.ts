@@ -21,8 +21,23 @@ export class ProductsService {
           page: options.page && options.page.toString(),
           pageSize: options.pageSize && options.pageSize.toString(),
         }),
-      },
+      }, 
     ).toPromise();
+  }
+
+  async listAll(): Promise<Product[]> {
+    let products: Product[] = [];
+    const { totalPages } = await this.list({
+      pageSize: 100,
+    });
+    for(let page=1; page<totalPages+1; page+=1){
+      const { rows } = await this.list({
+        pageSize:100,
+        page: page,
+      });
+      products = [...products, ...rows];
+    }
+    return products;
   }
 
   get(id: string): Promise<Product> {

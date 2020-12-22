@@ -46,20 +46,12 @@ export class ProductsSubmitService {
 
     async submitProducts(articles: Article[], provider: string): Promise<void> {
         this.automatiqueShelfAssignment = false;
-
         const options =  this.BASE_MOLECULERLISTOPTIONS;
 
         await this.setProductsInDB();
-
-        options.pageSize = (await this.shelvesService.list()).total;
-        this.shelvesInDB = await this.shelvesService.list(options).then(function(value){
-            return value.rows;
-        });
+        this.shelvesInDB = await this.shelvesService.listAll();
         
-        options.pageSize = (await this.providersService.list()).total;
-        this.providersInDB = await this.providersService.list(options).then(function(value){
-            return value.rows;
-        });
+        this.providersInDB = await this.providersService.listAll();
         
         for(let j=0; j<articles.length; j++){
             //Check that the product does not exist in db

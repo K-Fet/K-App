@@ -39,8 +39,8 @@ export class EditComponent implements OnInit {
     this.route.data.subscribe((data: { product: Product }) => {
       this.originalProduct = data.product;
       this.model = getProductModel(
-        this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
-        this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
+        this.shelvesService.listAll(),
+        this.providersService.listAll(),
         this.originalProduct,
       );
       this.formGroup = this.formService.createFormGroup(this.model);

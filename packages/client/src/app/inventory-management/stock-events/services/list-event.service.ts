@@ -25,11 +25,7 @@ export class ListEventService {
   }
 
   async initProducts(): Promise<void> {
-    const options =  this.BASE_MOLECULERLISTOPTIONS;
-    options.pageSize = (await this.productsService.list()).total;
-    this.products = await this.productsService.list(options).then(function(value){
-      return value.rows;
-    });
+    this.products = await this.productsService.listAll();
   }
 
   getProductName(stockEvent: StockEvent): string{

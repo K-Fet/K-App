@@ -64,6 +64,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     if(stockEvent === undefined) return "Event undefined";
     else{
       if(stockEvent.type === "InventoryAdjustment") return "Ajustement des stocks";
+      else if(stockEvent.type === "InventoryUpdate") return "Stock mois précédent";
       else if(stockEvent.type === "Transaction") return "Vente";
       else if(stockEvent.type === "Delivery") return "Réception";
       else {

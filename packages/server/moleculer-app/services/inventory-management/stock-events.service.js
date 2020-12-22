@@ -14,7 +14,7 @@ const model = {
     diff: { type: Number, required: true },
     date: { type: Date, default: Date.now, index: true },
     type: {
-      type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'Delivery'], index: true,
+      type: String, required: true, enum: ['Transaction', 'InventoryAdjustment', 'InventoryUpdate', 'Delivery'], index: true,
     },
     order: { type: mongoose.Schema.Types.ObjectId, index: true },
     meta: { type: String },
@@ -25,7 +25,7 @@ const model = {
     diff: Joi.number().required(),
     date: Joi.date().max('now'),
     unit: UNIT_SCHEMA.default(BASE_UNIT),
-    type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'Delivery').required(),
+    type: Joi.string().valid('Transaction', 'InventoryAdjustment', 'InventoryUpdate', 'Delivery').required(),
     order: MONGO_ID.allow(null),
     meta: Joi.string().allow(null),
   }),
@@ -95,6 +95,9 @@ module.exports = {
 
     // Disabled actions
     create: false,
+
+
+    // Enable actions
     update: true,
   },
 };
