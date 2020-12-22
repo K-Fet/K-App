@@ -25,6 +25,22 @@ export class ProvidersService {
     ).toPromise();
   }
 
+  async listAll(): Promise<Provider[]> {
+    let provider: Provider[] = [];
+    const { totalPages } = await this.list({
+      pageSize: 100,
+    });
+    for(let page=1; page<totalPages+1; page+=1){
+      const { rows } = await this.list({
+        pageSize:100,
+        page: page,
+      });
+      provider = [...provider, ...rows];
+    }
+    return provider;
+  }
+
+
   get(id: string): Promise<Provider> {
     return this.http.get<Provider>(`${BASE_URL}/${id}`).toPromise();
   }

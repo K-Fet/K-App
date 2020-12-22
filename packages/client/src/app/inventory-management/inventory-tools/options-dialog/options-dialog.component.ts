@@ -46,7 +46,7 @@ export class OptionsDialogComponent{
     
     
     if(this.data.providers){
-      this.providers = this.providersService.list().then( value => value.rows);
+      this.providers = this.providersService.listAll();
 
       this.optionsFormModel = [
         new DynamicSelectModel<string>({
@@ -82,7 +82,7 @@ export class OptionsDialogComponent{
     }
 
     if(this.data.shelves){
-      this.shelves = this.shelvesService.list().then( value => value.rows);
+      this.shelves = this.shelvesService.listAll();
       this.optionsFormModel = [
         new DynamicSelectModel<string>({
           id: 'shelf',
@@ -108,7 +108,6 @@ export class OptionsDialogComponent{
         };
       }
       if(this.data.shelves){
-        console.log(this.stopDialog);
         res = {
           ...res,
           shelf: this.formGroup.get('shelf').value,

@@ -15,6 +15,8 @@ export class ParseService {
 
 
   async fromFilestoText(invoices: File[]): Promise<void> {
+    this.listarticle = [];
+    this.articleSum = [];
 
     if(invoices[0].type === 'application/pdf'){
       for(let i=0; i<invoices.length; i++){
@@ -55,8 +57,6 @@ export class ParseService {
   }
 
   private parseCsv(csv: string): void {
-    this.listarticle = [];
-    this.articleSum = [];
     const articlesStr = csv.split('\n');
     articlesStr.pop();
     for(const art of articlesStr){
@@ -66,12 +66,14 @@ export class ParseService {
         this.articleSum = [];
         break;
       }
-      this.listarticle.push([new Date(artPrsStr[0]), artPrsStr[1], +artPrsStr[2]]);
+      const date = new Date(artPrsStr[0])
+      date.setHours(12);
+      this.listarticle.push([date, artPrsStr[1], +artPrsStr[2]]);
     }
     this.sumFromDate();
   }
 
-  parsePDF(): void {
+  private parsePDF(): void {
 
     const listinvoices  = [];
 
@@ -277,6 +279,7 @@ export class ParseService {
         const dateparse = datestring.split('.');
         datestring = dateparse[2] + '-' + dateparse[1] + '-' + dateparse[0] + 'T12:00:00';
         const invoiceDate = new Date(datestring);
+        invoiceDate.setHours(12);
         return invoiceDate;       // Return Date Invoice
       }
     }

@@ -29,7 +29,7 @@ export class NewComponent implements OnInit {
 
   ngOnInit() {
     this.model = getStockEventsModel(
-      this.productsService.list({ pageSize: 1000 }).then(value => value.rows),
+      this.productsService.listAll(),
     );
     this.formGroup = this.formService.createFormGroup(this.model);
   }

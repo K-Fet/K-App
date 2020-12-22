@@ -11,6 +11,7 @@ import { StockEvent } from '../stock-events.model';
 import { StockEventsService } from '../../api-services/stock-events.service';
 import { getStockEventFromForm, getStockEventsModel } from '../stock-events.form-model';
 import { ProductsService } from '../../api-services/products.service';
+import { Product } from '../../products/product.model';
 
 @Component({
   templateUrl: './edit.component.html',
@@ -31,12 +32,12 @@ export class EditComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router) { }
 
-  public ngOnInit(): void { 
+  public async ngOnInit(): Promise<void> { 
     this.formGroup = this.formService.createFormGroup([]);
-    this.route.data.subscribe((data: { stockEvent: StockEvent }) => {
+    this.route.data.subscribe(async (data: { stockEvent: StockEvent }) => {
       this.originalEvent = data.stockEvent;
       this.model = getStockEventsModel(
-        this.productsService.list({ pageSize: 1000 }).then(value => value.rows),
+        this.productsService.listAll(),
         this.originalEvent,
       );
       this.formGroup = this.formService.createFormGroup(this.model);
