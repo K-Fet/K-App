@@ -51,4 +51,17 @@ export class ArticlesService {
       }
       this.emitArticlesumSubject();
     }
+
+    editArticles(oldarticle: Article, newarticle: Article): void{
+      for(const i in this.articles){
+        if(this.articles[i].name === oldarticle.name){
+          if(this.articles[i] === oldarticle){
+            this.articles[i] = newarticle;
+          } else {
+            this.articles[i].name = newarticle.name;
+          }
+        }
+      }
+      this.emitArticleSubject();
+    }
 }

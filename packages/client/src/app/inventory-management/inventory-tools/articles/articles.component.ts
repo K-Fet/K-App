@@ -8,6 +8,10 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { OptionsDialogComponent } from '../options-dialog/options-dialog.component';
+import { EditArticleDialogComponent } from './edit-article-dialog/edit-article-dialog.component';
+import { ProductsService } from '../../api-services/products.service';
+import { Product } from '../../products/product.model';
+import { ToasterService } from 'src/app/core/services/toaster.service';
 
 @Component({
   selector: 'invoice-tool-articles',
@@ -24,12 +28,14 @@ export class ArticlesComponent implements OnInit{
 
   public articleDataSource: MatTableDataSource<Article> = new MatTableDataSource<Article>();
 
-  public displayedColumns: string[] = ['date', 'name', 'quantity'];
+  public displayedColumns: string[] = ['date', 'name', 'quantity', 'actions'];
 
   public isPrint: boolean;
   public isPrintSum: boolean;
   public isLoading: boolean;
   public downloadCSV: boolean;
+
+  public products: Product[];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -37,13 +43,15 @@ export class ArticlesComponent implements OnInit{
 
   constructor(  private articleService: ArticlesService,
                 private productsSubmitService: ProductsSubmitService,
+                private productsService: ProductsService,
+                private readonly toaster: ToasterService,
                 private readonly dialog: MatDialog,
              )
               {
                 this.isLoading = false;
               }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.articleSubscription = this.articleService.articlesSubject.subscribe(
       (articles: Article[]) => {
         this.articles = articles;
@@ -59,6 +67,8 @@ export class ArticlesComponent implements OnInit{
     this.articleService.emitArticlesumSubject();
     this.articleDataSource.sort = this.sort;
     this.articleDataSource.paginator = this.paginator;
+
+    this.products = await this.productsService.listAll();
   }
 
   setAllArticles(): Article[]{
@@ -122,6 +132,12 @@ export class ArticlesComponent implements OnInit{
   }
 
   async onNgSubmitStockEvents(): Promise<void> {
+    for(const art of this.articles){
+      if(!this.productExist(art.name)){
+        this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
+        return ;
+      }
+    }
     const dialogRef = this.dialog.open(OptionsDialogComponent, {
       data: {
         types: true,
@@ -140,7 +156,7 @@ export class ArticlesComponent implements OnInit{
     if(this.isPrint) this.isPrint = false; 
     else {
       this.isPrintSum = false;
-      this.displayedColumns = ['date', 'name', 'quantity'];
+      this.displayedColumns = ['date', 'name', 'quantity', 'actions'];
       this.articleDataSource.data = this.articles;
       this.isPrint = true;
       this.articleDataSource._updateChangeSubscription();
@@ -155,6 +171,36 @@ export class ArticlesComponent implements OnInit{
       this.articleDataSource.data = this.articlessum;
       this.isPrintSum = true;
       this.articleDataSource._updateChangeSubscription();
+    }
+  }
+
+  public onEditArticle(article: Article): void {
+    const diaogRef = this.dialog.open(EditArticleDialogComponent, {
+      data: article,
+    });
+
+    diaogRef.afterClosed().subscribe(
+      async (res) => {
+        if(res) {
+          if(res.product){
+            this.products = await this.productsService.listAll();
+          }
+          if(res.article){
+            this.articleService.editArticles(article, res.article);
+            this.articleDataSource.data = this.articles;
+            this.articleDataSource._updateChangeSubscription();
+          }
+        }
+      }
+    )
+  }
+
+  public productExist(productName: string): boolean {
+    if(this.products.map(product => product.name).indexOf(productName)===-1){
+      return false;
+    }
+    else {
+      return true;
     }
   }
 

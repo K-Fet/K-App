@@ -1,4 +1,4 @@
-<div fxLayoutAlign="center">
+  <div fxLayoutAlign="center">
     <mat-card fxFlex class="max-width">
       <mat-card-header>
         <mat-card-title fxLayout="row">
@@ -11,8 +11,94 @@
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        blablabla
       </mat-card-content>
     </mat-card>
   </div>
-  
+
+  <div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+      <mat-card-header>
+        <mat-card-title fxLayout="row">
+          <section class="mat-typography">
+            <h1>Stocks Réels</h1>
+          </section>
+        </mat-card-title>
+        <form [formGroup]="formGroup"  (ngSubmit)="onNgSubmit()">
+          <dynamic-material-form [group]="formGroup" fxLayout="row" [model]="optionsFormModel">
+          </dynamic-material-form>
+        </form>
+        <button mat-button (click)="onNgSubmit()" [disabled]="formGroup.invalid">Soumettre</button>
+      </mat-card-header>
+      <mat-card-content>
+        <app-stock-table [stocksSubject]='adjustmentStockService.realStockSubject'></app-stock-table>
+        <button mat-button (click)='detailedView = !detailedView'>Importer d'un fichier csv (cela supprimera tes stocks réels actuels)</button>
+        <div *ngIf='detailedView'>
+          <a mat-mini-fab color="accent" (click)="onRemove()">
+            <mat-icon>remove</mat-icon>
+          </a>
+          <div 
+            class="dropzone"
+            (dragover)="false"
+            (dragend)="false"
+            (drop)="onDrop($event)"
+            >
+            <p style="margin: 10px; text-align: center">
+              <strong>Pose tes fichier csv ici</strong>
+            </p>
+            <p style="margin: 10px">
+              <strong>Tes csv prises en comptes :</strong>
+            </p>
+            <div style="margin: 20px" *ngFor="let file of csvfiles">
+              {{file.name}}
+            </div>
+          </div>
+          <button mat-button (click)='onSubmitDrop()' [disabled]="csvfiles.length !== 1">Rouler sa bosse</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+      <mat-card-header>
+        <mat-card-title fxLayout="row">
+
+          <section class="mat-typography">
+            <h1>Stocks théoriques</h1>
+          </section>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-stock-table [stocksSubject]='adjustmentStockService.instantStockSubject'></app-stock-table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+      <mat-card-header>
+        <mat-card-title fxLayout="row">
+
+          <section class="mat-typography">
+            <h1>Différence</h1>
+          </section>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-stock-table [stocksSubject]='adjustmentStockService.diffStockSubject'></app-stock-table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxLayoutAlign="center">
+    <mat-card fxFlex class="max-width">
+      <mat-card-header>
+        <mat-card-title fxLayout="row">
+          Validation de l'ajustement.
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div>Si t'es sûr que t'es bon appuie sur le bouton ci-dessous.</div>
+        <button mat-button (click)='onAjusteLesStocks()' [disabled]='!realStocks || realStocks.length===0'>Valider</button>
+      </mat-card-content>
+    </mat-card>
+  </div>

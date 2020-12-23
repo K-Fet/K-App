@@ -46,7 +46,6 @@ export class ProductsSubmitService {
 
     async submitProducts(articles: Article[], provider: string): Promise<void> {
         this.automatiqueShelfAssignment = false;
-        const options =  this.BASE_MOLECULERLISTOPTIONS;
 
         await this.setProductsInDB();
         this.shelvesInDB = await this.shelvesService.listAll();

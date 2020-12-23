@@ -11,7 +11,6 @@ import { StockEvent } from '../stock-events.model';
 import { StockEventsService } from '../../api-services/stock-events.service';
 import { getStockEventFromForm, getStockEventsModel } from '../stock-events.form-model';
 import { ProductsService } from '../../api-services/products.service';
-import { Product } from '../../products/product.model';
 
 @Component({
   templateUrl: './edit.component.html',

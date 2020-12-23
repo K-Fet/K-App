@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Edit {{article.name}}</h1>
+<div mat-dialog-content>
+  <input matInput FormControl='filterFormControl' placeholder="Filter les produits" (change)="changeFilterValue($event)">
+  <form [formGroup]="articleFormGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+    <dynamic-material-form fxLayout="row" [group]="articleFormGroup" [model]="articleOptionsFormModel">
+    </dynamic-material-form>
+  </form>
+  <button mat-button (click)='addProduct(article.name)' [disabled]='productFormGroup'>Ajouter le produit</button>
+  <div *ngIf='productFormGroup'>
+    <form [formGroup]="productFormGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+      <dynamic-material-form fxLayout="row" [group]="productFormGroup" [model]="productOptionsFormModel">
+      </dynamic-material-form>
+    </form>
+    <button mat-button (click)="onSubmitProduct()">
+      Soumettre le produit
+    </button>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button  (click)="onEditArticle()">Ok</button>
+</div>

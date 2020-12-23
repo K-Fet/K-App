@@ -19,7 +19,6 @@ export function getStockEventsModel(
 
   const values = originalStockEvent || BASE_STOCKEVENTS;
 
-  products.then(res => console.log(res));
   const optionMap = (valueField, labelField) => arr => arr.map(b => ({
     value: b[valueField],
     label: b[labelField],

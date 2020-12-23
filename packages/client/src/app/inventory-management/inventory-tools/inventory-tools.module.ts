@@ -21,6 +21,7 @@ import { OptionsDialogComponent } from './options-dialog/options-dialog.componen
 import { InventoryAdjustmentModule } from './inventory-adjustment/inventory-adjustment.module';
 import { AdjustmentStockService } from './services/adjustment-stock.service';
 import { Stock } from './stock';
+import { EditArticleDialogComponent } from './articles/edit-article-dialog/edit-article-dialog.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { Stock } from './stock';
     ArticlesComponent,
     InvoicesComponent,
     InstantStockComponent,
-    OptionsDialogComponent
+    OptionsDialogComponent,
+    EditArticleDialogComponent
   ],
   imports: [
     SharedModule,
@@ -51,7 +53,8 @@ import { Stock } from './stock';
     Stock
   ],
   entryComponents: [
-    OptionsDialogComponent
+    OptionsDialogComponent,
+    EditArticleDialogComponent
   ]
 })
 export class InventoryToolsModule {}
