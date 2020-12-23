@@ -31,7 +31,7 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     this.dataSource = new StockEventsDataSource(this.stockEventsService);
-    await this.dataSource.loadStockEvents();
+    await this.dataSource.loadStockEvents({sort: '-date'});
     await this.listEventService.initProducts();
   }
 
