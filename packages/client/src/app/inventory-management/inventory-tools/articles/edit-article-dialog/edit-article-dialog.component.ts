@@ -1,15 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { Article } from '../../article';
-import { DynamicFormModel, DynamicSelectModel, DynamicInputModel, DynamicDatePickerModel, DynamicFormService, DynamicFormOptionConfig } from '@ng-dynamic-forms/core';
+import { DynamicFormModel, DynamicSelectModel, DynamicInputModel, DynamicDatePickerModel, DynamicFormService, DynamicFormOptionConfig, DynamicFormArrayModel } from '@ng-dynamic-forms/core';
 import { ProductsService } from 'src/app/inventory-management/api-services/products.service';
-import { from, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { subYears } from 'date-fns';
 import { ProvidersService } from 'src/app/inventory-management/api-services/providers.service';
 import { ShelvesService } from 'src/app/inventory-management/api-services/shelves.service';
 import { Product } from 'src/app/inventory-management/products/product.model';
 import { ToasterService } from 'src/app/core/services/toaster.service';
+import { getProductModel } from 'src/app/inventory-management/products/products.form-model';
 
 @Component({
   selector: 'app-edit-article-dialog',
@@ -26,6 +27,9 @@ export class EditArticleDialogComponent implements OnInit {
 
   public productsPromise: Promise<Product[]>;
   public products: Product[] = [];
+
+  public formConversionArray: FormArray;
+  public formConversionModel: DynamicFormArrayModel;
 
   public filterFormControl: FormControl = new FormControl('');
   public productOptions: Subject<DynamicFormOptionConfig<string>[]>;
@@ -77,48 +81,25 @@ export class EditArticleDialogComponent implements OnInit {
   }
   
   addProduct(articleName: string): void{
-    const optionMap = (valueField, labelfield) => arr => arr.map(b => ({
-      value: b[valueField],
-      label: b[labelfield],
-    }));
 
     const providers = this.providersService.listAll();
     const shelves = this.shelvesService.listAll();
 
-    this.productOptionsFormModel = [
-      new DynamicInputModel({
-        id: 'name',
-        label: 'Name',
-        value: articleName,
-        validators: { required: null },
-        inputType: 'string',
-      }),
-      new DynamicSelectModel<string>({
-        id: 'provider',
-        label: 'Fournisseur',
-        validators: { required: null },
-        options: from(providers.then(optionMap('_id','name')),
-        ),
-      }),
-      new DynamicSelectModel<string>({
-        id: 'shelf',
-        label: 'Rayon',
-        validators: { required: null },
-        options: from(shelves.then(optionMap('_id','name')),
-        ),
-      }),
-    ],
+    this.productOptionsFormModel = getProductModel(shelves, providers);
 
     this.productFormGroup = this.formService.createFormGroup(this.productOptionsFormModel);
+    this.formConversionArray = this.productFormGroup.get('conversions') as FormArray;
+    this.formConversionModel = this.formService.findById('conversions', this.productOptionsFormModel) as DynamicFormArrayModel;
+    this.productFormGroup.get('name').setValue(articleName);
   }
 
-  async onSubmitProduct(): Promise<void> {  //TODO gérer les convertion car on envoie ça direct des factures/csv, et les factures fb sont compté en nb de kaisses et pas de bouteilles
+  async onSubmitProduct(): Promise<void> { 
     if(this.productFormGroup.valid && !await this.existProduct(this.productFormGroup.get('name').value)){
       const product: Product = {
         name: this.productFormGroup.get('name').value,
         provider: this.productFormGroup.get('provider').value,
         shelf: this.productFormGroup.get('shelf').value,
-        conversions: [],
+        conversions: this.productFormGroup.get('conversions').value || [],
         used: undefined,
         image: null,
       }
@@ -130,6 +111,14 @@ export class EditArticleDialogComponent implements OnInit {
     else{
       this.toaster.showToaster('ERREUR: Un produit avec le même nom existe déjà');
     }
+  }
+
+  public addConversionLine(): void {
+    this.formService.addFormArrayGroup(this.formConversionArray, this.formConversionModel);
+  }
+
+  public removeItem(context: DynamicFormArrayModel, index: number): void {
+    this.formService.removeFormArrayGroup(index, this.formConversionArray, context);
   }
 
   async existProduct(productName: string): Promise<boolean> {
@@ -163,7 +152,6 @@ export class EditArticleDialogComponent implements OnInit {
       search: event.target.value,
     }).then((res) => 
     {  
-      console.log(this.optionMapFilter('name')(res.rows)); //laisser ce log
       this.productOptions.next(this.optionMapFilter('name')(res.rows));
     });
   }

@@ -1,0 +1,11 @@
+<div>Choisi le produit correspondant à {{data.articleName}}</div>
+<div>
+    <input matInput FormControl='filterFormControl' placeholder="Filter les produits" (change)="changeFilterValue($event)">
+</div>
+<form [formGroup]="formGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+    <dynamic-material-form fxLayout="row" [group]="formGroup" [model]="dynamicFormModel">
+    </dynamic-material-form>
+</form>
+<button mat-button (click)="onNgSubmit()" [disabled]='formGroup.invalid'>
+    Ok
+</button>

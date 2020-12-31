@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { AdjustmentStockService } from '../../services/adjustment-stock.service';
 import { Subscription, from } from 'rxjs';
 import { Stock } from '../../stock';
@@ -9,7 +9,8 @@ import { Product } from 'src/app/inventory-management/products/product.model';
 import { ProductsService } from 'src/app/inventory-management/api-services/products.service';
 import { ParseService } from '../../services/parse.service';
 import { ToasterService } from 'src/app/core/services/toaster.service';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ChooseProductDialogComponent } from '../choose-product-dialog/choose-product-dialog.component';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class ValidationDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ValidationDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: Date,
   ) {}
 
   onNoClick(): void {
@@ -53,6 +55,10 @@ export class AdjustmentComponent implements OnInit {
   public formGroup: FormGroup;
 
   public optionsFormModel: DynamicFormModel;
+
+  public break = false;
+
+  public date: Date;
 
   constructor( 
     private readonly adjustmentStockService: AdjustmentStockService,
@@ -90,6 +96,8 @@ export class AdjustmentComponent implements OnInit {
     ];
 
     this.formGroup = this.formService.createFormGroup(this.optionsFormModel);
+
+    this.adjustmentStockService.setDiffStock();
    }
 
   async ngOnInit(): Promise<void> {
@@ -151,9 +159,37 @@ export class AdjustmentComponent implements OnInit {
       for(const art of this.parseService.articleSum){
         const index = this.products.map(pro => pro.name).indexOf(art[0]);
         if(index === -1){
-          stocks = [];
-          this.toaster.showToaster(`Erreur: le produit ${art[0]} n'est pas en db`);
-          break;
+          const dialogRef = this.dialog.open(ChooseProductDialogComponent, {
+            data: {
+              articleName: art[0],
+              products: this.products,
+            }
+          });
+          if(this.break){
+            this.break = false;
+            break;
+          }
+          dialogRef.afterClosed().subscribe((res) => {
+            if(!res){
+              stocks = [];
+              this.toaster.showToaster(`Erreur: le produit ${art[0]} n'est pas en db`);
+              this.break = true;
+            }
+            else {
+              const index2 = this.products.map(pro => pro._id).indexOf(res.product);
+              if(index2>-1){
+                stocks.push({
+                  product: this.products[index2],
+                  diff: art[1]
+                });
+              } else {
+                stocks = [];
+                this.toaster.showToaster(`Une erreur est survenue`);
+                this.break = true;
+              }
+            }
+          })
+          
         }
         else {
           stocks.push({
@@ -167,13 +203,21 @@ export class AdjustmentComponent implements OnInit {
   }
 
   public async onAjusteLesStocks(): Promise<void>{
-    const dialogRef = this.dialog.open(ValidationDialog);
+    const dialogRef = this.dialog.open(ValidationDialog, {
+      data: this.date,
+    });
 
     dialogRef.afterClosed().subscribe( (res) => {
       if(res){
-        this.adjustmentStockService.adjustStocks();
+        const date = new Date(this.date);
+        date.setHours(13);
+        this.adjustmentStockService.adjustStocks(date);
       }
     })
+  }
+
+  public changeDate(event): void{
+    this.date = event.target.value;
   }
 
 }

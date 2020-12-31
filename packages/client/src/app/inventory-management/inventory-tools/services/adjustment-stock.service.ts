@@ -92,6 +92,15 @@ export class AdjustmentStockService {
       for(const stock of this.realStock){
         this.updateDiffFromReal(stock);
       }
+      for(const stock of this.instantStock) {
+        const index = this.diffStock.map(sto => sto.product._id).indexOf(stock.product._id);
+        if(index === -1){
+          this.diffStock.push({
+            product: stock.product,
+            diff: -stock.diff,
+          });
+        }
+      }
       this.diffStock.sort(this.compareStock);
       this.emitDiffStockSubject();
     }
@@ -105,6 +114,7 @@ export class AdjustmentStockService {
             product: stock.product,
             diff: stock.diff,
           });
+          console.log('oui');
         } else {
           this.diffStock[index].diff = stock.diff;
         }
@@ -128,6 +138,8 @@ export class AdjustmentStockService {
     }
 
     private async getRecentEvents(initPageSize: number): Promise<StockEvent[]>{
+      let begin = false;
+      let done = false;
       let events: StockEvent[] = [];
       const { totalPages, pageSize } = await this.stockEventsService.list({
         pageSize: initPageSize,
@@ -135,24 +147,67 @@ export class AdjustmentStockService {
         sort: '-date',
       });
       for(let page=1; page<totalPages+1; page+=1){
+        if(done) break;
         const { rows } = await this.stockEventsService.list({
           pageSize: pageSize,
           page: page,
           sort: '-date',
         });
-        const index = rows.map(row => row.type).indexOf('InventoryAdjustment');
-        if(index ===-1){
+        const index = rows.map(row => row.type).indexOf('InventoryUpdate');
+        if(index ===-1 && !begin){
           events = [ ...events, ...rows];
         }
-        else{
+        else if(index > -1 && !begin){
+          begin = true;
           events = [ ...events, ...rows.splice(0, index)];
+          for(const row of rows){
+            if(row.type === 'InventoryUpdate'){
+              events.push(row);
+            }
+            else {
+              done = true;
+              break;
+            }
+          }
+        }
+        else if (index === -1 && begin) break;
+        else if (index > -1  && begin) {
+          if(index === 0) {
+            for(const row of rows){
+              if(row.type === 'InventoryUpdate'){
+                events.push(row);
+              }
+              else {
+                done = true;
+                break;
+              }
+            }
+          } else break;
         }
       }
       return events;
     }
 
-    public async adjustStocks(): Promise<void> {
-      const date = new Date();
-      console.log(date);
+    public async adjustStocks(date: Date): Promise<void> {
+      for(const stock of this.instantStock){
+        const stockEvent: StockEvent = {
+          product: stock.product._id,
+          diff: -stock.diff,
+          date: date,
+          type: 'InventoryAdjustment'
+        };
+        this.stockEventsService.create(stockEvent);
+      }
+      date.setHours(14);
+      for(const stock of this.realStock){
+        const stockEvent: StockEvent = {
+          product: stock.product._id,
+          diff: stock.diff,
+          date: date,
+          type: 'InventoryUpdate'
+        };
+        this.stockEventsService.create(stockEvent);
+      }
+      this.setInstantStock();
     }
 }

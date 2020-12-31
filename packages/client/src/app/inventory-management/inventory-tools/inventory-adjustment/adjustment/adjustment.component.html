@@ -2,23 +2,6 @@
     <mat-card fxFlex class="max-width">
       <mat-card-header>
         <mat-card-title fxLayout="row">
-          <a mat-button routerLink="../">
-            <mat-icon>arrow_back</mat-icon>
-          </a>
-          <section class="mat-typography">
-            <h1>Gestion des ajustements de stocks</h1>
-          </section>
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div fxLayoutAlign="center">
-    <mat-card fxFlex class="max-width">
-      <mat-card-header>
-        <mat-card-title fxLayout="row">
           <section class="mat-typography">
             <h1>Stocks Réels</h1>
           </section>
@@ -98,7 +81,15 @@
       </mat-card-header>
       <mat-card-content>
         <div>Si t'es sûr que t'es bon appuie sur le bouton ci-dessous.</div>
-        <button mat-button (click)='onAjusteLesStocks()' [disabled]='!realStocks || realStocks.length===0'>Valider</button>
+        <div>
+          <div>
+            <mat-label>Choisi la date de ta gestion de stock</mat-label>
+          </div>
+          <input matInput [matDatepicker]="picker" (dateChange)="changeDate($event)" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </div>
+        <button mat-button (click)='onAjusteLesStocks()' [disabled]='!realStocks || realStocks.length===0 || !date'>Valider</button>
       </mat-card-content>
     </mat-card>
   </div>

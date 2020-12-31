@@ -67,7 +67,7 @@ export class ParseService {
         break;
       }
       const date = new Date(artPrsStr[0])
-      date.setHours(12);
+      date.setHours(10);
       this.listarticle.push([date, artPrsStr[1], +artPrsStr[2]]);
     }
     this.sumFromDate();
@@ -279,7 +279,7 @@ export class ParseService {
         const dateparse = datestring.split('.');
         datestring = dateparse[2] + '-' + dateparse[1] + '-' + dateparse[0] + 'T12:00:00';
         const invoiceDate = new Date(datestring);
-        invoiceDate.setHours(12);
+        invoiceDate.setHours(10);
         return invoiceDate;       // Return Date Invoice
       }
     }
