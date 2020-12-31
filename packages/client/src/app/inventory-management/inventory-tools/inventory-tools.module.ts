@@ -22,6 +22,7 @@ import { InventoryAdjustmentModule } from './inventory-adjustment/inventory-adju
 import { AdjustmentStockService } from './services/adjustment-stock.service';
 import { Stock } from './stock';
 import { EditArticleDialogComponent } from './articles/edit-article-dialog/edit-article-dialog.component';
+import { StocksManagementService } from './services/stocks-management.service';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { EditArticleDialogComponent } from './articles/edit-article-dialog/edit-
     ShelvesService,
     ProvidersService,
     AdjustmentStockService,
+    StocksManagementService,
     Article,
     Stock
   ],

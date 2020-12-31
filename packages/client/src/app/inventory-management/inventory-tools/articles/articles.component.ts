@@ -35,6 +35,8 @@ export class ArticlesComponent implements OnInit{
   public isLoading: boolean;
   public downloadCSV: boolean;
 
+  private isConverted = false;
+
   public products: Product[];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -145,9 +147,11 @@ export class ArticlesComponent implements OnInit{
     });
 
     dialogRef.afterClosed().subscribe(async (res) => {
-      this.isLoading = true;
-      await this.productsSubmitService.submitStockEvents(this.articles, res.type);
-      this.isLoading = false;
+      if(res){
+        this.isLoading = true;
+        await this.productsSubmitService.submitStockEvents(this.articles, res.type);
+        this.isLoading = false;
+      }
       return Promise.resolve();
     });
   }
@@ -204,4 +208,41 @@ export class ArticlesComponent implements OnInit{
     }
   }
 
+  public onConvertKaisse(): void {
+    for(const index in this.articles){
+      this.articles[index] = this.convertKaisseToArticle(this.articles[index], this.isConverted);
+    }
+    for(const index in this.articlessum){
+      this.articlessum[index] = this.convertKaisseToArticle(this.articlessum[index], this.isConverted);
+    }
+    this.isConverted = !this.isConverted;
+    this.articleDataSource._updateChangeSubscription();
+  }
+
+  public convertThisArticle(article: Article): void {
+    const index = this.articleDataSource.data.indexOf(article);
+    if(index>-1){
+      this.articleDataSource.data[index] = this.convertKaisseToArticle(article, this.isConverted);
+      this.articleDataSource._updateChangeSubscription();
+    }
+  }
+
+  private convertKaisseToArticle(article: Article, isConverted: boolean): Article{
+    const index = this.products.map(product => product.name).indexOf(article.name);
+    if(index > -1){
+      const product = this.products[index];
+      if(product.conversions && product.conversions.length>0){
+        const index2 = product.conversions.map(conv => conv.displayName).indexOf('Kaisse');
+        if(index2>-1){
+          const conv = product.conversions[index2];
+          if(isConverted){
+            article.quantity = article.quantity/conv.coef;
+          } else {
+            article.quantity = article.quantity * conv.coef;
+          }
+        }
+      }
+    }
+    return article;
+  }
 }

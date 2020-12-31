@@ -8,7 +8,7 @@ import { toURL } from '../../core/api-services/api-utils';
 const BASE_URL = toURL('v2/inventory-management/products');
 
 @Injectable()
-export class ProductsService {
+export class ProductsService { 
 
   constructor(private http: HttpClient) { }
 

@@ -16,7 +16,7 @@
       <p>Rayon : {{getShelf(product)?.name}}</p>
       <h4>Conversions :</h4>
       <div *ngFor="let c of product.conversions;let i = index">
-        {{i}}: 1 unité vaut {{c.coef}}{{c.unit}} <span *ngIf="c.displayName">({{c.displayName}})</span>.
+        {{i}}: 1 {{c.unit}} <span *ngIf="c.displayName">({{c.displayName}})</span> vaut {{c.coef}} unité .
       </div>
     </mat-card-content>
   </mat-card>

@@ -1,0 +1,11 @@
+<div  *ngIf='stoKFet'>
+    <mat-card *ngFor='let stok of stoKFet'>
+        <mat-card-title>
+            StoK-Fêt du {{ stok.date | date }}
+        </mat-card-title>
+        <mat-card-content>
+            <app-stocks-management-table [stocks]='stok.stocks'></app-stocks-management-table>
+            <button mat-button (click)='onDownloadCsv(stok.date, stok.stocks)'> Télécharger un csv </button>
+        </mat-card-content>
+    </mat-card>
+</div>

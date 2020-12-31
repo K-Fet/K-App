@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
-import { AdjustmentComponent } from './adjustment/adjustment.component';
+import { InventoryAdjustmentComponent } from './inventory-adjustment.component';
 
 const routes: Routes = [
   {
     path: 'adjustment',
-    component: AdjustmentComponent,
+    component: InventoryAdjustmentComponent,
     canActivate: [NgxPermissionsGuard],
     data: { permissions: { only: ['inventory-management:invoice-tool'] } },
   },

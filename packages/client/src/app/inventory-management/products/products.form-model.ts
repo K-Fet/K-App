@@ -57,8 +57,9 @@ export function getProductModel(
     label: b[labelField],
   }));
 
+
   return [
-    new DynamicInputModel({
+    new DynamicInputModel({ 
       id: 'name',
       label: 'Nom du produit',
       value: values.name,
@@ -82,7 +83,6 @@ export function getProductModel(
       id: 'provider',
       label: 'Fournisseur',
       value: values.provider && (values.provider as Provider)._id,
-      disabled: values.used,
       validators: { required: null },
       options: from(providers.then(optionMap('_id', 'name')),
       ),

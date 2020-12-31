@@ -7,10 +7,16 @@
   </form>
   <button mat-button (click)='addProduct(article.name)' [disabled]='productFormGroup'>Ajouter le produit</button>
   <div *ngIf='productFormGroup'>
-    <form [formGroup]="productFormGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
-      <dynamic-material-form fxLayout="row" [group]="productFormGroup" [model]="productOptionsFormModel">
+    <form [formGroup]="productFormGroup" fxLayout="column" (ngSubmit)="onSubmitProduct()" class="form-field-block">
+      <dynamic-material-form [group]="productFormGroup" [model]="productOptionsFormModel">
+        <ng-template modelId="conversions" let-group let-index="index" let-context="context">
+          <button mat-icon-button type="button" (click)="removeItem(context, index)">
+            <mat-icon aria-label="Supprimer la ligne">delete</mat-icon>
+          </button>
+        </ng-template>
       </dynamic-material-form>
     </form>
+      <button mat-button type="button" (click)="addConversionLine()">Ajouter une conversion</button>
     <button mat-button (click)="onSubmitProduct()">
       Soumettre le produit
     </button>

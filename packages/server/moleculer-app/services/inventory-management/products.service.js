@@ -73,6 +73,7 @@ module.exports = {
 
         const product = await this.getById(id, true);
         if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
+        // if (!this.isProductAllowedToUpdate(product, ctx.params)) {
         if (!this.isProductAllowedToUpdate(product, ctx.params)) {
           return Promise.reject(new MoleculerClientError('Entity cannot be updated', 400, null, {
             id, details: 'Some updated fields cannot be changed as it will cause inconsistency',
@@ -118,15 +119,17 @@ module.exports = {
      * @param after
      * @return {boolean}
      */
-    isProductAllowedToUpdate(before, after) {
-      if (!before.used) return true;
+    // isProductAllowedToUpdate(before, after) {
+    isProductAllowedToUpdate() {
+      return true;
+      // if (!before.used) return true;
 
-      const bConv = this.mapConversions(before.conversions);
-      const aConv = this.mapConversions(after.conversions);
+      // const bConv = this.mapConversions(before.conversions);
+      // const aConv = this.mapConversions(after.conversions);
 
-      return before.provider === after.provider
-        // Check if every conversions from before still exists and did not change coef
-        && Object.entries(bConv).every(([key, value]) => aConv[key] && aConv[key].coef === value.coef);
+      // return before.provider === after.provider
+      //   // Check if every conversions from before still exists and did not change coef
+      //   && Object.entries(bConv).every(([key, value]) => aConv[key] && aConv[key].coef === value.coef);
     },
 
     /**

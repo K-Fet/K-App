@@ -29,7 +29,7 @@ export class ListComponent implements OnInit, AfterViewInit {
                private listEventService: ListEventService,
                private router: Router) {}
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.dataSource = new StockEventsDataSource(this.stockEventsService);
     await this.dataSource.loadStockEvents({sort: '-date'});
     await this.listEventService.initProducts();
@@ -52,11 +52,15 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   async loadStockEventsPage(): Promise<void>  {
+    let asort = '-date';
+    if(this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`){
+      asort = this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`;
+    }
     await this.dataSource.loadStockEvents({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
       search: this.input.nativeElement.value,
-      sort: this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`,
+      sort: asort,
     });
   }
 
