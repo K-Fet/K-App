@@ -160,6 +160,12 @@ export class EditArticleDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  onRemoveEvent(): void {
+    this.dialogRef.close({
+      removed: true,
+    })
+  }
+
   onEditArticle(): void {
     this.dialogRef.close({
       article: {

@@ -19,10 +19,13 @@
       <button mat-button type="button" (click)="addConversionLine()">Ajouter une conversion</button>
     <button mat-button (click)="onSubmitProduct()">
       Soumettre le produit
-    </button>
+    </button> 
   </div>
 </div>
 <div mat-dialog-actions>
+  <button mat-button (click)="onRemoveEvent()">
+    Supprimer cette event
+  </button>
   <button mat-button (click)="onNoClick()">No Thanks</button>
   <button mat-button  (click)="onEditArticle()">Ok</button>
 </div>

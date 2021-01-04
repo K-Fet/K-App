@@ -5,7 +5,7 @@ import { InventoryToolsRoutingModule } from './inventory-tools-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { InvoicesComponent } from './invoices/invoices.component';
-import { ArticlesComponent } from './articles/articles.component';
+import { ArticlesComponent, ValidationDialog } from './articles/articles.component';
 import { InstantStockComponent } from './instant-stock/instant-stock.component';
 import { Article } from './article';
 
@@ -32,7 +32,8 @@ import { StocksManagementService } from './services/stocks-management.service';
     InvoicesComponent,
     InstantStockComponent,
     OptionsDialogComponent,
-    EditArticleDialogComponent
+    EditArticleDialogComponent,
+    ValidationDialog
   ],
   imports: [
     SharedModule,
@@ -56,7 +57,8 @@ import { StocksManagementService } from './services/stocks-management.service';
   ],
   entryComponents: [
     OptionsDialogComponent,
-    EditArticleDialogComponent
+    EditArticleDialogComponent,
+    ValidationDialog
   ]
 })
 export class InventoryToolsModule {}

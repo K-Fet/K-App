@@ -6,12 +6,34 @@ import { ProductsSubmitService } from '../services/products-submit.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { OptionsDialogComponent } from '../options-dialog/options-dialog.component';
 import { EditArticleDialogComponent } from './edit-article-dialog/edit-article-dialog.component';
 import { ProductsService } from '../../api-services/products.service';
 import { Product } from '../../products/product.model';
 import { ToasterService } from 'src/app/core/services/toaster.service';
+
+
+@Component({
+  selector: 'validation-dialog',
+  templateUrl: 'validation-dialog.html',
+})
+export class ValidationDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ValidationDialog>,
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  onSubmit(): void {
+    this.dialogRef.close(true);
+  }
+
+}
+
 
 @Component({
   selector: 'invoice-tool-articles',
@@ -134,26 +156,33 @@ export class ArticlesComponent implements OnInit{
   }
 
   async onNgSubmitStockEvents(): Promise<void> {
-    for(const art of this.articles){
-      if(!this.productExist(art.name)){
-        this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
-        return ;
-      }
-    }
-    const dialogRef = this.dialog.open(OptionsDialogComponent, {
-      data: {
-        types: true,
-      }
-    });
+    const dialogref = this.dialog.open(ValidationDialog);
 
-    dialogRef.afterClosed().subscribe(async (res) => {
+    dialogref.afterClosed().subscribe(async (res) => {
       if(res){
-        this.isLoading = true;
-        await this.productsSubmitService.submitStockEvents(this.articles, res.type);
-        this.isLoading = false;
+        for(const art of this.articles){
+          if(!this.productExist(art.name)){
+            this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
+            return ;
+          }
+        }
+        const dialogRef = this.dialog.open(OptionsDialogComponent, {
+          data: {
+            types: true,
+          }
+        });
+    
+        dialogRef.afterClosed().subscribe(async (res) => {
+          if(res){
+            this.isLoading = true;
+            await this.productsSubmitService.submitStockEvents(this.articles, res.type);
+            this.isLoading = false;
+          }
+          return Promise.resolve();
+        });
       }
-      return Promise.resolve();
     });
+    
   }
 
   public setArticles(): void {
@@ -193,6 +222,18 @@ export class ArticlesComponent implements OnInit{
             this.articleService.editArticles(article, res.article);
             this.articleDataSource.data = this.articles;
             this.articleDataSource._updateChangeSubscription();
+          }
+          if(res.removed){
+            const dialog = this.dialog.open(ValidationDialog);
+            dialog.afterClosed().subscribe( async res => {
+              if(res){
+                const index = this.articleDataSource.data.indexOf(article);
+                if(index > -1){
+                  this.articleDataSource.data.splice(index, 1);
+                  this.articleDataSource._updateChangeSubscription();
+                }
+              }
+            });
           }
         }
       }
