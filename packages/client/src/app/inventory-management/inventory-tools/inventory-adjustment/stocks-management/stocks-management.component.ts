@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { StocksManagementService, ProductStockManagement } from '../../services/stocks-management.service';
 import { Product } from 'src/app/inventory-management/products/product.model';
 import { ProductsService } from 'src/app/inventory-management/api-services/products.service';
-import { UrlHandlingStrategy } from '@angular/router';
 
 @Component({
   selector: 'app-stocks-management',
