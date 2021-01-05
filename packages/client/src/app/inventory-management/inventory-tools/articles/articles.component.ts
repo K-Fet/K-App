@@ -231,6 +231,7 @@ export class ArticlesComponent implements OnInit{
                 if(index > -1){
                   this.articleDataSource.data.splice(index, 1);
                   this.articleDataSource._updateChangeSubscription();
+                  this.articleService.removeArticle(article);
                 }
               }
             });
