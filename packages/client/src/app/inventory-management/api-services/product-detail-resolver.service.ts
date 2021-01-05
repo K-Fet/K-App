@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Product } from '../products/product.model';
 import { ProductsService } from './products.service';
 
@@ -9,7 +9,7 @@ export class ProductDetailResolverService implements Resolve<Product> {
   constructor(private productsService: ProductsService,
               private router: Router) {}
 
-  async resolve(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<Product> {
+  async resolve(route: ActivatedRouteSnapshot): Promise<Product> {
     const id = route.paramMap.get('id');
 
     const product = await this.productsService.get(id);
