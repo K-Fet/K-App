@@ -40,6 +40,14 @@ export class ArticlesService {
         this.articlessumSubject.next(this.articlessum.slice());
     }
 
+    removeArticle(article: Article): void{
+      const index = this.articles.indexOf(article);
+      if(index > -1){
+        this.articles.splice(index, 1);
+      }
+      this.emitArticleSubject();
+    }
+
     putArticlessum(): void {
       this.articlessum = [];
       const someArticles = this.parseService.articleSum;

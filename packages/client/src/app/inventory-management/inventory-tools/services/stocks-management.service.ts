@@ -140,6 +140,9 @@ export class StocksManagementService {
         }
       }
     }
+    for(const a of this.stocksManagement){
+      if(!a.realInstantStock) a.realInstantStock = 0;
+    }
   }
 
   private setDeliveryQuantity(stockEvents: StockEvent[]): void {

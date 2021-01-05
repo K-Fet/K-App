@@ -196,7 +196,7 @@ export class AdjustmentStockService {
           date: date,
           type: 'InventoryAdjustment'
         };
-        this.stockEventsService.create(stockEvent);
+        await this.stockEventsService.create(stockEvent);
       }
       date.setHours(14);
       for(const stock of this.realStock){
@@ -206,7 +206,7 @@ export class AdjustmentStockService {
           date: date,
           type: 'InventoryUpdate'
         };
-        this.stockEventsService.create(stockEvent);
+        await this.stockEventsService.create(stockEvent);
       }
       this.setInstantStock();
     }

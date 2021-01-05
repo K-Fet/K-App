@@ -78,6 +78,7 @@
         <mat-card-title fxLayout="row">
           Validation de l'ajustement.
         </mat-card-title>
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
       </mat-card-header>
       <mat-card-content>
         <div>Si t'es sûr que t'es bon appuie sur le bouton ci-dessous.</div>

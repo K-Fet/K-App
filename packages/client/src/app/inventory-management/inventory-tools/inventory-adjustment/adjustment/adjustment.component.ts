@@ -62,6 +62,8 @@ export class AdjustmentComponent implements OnInit {
   
   public date: Date;
 
+  public isLoading = false;
+
   constructor( 
     public readonly adjustmentStockService: AdjustmentStockService,
     private invoiceService: InvoicesService,
@@ -209,11 +211,14 @@ export class AdjustmentComponent implements OnInit {
       data: this.date,
     });
 
-    dialogRef.afterClosed().subscribe( (res) => {
+    dialogRef.afterClosed().subscribe( async (res) => {
       if(res){
+        this.isLoading = false;
         const date = new Date(this.date);
         date.setHours(13);
-        this.adjustmentStockService.adjustStocks(date);
+        await this.adjustmentStockService.adjustStocks(date);
+        this.isLoading = true;
+        this.toaster.showToaster('L\'ajustement a bien été fait');
       }
     })
   }
