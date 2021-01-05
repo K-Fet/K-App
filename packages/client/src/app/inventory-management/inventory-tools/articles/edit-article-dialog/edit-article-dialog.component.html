@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Edit {{article.name}}</h1>
 <div mat-dialog-content>
   <input matInput FormControl='filterFormControl' placeholder="Filter les produits" (change)="changeFilterValue($event)">
-  <form [formGroup]="articleFormGroup" fxLayout="column" (ngSubmit)="onNgSubmit()" class="form-field-block">
+  <form [formGroup]="articleFormGroup" fxLayout="column" class="form-field-block">
     <dynamic-material-form fxLayout="row" [group]="articleFormGroup" [model]="articleOptionsFormModel">
     </dynamic-material-form>
   </form>
