@@ -46,7 +46,7 @@ module.exports = {
     },
   },
 
-  actions: { 
+  actions: {
     add: {
       rest: 'POST /',
       permissions: true,
