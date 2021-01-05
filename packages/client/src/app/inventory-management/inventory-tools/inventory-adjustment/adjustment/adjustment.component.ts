@@ -58,10 +58,12 @@ export class AdjustmentComponent implements OnInit {
 
   public break = false;
 
+  public detailedView = false;
+  
   public date: Date;
 
   constructor( 
-    private readonly adjustmentStockService: AdjustmentStockService,
+    public readonly adjustmentStockService: AdjustmentStockService,
     private invoiceService: InvoicesService,
     private readonly productsService: ProductsService,
     private readonly formService: DynamicFormService,

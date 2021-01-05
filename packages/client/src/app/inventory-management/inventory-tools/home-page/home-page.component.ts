@@ -20,7 +20,7 @@ export class HomePageComponent implements OnInit {
 
   constructor(private invoiceService: InvoicesService,
               private parseService: ParseService,
-              private articleService: ArticlesService) { }
+              public articleService: ArticlesService) { }
 
   ngOnInit(): void {
     this.isLoading = false;
