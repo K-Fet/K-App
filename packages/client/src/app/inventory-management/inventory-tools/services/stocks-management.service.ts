@@ -15,6 +15,7 @@ export interface ProductStockManagement {
   difference?: number;
   diffSalesPercentage?: number;
   diffStocksPercentage?: number;
+  cost?: string;
 }
 
 @Injectable()

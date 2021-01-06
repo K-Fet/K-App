@@ -8,55 +8,72 @@
       <ng-container matColumnDef="product">
         <th mat-header-cell *matHeaderCellDef> Produit </th>
         <td mat-cell *matCellDef="let element"> {{element.product.name}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
       
       <ng-container matColumnDef="lastMonthStock">
         <th mat-header-cell *matHeaderCellDef> Stock Mois Dernier </th>
         <td mat-cell *matCellDef="let element"> {{element.lastMonthStock | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="deliveryQuantity">
         <th mat-header-cell *matHeaderCellDef> Quantité livrée </th>
         <td mat-cell *matCellDef="let element"> {{element.deliveryQuantity | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="theoreticalSales">
         <th mat-header-cell *matHeaderCellDef> Quantité écoulée théorique </th>
         <td mat-cell *matCellDef="let element"> {{element.theoreticalSales | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="theoreticalStocks">
         <th mat-header-cell *matHeaderCellDef> Stocks théoriques </th>
         <td mat-cell *matCellDef="let element"> {{element.theoreticalStocks | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="realInstantStock">
         <th mat-header-cell *matHeaderCellDef> Stocks Réels </th>
         <td mat-cell *matCellDef="let element"> {{element.realInstantStock | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="realSales">
         <th mat-header-cell *matHeaderCellDef> Quantité écoulée réelle </th>
         <td mat-cell *matCellDef="let element"> {{element.realSales | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="difference">
         <th mat-header-cell *matHeaderCellDef> Différence </th>
         <td mat-cell *matCellDef="let element"> {{element.difference | number}} </td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="diffSalesPercentage">
         <th mat-header-cell *matHeaderCellDef> Pourcentage de pertes (ventes) </th>
         <td mat-cell *matCellDef="let element"> {{element.diffSalesPercentage | number}} %</td>
+        <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
 
       <ng-container matColumnDef="diffStocksPercentage">
         <th mat-header-cell *matHeaderCellDef> Pourcentage de pertes (stocks) </th>
         <td mat-cell *matCellDef="let element"> {{element.diffStocksPercentage | number}} %</td>
+        <td mat-footer-cell *matFooterCellDef> Coût des Pertes</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef> Coût des pertes </th>
+        <td mat-cell *matCellDef="let element">  <span *ngIf="element.cost === 'Non Défini'"> {{ element.cost }} </span> <span *ngIf="element.cost !== 'Non Défini'"> {{ +element.cost | number  }}€ </span> </td>
+        <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | number}} €</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
     </table>
     <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
 </div>

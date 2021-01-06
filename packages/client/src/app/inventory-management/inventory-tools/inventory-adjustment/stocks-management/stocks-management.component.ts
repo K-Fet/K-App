@@ -36,6 +36,7 @@ export class StocksManagementComponent implements OnInit {
     let adate = beginDate;
     this.stoKFet.push({date: endDate, stocks});
     this.stoKFet[0].stocks = this.bindProductOnId(this.stoKFet[0].stocks);
+    this.stoKFet[0].stocks = this.setCost(this.stoKFet[0].stocks);
     for(let i =1; i<n; i++){
       if(adate){
         const date = new Date(adate.getTime() + (60*60*24*1000));
@@ -44,6 +45,7 @@ export class StocksManagementComponent implements OnInit {
         else{
           this.stoKFet.push({date: endDate, stocks});
           this.stoKFet[i].stocks = this.bindProductOnId(this.stoKFet[i].stocks);
+          this.stoKFet[i].stocks = this.setCost(this.stoKFet[i].stocks);
           adate = beginDate;
         }
       }
@@ -66,9 +68,9 @@ export class StocksManagementComponent implements OnInit {
 
   public onDownloadCsv(date: Date, stocks: ProductStockManagement[]): void {
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += 'Produit, Quantité Livrée, Stock Mois Dernier, Stock Réel, Stock Théorique, Ventes Théoriques, Ventes Réelles, Difference, Pourcentage Pertes (ventes), Pourcentage Pertes (stocks) \r\n';
+    csvContent += 'Produit, Quantité Livrée, Stock Mois Dernier, Stock Réel, Stock Théorique, Ventes Théoriques, Ventes Réelles, Difference, Pourcentage Pertes (ventes), Pourcentage Pertes (stocks), Coût des pertes \r\n';
     for (const a of stocks){
-      csvContent += `${(a.product as Product).name}, ${a.deliveryQuantity}, ${a.lastMonthStock}, ${a.realInstantStock}, ${a.theoreticalStocks}, ${a.theoreticalSales}, ${a.realSales}, ${a.difference}, ${a.diffSalesPercentage}, ${a.diffStocksPercentage} \r\n`;
+      csvContent += `${(a.product as Product).name}, ${a.deliveryQuantity}, ${a.lastMonthStock}, ${a.realInstantStock}, ${a.theoreticalStocks}, ${a.theoreticalSales}, ${a.realSales}, ${a.difference}, ${a.diffSalesPercentage}, ${a.diffStocksPercentage}, ${a.cost} \r\n`;
     }
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -97,5 +99,17 @@ export class StocksManagementComponent implements OnInit {
         } else return -1;
       }
     }
+  }
+  
+  private setCost(stocks: ProductStockManagement[]): ProductStockManagement[] {
+    for (const index in stocks){
+      if((stocks[index].product as Product).price){
+        stocks[index].cost = ((stocks[index].product as Product).price*stocks[index].difference).toString();
+      }
+      else {
+        stocks[index].cost = 'Non Défini';
+      }
+    }
+    return stocks;
   }
 }
