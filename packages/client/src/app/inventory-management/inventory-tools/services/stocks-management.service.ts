@@ -3,6 +3,7 @@ import { StockEventsService } from '../../api-services/stock-events.service';
 import { Product } from '../../products/product.model';
 import { StockEvent } from '../../stock-events/stock-events.model';
 import { ToasterService } from 'src/app/core/services/toaster.service';
+import { ProductsService } from '../../api-services/products.service';
 
 export interface ProductStockManagement {
   product: string | Product;
@@ -22,12 +23,19 @@ export interface ProductStockManagement {
 export class StocksManagementService {
   
   public stocksManagement: ProductStockManagement[];
+  public products: Product[];
+  public productsPromise: Promise<Product[]>
+
   constructor(
     private readonly stockEventsService: StockEventsService,
     private readonly toaster: ToasterService,
-  ) { }
+    private readonly productsService: ProductsService
+  ) { 
+    this.productsPromise = this.productsService.listAll(); 
+  }
 
   public async getLastStockManagement(date?: Date): Promise<{endDate: Date; stocks: ProductStockManagement[]; beginDate: Date}> {
+    this.products = await this.productsPromise;
     const stockEvents = await this.getLastEvents(date);
     let endDate: Date;
     let beginDate: Date;
@@ -43,6 +51,9 @@ export class StocksManagementService {
       this.setDifference();
       this.setSalesPercentage();
       this.setStocksPercentage();
+      this.stocksManagement = this.bindProductOnId(this.stocksManagement);
+      this.stocksManagement = this.setCost(this.stocksManagement);
+      this.stocksManagement.sort(this.sortTable);
       return {endDate: endDate, stocks: this.stocksManagement, beginDate: beginDate};
     }
     return {endDate: null, stocks: null, beginDate: null};
@@ -223,5 +234,65 @@ export class StocksManagementService {
     for(const a of this.stocksManagement){
       a.diffStocksPercentage = - a.difference/(a.lastMonthStock+a.deliveryQuantity)*100;
     }
+  }
+
+  private setCost(stocks: ProductStockManagement[]): ProductStockManagement[] {
+    for (const index in stocks){
+      if((stocks[index].product as Product).price){
+        stocks[index].cost = ((stocks[index].product as Product).price*stocks[index].difference).toString();
+      }
+      else {
+        stocks[index].cost = 'Non Défini';
+      }
+    }
+    return stocks;
+  }
+
+  private bindProductOnId(stocks: ProductStockManagement[]): ProductStockManagement[]{
+    if(stocks){
+      for(const sto of stocks) {
+        const index = this.products.map(prod => prod._id).indexOf(sto.product as string);
+        if(index>-1){
+          sto.product = this.products[index];
+        }
+      }
+      return stocks;
+    }
+    return null;
+  }
+
+  private sortTable(a: ProductStockManagement, b: ProductStockManagement): number{
+    if((a.product as Product).provider !== (b.product as Product).provider){
+      if((a.product as Product).provider > (b.product as Product).provider){
+        return 1;
+      }
+      else return -1;
+    } else {
+      if((a.product as Product).shelf !== (b.product as Product).shelf){
+        if((a.product as Product).shelf > (b.product as Product).shelf){
+          return 1;
+        }
+        else return -1;
+      } else {
+        if((a.product as Product).name > (b.product as Product).name){
+          return 1;
+        } else return -1;
+      }
+    }
+  }
+
+  public onDownloadCsv(date: Date, stocks: ProductStockManagement[]): void {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += 'Produit, Quantité Livrée, Stock Mois Dernier, Stock Réel, Stock Théorique, Ventes Théoriques, Ventes Réelles, Difference, Pourcentage Pertes (ventes), Pourcentage Pertes (stocks), Coût des pertes \r\n';
+    for (const a of stocks){
+      csvContent += `${(a.product as Product).name}, ${a.deliveryQuantity}, ${a.lastMonthStock}, ${a.realInstantStock}, ${a.theoreticalStocks}, ${a.theoreticalSales}, ${a.realSales}, ${a.difference}, ${a.diffSalesPercentage}, ${a.diffStocksPercentage}, ${a.cost} \r\n`;
+    }
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `stokFet${date.toString()}.csv`);
+    document.body.appendChild(link); // Required for FF
+    
+    link.click();
   }
 }
