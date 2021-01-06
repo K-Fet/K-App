@@ -26,6 +26,7 @@ const model = {
     })],
     provider: { type: ObjectId, require: true, index: true },
     shelf: { type: ObjectId, index: true },
+    price: { type: Number, default: null },
   }, { timestamps: true })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
@@ -39,6 +40,7 @@ const model = {
     })),
     provider: MONGO_ID.required(),
     shelf: MONGO_ID,
+    price: Joi.number().allow(null),
   }),
 };
 
