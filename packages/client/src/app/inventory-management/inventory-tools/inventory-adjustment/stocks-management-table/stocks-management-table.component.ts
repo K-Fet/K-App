@@ -14,7 +14,7 @@ export class StocksManagementTableComponent implements OnInit {
   @Input('stocks')
   public stocks: ProductStockManagement[];
 
-  public displayedColumns: string[] = ['product', 'deliveryQuantity', 'lastMonthStock', 'realInstantStock', 'theoreticalStocks', 'theoreticalSales', 'realSales', 'difference', 'diffSalesPercentage', 'diffStocksPercentage'];
+  public displayedColumns: string[] = ['product', 'deliveryQuantity', 'lastMonthStock', 'realInstantStock', 'theoreticalStocks', 'theoreticalSales', 'realSales', 'difference', 'diffSalesPercentage', 'diffStocksPercentage', 'cost'];
   public dataSource: MatTableDataSource<ProductStockManagement>;
   
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -34,6 +34,16 @@ export class StocksManagementTableComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  public getTotalCost(): number {
+    let total = 0;
+    for(const a of this.stocks){
+      if(a.cost !== 'Non Défini'){
+        total += +a.cost;
+      }
+    }
+    return total;
   }
 
 }
