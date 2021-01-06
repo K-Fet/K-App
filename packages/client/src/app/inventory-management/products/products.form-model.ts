@@ -87,6 +87,11 @@ export function getProductModel(
       options: from(providers.then(optionMap('_id', 'name')),
       ),
     }),
+    new DynamicInputModel({ 
+      id: 'price',
+      label: 'Prix',
+      value: values.price,
+    }),
     new DynamicFormArrayModel({
       id: 'conversions',
       label: 'Liste des conversions',
