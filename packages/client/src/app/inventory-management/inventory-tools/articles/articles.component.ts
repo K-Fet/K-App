@@ -154,11 +154,9 @@ export class ArticlesComponent implements OnInit{
 
     dialogref.afterClosed().subscribe(async (res) => {
       if(res){
-        for(const art of this.articles){
-          if(!this.productExist(art.name)){
+        if (this.articles.some(a => !this.productExist(art.name))) {
             this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
-            return ;
-          }
+            return;
         }
         const dialogRef = this.dialog.open(OptionsDialogComponent, {
           data: {
