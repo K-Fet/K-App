@@ -75,7 +75,6 @@ module.exports = {
 
         const product = await this.getById(id, true);
         if (!product) return Promise.reject(new MoleculerClientError('Entity not found', 404, null, { id }));
-        // if (!this.isProductAllowedToUpdate(product, ctx.params)) {
         if (!this.isProductAllowedToUpdate(product, ctx.params)) {
           return Promise.reject(new MoleculerClientError('Entity cannot be updated', 400, null, {
             id, details: 'Some updated fields cannot be changed as it will cause inconsistency',
