@@ -37,13 +37,7 @@ export class StocksManagementTableComponent implements OnInit {
   }
 
   public getTotalCost(): number {
-    let total = 0;
-    for(const a of this.stocks){
-      if(a.cost !== 'Non Défini'){
-        total += +a.cost;
-      }
-    }
-    return total;
+    return this.stocks.filter(a => a.cost !== 'Non Défini').reduce((a, t) => t + a.cost, 0)
   }
 
 }
