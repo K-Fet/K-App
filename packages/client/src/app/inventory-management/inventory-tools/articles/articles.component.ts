@@ -144,7 +144,6 @@ export class ArticlesComponent implements OnInit{
         this.isLoading = true;
         await this.productsSubmitService.submitProducts(this.articlessum, res.provider);
         this.isLoading = false;
-        return Promise.resolve();
       }
     });
   }
