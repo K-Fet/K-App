@@ -232,12 +232,7 @@ export class ArticlesComponent implements OnInit{
   }
 
   public productExist(productName: string): boolean {
-    if(this.products.map(product => product.name).indexOf(productName)===-1){
-      return false;
-    }
-    else {
-      return true;
-    }
+	return this.products.some(p => p.name === productName);
   }
 
   public onConvertKaisse(): void {
