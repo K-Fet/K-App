@@ -169,7 +169,6 @@ export class ArticlesComponent implements OnInit{
             await this.productsSubmitService.submitStockEvents(this.articles, res.type);
             this.isLoading = false;
           }
-          return Promise.resolve();
         });
       }
     });
