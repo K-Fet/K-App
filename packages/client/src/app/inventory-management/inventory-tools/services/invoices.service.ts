@@ -35,7 +35,6 @@ export class InvoicesService {
 
     async submitInvoices(): Promise<void>{
       await this.parseService.fromFilestoText(this.invoices);
-      return Promise.resolve();
     }
 
 }
