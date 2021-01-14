@@ -100,10 +100,7 @@ export class ArticlesComponent implements OnInit{
   }
 
   onCopyData(): void{
-    let tocopy = '';
-    for(let i =0 ; i<this.articlessum.length ; i++){
-      tocopy += this.articlessum[i].name + ';' + this.articlessum[i].quantity + '\n';
-    }
+    const tocopy = this.articlessum.map(a => `${a.name};${a.quantity}`).join('\n');
 
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
