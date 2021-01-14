@@ -79,7 +79,7 @@ module.exports = {
           diff: event.diff / conv.coef,
         };
 
-        const insertedEvents = await Promise.resolve(promise);
+        const insertedEvents = await promise;
 
         this.logger.info(`Added ${insertedEvents.length} events into stock-events`);
 
