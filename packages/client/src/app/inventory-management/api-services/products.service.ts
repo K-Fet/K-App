@@ -53,7 +53,7 @@ export class ProductsService {
     return this.http.put<Product>(`${BASE_URL}/${product._id}`, product).toPromise();
   }
 
-  remove(id: string): Promise<Product> { 
+  remove(id: string): Promise<Product> {
     return this.http.delete<Product>(`${BASE_URL}/${id}`).toPromise();
   }
 }
