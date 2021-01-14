@@ -96,10 +96,7 @@ export class ArticlesComponent implements OnInit{
   }
 
   setAllArticles(): Article[]{
-    const articles = [];
-    for(let i = 0; i<this.articles.length; i++) articles.push(this.articles[i]);
-    for(let i = 0; i<this.articlessum.length; i++) articles.push(this.articlessum[i]);
-    return articles;
+    return [...this.articles, ...this.articlesum];
   }
 
   onCopyData(): void{
