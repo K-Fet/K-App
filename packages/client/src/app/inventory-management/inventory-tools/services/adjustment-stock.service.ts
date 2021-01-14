@@ -71,7 +71,7 @@ export class AdjustmentStockService {
     }
 
     addRealStock(stock: Stock): void {
-      const index = this.realStock.map(sto => sto.product._id).indexOf(stock.product._id);
+      const index = this.realStock.findIndex(sto => sto.product._id === stock.product._id);
       if(index === -1){
         this.realStock.push(stock);
       } else {
@@ -93,8 +93,7 @@ export class AdjustmentStockService {
         this.updateDiffFromReal(stock);
       }
       for(const stock of this.instantStock) {
-        const index = this.diffStock.map(sto => sto.product._id).indexOf(stock.product._id);
-        if(index === -1){
+        if(!this.diffStock.some(sto => sto.product._id === stock.product._id)){
           this.diffStock.push({
             product: stock.product,
             diff: -stock.diff,
@@ -106,15 +105,14 @@ export class AdjustmentStockService {
     }
 
     updateDiffFromReal(stock: Stock): void {
-      const index = this.instantStock.map(sto => sto.product._id).indexOf(stock.product._id);
-      const diffIndex = this.diffStock.map(sto => sto.product._id).indexOf(stock.product._id);
+      const index = this.instantStock.findIndex(sto => sto.product._id === stock.product._id);
+      const diffIndex = this.diffStock.findIndex(sto => sto.product._id === stock.product._id);
       if(index === -1){
         if(diffIndex === -1){
           this.diffStock.push({
             product: stock.product,
             diff: stock.diff,
           });
-          console.log('oui');
         } else {
           this.diffStock[index].diff = stock.diff;
         }
@@ -153,7 +151,7 @@ export class AdjustmentStockService {
           page: page,
           sort: '-date',
         });
-        const index = rows.map(row => row.type).indexOf('InventoryUpdate');
+        const index = rows.findIndex(row => row.type === 'InventoryUpdate');
         if(index ===-1 && !begin){
           events = [ ...events, ...rows];
         }

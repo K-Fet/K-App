@@ -122,11 +122,7 @@ export class EditArticleDialogComponent implements OnInit {
   }
 
   async existProduct(productName: string): Promise<boolean> {
-    if(this.products.map(prod => prod.name).indexOf(productName)===-1){
-      return false;
-    } else {
-      return true;
-    }
+    return this.products.some(product => product.name === productName);
   }
 
   private optionMapFilter(valueField: string, labelfield?: string) {

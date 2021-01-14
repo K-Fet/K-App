@@ -99,22 +99,6 @@ export class ArticlesComponent implements OnInit{
     return [...this.articles, ...this.articlessum];
   }
 
-  onCopyData(): void{
-    const tocopy = this.articlessum.map(a => `${a.name};${a.quantity}`).join('\n');
-
-    const selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = tocopy;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
-  }
-
   onDownloadFile(data: Article[]): void {
     const replacer = (_key, value ) => value === null ? '' : value; // specify how you want to handle null values here
     const header = Object.keys(data[0]);
@@ -236,12 +220,8 @@ export class ArticlesComponent implements OnInit{
   }
 
   public onConvertKaisse(): void {
-    for(const index in this.articles){
-      this.articles[index] = this.convertKaisseToArticle(this.articles[index], this.isConverted);
-    }
-    for(const index in this.articlessum){
-      this.articlessum[index] = this.convertKaisseToArticle(this.articlessum[index], this.isConverted);
-    }
+    this.articles.map(art => this.convertKaisseToArticle(art, this.isConverted))
+    this.articlessum.map(art => this.convertKaisseToArticle(art, this.isConverted))
     this.isConverted = !this.isConverted;
     this.articleDataSource._updateChangeSubscription();
   }
@@ -255,18 +235,14 @@ export class ArticlesComponent implements OnInit{
   }
 
   private convertKaisseToArticle(article: Article, isConverted: boolean): Article{
-    const index = this.products.map(product => product.name).indexOf(article.name);
-    if(index > -1){
-      const product = this.products[index];
-      if(product.conversions && product.conversions.length>0){
-        const index2 = product.conversions.map(conv => conv.displayName).indexOf('Kaisse');
-        if(index2>-1){
-          const conv = product.conversions[index2];
-          if(isConverted){
-            article.quantity = article.quantity/conv.coef;
-          } else {
-            article.quantity = article.quantity * conv.coef;
-          }
+    const product = this.products.find(product => product.name === article.name);
+    if(product && product.conversions && product.conversions.length>0){
+      const conv = product.conversions.find(conv => conv.displayName === 'Kaisse');
+      if(conv){
+        if(isConverted){
+          article.quantity = article.quantity/conv.coef;
+        } else {
+          article.quantity = article.quantity * conv.coef;
         }
       }
     }

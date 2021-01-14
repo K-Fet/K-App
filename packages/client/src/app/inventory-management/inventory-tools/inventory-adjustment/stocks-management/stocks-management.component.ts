@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { addDays } from 'date-fns';
 import { StocksManagementService, ProductStockManagement } from '../../services/stocks-management.service';
 
 @Component({
@@ -36,7 +37,7 @@ export class StocksManagementComponent implements OnInit {
     this.stoKFet.push({date: endDate, stocks});
     for(let i =1; i<n; i++){
       if(adate){
-        const date = new Date(adate.getTime() + (60*60*24*1000));
+        const date = addDays(adate, 1);
         const {endDate, stocks, beginDate } = await this.stocksManagementService.getLastStockManagement(date);
         if(endDate === undefined) break;
         else{
