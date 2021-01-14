@@ -21,7 +21,7 @@ export class ProductsService {
           page: options.page && options.page.toString(),
           pageSize: options.pageSize && options.pageSize.toString(),
         }),
-      }, 
+      },
     ).toPromise();
   }
 
