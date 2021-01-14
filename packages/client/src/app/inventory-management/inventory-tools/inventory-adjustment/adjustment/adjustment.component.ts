@@ -142,8 +142,7 @@ export class AdjustmentComponent implements OnInit {
 
   onNgSubmit(): void {
     if(this.formGroup.valid){
-      const index = this.products.map(prod => prod._id).indexOf(this.formGroup.get('product').value);
-      const product: Product = this.products[index];
+      const product = this.products.find(prod => prod._id === this.formGroup.get('product').value);
       const stock = {
         product: product,
         diff: this.formGroup.get('diff').value,
@@ -161,8 +160,8 @@ export class AdjustmentComponent implements OnInit {
     if(this.csvfiles.length === 1){
       await this.parseService.fromFilestoText(this.csvfiles);
       for(const art of this.parseService.articleSum){
-        const index = this.products.map(pro => pro.name).indexOf(art[0]);
-        if(index === -1){
+        const product = this.products.find(pro => pro.name === art[0]);
+        if(!product){
           const dialogRef = this.dialog.open(ChooseProductDialogComponent, {
             data: {
               articleName: art[0],
@@ -180,10 +179,10 @@ export class AdjustmentComponent implements OnInit {
               this.break = true;
             }
             else {
-              const index2 = this.products.map(pro => pro._id).indexOf(res.product);
-              if(index2>-1){
+              const prod = this.products.find(pro => pro._id === res.product);
+              if(prod){
                 stocks.push({
-                  product: this.products[index2],
+                  product: prod,
                   diff: art[1]
                 });
               } else {
@@ -197,7 +196,7 @@ export class AdjustmentComponent implements OnInit {
         }
         else {
           stocks.push({
-            product: this.products[index],
+            product: product,
             diff: art[1]
           });
         }

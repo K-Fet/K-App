@@ -22,9 +22,8 @@
             <h1>Bonjour {{ getName() }}!</h1>
           </section>
         </mat-card-title>
-        <mat-card-subtitle>Cela fait maintenant que tu fais parti
-          de
-          l'association A.R.G.I.L
+        <mat-card-subtitle>
+          Tu fais parti de L 'A.R.G.I.L depuis le {{ currentUser.createdAt | date }}.
         </mat-card-subtitle>
       </mat-card-header>
     </mat-card>

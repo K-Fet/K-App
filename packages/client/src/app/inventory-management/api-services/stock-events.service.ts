@@ -24,22 +24,7 @@ export class StockEventsService {
       },
     ).toPromise();
   }
-
-  async listAll(): Promise<StockEvent[]> {
-    let stockEvents: StockEvent[] = [];
-    const { totalPages } = await this.list({
-      pageSize: 100,
-    });
-    for(let page=1; page<totalPages+1; page+=1){
-      const { rows } = await this.list({
-        pageSize:100,
-        page: page,
-      });
-      stockEvents = [...stockEvents, ...rows];
-    }
-    return stockEvents;
-  }
-
+  
   create(stockEvent: StockEvent): Promise<StockEvent> {
     return this.http.post<StockEvent>(BASE_URL, stockEvent).toPromise();
   }

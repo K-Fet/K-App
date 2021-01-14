@@ -94,7 +94,7 @@ export class StocksManagementService {
         rows.splice(0, beginIndex);
         beginIndex = null;
       }
-      let index = rows.map(row => row.type).indexOf('InventoryUpdate');
+      let index = rows.findIndex(row => row.type === 'InventoryUpdate');
       if(index > -1 || beginFirst){
         if(index === -1 || beginFirst) index = 0;
         beginFirst = true;
@@ -113,7 +113,7 @@ export class StocksManagementService {
         }
       }
     }
-    if(events.map(event => event.type).indexOf('InventoryAdjustment') === -1){
+    if(!events.some(event => event.type === 'InventoryAdjustment')){
       this.toaster.showToaster('Aucune gestion de stock n\'a été fait');
       return null;
     }
@@ -140,7 +140,7 @@ export class StocksManagementService {
       if(event.type !== "InventoryUpdate"){
         break;
       } else {
-        const index = this.stocksManagement.map(stock => stock.product as string).indexOf(event.product as string);
+        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
         if(index > -1){
           this.stocksManagement[index].realInstantStock = event.diff;
         } else {
@@ -160,7 +160,7 @@ export class StocksManagementService {
   private setDeliveryQuantity(stockEvents: StockEvent[]): void {
     for(const event of stockEvents) {
       if(event.type === 'Delivery'){
-        const index = this.stocksManagement.map(stock => stock.product as string).indexOf(event.product as string);
+        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
         if(index > -1){
           if(this.stocksManagement[index].deliveryQuantity){
             this.stocksManagement[index].deliveryQuantity += event.diff;
@@ -187,7 +187,7 @@ export class StocksManagementService {
   private setTheoreticalStocks(stockEvents: StockEvent[]): void {
     for(const event of stockEvents){
       if(event.type === 'InventoryAdjustment'){
-        const index = this.stocksManagement.map(stock => stock.product as string).indexOf(event.product as string);
+        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
         if(index > -1){
           this.stocksManagement[index].theoreticalStocks = -event.diff;
         }
@@ -201,7 +201,7 @@ export class StocksManagementService {
   private setTheoreticalSales(stockEvents: StockEvent[]): void {
     for(const event of stockEvents){
       if(event.type === 'Transaction'){
-        const index = this.stocksManagement.map(stock => stock.product as string).indexOf(event.product as string);
+        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
         if(index > -1){
           this.stocksManagement[index].theoreticalSales = event.diff;
         }
