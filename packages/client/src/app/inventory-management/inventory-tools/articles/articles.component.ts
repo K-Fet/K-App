@@ -96,7 +96,7 @@ export class ArticlesComponent implements OnInit{
   }
 
   setAllArticles(): Article[]{
-    return [...this.articles, ...this.articlesum];
+    return [...this.articles, ...this.articlessum];
   }
 
   onCopyData(): void{
@@ -153,7 +153,7 @@ export class ArticlesComponent implements OnInit{
 
     dialogref.afterClosed().subscribe(async (res) => {
       if(res){
-        if (this.articles.some(a => !this.productExist(art.name))) {
+        if (this.articles.some(art => !this.productExist(art.name))) {
             this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
             return;
         }
