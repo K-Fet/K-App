@@ -22,7 +22,7 @@ export class StocksManagementComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.initNStoKFet(5);
+    await this.initNStoKFet(3);
     this.stoKFet = this.stoKFet.filter( a => a.date !== null);
   } 
 
