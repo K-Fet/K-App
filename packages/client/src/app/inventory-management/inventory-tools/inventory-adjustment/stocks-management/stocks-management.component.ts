@@ -23,12 +23,8 @@ export class StocksManagementComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.initNStoKFet(5);
-    for(const a of this.stoKFet){
-      if(a.date === null){
-        this.stoKFet.splice(this.stoKFet.length-1,1);
-      }
-    }
-  }
+    this.stoKFet = this.stoKFet.filter( a => a.date !== null);
+  } 
 
   private async initNStoKFet(n: number): Promise<void> {
     this.stoKFet = [];

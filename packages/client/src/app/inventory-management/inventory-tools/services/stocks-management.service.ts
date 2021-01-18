@@ -70,20 +70,20 @@ export class StocksManagementService {
     let pageIndex = 1;
     let beginIndex = null;
 
+    const dateInput = new Date(date);
     let done = false;
 
     if(date){
       for(let index = 1; index <= totalPages; index ++){
         if(done) break;
         const {rows} = await  this.stockEventsService.list({ page: index,  pageSize: pageSize, sort: '-date' });
-        for(const i in rows){
-          if(new Date(rows[i].date)<=new Date(date)){
+        Object.keys(rows).forEach(key => { 
+          if(new Date(rows[key].date) <= dateInput && !done){
             pageIndex = index;
-            beginIndex = +i;
+            beginIndex = +key;
             done = true;
-            break;
           }
-        }
+        });
       }
     }
 
@@ -94,23 +94,24 @@ export class StocksManagementService {
         rows.splice(0, beginIndex);
         beginIndex = null;
       }
-      let index = rows.findIndex(row => row.type === 'InventoryUpdate');
-      if(index > -1 || beginFirst){
-        if(index === -1 || beginFirst) index = 0;
-        beginFirst = true;
-        for(let i = index; i<rows.length; i+=1){
-          if(rows[i].type !== 'InventoryUpdate' && beginFirst){
-            finishFirst = true;
+      const firstrow = rows.find(row => row.type === 'InventoryUpdate');
+      if(firstrow || beginFirst){
+        rows.some(row => {
+          if(!finishLast && (firstrow === row || beginFirst)){
+            beginFirst = true; 
+            if(row.type !== 'InventoryUpdate' && !finishFirst){
+              finishFirst = true;
+            }
+            if(row.type === 'InventoryUpdate' && finishFirst && !beginLast){
+              beginLast = true;
+            }
+            if(row.type !== 'InventoryUpdate' && beginLast){
+              finishLast = true;
+              return true;
+            }
+            events.push(row);
           }
-          if(rows[i].type === 'InventoryUpdate' && finishFirst){
-            beginLast = true;
-          }
-          if(rows[i].type !== 'InventoryUpdate' && beginLast){
-            finishLast = true;
-            break;
-          }
-          events.push(rows[i]);
-        }
+        });
       }
     }
     if(!events.some(event => event.type === 'InventoryAdjustment')){
@@ -121,28 +122,29 @@ export class StocksManagementService {
   }
 
   private setLastMonthStock(stockEvents: StockEvent[]): ProductStockManagement[] {
+    const reversed = [...stockEvents].reverse();
     const res = [];
-    for(let index = stockEvents.length-1; index>0; index = index -1){
-      if(stockEvents[index].type !== "InventoryUpdate"){
-        break;
+    reversed.some(evt => {
+      if(evt.type !== "InventoryUpdate"){
+        return true;
       } else {
         res.push({
-          product: stockEvents[index].product,
-          lastMonthStock: stockEvents[index].diff
+          product: evt.product,
+          lastMonthStock: evt.diff
         });
       }
-    }
+    });
     return res;
   }
 
   private setRealInstantStock(stockEvents: StockEvent[]): void {
-    for(const event of stockEvents) {
+    stockEvents.some( (event) => {
       if(event.type !== "InventoryUpdate"){
-        break;
+        return true;
       } else {
-        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
-        if(index > -1){
-          this.stocksManagement[index].realInstantStock = event.diff;
+        const stock = this.stocksManagement.find(stock => stock.product as string === event.product as string);
+        if(stock){
+          stock.realInstantStock = event.diff;
         } else {
           this.stocksManagement.push({
             product: event.product,
@@ -151,22 +153,22 @@ export class StocksManagementService {
           })
         }
       }
-    }
-    for(const a of this.stocksManagement){
+    });
+    this.stocksManagement.map(a => {
       if(!a.realInstantStock) a.realInstantStock = 0;
-    }
+    });
   }
 
   private setDeliveryQuantity(stockEvents: StockEvent[]): void {
-    for(const event of stockEvents) {
+    stockEvents.map(event => {
       if(event.type === 'Delivery'){
-        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
-        if(index > -1){
-          if(this.stocksManagement[index].deliveryQuantity){
-            this.stocksManagement[index].deliveryQuantity += event.diff;
+        const stock = this.stocksManagement.find(stock => stock.product as string === event.product as string);
+        if(stock){
+          if(stock.deliveryQuantity){
+            stock.deliveryQuantity += event.diff;
           }
           else{
-            this.stocksManagement[index].deliveryQuantity = event.diff;
+            stock.deliveryQuantity = event.diff;
           }
         } 
         // else {       PEUT ETRE UTILE SI ON FAIT GESTION DE STOCK SUR TOUT CE QU'IL Y A DANS LES FACTURES FB (GAZ, PALLETTES, ...)
@@ -178,84 +180,84 @@ export class StocksManagementService {
         //   })
         // }
       }
-    }
-    for(const a of this.stocksManagement){
+    });
+    this.stocksManagement.map( a=> {
       if(!a.deliveryQuantity) a.deliveryQuantity = 0;
-    }
+    });
   }
 
   private setTheoreticalStocks(stockEvents: StockEvent[]): void {
-    for(const event of stockEvents){
+    stockEvents.map(event => {
       if(event.type === 'InventoryAdjustment'){
-        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
-        if(index > -1){
-          this.stocksManagement[index].theoreticalStocks = -event.diff;
+        const stock = this.stocksManagement.find(stock => stock.product as string === event.product as string);
+        if(stock){
+          stock.theoreticalStocks = -event.diff;
         }
       }
-    }
-    for(const a of this.stocksManagement){
+    });
+    this.stocksManagement.map( a => {
       if(!a.theoreticalStocks) a.theoreticalStocks = 0;
-    }
+    });
   }
 
   private setTheoreticalSales(stockEvents: StockEvent[]): void {
-    for(const event of stockEvents){
+    stockEvents.map(event => {
       if(event.type === 'Transaction'){
-        const index = this.stocksManagement.findIndex(stock => stock.product as string === event.product as string);
-        if(index > -1){
-          this.stocksManagement[index].theoreticalSales = event.diff;
+        const stock = this.stocksManagement.find(stock => stock.product as string === event.product as string);
+        if(stock){
+          stock.theoreticalSales = event.diff;
         }
       }
-    }
-    for(const a of this.stocksManagement){
+    });
+    this.stocksManagement.map(a => {
       if(!a.theoreticalSales) a.theoreticalSales = 0;
-    }
+    });
   }
 
   private setDifference(): void {
-    for(const a of this.stocksManagement){
+    this.stocksManagement.map(a => {
       a.difference = a.realInstantStock - a.theoreticalStocks;
-    }
+    });
   }
 
   private setRealSales(): void {
-    for(const a of this.stocksManagement){
+    this.stocksManagement.map(a => {
       a.realSales =- (a.lastMonthStock + a.deliveryQuantity - a.realInstantStock);
-    }
+    });
   }
 
   private setSalesPercentage(): void {
-    for(const a of this.stocksManagement){
+    this.stocksManagement.map(a => {
       a.diffSalesPercentage = a.difference/a.theoreticalSales*100;
-    }
+    });
   }
 
   private setStocksPercentage(): void {
-    for(const a of this.stocksManagement){
+    this.stocksManagement.map(a => {
       a.diffStocksPercentage = - a.difference/(a.lastMonthStock+a.deliveryQuantity)*100;
-    }
+    });
   }
 
   private setCost(stocks: ProductStockManagement[]): ProductStockManagement[] {
-    for (const index in stocks){
-      if((stocks[index].product as Product).price){
-        stocks[index].cost = ((stocks[index].product as Product).price*stocks[index].difference).toString();
+    stocks.map( stock => {
+      if((stock.product as Product).price){
+        stock.cost = ((stock.product as Product).price*stock.difference).toString();
       }
       else {
-        stocks[index].cost = 'Non Défini';
+        stock.cost = 'Non Défini';
       }
-    }
+    });
     return stocks;
   }
 
   private bindProductOnId(stocks: ProductStockManagement[]): ProductStockManagement[]{
     if(stocks){
-      for(const sto of stocks) {
-        const index = this.products.map(prod => prod._id).indexOf(sto.product as string);
-        if(index>-1){
-          sto.product = this.products[index];
+      stocks.map(sto => {
+        const stock = this.products.find(prod => prod._id === sto.product as string); 
+        if(stock){
+          sto.product = stock;
         }
-      }
+      });
       return stocks;
     }
     return null;
@@ -284,9 +286,9 @@ export class StocksManagementService {
   public onDownloadCsv(date: Date, stocks: ProductStockManagement[]): void {
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += 'Produit, Quantité Livrée, Stock Mois Dernier, Stock Réel, Stock Théorique, Ventes Théoriques, Ventes Réelles, Difference, Pourcentage Pertes (ventes), Pourcentage Pertes (stocks), Coût des pertes \r\n';
-    for (const a of stocks){
+    stocks.map(a => {
       csvContent += `${(a.product as Product).name}, ${a.deliveryQuantity}, ${a.lastMonthStock}, ${a.realInstantStock}, ${a.theoreticalStocks}, ${a.theoreticalSales}, ${a.realSales}, ${a.difference}, ${a.diffSalesPercentage}, ${a.diffStocksPercentage}, ${a.cost} \r\n`;
-    }
+    });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
