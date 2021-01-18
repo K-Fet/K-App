@@ -11,6 +11,7 @@ import { ParseService } from '../../services/parse.service';
 import { ToasterService } from 'src/app/core/services/toaster.service';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChooseProductDialogComponent } from '../choose-product-dialog/choose-product-dialog.component';
+import { setHours } from 'date-fns';
 
 
 @Component({
@@ -208,8 +209,7 @@ export class AdjustmentComponent implements OnInit {
     dialogRef.afterClosed().subscribe( async (res) => {
       if(res){
         this.isLoading = true;
-        const date = new Date(this.date);
-        date.setHours(13);
+        const date = setHours(new Date(this.date),13);
         await this.adjustmentStockService.adjustStocks(date);
         this.isLoading = false;
         this.toaster.showToaster('L\'ajustement a bien été fait');
