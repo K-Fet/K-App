@@ -57,6 +57,7 @@ module.exports = {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',
     },
+    maxPageSize: 1000,
   },
 
   events: {
