@@ -51,6 +51,10 @@ module.exports = {
     add: {
       rest: 'POST /',
       permissions: true,
+      // params: () => Joi.object({
+      //   entities: Joi.array().items(model.joi),
+      //   entity: model.joi,
+      // }).without('entities', 'entity'),
 
       async handler(ctx) {
         const event = ctx.params;

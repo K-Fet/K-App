@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { setHours } from 'date-fns';
 import * as PDFJS from 'pdfjs-dist/build/pdf';
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
@@ -34,7 +35,6 @@ export class ParseService {
         this.parseCsv(text);
       }
     }
-    return Promise.resolve();
   }
 
   private async readfile(index: number, files: File[]): Promise<string> {
@@ -64,8 +64,7 @@ export class ParseService {
         errorInCsv = true;
       }
       else if(!errorInCsv){
-        const date = new Date(artPrsStr[0])
-        date.setHours(10);
+        const date = setHours(new Date(artPrsStr[0]),10);
         this.listarticle.push([date, artPrsStr[1], +artPrsStr[2]]);
       }
     });
@@ -221,8 +220,7 @@ export class ParseService {
       let datestring = invoicePart.slice(4,14);
       const dateparse = datestring.split('.');
       datestring = dateparse[2] + '-' + dateparse[1] + '-' + dateparse[0] + 'T12:00:00';
-      const invoiceDate = new Date(datestring);
-      invoiceDate.setHours(10);
+      const invoiceDate = setHours(new Date(datestring),10);
       return invoiceDate;       // Return Date Invoice
     }
     else return null;

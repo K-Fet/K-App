@@ -57,7 +57,6 @@ export class HomePageComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void>{
-
     this.isLoading = true;
     await this.invoiceService.submitInvoices();
     this.articleService.putArticles();
@@ -66,6 +65,5 @@ export class HomePageComponent implements OnInit {
     this.parseService.removeAll();
     this.isLoading = false;
     this.invoicesEmpty = true;
-    return Promise.resolve();
   }
 }

@@ -61,7 +61,6 @@ export class ProductsSubmitService {
             }
         }));
         this.router.navigate(['/inventory-management/products']);
-        return Promise.resolve();
     }
 
     async getProductFromArticle(
@@ -137,7 +136,6 @@ export class ProductsSubmitService {
             }));
         }
         this.router.navigate(['/inventory-management/stock-events']);
-        return Promise.resolve();
     }
 
     getStockEventFromArticle(
