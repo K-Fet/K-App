@@ -34,7 +34,7 @@ export class AdjustmentStockService {
     }
 
     async setInstantStock(): Promise<void> {
-      const events: StockEvent[] = await this.getRecentEvents(100);
+      const events: StockEvent[] = await this.getRecentEvents(1000);
       this.instantStock = [];
       const productsInDb: Product[] = await this.productsService.listAll();
       const productIdInDb: string[] = productsInDb.map(product => product._id);

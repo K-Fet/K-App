@@ -65,7 +65,7 @@ export class StocksManagementService {
     let beginLast = false;
     let finishLast = false;
     const events: StockEvent[] = [];
-    const pageSize = 100;
+    const pageSize = 1000;
     const {totalPages} = await  this.stockEventsService.list({ pageSize: pageSize, sort: '-date' });
     let pageIndex = 1;
     let beginIndex = null;

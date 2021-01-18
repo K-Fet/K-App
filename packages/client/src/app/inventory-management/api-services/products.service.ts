@@ -26,18 +26,7 @@ export class ProductsService {
   }
 
   async listAll(): Promise<Product[]> {
-    let products: Product[] = [];
-    const { totalPages } = await this.list({
-      pageSize: 100,
-    });
-    for(let page=1; page<totalPages+1; page+=1){
-      const { rows } = await this.list({
-        pageSize:100,
-        page: page,
-      });
-      products = [...products, ...rows];
-    }
-    return products;
+    return (await this.list({pageSize: 1000})).rows; 
   }
 
   get(id: string): Promise<Product> {

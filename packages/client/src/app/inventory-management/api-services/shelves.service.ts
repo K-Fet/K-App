@@ -26,18 +26,7 @@ export class ShelvesService {
   }
 
   async listAll(): Promise<Shelf[]> {
-    let shelves: Shelf[] = [];
-    const { totalPages } = await this.list({
-      pageSize: 100,
-    });
-    for(let page=1; page<totalPages+1; page+=1){
-      const { rows } = await this.list({
-        pageSize:100,
-        page: page,
-      });
-      shelves = [...shelves, ...rows];
-    }
-    return shelves;
+    return (await this.list({pageSize: 100})).rows; 
   }
 
   get(id: string): Promise<Shelf> {
