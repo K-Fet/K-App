@@ -44,6 +44,7 @@ module.exports = {
       product: 'inventory-management.products.get',
       order: 'inventory-management.orders.get',
     },
+    maxPageSize: 1000,
   },
 
   actions: {
