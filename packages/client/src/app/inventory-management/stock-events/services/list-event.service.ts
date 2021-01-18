@@ -29,9 +29,8 @@ export class ListEventService {
   }
 
   getProductName(stockEvent: StockEvent): string{
-    for(let i = 0; i<this.products.length; i++){
-      if(stockEvent.product as string === this.products[i]._id) return this.products[i].name;
-    }
-    return 'undefined';
+    const product = this.products.find( product => stockEvent.product as string === product._id);
+    if(product) return product.name;
+    else return 'undefined';
   }
 }

@@ -19,14 +19,12 @@ export class ParseService {
     this.articleSum = [];
 
     if(invoices[0].type === 'application/pdf'){
-      for(let i=0; i<invoices.length; i++){
-        const url = URL.createObjectURL(invoices[i]);
+     await Promise.all(invoices.map(async (invoice) => {
+        const url = URL.createObjectURL(invoice);
         const oneinvoice = await this.gettext(url);
-        for(let i=0;i<oneinvoice.length;i++){
-          this.textinvoices.push(oneinvoice[i]);
-        }
+        oneinvoice.map(text => this.textinvoices.push(text));
         URL.revokeObjectURL(url);
-      }
+      }));
       this.parsePDF();
     }
     else {
@@ -57,114 +55,82 @@ export class ParseService {
   }
 
   private parseCsv(csv: string): void {
+    let errorInCsv = false;
     const articlesStr = csv.split('\n');
     articlesStr.pop();
-    for(const art of articlesStr){
+    articlesStr.map( art => {
       const artPrsStr = art.split(',');
       if(artPrsStr.length != 3 ){
-        this.listarticle = [];
-        this.articleSum = [];
-        break;
+        errorInCsv = true;
       }
-      const date = new Date(artPrsStr[0])
-      date.setHours(10);
-      this.listarticle.push([date, artPrsStr[1], +artPrsStr[2]]);
+      else if(!errorInCsv){
+        const date = new Date(artPrsStr[0])
+        date.setHours(10);
+        this.listarticle.push([date, artPrsStr[1], +artPrsStr[2]]);
+      }
+    });
+    if(errorInCsv){
+      this.listarticle = [];
+      this.articleSum = [];
     }
     this.sumFromDate();
   }
 
   private parsePDF(): void {
 
-    const listinvoices  = [];
+    let listinvoices  = [];
 
-    for(let i=0; i<this.textinvoices.length; i++){
-      const invoiceDate = this.getDate(this.textinvoices[i]);
-      if(invoiceDate != undefined){
+    this.textinvoices.map(textinvoice => {
+      const invoiceDate = this.getDate(textinvoice);
+      if(invoiceDate !== undefined){
         const invoice = [];
         invoice.push(invoiceDate);
-        invoice.push(this.textinvoices[i]);
+        invoice.push(textinvoice);
         listinvoices.push(invoice);
       }
-    }
+    });
 
-    const listothers = [];
+    //Separate invoices and credits and remove empty invoices 
+    listinvoices = listinvoices.filter( invoice => (invoice[1].indexOf('FACTURECOMMUNAUTE')>-1 && invoice[1].indexOf('Commande')!==0 && invoice[1].indexOf('_')!==0));
     
-    let toremove = [];
-    //Separate invoices and credits
-    for(let i = 0; i<listinvoices.length; i++){
-      if(listinvoices[i][1].indexOf('FACTURECOMMUNAUTE')<0){
-        toremove.push(i);
-      }
-    }
-    for(let i = toremove.length-1;i>=0;i--){
-      listothers.push(listinvoices.splice(toremove[i],1));
-    }
-    
-    // //Remove empty invoices
-    toremove = [];
-    for(let i = 0; i<listinvoices.length; i++){
-      if(listinvoices[i][1].indexOf('Commande')==0 || listinvoices[i][1].indexOf('_')==0){
-        toremove.push(i);
-      }
-    }
-    for(let i = toremove.length-1;i>=0;i--){
-      listothers.push(listinvoices.splice(toremove[i],1));
-    }
-    
-
     //Parsing
-    for(let i = 0; i<listinvoices.length; i++){
-      let index = listinvoices[i][1].indexOf('CLIENT FACTURE');
-      listinvoices[i][1] = listinvoices[i][1].substring(0,index-1);
-      if(listinvoices[i][1].indexOf('Frais administratifs')>0){
-        index = listinvoices[i][1].indexOf('Frais administratifs');
-        listinvoices[i][1] = listinvoices[i][1].substring(0,index);
+    listinvoices.map((invoice) => {
+      let index = invoice[1].indexOf('CLIENT FACTURE');
+      invoice[1] = invoice[1].substring(0,index-1);
+      if(invoice[1].indexOf('Frais administratifs')>0){
+        index = invoice[1].indexOf('Frais administratifs');
+        invoice[1] = invoice[1].substring(0,index);
       }
-      if(listinvoices[i][1].indexOf('_')>0){
-        index = listinvoices[i][1].indexOf('_');
-        listinvoices[i][1] = listinvoices[i][1].substring(0,index);
+      if(invoice[1].indexOf('_')>0){
+        index = invoice[1].indexOf('_');
+        invoice[1] = invoice[1].substring(0,index);
       }
-    }
+    })
 
-    for(let i = 0; i<listinvoices.length; i++){
-      const listinvoicesparse = listinvoices[i][1].split(' ');
-      toremove = [];
-      for(let i = 0; i<listinvoicesparse.length; i++){
-        if(listinvoicesparse[i]=='' || listinvoicesparse[i].indexOf('°')>=0){
-          toremove.push(i);
-        }
-      }
-      for(let i = toremove.length-1;i>=0;i--){
-        listinvoicesparse.splice(toremove[i],1);
-      }
+    listinvoices.forEach((invoice) => {
+      let listinvoicesparse = invoice[1].split(' ');
+      listinvoicesparse = listinvoicesparse.filter((invoiceparse: string) => invoiceparse!=='' && invoiceparse.indexOf('°')===-1);
       listinvoicesparse.splice(0,1);
-      listinvoices[i][1]=listinvoicesparse.join(' ');
-    }
+      invoice[1]=listinvoicesparse.join(' ');
+    })
 
     const listarticles = [];
     const listdates = [];
-    for(let i=0;i<listinvoices.length; i++){
-      const date = listinvoices[i][0];
-      const listinvoicesparse = listinvoices[i][1].split(' net');
-      for(let i=0;i<listinvoicesparse.length;i++){
+
+    listinvoices.map((invoice) => {
+      const date = invoice[0];
+      const listinvoicesparse = invoice[1].split(' net');
+      listinvoicesparse.map((invoiceparse) => {
         listdates.push(date);
-        listarticles.push(listinvoicesparse[i]);
-      }
-    }
+        listarticles.push(invoiceparse);
+      });
+    });
     
     //Parse , and manage GROLSCH exception
-    for(let i=0; i<listarticles.length; i++){
-      const onearticleparse = listarticles[i].split(' ');
+    Object.keys(listarticles).forEach((key) => {
+      let onearticleparse = listarticles[key].split(' ');
       if(onearticleparse.indexOf("GROLSCH")<0){
-        toremove = [];
-        for(let i = 0; i<onearticleparse.length; i++){
-          if(onearticleparse[i]=='' || onearticleparse[i].indexOf(',')>=0){
-            toremove.push(i);
-          }
-        }
-        for(let i = toremove.length-1;i>=0;i--){
-          onearticleparse.splice(toremove[i],1);
-        }
+        onearticleparse = onearticleparse.filter((art: string) => (art!=='' && art.indexOf(',')===-1));
       }
       else{
         if(onearticleparse[0] == "GROLSCH") onearticleparse.splice(onearticleparse.length-1,1);
@@ -176,15 +142,15 @@ export class ParseService {
           onearticleparse[onearticleparse.length-1] = onearticleparse[onearticleparse.length-1].substring(0,onearticleparse[onearticleparse.length-1].length-2) ;
         }
       }
-      listarticles[i]=onearticleparse.join(' ');
-    }
+      listarticles[key]=onearticleparse.join(' ');
+    });
 
     const listarticlesparse = [];
     //Cols and Colis
-    for(let i=0;i<listarticles.length;i++){
+    Object.keys(listarticles).forEach(key => {
       const articlenombre = [];
       let nomarticle = '';
-      const articlesparse = listarticles[i].split(' ');
+      const articlesparse = listarticles[key].split(' ');
       let last = articlesparse[articlesparse.length-1].split('');
       if(last.length<5){
         last.splice(1,last.length);
@@ -199,90 +165,67 @@ export class ParseService {
 
       articlenombre.push(nomarticle,+last);
       listarticlesparse.push(articlenombre);
-      listarticles[i]=nomarticle+' '+last;
-    }
+      listarticles[key]=nomarticle+' '+last;
+    });
     
     //Copy Array listearticleparse to have 2 distincts Array
     const listarticlesparsesum = [];
-    for(let i=0 ; i<listarticlesparse.length;i++){
+    listarticlesparse.map(art => {
       const article = [];
-      article.push(listarticlesparse[i][0],listarticlesparse[i][1]);
+      article.push(art[0],art[1]);
       listarticlesparsesum.push(article);
-    }
+    })
 
     //Create sum List
-    const finallistsum = [];
+    let finallistsum = [];
     const nomarticle = [];
-    for(const i in listarticlesparsesum){
-      const index = nomarticle.indexOf(listarticlesparsesum[i][0]);
+    listarticlesparsesum.map((art) => {
+      const index = nomarticle.indexOf(art[0]);
       if(index<0){
-        nomarticle.push(listarticlesparsesum[i][0]);
-        finallistsum.push(listarticlesparsesum[i]);
+        nomarticle.push(art[0]);
+        finallistsum.push(art);
       }
       else{
-        finallistsum[index][1] += listarticlesparsesum[i][1];
+        finallistsum[index][1] += art[1];
       }
-    }
-    toremove = [];
-    for(const i in finallistsum){
-      if(finallistsum[i][0]=='') toremove.push(i);
-    }
-    for(let i = toremove.length-1;i>=0;i--){
-      (finallistsum.splice(toremove[i],1));
-    }
-
+    });
+    finallistsum = finallistsum.filter(art => art[0]!=='');
 
     this.articleSum = finallistsum;
 
     
     //Create list with date
-    const finallist = [];
-    for(const i in listarticlesparse){
-      listarticlesparse[i].unshift(listdates[i]);
-      finallist.push(listarticlesparse[i]);
-    }
+    let finallist = [];
+    Object.keys(listarticlesparsesum).forEach((key) => {
+      listarticlesparse[key].unshift(listdates[key]);
+      finallist.push(listarticlesparse[key]);
+    })
 
-    toremove = [];
-    for(const i in finallist){
-      if(finallist[i][1]==='' || isNaN(finallist[i][2])) toremove.push(i);
-    }
-
-    for(let i = toremove.length-1;i>=0;i--){
-      (finallist.splice(toremove[i],1));
-    }
-
-
-    toremove = [];
-    for(let i=0; i<finallist.length; i++){
-      for(let j=i+1; j<finallist.length; j++){
-        if(finallist[i][1]===finallist[j][1]){
-          if(finallist[i][0].getDate()===finallist[j][0].getDate() && finallist[i][0].getMonth()===finallist[j][0].getMonth() && finallist[i][0].getFullYear()===finallist[j][0].getFullYear()){
-            finallist[i][2] += finallist[j][2];
-            toremove.push(j);
-          }
-        }
-      }
-    }
-    for(let i = toremove.length-1;i>=0;i--){
-      (finallist.splice(toremove[i],1));
-    }
-  
+    finallist = finallist.filter( art => art[1]!=='' && !isNaN(art[2]))
+    
+    //Filter and modify article to have only one ny product for each date
+    finallist = finallist.filter((art, index) => {
+      const artindex = finallist.findIndex(artb => {
+        return (artb[1] === art[1]) && (artb[0].getDate()===art[0].getDate() && artb[0].getMonth()===art[0].getMonth() && artb[0].getMonth()===art[0].getMonth());
+      });
+      if(artindex !== index) finallist[artindex][2] += finallist[index][2];
+      return artindex === index;
+    });  
     this.listarticle = finallist;
   }
 
   getDate(invoice: string): Date{
-
     const invoiceparse = invoice.split(' ');
-    for(let i=0; i<invoiceparse.length; i++){
-      if(invoiceparse[i].indexOf('fact') === 0  && invoiceparse[i].indexOf('date') > 0){
-        let datestring = invoiceparse[i].slice(4,14);
-        const dateparse = datestring.split('.');
-        datestring = dateparse[2] + '-' + dateparse[1] + '-' + dateparse[0] + 'T12:00:00';
-        const invoiceDate = new Date(datestring);
-        invoiceDate.setHours(10);
-        return invoiceDate;       // Return Date Invoice
-      }
+    const invoicePart: string = invoiceparse.find((obj: string) => obj.indexOf('fact') === 0  && obj.indexOf('date') > 0);
+    if(invoicePart){
+      let datestring = invoicePart.slice(4,14);
+      const dateparse = datestring.split('.');
+      datestring = dateparse[2] + '-' + dateparse[1] + '-' + dateparse[0] + 'T12:00:00';
+      const invoiceDate = new Date(datestring);
+      invoiceDate.setHours(10);
+      return invoiceDate;       // Return Date Invoice
     }
+    else return null;
   }
 
 
@@ -292,7 +235,7 @@ export class ParseService {
     return pdf.then(function(pdf: { numPages: number; getPage: (arg0: number) => any}) { // get all pages text
       const maxPages = pdf.numPages;
       const countPromises = []; // collecting all page promises
-      for (let j = 1; j <= maxPages; j++) {
+      for(let j = 1; j <= maxPages; j++) {
         const page = pdf.getPage(j);
         
         //var txt = "";
@@ -312,16 +255,18 @@ export class ParseService {
   
   private sumFromDate(): void{
     const soonAssigned: string[] = [];
-    for(const art of this.listarticle){
-      const index = soonAssigned.indexOf(art[1]);
-      if(index === -1){
-        this.articleSum.push([art[1], art[2]]);
-        soonAssigned.push(art[1]);
+    const art =  this.listarticle.reduce((previousValue,currentArt) => {
+      const index = soonAssigned.findIndex((value) => currentArt[1] === value);
+      if(index===-1){
+        soonAssigned.push(currentArt[1]);
+        return [...previousValue, [currentArt[1], currentArt[2]]];
       }
-      else {
-        this.articleSum[index][1] += art[2];
+      else{
+        previousValue[index][1] += currentArt[2];
+        return previousValue;
       }
-    }
+    }, []);
+    this.articleSum = [...art];
   }
 
   removeAll(): void{

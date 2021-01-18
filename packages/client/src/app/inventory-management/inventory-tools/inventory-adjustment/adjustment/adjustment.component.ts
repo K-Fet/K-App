@@ -56,8 +56,6 @@ export class AdjustmentComponent implements OnInit {
 
   public optionsFormModel: DynamicFormModel;
 
-  public break = false;
-
   public detailedView = false;
   
   public date: Date;
@@ -159,7 +157,7 @@ export class AdjustmentComponent implements OnInit {
     let stocks: Stock[] = [];
     if(this.csvfiles.length === 1){
       await this.parseService.fromFilestoText(this.csvfiles);
-      for(const art of this.parseService.articleSum){
+      const occuredError = await this.asyncSome(this.parseService.articleSum, async art => {
         const product = this.products.find(pro => pro.name === art[0]);
         if(!product){
           const dialogRef = this.dialog.open(ChooseProductDialogComponent, {
@@ -168,31 +166,25 @@ export class AdjustmentComponent implements OnInit {
               products: this.products,
             }
           });
-          if(this.break){
-            this.break = false;
-            break;
+          const res = await dialogRef.afterClosed().toPromise();
+          if(!res){
+            stocks = [];
+            this.toaster.showToaster(`Erreur: le produit ${art[0]} n'est pas en db`);
+            return true;
           }
-          dialogRef.afterClosed().subscribe((res) => {
-            if(!res){
+          else {
+            const prod = this.products.find(pro => pro._id === res.product);
+            if(prod){
+              stocks.push({
+                product: prod,
+                diff: art[1]
+              });
+            } else {
               stocks = [];
-              this.toaster.showToaster(`Erreur: le produit ${art[0]} n'est pas en db`);
-              this.break = true;
+              this.toaster.showToaster(`Une erreur est survenue`);
+              return true;
             }
-            else {
-              const prod = this.products.find(pro => pro._id === res.product);
-              if(prod){
-                stocks.push({
-                  product: prod,
-                  diff: art[1]
-                });
-              } else {
-                stocks = [];
-                this.toaster.showToaster(`Une erreur est survenue`);
-                this.break = true;
-              }
-            }
-          })
-          
+          }
         }
         else {
           stocks.push({
@@ -200,6 +192,9 @@ export class AdjustmentComponent implements OnInit {
             diff: art[1]
           });
         }
+      });
+      if(occuredError){
+        stocks = [];
       }
       this.adjustmentStockService.setRealStock(stocks);
     }
@@ -212,11 +207,11 @@ export class AdjustmentComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe( async (res) => {
       if(res){
-        this.isLoading = false;
+        this.isLoading = true;
         const date = new Date(this.date);
         date.setHours(13);
         await this.adjustmentStockService.adjustStocks(date);
-        this.isLoading = true;
+        this.isLoading = false;
         this.toaster.showToaster('L\'ajustement a bien été fait');
       }
     })
@@ -224,6 +219,13 @@ export class AdjustmentComponent implements OnInit {
 
   public changeDate(event): void{
     this.date = event.target.value;
+  }
+
+  private async asyncSome(arr, predicate: Function): Promise<boolean>{
+    for (const e of arr) {
+      if (await predicate(e)) return true;
+    }
+    return;
   }
 
 }

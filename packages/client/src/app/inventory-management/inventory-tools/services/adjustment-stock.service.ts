@@ -5,6 +5,7 @@ import { Product } from '../../products/product.model';
 import { StockEventsService } from '../../api-services/stock-events.service';
 import { StockEvent } from '../../stock-events/stock-events.model';
 import { Stock } from '../stock';
+import { setHours } from 'date-fns';
 
 @Injectable()
 export class AdjustmentStockService {
@@ -39,21 +40,23 @@ export class AdjustmentStockService {
       const productIdInDb: string[] = productsInDb.map(product => product._id);
       this.instantStock = [];
       const productsId: string[] = [];
-      for(const index in events){
-        const index2: number = productsId.indexOf(events[index].product as string);
+
+      events.map(event => {
+        const index2: number = productsId.indexOf(event.product as string);
         if(index2===-1){
-          productsId.push(events[index].product as string);
-          const product: Product = productsInDb[productIdInDb.indexOf(events[index].product as string)]; 
-          const diff: number = events[index].diff; 
+          productsId.push(event.product as string);
+          const product: Product = productsInDb[productIdInDb.indexOf(event.product as string)]; 
+          const diff: number = event.diff; 
           this.instantStock.push({
             product,
             diff
           });
         }
         else{
-          this.instantStock[index2].diff += events[index].diff;
+          this.instantStock[index2].diff += event.diff;
         }
-      }
+      });
+
       this.instantStock.sort(this.compareStock);
       this.emitInstantStockSubject();
       this.setDiffStock();
@@ -71,11 +74,11 @@ export class AdjustmentStockService {
     }
 
     addRealStock(stock: Stock): void {
-      const index = this.realStock.findIndex(sto => sto.product._id === stock.product._id);
-      if(index === -1){
+      const oldstock = this.realStock.find(sto => sto.product._id === stock.product._id);
+      if(!oldstock){
         this.realStock.push(stock);
       } else {
-        this.realStock[index].diff = stock.diff;
+        oldstock.diff = stock.diff;
       }
       this.realStock.sort(this.compareStock);
       this.emitRealStockSubject();
@@ -89,41 +92,39 @@ export class AdjustmentStockService {
 
     setDiffStock(): void {
       this.diffStock = [];
-      for(const stock of this.realStock){
-        this.updateDiffFromReal(stock);
-      }
-      for(const stock of this.instantStock) {
+      this.realStock.map(stock => this.updateDiffFromReal(stock));
+      this.instantStock.map(stock => {
         if(!this.diffStock.some(sto => sto.product._id === stock.product._id)){
           this.diffStock.push({
             product: stock.product,
             diff: -stock.diff,
           });
         }
-      }
+      });
       this.diffStock.sort(this.compareStock);
       this.emitDiffStockSubject();
     }
 
     updateDiffFromReal(stock: Stock): void {
-      const index = this.instantStock.findIndex(sto => sto.product._id === stock.product._id);
-      const diffIndex = this.diffStock.findIndex(sto => sto.product._id === stock.product._id);
-      if(index === -1){
-        if(diffIndex === -1){
+      const instantStock = this.instantStock.find(sto => sto.product._id === stock.product._id);
+      const diffStock = this.diffStock.find(sto => sto.product._id === stock.product._id);
+      if(!instantStock){
+        if(!diffStock){
           this.diffStock.push({
             product: stock.product,
             diff: stock.diff,
           });
         } else {
-          this.diffStock[index].diff = stock.diff;
+          diffStock.diff = stock.diff;
         }
       } else {
-        if(diffIndex === -1){
+        if(!diffStock){
           this.diffStock.push({
             product: stock.product,
-            diff: stock.diff - this.instantStock[index].diff,
+            diff: stock.diff - instantStock.diff,
           });
         } else {
-          this.diffStock[index].diff = stock.diff - this.instantStock[index].diff;
+          diffStock.diff = stock.diff - instantStock.diff;
         }
       }
       this.diffStock.sort(this.compareStock);
@@ -158,28 +159,26 @@ export class AdjustmentStockService {
         else if(index > -1 && !begin){
           begin = true;
           events = [ ...events, ...rows.splice(0, index)];
-          for(const row of rows){
-            if(row.type === 'InventoryUpdate'){
+          rows.map(row => {
+            if(row.type === 'InventoryUpdate' && done === false){
               events.push(row);
             }
             else {
               done = true;
-              break;
             }
-          }
+          });
         }
         else if (index === -1 && begin) break;
         else if (index > -1  && begin) {
           if(index === 0) {
-            for(const row of rows){
-              if(row.type === 'InventoryUpdate'){
+            rows.map(row => {
+              if(row.type === 'InventoryUpdate' && done === false){
                 events.push(row);
               }
               else {
                 done = true;
-                break;
               }
-            }
+            });
           } else break;
         }
       }
@@ -187,7 +186,7 @@ export class AdjustmentStockService {
     }
 
     public async adjustStocks(date: Date): Promise<void> {
-      for(const stock of this.instantStock){
+      this.instantStock.map(async stock => {
         const stockEvent: StockEvent = {
           product: stock.product._id,
           diff: -stock.diff,
@@ -195,17 +194,17 @@ export class AdjustmentStockService {
           type: 'InventoryAdjustment'
         };
         await this.stockEventsService.create(stockEvent);
-      }
-      date.setHours(14);
-      for(const stock of this.realStock){
+      });
+      const newDate = setHours(date, 14);
+      this.realStock.map( async stock => {
         const stockEvent: StockEvent = {
           product: stock.product._id,
           diff: stock.diff,
-          date: date,
+          date: newDate,
           type: 'InventoryUpdate'
         };
         await this.stockEventsService.create(stockEvent);
-      }
+      })
       this.setInstantStock();
     }
 }

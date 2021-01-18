@@ -52,22 +52,14 @@ export class ProductsSubmitService {
         
         this.providersInDB = await this.providersService.listAll();
         
-        for(let j=0; j<articles.length; j++){
-            //Check that the product does not exist in db
-
-            let exist = false;
-            for(let i=0; i<this.productsInDB.length; i++){
-                if(this.productsInDB[i].name === articles[j].name) exist = true;
-            }
-
-            if(!exist){
-            //Create Product in db
-                const productToAdd = await this.getProductFromArticle(articles[j], provider,);
+        await Promise.all(articles.map(async article => {
+            if(!this.productsInDB.some((prod) => prod.name === article.name)){
+                const productToAdd = await this.getProductFromArticle(article, provider);
                 await this.productsService.create(productToAdd);
-                await this.setProductsInDB();
-                this.toasterService.showToaster("Le produit " + articles[j].name + " est ajouté à la DB");
+                this.productsInDB.push(productToAdd);
+                this.toasterService.showToaster("Le produit " + article.name + " est ajouté à la DB");
             }
-        }
+        }));
         this.router.navigate(['/inventory-management/products']);
         return Promise.resolve();
     }
@@ -79,20 +71,14 @@ export class ProductsSubmitService {
         const product = this.BASE_PRODUCT;
         const shelves = this.shelvesInDB;
 
-        let oneShelf: Shelf;
         let oneShelfName: string;
         if(article.name.indexOf("FUT")>0) oneShelfName = "Pressions";
         else if(article.name.indexOf("SIROP")>0) oneShelfName = "Sirops";
         else if(article.name.indexOf("VC")>0 ||article.name.indexOf("VP")>0 ||article.name.indexOf("12X")>0 ||article.name.indexOf("24X")>0) oneShelfName = "Bouteilles";
         else oneShelfName = "Autre";
 
-        for(let i=0; i<shelves.length; i++){
-            if(shelves[i].name === oneShelfName){
-                oneShelf = shelves[i];
-                break;
-            }
-        }
-        
+        const oneShelf: Shelf = shelves.find(shelf => shelf.name === oneShelfName);
+            
         if(!this.automatiqueShelfAssignment){
             const dialogRef = this.dialog.open(OptionsDialogComponent, {
                 data: {
@@ -121,42 +107,35 @@ export class ProductsSubmitService {
     }
 
     async submitStockEvents(articles: Article[], eventType: string): Promise<void> {
-        
         await this.setProductsInDB();
-
         await this.setStockEventsInDB();
-        for(let j=0; j<articles.length; j++){
-            const productId = this.getProductId(articles[j].name,this.productsInDB);
-            if(productId != undefined){
-            //Check that the event does not exist in db
-            let exist = false;
-                for(let i=0; i<this.stockEventsInDB.length; i++){
-                    if(productId === this.stockEventsInDB[i].product){
-                        const oneDate = new Date(this.stockEventsInDB[i].date);
-                        if(oneDate.getDate() === articles[j].date.getDate() && oneDate.getMonth() === articles[j].date.getMonth() && oneDate.getFullYear() === articles[j].date.getFullYear() ) {
-                            exist = true;
-                        }
-                    }
-                }
-                if(!exist){
-                //Create Event in db
-                    
-                    const eventToAdd = this.getStockEventFromArticle(articles[j],productId, eventType);
-                    if(!isNaN(articles[j].quantity)){  //Treat some exceptions
+        const allNotInDb = articles.some((art) => {
+            const productId = this.getProductId(art.name,this.productsInDB);
+            if(productId === undefined) return true;
+        })
+
+        if(allNotInDb){
+            this.toasterService.showToaster("Erreur: Tous les produits ne sont pas présent dans la BD");
+        } else {
+            await Promise.all(articles.map( async article => {
+                const productId = this.getProductId(article.name,this.productsInDB);
+                //Check that the event does not exist in db
+                const eventExist = this.stockEventsInDB.some(evt => {
+                    const oneDate = new Date(evt.date);
+                    return (productId === evt.product && oneDate.getDate() === article.date.getDate() && oneDate.getMonth() === article.date.getMonth() && oneDate.getFullYear() === article.date.getFullYear());
+                });
+                if(!eventExist){
+                    //Create Event in db   
+                    const eventToAdd = this.getStockEventFromArticle(article,productId, eventType);
+                        if(!isNaN(article.quantity)){  //Treat some exceptions
                         await this.stockEventsService.create(eventToAdd);
                     }
                     //update DB
-                    await this.setStockEventsInDB();
-
+                    this.stockEventsInDB.push(eventToAdd);
                     this.toasterService.showToaster("Evènement créé avec succès");
                 }
-            }
-            else{
-                this.toasterService.showToaster("Erreur: Tous les produits ne sont pas présent dans la BD");
-                break;
-            }
+            }));
         }
-        
         this.router.navigate(['/inventory-management/stock-events']);
         return Promise.resolve();
     }
@@ -175,47 +154,20 @@ export class ProductsSubmitService {
     }
 
     getProductId(productName: string, products: Product[]): string{
-        for(let i=0; i<products.length; i++){
-            if(products[i].name === productName){
-                return products[i]._id
-            }
-        }
+        const product = products.find( prod => prod.name === productName);
+        return product._id;
     }
 
-    async setProductsInDB(): Promise<void>{
-        const options =  this.BASE_MOLECULERLISTOPTIONS;
-        const totalProducts = (await this.productsService.list()).total;
-        options.pageSize = 100;  //maximum
-        options.page = 0;
-        this.productsInDB = [];
-        do{
-            options.page ++;
-            const onePage = await this.productsService.list(options).then(function(value){
-                return value.rows;
-            });
-            for(let i=0; i<onePage.length; i++){
-                this.productsInDB.push(onePage[i]);
-            }
-        }while(totalProducts > options.page * options.pageSize);
-        return Promise.resolve();
+    async setProductsInDB(): Promise<void>{ 
+        this.productsInDB = await this.productsService.listAll();
     }
 
-    async setStockEventsInDB(): Promise<void>{
-        const options =  this.BASE_MOLECULERLISTOPTIONS;
-        const totalStockEvents = (await this.stockEventsService.list()).total;
-        options.pageSize = 100;  //maximum
-        options.page = 0;
-        this.stockEventsInDB = [];
-        do{
-            options.page ++;
-            const onePage = await this.stockEventsService.list(options).then(function(value){
-                return value.rows;
-            });
-            for(let i=0; i<onePage.length; i++){
-                this.stockEventsInDB.push(onePage[i]);
-            }
-        }while(totalStockEvents > options.page * options.pageSize);
-        return Promise.resolve();
+    async setStockEventsInDB(): Promise<void>{ //TODO FILTER by date
+        const pageSize = 100;
+        const events = await this.stockEventsService.list({
+            pageSize: pageSize,
+        });
+        this.stockEventsInDB = events.rows;
     }
    
 }

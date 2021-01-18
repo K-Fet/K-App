@@ -25,14 +25,13 @@ export class ArticlesService {
 
     putArticles(): void {
       this.articles = [];
-      const someArticles = this.parseService.listarticle;
-      for(let i=0; i<someArticles.length; i++){
+      this.parseService.listarticle.forEach( art => {
         const oneArticle = new Article();
-        oneArticle.date = someArticles[i][0];
-        oneArticle.name = someArticles[i][1];
-        oneArticle.quantity = someArticles[i][2];
+        oneArticle.date = art[0];
+        oneArticle.name = art[1];
+        oneArticle.quantity = art[2];
         this.articles.push(oneArticle);
-      }
+      });
       this.emitArticleSubject();
       }
 
@@ -50,26 +49,28 @@ export class ArticlesService {
 
     putArticlessum(): void {
       this.articlessum = [];
-      const someArticles = this.parseService.articleSum;
-      for(let i=0; i<someArticles.length; i++){
+      this.parseService.articleSum.forEach( art => {
         const oneArticle = new Article();
-        oneArticle.name = someArticles[i][0];
-        oneArticle.quantity = someArticles[i][1];
+        oneArticle.name = art[0];
+        oneArticle.quantity = art[1];
         this.articlessum.push(oneArticle);
-      }
+      });
       this.emitArticlesumSubject();
     }
 
     editArticles(oldarticle: Article, newarticle: Article): void{
-      for(const i in this.articles){
-        if(this.articles[i].name === oldarticle.name){
-          if(this.articles[i] === oldarticle){
-            this.articles[i] = newarticle;
+      const oldname = oldarticle.name;
+      this.articles.forEach( art => {
+        if(art.name === oldname){
+          if(art === oldarticle){
+            art.name = newarticle.name;
+            art.date = newarticle.date;
+            art.quantity = newarticle.quantity;
           } else {
-            this.articles[i].name = newarticle.name;
+            art.name = newarticle.name;
           }
         }
-      }
+      });
       this.emitArticleSubject();
     }
 }
