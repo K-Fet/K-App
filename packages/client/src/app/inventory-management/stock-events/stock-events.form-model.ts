@@ -28,7 +28,7 @@ export function getStockEventsModel(
     {
       label: 'Vente',
       value: 'Transaction',
-    }, 
+    },
     {
       label: 'Réception',
       value: 'Delivery',
@@ -36,13 +36,13 @@ export function getStockEventsModel(
     {
       label: 'Ajustement',
       value: 'InventoryAdjustment',
-    }, 
+    },
     {
       label: 'Mois précédent',
       value: 'InventoryUpdate',
     }
   ];
-  
+
 
   return [
     new DynamicSelectModel<string>({

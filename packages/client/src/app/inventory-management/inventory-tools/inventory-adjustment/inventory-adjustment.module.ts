@@ -12,7 +12,7 @@ import { StocksManagementTableComponent } from './stocks-management-table/stocks
 
 @NgModule({
   declarations: [
-    AdjustmentComponent, 
+    AdjustmentComponent,
     StockTableComponent,
     ValidationDialog,
     ChooseProductDialogComponent,

@@ -31,20 +31,19 @@ export class ValidationDialog {
   onSubmit(): void {
     this.dialogRef.close(true);
   }
-
 }
 
 
 @Component({
   selector: 'invoice-tool-articles',
   templateUrl: './articles.component.html',
-  styleUrls: ['articles.component.scss']
+  styleUrls: ['articles.component.scss'],
 })
-export class ArticlesComponent implements OnInit{
+export class ArticlesComponent implements OnInit {
 
   public articles: Article[];
   public articleSubscription: Subscription;
-   
+
   public articlessum: Article[];
   public articlesumSubscription: Subscription;
 
@@ -61,32 +60,31 @@ export class ArticlesComponent implements OnInit{
 
   public products: Product[];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
 
-  constructor(  private articleService: ArticlesService,
-                private productsSubmitService: ProductsSubmitService,
-                private productsService: ProductsService,
-                private readonly toaster: ToasterService,
-                private readonly dialog: MatDialog,
-             )
-              {
-                this.isLoading = false;
-              }
+  constructor(private articleService: ArticlesService,
+    private productsSubmitService: ProductsSubmitService,
+    private productsService: ProductsService,
+    private readonly toaster: ToasterService,
+    private readonly dialog: MatDialog,
+  ) {
+    this.isLoading = false;
+  }
 
   async ngOnInit(): Promise<void> {
     this.articleSubscription = this.articleService.articlesSubject.subscribe(
       (articles: Article[]) => {
         this.articles = articles;
-      }
+      },
     );
     this.articleService.emitArticleSubject();
 
     this.articlesumSubscription = this.articleService.articlessumSubject.subscribe(
       (articlessum: Article[]) => {
         this.articlessum = articlessum;
-      }
+      },
     );
     this.articleService.emitArticlesumSubject();
     this.articleDataSource.sort = this.sort;
@@ -95,60 +93,45 @@ export class ArticlesComponent implements OnInit{
     this.products = await this.productsService.listAll();
   }
 
-  setAllArticles(): Article[]{
+  setAllArticles(): Article[] {
     return [...this.articles, ...this.articlessum];
   }
 
   onDownloadFile(data: Article[]): void {
-    const replacer = (_key, value ) => value === null ? '' : value; // specify how you want to handle null values here
+    const replacer = (_key, value) => value === null ? '' : value; // specify how you want to handle null values here
     const header = Object.keys(data[0]);
     const csv = data.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
     csv.unshift(header.join(','));
     const csvArray = csv.join('\r\n');
 
     const a = document.createElement('a');
-    const blob = new Blob([csvArray], {type: 'text/csv' }),
-    url = window.URL.createObjectURL(blob);
+    const blob = new Blob([csvArray], { type: 'text/csv' }),
+      url = window.URL.createObjectURL(blob);
 
     a.href = url;
-    a.download = "myFile.csv";
+    a.download = 'myFile.csv';
     a.click();
     window.URL.revokeObjectURL(url);
     a.remove();
-  }
-
-  async onNgSubmitProducts(): Promise<void> {
-    const dialogRef = this.dialog.open(OptionsDialogComponent, {
-      data: {
-        providers: true,
-      }
-    });
-    dialogRef.afterClosed().subscribe(async (res) => {
-      if(res){
-        this.isLoading = true;
-        await this.productsSubmitService.submitProducts(this.articlessum, res.provider);
-        this.isLoading = false;
-      }
-    });
   }
 
   async onNgSubmitStockEvents(): Promise<void> {
     const dialogref = this.dialog.open(ValidationDialog);
 
     dialogref.afterClosed().subscribe(async (res) => {
-      if(res){
+      if (res) {
         if (this.articles.some(art => !this.productExist(art.name))) {
-            this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
-            return;
+          this.toaster.showToaster('ERREUR: Tous les produits ne sont pas en db');
+          return;
         }
         const dialogRef = this.dialog.open(OptionsDialogComponent, {
           data: {
             types: true,
-          }
+          },
         });
-    
+
         dialogRef.afterClosed().subscribe(async (res) => {
-          if(res){
+          if (res) {
             this.isLoading = true;
             await this.productsSubmitService.submitStockEvents(this.articles, res.type);
             this.isLoading = false;
@@ -156,11 +139,11 @@ export class ArticlesComponent implements OnInit{
         });
       }
     });
-    
+
   }
 
   public setArticles(): void {
-    if(this.isPrint) this.isPrint = false; 
+    if (this.isPrint) this.isPrint = false;
     else {
       this.isPrintSum = false;
       this.displayedColumns = ['date', 'name', 'quantity', 'actions'];
@@ -171,7 +154,7 @@ export class ArticlesComponent implements OnInit{
   }
 
   public setArticlesSum(): void {
-    if(this.isPrintSum) this.isPrintSum = false; 
+    if (this.isPrintSum) this.isPrintSum = false;
     else {
       this.isPrint = false;
       this.displayedColumns = ['name', 'quantity'];
@@ -188,21 +171,21 @@ export class ArticlesComponent implements OnInit{
 
     diaogRef.afterClosed().subscribe(
       async (res) => {
-        if(res) {
-          if(res.product){
+        if (res) {
+          if (res.product) {
             this.products = await this.productsService.listAll();
           }
-          if(res.article){
+          if (res.article) {
             this.articleService.editArticles(article, res.article);
             this.articleDataSource.data = this.articles;
             this.articleDataSource._updateChangeSubscription();
           }
-          if(res.removed){
+          if (res.removed) {
             const dialog = this.dialog.open(ValidationDialog);
-            dialog.afterClosed().subscribe( async res => {
-              if(res){
+            dialog.afterClosed().subscribe(async res => {
+              if (res) {
                 const index = this.articleDataSource.data.indexOf(article);
-                if(index > -1){
+                if (index > -1) {
                   this.articleDataSource.data.splice(index, 1);
                   this.articleDataSource._updateChangeSubscription();
                   this.articleService.removeArticle(article);
@@ -211,36 +194,36 @@ export class ArticlesComponent implements OnInit{
             });
           }
         }
-      }
-    )
+      },
+    );
   }
 
   public productExist(productName: string): boolean {
-	return this.products.some(p => p.name === productName);
+    return this.products.some(p => p.name === productName);
   }
 
   public onConvertKaisse(): void {
-    this.articles.map(art => this.convertKaisseToArticle(art, this.isConverted))
-    this.articlessum.map(art => this.convertKaisseToArticle(art, this.isConverted))
+    this.articles.map(art => this.convertKaisseToArticle(art, this.isConverted));
+    this.articlessum.map(art => this.convertKaisseToArticle(art, this.isConverted));
     this.isConverted = !this.isConverted;
     this.articleDataSource._updateChangeSubscription();
   }
 
   public convertThisArticle(article: Article): void {
     const index = this.articleDataSource.data.indexOf(article);
-    if(index>-1){
+    if (index > -1) {
       this.articleDataSource.data[index] = this.convertKaisseToArticle(article, this.isConverted);
       this.articleDataSource._updateChangeSubscription();
     }
   }
 
-  private convertKaisseToArticle(article: Article, isConverted: boolean): Article{
+  private convertKaisseToArticle(article: Article, isConverted: boolean): Article {
     const product = this.products.find(product => product.name === article.name);
-    if(product && product.conversions && product.conversions.length>0){
+    if (product && product.conversions && product.conversions.length > 0) {
       const conv = product.conversions.find(conv => conv.displayName === 'Kaisse');
-      if(conv){
-        if(isConverted){
-          article.quantity = article.quantity/conv.coef;
+      if (conv) {
+        if (isConverted) {
+          article.quantity = article.quantity / conv.coef;
         } else {
           article.quantity = article.quantity * conv.coef;
         }

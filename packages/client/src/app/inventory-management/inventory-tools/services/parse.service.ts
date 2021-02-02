@@ -43,8 +43,8 @@ export class ParseService {
         return;
       }
       const file = files[index];
-      this.fileReader.onload = async(e): Promise<void> => {  
-        // get file content  
+      this.fileReader.onload = async(e): Promise<void> => {
+        // get file content
         const target = e.target as FileReader;
         this.csvtext += target.result.toString();
         await this.readfile(index+1, files);
@@ -89,9 +89,9 @@ export class ParseService {
       }
     });
 
-    //Separate invoices and credits and remove empty invoices 
+    //Separate invoices and credits and remove empty invoices
     listinvoices = listinvoices.filter( invoice => (invoice[1].indexOf('FACTURECOMMUNAUTE')>-1 && invoice[1].indexOf('Commande')!==0 && invoice[1].indexOf('_')!==0));
-    
+
     //Parsing
     listinvoices.map((invoice) => {
       let index = invoice[1].indexOf('CLIENT FACTURE');
@@ -124,7 +124,7 @@ export class ParseService {
         listarticles.push(invoiceparse);
       });
     });
-    
+
     //Parse , and manage GROLSCH exception
     Object.keys(listarticles).forEach((key) => {
       let onearticleparse = listarticles[key].split(' ');
@@ -166,7 +166,7 @@ export class ParseService {
       listarticlesparse.push(articlenombre);
       listarticles[key]=nomarticle+' '+last;
     });
-    
+
     //Copy Array listearticleparse to have 2 distincts Array
     const listarticlesparsesum = [];
     listarticlesparse.map(art => {
@@ -192,7 +192,7 @@ export class ParseService {
 
     this.articleSum = finallistsum;
 
-    
+
     //Create list with date
     let finallist = [];
     Object.keys(listarticlesparsesum).forEach((key) => {
@@ -201,7 +201,7 @@ export class ParseService {
     })
 
     finallist = finallist.filter( art => art[1]!=='' && !isNaN(art[2]))
-    
+
     //Filter and modify article to have only one ny product for each date
     finallist = finallist.filter((art, index) => {
       const artindex = finallist.findIndex(artb => {
@@ -209,7 +209,7 @@ export class ParseService {
       });
       if(artindex !== index) finallist[artindex][2] += finallist[index][2];
       return artindex === index;
-    });  
+    });
     this.listarticle = finallist;
   }
 
@@ -235,7 +235,7 @@ export class ParseService {
       const countPromises = []; // collecting all page promises
       for(let j = 1; j <= maxPages; j++) {
         const page = pdf.getPage(j);
-        
+
         //var txt = "";
         countPromises.push(page.then(function(page: { getTextContent: () => any}) { // add page promise
           const textContent = page.getTextContent();
@@ -250,7 +250,7 @@ export class ParseService {
       });
     });
   }
-  
+
   private sumFromDate(): void{
     const soonAssigned: string[] = [];
     const art =  this.listarticle.reduce((previousValue,currentArt) => {

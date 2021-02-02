@@ -27,7 +27,7 @@ export class InvoicesService {
         this.invoices.pop();
         this.emitInvoiceSubject();
       }
-    
+
     removeAll(): void {
       this.invoices = [];
       this.emitInvoiceSubject();
