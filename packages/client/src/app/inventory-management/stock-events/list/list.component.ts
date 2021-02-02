@@ -11,7 +11,6 @@ import { ListEventService } from '../services/list-event.service';
 import { Router } from '@angular/router';
 
 
-
 @Component({
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
@@ -20,18 +19,18 @@ export class ListComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['date', 'product', 'diff', 'type', 'action'];
   dataSource: StockEventsDataSource;
-  
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild('input', { static: true }) input: ElementRef;
 
-  constructor( private stockEventsService: StockEventsService,
-               private listEventService: ListEventService,
-               private router: Router) {}
+  constructor(private stockEventsService: StockEventsService,
+    public listEventService: ListEventService,
+    private router: Router) {}
 
   async ngOnInit(): Promise<void> {
     this.dataSource = new StockEventsDataSource(this.stockEventsService);
-    await this.dataSource.loadStockEvents({sort: '-date'});
+    await this.dataSource.loadStockEvents({ sort: '-date' });
     await this.listEventService.initProducts();
   }
 
@@ -51,9 +50,9 @@ export class ListComponent implements OnInit, AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadStockEventsPage())).subscribe();
   }
 
-  async loadStockEventsPage(): Promise<void>  {
+  async loadStockEventsPage(): Promise<void> {
     let asort = '-date';
-    if(this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`){
+    if (this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`) {
       asort = this.sort.active && `${this.sort.direction === 'desc' ? '-' : ''}${this.sort.active}`;
     }
     await this.dataSource.loadStockEvents({
@@ -65,16 +64,12 @@ export class ListComponent implements OnInit, AfterViewInit {
   }
 
   renameType(stockEvent?: StockEvent): string {
-    if(stockEvent === undefined) return "Event undefined";
-    else{
-      if(stockEvent.type === "InventoryAdjustment") return "Ajustement des stocks";
-      else if(stockEvent.type === "InventoryUpdate") return "Stock mois précédent";
-      else if(stockEvent.type === "Transaction") return "Vente";
-      else if(stockEvent.type === "Delivery") return "Réception";
-      else {
-        return "Type undefined";
-      }
-    }
+    if (!stockEvent) return 'Event undefined';
+    if (stockEvent.type === 'InventoryAdjustment') return 'Ajustement des stocks';
+    if (stockEvent.type === 'InventoryUpdate') return 'Stock mois précédent';
+    if (stockEvent.type === 'Transaction') return 'Vente';
+    if (stockEvent.type === 'Delivery') return 'Réception';
+    return 'Type undefined';
   }
 
 

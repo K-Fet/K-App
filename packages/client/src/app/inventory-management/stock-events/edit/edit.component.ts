@@ -31,7 +31,7 @@ export class EditComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router) { }
 
-  public async ngOnInit(): Promise<void> { 
+  public async ngOnInit(): Promise<void> {
     this.formGroup = this.formService.createFormGroup([]);
     this.route.data.subscribe(async (data: { stockEvent: StockEvent }) => {
       this.originalEvent = data.stockEvent;
@@ -46,13 +46,13 @@ export class EditComponent implements OnInit {
   }
 
   public async removeStockEvent(): Promise<void> {
-    this.stockEventsService.remove(this.originalEvent._id).then((res) => {
-      if(res) this.toasterService.showToaster("L'évènement a bien été supprimé");
-    })
-    .catch( err => {
-      this.toasterService.showToaster("Une erreur est survenue");
+    try {
+      await this.stockEventsService.remove(this.originalEvent._id);
+      this.toasterService.showToaster('L\'évènement a bien été supprimé');
+    } catch (err) {
+      this.toasterService.showToaster('Une erreur est survenue');
       console.error(err);
-    });
+    }
     this.router.navigate(['/inventory-management/stock-events']);
   }
 

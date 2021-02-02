@@ -24,9 +24,9 @@ export class StockEventsService {
       },
     ).toPromise();
   }
-  
-  create(stockEvent: StockEvent): Promise<StockEvent> {
-    return this.http.post<StockEvent>(BASE_URL, stockEvent).toPromise();
+
+  add(stockEvents: StockEvent[]): Promise<StockEvent[]> {
+    return this.http.post<StockEvent[]>(BASE_URL, { entities: stockEvents }).toPromise();
   }
 
   get(id: string): Promise<StockEvent> {

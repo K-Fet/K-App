@@ -49,7 +49,7 @@ export class AdjustmentComponent implements OnInit {
 
   public stocks: Stock[];
   public stocksSubscription: Subscription;
-  
+
   public productsPromise: Promise<Product[]>;
   public products: Product[];
 
@@ -58,12 +58,12 @@ export class AdjustmentComponent implements OnInit {
   public optionsFormModel: DynamicFormModel;
 
   public detailedView = false;
-  
+
   public date: Date;
 
   public isLoading = false;
 
-  constructor( 
+  constructor(
     public readonly adjustmentStockService: AdjustmentStockService,
     private invoiceService: InvoicesService,
     private readonly productsService: ProductsService,
@@ -77,10 +77,10 @@ export class AdjustmentComponent implements OnInit {
       label: b[labelField],
     }));
 
-    
+
 
     this.productsPromise = this.productsService.listAll();
-    
+
 
     this.optionsFormModel = [
       new DynamicSelectModel<string>({
@@ -129,7 +129,7 @@ export class AdjustmentComponent implements OnInit {
   }
 
   onDrop(e: any): void {
-    e.preventDefault(); 
+    e.preventDefault();
     const files: File = e.dataTransfer.files;
     Object.keys(files).forEach((key) => {
       const file: File = files[key];

@@ -15,6 +15,6 @@ export class StockEventDetailResolverService implements Resolve<StockEvent> {
     const stockEvent = await this.stockEventsService.get(id);
     if (stockEvent) return stockEvent;
 
-    this.router.navigate(['/inventory-management/shelves']);
+    this.router.navigate(['/inventory-management/stock-events']);
   }
 }

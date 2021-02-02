@@ -5,8 +5,6 @@ import { Stock } from '../stock';
 import { Subscription } from 'rxjs';
 import { AdjustmentStockService } from '../services/adjustment-stock.service';
 
-
-
 @Component({
   selector: 'app-instant-stock',
   templateUrl: './instant-stock.component.html',
@@ -31,7 +29,7 @@ export class InstantStockComponent implements OnInit{
       (stocks: Stock[]) => {
         this.stocks = stocks;
         this.dataSource = new MatTableDataSource<Stock>(this.stocks)
-        this.dataSource.paginator = this.paginator; 
+        this.dataSource.paginator = this.paginator;
       }
     );
     this.adjustmentStockService.setInstantStock();
