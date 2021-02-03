@@ -44,7 +44,7 @@
             <mat-cell *matCellDef="let stockEvent">
               <div fxLayout="row">
                 <button mat-icon-button (click)="edit(stockEvent)"
-                        *ngxPermissionsOnly="['inventory-management:stock-events:create']">
+                        *ngxPermissionsOnly="['inventory-management:stock-events:add']">
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>

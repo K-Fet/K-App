@@ -17,7 +17,7 @@ const routes: Routes = [
     path: ':id/edit',
     component: EditComponent,
     canActivate: [NgxPermissionsGuard],
-    data: { permissions: { only: ['inventory-management:stock-events:create'] } },
+    data: { permissions: { only: ['inventory-management:stock-events:add'] } },
     resolve: {
       stockEvent: StockEventDetailResolverService
     }
