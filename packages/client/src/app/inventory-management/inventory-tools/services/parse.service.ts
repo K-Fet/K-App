@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { setHours } from 'date-fns';
 import * as PDFJS from 'pdfjs-dist/build/pdf';
 import PDFJSWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import { ToasterService } from 'src/app/core/services/toaster.service';
 
 @Injectable()
 
@@ -14,6 +15,9 @@ export class ParseService {
   csvtext = "";
   fileReader = new FileReader();
 
+  constructor(
+    private readonly toasterService: ToasterService,
+  ) {}
 
   async fromFilestoText(invoices: File[]): Promise<void> {
     this.listarticle = [];
@@ -69,6 +73,7 @@ export class ParseService {
       }
     });
     if(errorInCsv){
+      this.toasterService.showToaster('Erreur durant le parsing du fichier. Chaque ligne ne contient pas exactement 3 colonnes \n Check les virgules (pas autorisées)');
       this.listarticle = [];
       this.articleSum = [];
     }
