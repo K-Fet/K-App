@@ -45,6 +45,32 @@ const routes: Routes = [
     },
     canLoad: [NgxPermissionsGuard],
   },
+  {
+    path: 'inventory-tools',
+    loadChildren: () => import('./inventory-tools/inventory-tools.module').then(m => m.InventoryToolsModule),
+    data: {
+      permissions: {
+        only: [
+          'inventory-management:invoice-tool',
+        ],
+      },
+    },
+    canLoad: [NgxPermissionsGuard],
+  },
+  {
+    path: 'stock-events',
+    loadChildren: () => import('./stock-events/stock-events.module').then(m => m.StockEventsModule),
+    data: {
+      permissions: {
+        only: [
+          'inventory-management:stock-events:find',
+          'inventory-management:stock-events:list',
+          'inventory-management:stock-events:get',
+        ],
+      },
+    },
+    canLoad: [NgxPermissionsGuard],
+  },
 ];
 
 @NgModule({

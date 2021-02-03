@@ -1,0 +1,63 @@
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <button mat-stroked-button (click) = "setArticles()" >Afficher les articles par date</button>
+    <button mat-stroked-button (click) = "setArticlesSum()" >Afficher les articles par somme</button>
+  </div>
+</div>
+
+<p></p>
+
+
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <button mat-stroked-button (click) = "onNgSubmitStockEvents()" >Soumettre les évènements</button>
+    <button mat-stroked-button (click) = "downloadCSV = !downloadCSV" >Télécharger un fichier csv</button>
+  </div>
+</div>
+
+<p></p>
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+
+<div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="downloadCSV">
+  <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+    <button mat-stroked-button (click) = "onDownloadFile(articlessum)" >Télécharger les articles</button>
+    <button mat-stroked-button (click) = "onDownloadFile(articles)" >Télécharger les articles par date</button>
+    <button mat-stroked-button (click) = "onDownloadFile(setAllArticles())" >Télécharger tout</button>
+  </div>
+</div>
+
+<div>
+  <table mat-table [dataSource]="articleDataSource" class="mat-elevation-z8" *ngIf="isPrint || isPrintSum">
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let article"> {{article.date | date}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Nom </th>
+        <td mat-cell *matCellDef="let article"><mat-icon *ngIf='!productExist(article.name)'>error</mat-icon> {{article.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantity">
+          <th mat-header-cell *matHeaderCellDef> Quantité </th>
+          <td mat-cell *matCellDef="let article"> {{article.quantity}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let article">
+          <button mat-icon-button (click)='onEditArticle(article)'><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button (click)='convertThisArticle(article)'><mat-icon>repeat</mat-icon></button>
+        </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+  <button mat-button *ngIf="isPrint || isPrintSum" (click)=onConvertKaisse()>Convertir les kaisses en unités</button>
+</div>
+
+

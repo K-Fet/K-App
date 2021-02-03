@@ -31,9 +31,8 @@ export class NewComponent implements OnInit {
 
   ngOnInit() {
     this.model = getProductModel(
-      // TODO Improve page size
-      this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
-      this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
+      this.shelvesService.listAll(),
+      this.providersService.listAll(),
     );
     this.formGroup = this.formService.createFormGroup(this.model);
     this.formConversionArray = this.formGroup.get('conversions') as FormArray;

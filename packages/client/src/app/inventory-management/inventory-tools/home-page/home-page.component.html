@@ -1,0 +1,58 @@
+<div fxLayoutAlign="center">
+  <div fxFlex class="max-width">
+    <mat-card class="max-width">
+      <mat-card-header>
+        <mat-card-title>
+          <section class="mat-typography">
+            <h1>Outil de gestion des factures</h1>
+          </section>
+        </mat-card-title>
+        <mat-card-subtitle>
+          <section class="mat-typography">
+            <button mat-button [routerLink]="['./adjustment']"> Ajustement des stocks </button>
+          </section>
+        </mat-card-subtitle>
+        <div fxFlex>            
+        </div>
+        <a mat-mini-fab color="accent" (click)="onRemove()">
+        <mat-icon>remove</mat-icon>
+      </a>
+      </mat-card-header>
+      <mat-card-content>
+        <div 
+          class="dropzone"
+          (dragover)="false"
+          (dragend)="false"
+          (drop)="onDrop($event)"
+          >
+          <p style="margin: 10px; text-align: center">
+            <strong>Pose tes fichier pdf ici</strong>
+          </p>
+          <p style="margin: 10px">
+            <strong>Tes factures prises en comptes :</strong>
+          </p>
+          <p style="margin: 20px">
+          <invoice-tool-invoices></invoice-tool-invoices>
+          </p>
+        </div>
+        <p></p>
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px">
+          <div fxFlexAlign="center" fxLayout="row" fxLayout.xs="column" fxLayoutGap.gt-xs="40px">
+            <button mat-stroked-button (click) = "onSubmit()" 
+                    [disabled]="invoicesEmpty">Rouler sa bosse</button>
+          </div>
+        </div>
+        <p></p>
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+        <div fxLayout="column" fxFlexAlign="center" fxLayoutGap="20px" *ngIf="articleService.articles.length > 0">
+          <invoice-tool-articles></invoice-tool-articles>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="max-width" style = "margin-top: 15px;">
+      <p>Attention! Les calculs de stocks en direct se font à partir du dernier évènement d'ajustement exclus.</p>
+      <app-instant-stock></app-instant-stock>
+    </mat-card>
+  </div>
+</div>

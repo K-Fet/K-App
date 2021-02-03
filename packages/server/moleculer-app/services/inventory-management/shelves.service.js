@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const { Errors } = require('moleculer');
 const JoiDbActionsMixin = require('../../mixins/joi-db-actions.mixin');
 const DbMixin = require('../../mixins/db-service.mixin');
 const { MONGO_ID, groupBy } = require('../../../utils');
+
+const { MoleculerClientError } = Errors;
+
 
 const model = {
   mongoose: mongoose.model('Shelves', mongoose.Schema({
@@ -40,6 +44,28 @@ module.exports = {
       },
     },
   },
+  actions: {
+    remove: {
+      async handler(ctx) {
+        const { id } = ctx.params;
+        const products = await ctx.call('inventory-management.products.find');
+        if (products) {
+          const productsShelf = products.map(product => product.shelf.toString());
+          if (productsShelf.indexOf(id) > -1) {
+            return Promise.reject(new MoleculerClientError('Entity cannot be removed', 400, null, {
+              id, details: 'Some products are link to this Shelf, it can only be archived',
+            }));
+          }
+        }
 
-  actions: {},
+        const doc = await this.adapter.removeById(id);
+
+        const json = await this.transformDocuments(ctx, ctx.params, doc);
+        this.entityChanged('removed', json, ctx);
+
+        return json;
+      },
+    },
+  },
+
 };

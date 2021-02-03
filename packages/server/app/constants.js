@@ -38,6 +38,8 @@ module.exports = {
 
     'template:read',
     'template:write',
+
+    'inventory-management:invoice-tool',
   ],
 
   /**

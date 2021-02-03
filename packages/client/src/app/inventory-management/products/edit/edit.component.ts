@@ -39,8 +39,8 @@ export class EditComponent implements OnInit {
     this.route.data.subscribe((data: { product: Product }) => {
       this.originalProduct = data.product;
       this.model = getProductModel(
-        this.shelvesService.list({ pageSize: 1000 }).then(value => value.rows),
-        this.providersService.list({ pageSize: 1000 }).then(value => value.rows),
+        this.shelvesService.listAll(),
+        this.providersService.listAll(),
         this.originalProduct,
       );
       this.formGroup = this.formService.createFormGroup(this.model);
@@ -49,19 +49,29 @@ export class EditComponent implements OnInit {
     });
   }
 
-  addConversionLine() {
+  addConversionLine(): void {
     this.formService.addFormArrayGroup(this.formConversionArray, this.formConversionModel);
   }
 
-  removeItem(context: DynamicFormArrayModel, index: number) {
-    // TODO Check if it was here before
+  removeItem(context: DynamicFormArrayModel, index: number): void {
     this.formService.removeFormArrayGroup(index, this.formConversionArray, context);
   }
 
-  async onNgSubmit() {
+  async onNgSubmit(): Promise<void> {
     const updatedProduct = getProductFromForm(this.formGroup, this.originalProduct);
     await this.productsService.update(updatedProduct);
     this.toasterService.showToaster('Produit mis à jour');
+    this.router.navigate(['/inventory-management/products']);
+  }
+
+  async removeProduct(): Promise<void> {
+    this.productsService.remove(this.originalProduct._id).then((res) => {
+      if(res) this.toasterService.showToaster("Le produit a bien été supprimé");
+    })
+    .catch( err => {
+      this.toasterService.showToaster("une erreur est survenue");
+      console.error(err);
+    });
     this.router.navigate(['/inventory-management/products']);
   }
 }

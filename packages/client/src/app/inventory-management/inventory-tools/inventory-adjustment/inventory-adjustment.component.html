@@ -1,0 +1,35 @@
+<div fxLayout>
+    <a mat-button routerLink="../">
+        <mat-icon>arrow_back</mat-icon>
+    </a>
+    <section class="mat-typography">
+        <h1>Gestion des stocks</h1>
+    </section>
+</div>
+
+<mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Les gestions de stocks passées"> 
+        <div>
+            Historique des GDS, Recherche de la première GDS avant la date entrée. !! Date entrée excluse !!
+            <div *ngIf='!stocks'>
+                <input matInput [matDatepicker]="picker" (dateChange)="changeDate($event)" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <button mat-button (click)='submitSearch()' [disabled]='!date'>Soumettre</button>
+            </div>
+            <div *ngIf='stocks'>
+                <h3> StoK-Fêt du {{ stoDate | date }} </h3>
+                <app-stocks-management-table [stocks]='stocks'></app-stocks-management-table>            
+                <button mat-button (click)='onDownloadCsv(stoDate, stocks)'> Télécharger un csv </button>
+
+                <button mat-button (click)='hideStoK()'>
+                    Hide
+                </button>
+            </div>
+        </div>
+        <app-stocks-management></app-stocks-management>
+    </mat-tab>
+    <mat-tab label="Nouvelle gestion de stock">
+        <app-adjustment></app-adjustment>
+    </mat-tab>
+</mat-tab-group>

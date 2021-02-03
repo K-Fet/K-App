@@ -13,10 +13,10 @@ import { Product } from '../product.model';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit, AfterViewInit {
-
+  // Modified because it didn't work on my laptop
   displayedColumns = ['name', 'action'];
   dataSource: ProductsDataSource;
-
+  
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild('input', { static: true }) input: ElementRef;
@@ -25,13 +25,12 @@ export class ListComponent implements OnInit, AfterViewInit {
               private router: Router) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.dataSource = new ProductsDataSource(this.productsService);
-    this.dataSource.loadProducts();
+    await this.dataSource.loadProducts();
   }
 
   ngAfterViewInit(): void {
-    // Server-side search
     fromEvent(this.input.nativeElement, 'keyup').pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -47,8 +46,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page).pipe(tap(() => this.loadProductsPage())).subscribe();
   }
 
-  loadProductsPage() {
-    this.dataSource.loadProducts({
+  async loadProductsPage()  {
+    await this.dataSource.loadProducts({
       pageSize: this.paginator.pageSize,
       page: this.paginator.pageIndex + 1,
       search: this.input.nativeElement.value,

@@ -25,6 +25,10 @@ export class ShelvesService {
     ).toPromise();
   }
 
+  async listAll(): Promise<Shelf[]> {
+    return (await this.list({pageSize: 100})).rows; 
+  }
+
   get(id: string): Promise<Shelf> {
     // Always populate shelf with products
     return this.http.get<Shelf>(`${BASE_URL}/${id}?populate=products`).toPromise();

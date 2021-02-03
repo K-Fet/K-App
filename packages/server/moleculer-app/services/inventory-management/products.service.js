@@ -14,7 +14,7 @@ const model = {
     name: {
       type: String, required: true, min: 3, text: true,
     },
-    image: { type: String },
+    image: { type: String, text: true },
     used: { type: Boolean, default: false },
     conversions: [new mongoose.Schema({
       displayName: { type: String },
@@ -26,11 +26,12 @@ const model = {
     })],
     provider: { type: ObjectId, require: true, index: true },
     shelf: { type: ObjectId, index: true },
+    price: { type: Number, default: null },
   }, { timestamps: true })),
   joi: Joi.object({
     _id: MONGO_ID.strip(), // Remove _id from the object
     name: Joi.string().min(3).required(),
-    image: Joi.string().uri(),
+    image: Joi.string().uri().allow(null),
     conversions: Joi.array().unique('unit').items(Joi.object({
       displayName: Joi.string(),
       preferred: Joi.bool(),
@@ -39,6 +40,7 @@ const model = {
     })),
     provider: MONGO_ID.required(),
     shelf: MONGO_ID,
+    price: Joi.number().allow(null),
   }),
 };
 
@@ -55,6 +57,7 @@ module.exports = {
       provider: 'inventory-management.providers.get',
       shelf: 'inventory-management.shelves.get',
     },
+    maxPageSize: 1000,
   },
 
   events: {
@@ -118,15 +121,17 @@ module.exports = {
      * @param after
      * @return {boolean}
      */
-    isProductAllowedToUpdate(before, after) {
-      if (!before.used) return true;
+    // isProductAllowedToUpdate(before, after) {
+    isProductAllowedToUpdate() {
+      return true;
+      // if (!before.used) return true;
 
-      const bConv = this.mapConversions(before.conversions);
-      const aConv = this.mapConversions(after.conversions);
+      // const bConv = this.mapConversions(before.conversions);
+      // const aConv = this.mapConversions(after.conversions);
 
-      return before.provider === after.provider
-        // Check if every conversions from before still exists and did not change coef
-        && Object.entries(bConv).every(([key, value]) => aConv[key] && aConv[key].coef === value.coef);
+      // return before.provider === after.provider
+      //   // Check if every conversions from before still exists and did not change coef
+      //   && Object.entries(bConv).every(([key, value]) => aConv[key] && aConv[key].coef === value.coef);
     },
 
     /**

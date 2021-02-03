@@ -25,6 +25,10 @@ export class ProductsService {
     ).toPromise();
   }
 
+  async listAll(): Promise<Product[]> {
+    return (await this.list({ pageSize: 1000 })).rows;
+  }
+
   get(id: string): Promise<Product> {
     // Always populate provider and shelf
     return this.http.get<Product>(`${BASE_URL}/${id}?populate=provider,shelf`).toPromise();

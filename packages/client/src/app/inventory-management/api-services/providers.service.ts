@@ -25,6 +25,11 @@ export class ProvidersService {
     ).toPromise();
   }
 
+  async listAll(): Promise<Provider[]> {
+    return (await this.list({pageSize: 100})).rows; 
+  }
+
+
   get(id: string): Promise<Provider> {
     return this.http.get<Provider>(`${BASE_URL}/${id}`).toPromise();
   }

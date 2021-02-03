@@ -16,4 +16,5 @@ export interface Product {
   conversions: ProductConversion[];
   provider: string | Provider;
   shelf?: string | Shelf;
+  price?: number;
 }

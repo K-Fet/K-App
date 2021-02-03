@@ -17,11 +17,13 @@ const BASE_CONVERSION = {} as ProductConversion;
 
 function getConversionGroups(originalProduct?: Product): DynamicFormArrayGroupModel[] | null {
   if (!originalProduct || !Array.isArray(originalProduct.conversions)) return null;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore Ask for unneeded $implicit variable
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   return originalProduct.conversions.map(c => ({ group: conversionGroupFactory(c) }));
 }
 
-function conversionGroupFactory(conversion?: ProductConversion) {
+function conversionGroupFactory(conversion?: ProductConversion): DynamicInputModel[] {
   const value = conversion || BASE_CONVERSION;
   return [
     new DynamicInputModel({
@@ -29,7 +31,6 @@ function conversionGroupFactory(conversion?: ProductConversion) {
       label: 'Label',
       value: value.displayName,
     }),
-    // TODO Preferred
     new DynamicInputModel({
       id: 'unit',
       label: 'Unité',
@@ -56,8 +57,9 @@ export function getProductModel(
     label: b[labelField],
   }));
 
+
   return [
-    new DynamicInputModel({
+    new DynamicInputModel({ 
       id: 'name',
       label: 'Nom du produit',
       value: values.name,
@@ -73,6 +75,7 @@ export function getProductModel(
       id: 'shelf',
       label: 'Rayon',
       value: values.shelf && (values.shelf as Shelf)._id,
+      validators: { required: null },
       options: from(shelves.then(optionMap('_id', 'name')),
       ),
     }),
@@ -80,9 +83,14 @@ export function getProductModel(
       id: 'provider',
       label: 'Fournisseur',
       value: values.provider && (values.provider as Provider)._id,
-      disabled: values.used,
+      validators: { required: null },
       options: from(providers.then(optionMap('_id', 'name')),
       ),
+    }),
+    new DynamicInputModel({ 
+      id: 'price',
+      label: 'Prix',
+      value: values.price,
     }),
     new DynamicFormArrayModel({
       id: 'conversions',
@@ -91,14 +99,12 @@ export function getProductModel(
       groupFactory: conversionGroupFactory,
       groups: getConversionGroups(originalProduct),
     }),
-    // TODO Shelve
   ];
 }
 
 export function getProductFromForm(form: FormGroup, originalProduct?: Product): Product {
   const value = form.value;
   const original = originalProduct || BASE_PRODUCT;
-
   return {
     _id: original._id,
     ...value,

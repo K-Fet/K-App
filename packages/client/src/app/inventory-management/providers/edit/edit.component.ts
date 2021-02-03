@@ -33,6 +33,17 @@ export class EditComponent implements OnInit {
     });
   }
 
+  public async removeProvider(): Promise<void> {
+    this.providersService.remove(this.originalProvider._id).then((res) => {
+      if(res) this.toasterService.showToaster("Le fournisseur a bien été supprimé");
+    })
+    .catch( err => {
+      this.toasterService.showToaster("Une erreur est survenue");
+      console.error(err);
+    });
+    this.router.navigate(['/inventory-management/providers']);
+  }
+
   async onNgSubmit() {
     const updatedProvider = getProviderFromForm(this.formGroup, this.originalProvider);
     await this.providersService.update(updatedProvider);
