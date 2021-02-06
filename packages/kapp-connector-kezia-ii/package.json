@@ -1,0 +1,30 @@
+{
+  "name": "kapp-connector-kezia-ii",
+  "version": "0.0.0",
+  "description": "Kezia II connector for the inventory managment module of the K-App",
+  "main": "index.js",
+  "repository": "https://github.com/K-Fet/K-App",
+  "author": "Marc-Antoine Fernandes",
+  "license": "MIT",
+  "private": true,
+  "bin": "index.js",
+  "scripts": {
+    "build": "pkg . --out-path dist/ && yarn build:native",
+    "build:native": "cp ../../node_modules/odbc/build/Release/odbc.node ./dist"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint-plugin-jest": "^22.19.0",
+    "pkg": "^4.4.0"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
+    "axios": "^0.19.0",
+    "date-fns": "^2.6.0",
+    "dotenv": "^8.2.0",
+    "flat-cache": "^2.0.1",
+    "odbc": "^2.2.1",
+    "string-similarity": "^3.0.0"
+  }
+}
