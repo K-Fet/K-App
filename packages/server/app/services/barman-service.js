@@ -358,6 +358,7 @@ async function createServiceBarman(barmanId, servicesId) {
         [Op.gt]: Sequelize.fn('count', Sequelize.col('barmen.id')),
       },
     },
+    group: [Sequelize.col('barmen.id')],
   });
 
   if (availableServices.length < count) {

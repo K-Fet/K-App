@@ -43,7 +43,7 @@ export class ServiceService {
     return this.http.post<Service>(toURL(`v1/services/${id}/delete`), null).toPromise();
   }
 
-  getWeek(): Observable<{ start: Date, end: Date }> {
+  getWeek(): Observable<{ start: Date; end: Date }> {
     return new Observable((week) => {
       this.$weekInterval.subscribe((weekInterval) => {
         const current = getCurrentWeek();
@@ -61,7 +61,7 @@ export class ServiceService {
     const services = await this.get(start, end);
 
     services.forEach((service) => {
-      const name = format(service.startAt, 'EEE', { locale: fr });
+      const name = format(new Date(service.startAt), 'EEE', { locale: fr });
       const day = days.find(currentDay => currentDay.name === name);
 
       if (day) return day.services.push(service);
