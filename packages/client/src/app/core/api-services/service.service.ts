@@ -61,7 +61,7 @@ export class ServiceService {
     const services = await this.get(start, end);
 
     services.forEach((service) => {
-      const name = format(service.startAt, 'EEE', { locale: fr });
+      const name = format(new Date(service.startAt), 'EEE', { locale: fr });
       const day = days.find(currentDay => currentDay.name === name);
 
       if (day) return day.services.push(service);
