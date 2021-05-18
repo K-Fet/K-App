@@ -39,7 +39,7 @@ export class PlanningComponent implements OnInit {
       if (days.length > 0) {
         this.days = days;
         const today = this.days.filter((day: Day) => {
-          return isSameDay(day.date, new Date());
+          return isSameDay(new Date(day.date), new Date());
         });
         this.updateDayDetails(today[0] || this.days[0]);
       } else {
